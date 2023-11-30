@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jmh.mapper.BoardMapper">
+	
+	<!--  데이터베이스의 컬럼과 VO가 다를때-->
+	<!-- <resultMap type="com.jmh.vo.BoardVO" id="boardVO">
+    	<result property="boardType" 	column="BOARD_TYPE"/>
+    	<result property="boardNum" 	column="BOARD_NUM"/>
+    	<result property="boardTitle" 	column="BOARD_TITLE"/>
+    	<result property="boardComment" column="BOARD_COMMENT"/>
+    </resultMap> -->
+	
+	<select id="getBoardList" resultType="com.jmh.vo.BoardVO">
+		select * from board where bno > 0
+		<!-- <![CDATA[
+		SELECT 
+		  BNO
+		  ,BTYPE
+		  ,BTITLE
+		  ,BCONTENT
+		FROM 
+		(
+		  SELECT
+		      	BNO
+				,BTYPE
+				,BTITLE
+				,BCONTENT
+		      	,ROW_NUMBER() OVER(ORDER BY BNO DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				BOARD	
+		)
+		]]> -->
+	</select>
+	
+	 <!-- <select id="boardInsert" parameterType="com.spring.board.vo.BoardVo">
+        INSERT INTO 
+        BOARD
+        (BOARD_TYPE
+        ,BOARD_NUM
+        ,BOARD_TITLE
+        ,BOARD_COMMENT
+        ,CREATOR
+        ,CREATE_TIME
+        ,MODIFIER
+        ,MODIFIED_TIME
+        )
+        VALUES
+        (#{boardType}
+        ,(SELECT TO_NUMBER(NVL(MAX(BOARD_NUM), 0))+ 1
+	    FROM BOARD
+	    WHERE BOARD_TYPE = '1')
+        ,#{boardTitle}
+        ,#{boardComment}
+        ,'SYSTEM'
+        ,TO_CHAR(SYSDATE)
+        ,'SYSTEM'
+        ,TO_CHAR(SYSDATE)
+        )
+    </select> -->
+</mapper>  
