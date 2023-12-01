@@ -1,0 +1,5 @@
+PL : JAVA 11.0.20
+WAS : TOMCAT 9.0.46
+DBMS : ORACLE Release 11.2.0.2.0 Production
+SQL : SQL Developer 23.1.0.097
+JS : JQuery (library)

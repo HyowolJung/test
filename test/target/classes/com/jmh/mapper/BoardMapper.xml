@@ -12,8 +12,7 @@
     </resultMap> -->
 	
 	<select id="getBoardList" resultType="com.jmh.vo.BoardVO">
-		select * from board where bno > 0
-		<!-- <![CDATA[
+		<!-- select * from board where bno > 0 -->
 		SELECT 
 		  BNO
 		  ,BTYPE
@@ -31,9 +30,40 @@
 			FROM
 				BOARD	
 		)
-		]]> -->
 	</select>
+	<delete id="delete" parameterType="integer">
+		delete from board where bno = #{checkNum}
+	</delete>
 	
+	<insert id="insertB" parameterType="com.jmh.vo.BoardVO">
+		INSERT INTO board(BNO, BType, BTitle, BContent) VALUES ((SELECT TO_NUMBER(NVL(MAX(BNO), 0))+ 1 FROM BOARD),#{BType}, #{BTitle}, #{BContent})
+	</insert>
+	
+	<select id="getModifyList" resultType="com.jmh.vo.BoardVO">
+		select * from board where bno = #{checkNum}
+	</select>
+	<!-- INSERT INTO BOARD(BOARD_TYPE
+        ,BOARD_NUM
+        ,BOARD_TITLE
+        ,BOARD_COMMENT
+        ,CREATOR
+        ,CREATE_TIME
+        ,MODIFIER
+        ,MODIFIED_TIME
+        )
+        VALUES
+        
+        (#{boardType}
+        ,(SELECT TO_NUMBER(NVL(MAX(BOARD_NUM), 0))+ 1
+	    FROM BOARD
+	    WHERE BOARD_TYPE = '1')
+        ,#{boardTitle}
+        ,#{boardComment}
+        ,'SYSTEM'
+        ,TO_CHAR(SYSDATE)
+        ,'SYSTEM'
+        ,TO_CHAR(SYSDATE)
+        ) -->
 	 <!-- <select id="boardInsert" parameterType="com.spring.board.vo.BoardVo">
         INSERT INTO 
         BOARD

@@ -26,7 +26,7 @@ public class JDBCTests {
 		try(Connection con = 
 				DriverManager.getConnection(
                 
-						"jdbc:oracle:thin:@localhost:1521:orcl",
+						"jdbc:oracle:thin:@localhost:1521:XE",
 						"practice",
 						"1234")){
 			System.out.println(con);
