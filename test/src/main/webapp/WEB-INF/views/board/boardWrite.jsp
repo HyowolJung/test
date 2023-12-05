@@ -52,12 +52,11 @@ $(document).ready(function() {
 				"BContent" : BContent
 			},
 			success : function(result) { // 결과 성공 콜백함수        
-				console.log(result);
-				console.log("전송 성공");
+				alert("등록 성공");
+				location.href = "/board/boardList";
 			},    
 			error : function(request, status, error) { // 결과 에러 콜백함수        
-				console.log(error);
-				console.log("전송 실패")
+				alert("등록 실패");
 			}
 		});
 	});

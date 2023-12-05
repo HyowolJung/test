@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.jmh.mapper.BoardMapper;
 import com.jmh.vo.BoardVO;
+import com.jmh.vo.Criteria;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -16,9 +17,9 @@ public class BoardServiceImpl implements BoardService{
 	
 	//1. 조회
 	@Override
-	public List<BoardVO> getBoardList() {
+	public List<BoardVO> getBoardList(Criteria cri, int numberSearch) {
 		// TODO Auto-generated method stub
-		return boardMapper.getBoardList();
+		return boardMapper.getBoardList(cri, numberSearch);
 	}
 
 	//2. 삭제
@@ -35,9 +36,21 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	@Override
-	public List<BoardVO> getModifyList(int checkNum) {
+	public List<BoardVO> getModifyList(int bno) {
 		// TODO Auto-generated method stub
-		return boardMapper.getModifyList(checkNum);
+		return boardMapper.getModifyList(bno);
+	}
+
+	@Override
+	public int modifyB(int BNO, String BType, String BTitle, String BContent) {
+		// TODO Auto-generated method stub
+		return boardMapper.modifyB(BNO, BType, BTitle, BContent);
+	}
+
+	@Override
+	public int getTotalCnt(Criteria cri) {
+		// TODO Auto-generated method stub
+		return boardMapper.getTotalCnt(cri);
 	}
 
 }

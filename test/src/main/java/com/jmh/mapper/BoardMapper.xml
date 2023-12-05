@@ -11,7 +11,7 @@
     	<result property="boardComment" column="BOARD_COMMENT"/>
     </resultMap> -->
 	
-	<select id="getBoardList" resultType="com.jmh.vo.BoardVO">
+	<select id="getBoardList" resultType="com.jmh.vo.BoardVO" parameterType="int">
 		<!-- select * from board where bno > 0 -->
 		SELECT 
 		  BNO
@@ -20,6 +20,7 @@
 		  ,BCONTENT
 		FROM 
 		(
+			CASE WHEN #{NUMBERSEARCH} NULL THEN 
 		  SELECT
 		      	BNO
 				,BTYPE
@@ -28,19 +29,46 @@
 		      	,ROW_NUMBER() OVER(ORDER BY BNO DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
-				BOARD	
+				BOARD
+				
+			CASE WHEN #{NUMBERSEARCH} NOT NULL THEN 
+			SELECT
+		      	BNO
+				,BTYPE
+				,BTITLE
+				,BCONTENT
+		      	,ROW_NUMBER() OVER(ORDER BY BNO DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				BOARD
+			WHERE BNO = #{NUMBERSEARCH}
 		)
+		WHERE NUMROW between #{startNo} and #{endNo}
+				
+		<!-- WHERE RN > (#{pageNo} - 1) * #{amount} -->
+		<!-- AND ROWNUM <+ #{criteria.pageNum} * #{criteria.amount} -->
 	</select>
+	
+	
 	<delete id="delete" parameterType="integer">
 		delete from board where bno = #{checkNum}
 	</delete>
 	
 	<insert id="insertB" parameterType="com.jmh.vo.BoardVO">
-		INSERT INTO board(BNO, BType, BTitle, BContent) VALUES ((SELECT TO_NUMBER(NVL(MAX(BNO), 0))+ 1 FROM BOARD),#{BType}, #{BTitle}, #{BContent})
+		INSERT INTO board(BNO, BType, BTitle, BContent) 
+		VALUES ((SELECT TO_NUMBER(NVL(MAX(BNO), 0))+ 1 FROM BOARD),#{BType}, #{BTitle}, #{BContent})
 	</insert>
 	
-	<select id="getModifyList" resultType="com.jmh.vo.BoardVO">
-		select * from board where bno = #{checkNum}
+	<select id="getModifyList" resultType="com.jmh.vo.BoardVO" parameterType="integer">
+		select * from board where BNO = #{bno}
+	</select>
+	
+	<update id="modifyB" parameterType="com.jmh.vo.BoardVO">
+		UPDATE BOARD SET BType = #{BType}, BTitle = #{BTitle}, BContent = #{BContent} WHERE bno = #{BNO}
+	</update>
+	
+	<select id="getTotalCnt" resultType="integer"> <!--  parameterType="integer" -->
+		select COUNT(*) from board
 	</select>
 	<!-- INSERT INTO BOARD(BOARD_TYPE
         ,BOARD_NUM
