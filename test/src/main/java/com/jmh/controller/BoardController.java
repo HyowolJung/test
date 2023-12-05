@@ -24,6 +24,7 @@ import com.jmh.vo.Criteria;
 import com.jmh.vo.PageDto;
 
 //ResoponseBody , RequestBody 언제 , 어떻게 , 왜 써야 하는 가
+//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
 //RequestParam, param, pathVaraiable
 //@RequestMapping(value = "createB" , method=RequestMethod.POST)
 //엑셀 깔자
