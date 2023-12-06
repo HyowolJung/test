@@ -23,75 +23,68 @@ import com.jmh.vo.BoardVO;
 import com.jmh.vo.Criteria;
 import com.jmh.vo.PageDto;
 
-//ResoponseBody , RequestBody ¾ğÁ¦ , ¾î¶»°Ô , ¿Ö ½á¾ß ÇÏ´Â °¡
+//ResoponseBody , RequestBody ï¿½ï¿½ï¿½ï¿½ , ï¿½î¶»ï¿½ï¿½ , ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½
 //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
 //RequestParam, param, pathVaraiable
 //@RequestMapping(value = "createB" , method=RequestMethod.POST)
-//¿¢¼¿ ±òÀÚ
-//¡ÚÀ¯È¿¼º °Ë»ç ±¸Çö¿¡ ÁıÁß¡Ú
-//1. sql Äõ¸®¹® ÁÙ Á¶Á¤ + ´ë¹®ÀÚ·Î
-//2. ´Ù¾çÇÏ°Ô
-//3. Å¸ÀÏÁî?
-// ±ÇÇÑ¹øÈ£(°ü¸®ÀÚ, »ç¿ø)¿¡ µû¶ó º¸¿©Áà¾ß ÇÏ´Â »çÀÌµå¹Ù¿¡ ÀÖ´Â ¸Ş´º(¹Ùµğ)°¡ ´Ù¸¦¶§, 
-// 1. ¼¼¼Ç¿¡ ÀúÀåÇØ¼­ µ¿ÀûÄõ¸®(±ÇÇÑ¾ÆÀÌµğ=#{01})¸¦ ÀÌ¿ëÇÏ°Å³ª, 
-// 2. jsp ÆäÀÌÁö¿¡ jstl(c:if when)À» ÀÌ¿ëÇÏÁö¸»°í 
-// ´Ù¸¥ ¹æ¹ıÀ» Ã£¾Æ ±¸ÇöÇØº¸¼¼¿ä.
+//ì—‘ì…€ ê¹”ì
+//â˜…ìœ íš¨ì„± ê²€ì‚¬ êµ¬í˜„ì— ì§‘ì¤‘â˜…
+//1. sql ì¿¼ë¦¬ë¬¸ ì¤„ ì¡°ì • + ëŒ€ë¬¸ìë¡œ
+//2. ë‹¤ì–‘í•˜ê²Œ
+//3. íƒ€ì¼ì¦ˆ?
+//ê¶Œí•œë²ˆí˜¸(ê´€ë¦¬ì, ì‚¬ì›)ì— ë”°ë¼ ë³´ì—¬ì¤˜ì•¼ í•˜ëŠ” ì‚¬ì´ë“œë°”ì— ìˆëŠ” ë©”ë‰´(ë°”ë””)ê°€ ë‹¤ë¥¼ë•Œ, 
+//1. ì„¸ì…˜ì— ì €ì¥í•´ì„œ ë™ì ì¿¼ë¦¬(ê¶Œí•œì•„ì´ë””=#{01})ë¥¼ ì´ìš©í•˜ê±°ë‚˜, 
+//2. jsp í˜ì´ì§€ì— jstl(c:if when)ì„ ì´ìš©í•˜ì§€ë§ê³  
+//ë‹¤ë¥¸ ë°©ë²•ì„ ì°¾ì•„ êµ¬í˜„í•´ë³´ì„¸ìš”.
 @Controller
 @RequestMapping("/board")
 public class BoardController {
 	//argument & parameter
+	//ë³€ìˆ˜
+	//						ì„ ì–¸ìœ„ì¹˜		ì„ ì–¸íƒ€ì…					íŠ¹ì§•
+	//ì§€ì—­(Local)ë³€ìˆ˜			ë©”ì„œë“œ ì•ˆ
+	//ì „ì—­(Global)ë³€ìˆ˜			ë©”ì„œë“œ ë°–
+	//ê¸°ë³¸(Primitive)ë³€ìˆ˜					Int, String, Boolean	ë¦¬í„°ëŸ´(Literal)ì´ ì €ì¥ë¨(stackì— ì‹¤ì œê°’ì´ ì €ì¥ë¨)
+	//ì°¸ì¡°í˜•(Reference)ë³€ìˆ˜					new						ì£¼ì†Œê°’ì´ ì €ì¥ë¨(heapì— ì‹¤ì œê°’ì´, stackì— ì£¼ì†Œê°’ì´ ì €ì¥ë¨)
 	
-	//º¯¼ö
-	//						¼±¾ğÀ§Ä¡		¼±¾ğÅ¸ÀÔ					Æ¯Â¡
-	//Áö¿ª(Local)º¯¼ö			¸Ş¼­µå ¾È
-	//Àü¿ª(Global)º¯¼ö			¸Ş¼­µå ¹Û
-	//±âº»(Primitive)º¯¼ö					Int, String, Boolean	¸®ÅÍ·²(Literal)ÀÌ ÀúÀåµÊ(stack¿¡ ½ÇÁ¦°ªÀÌ ÀúÀåµÊ)
-	//ÂüÁ¶Çü(Reference)º¯¼ö					new						ÁÖ¼Ò°ªÀÌ ÀúÀåµÊ(heap¿¡ ½ÇÁ¦°ªÀÌ, stack¿¡ ÁÖ¼Ò°ªÀÌ ÀúÀåµÊ)
 	
-	
-	@Autowired	//¹»±î¿ä?
-	private BoardService boardService; //Àü¿ªº¯¼ö
-	
-	//@RequestMapping("/board")
-//	@GetMapping("/boardList")
-//	public String BoardList(Model model) {
-//		System.out.println("½ÇÇà");
-//		List<BoardVO> boardList = boardService.getBoardList(); //Áö¿ªº¯¼ö / List, LinkedList, ArrayList 
-//		model.addAttribute("boardList", boardList);
-//		
-//		return "board/boardList";	//ºä¸¦ ¹İÈ¯ÇÕ´Ï´Ù.(ºäÀÇ À§Ä¡)
-//	}
+	@Autowired	//ï¿½ï¿½ï¿½ï¿½ï¿½?
+	private BoardService boardService; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	
 	@GetMapping("/boardList")
-	public String BoardList(Model model, Criteria cri, int numberSearch) {
-//		if(numberSearch = null) {
-//			
-//			
-//		}
-//		if (numberSearch != null) {
-//			
-//		}
-		numberSearch = 1;
-		System.out.println("½ÇÇà");
-		System.out.println("numberSearch : " + numberSearch);
-		List<BoardVO> boardList = boardService.getBoardList(cri, numberSearch); //Áö¿ªº¯¼ö / List, LinkedList, ArrayList 
-		//List<BoardVO> boardList = boardService.getBoardList(cri); 
-		
+	public String BoardList(Model model, Criteria cri) {
+		//System.out.println("cri.numberSearch : " +  cri.getNumberSearch());
+		//String getNumberSearch = cri.getNumberSearch();
+		System.out.println("ë„ì°©1");
+		List<BoardVO> boardList = boardService.getBoardList(cri); 
 		int totalCnt = boardService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		
+		//System.out.println("2");
 		model.addAttribute("pageDto", pageDto);
 		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("boardList", boardList);
+		//System.out.println("3");
 		
-		return "board/boardList";	//ºä¸¦ ¹İÈ¯ÇÕ´Ï´Ù.(ºäÀÇ À§Ä¡)
+		model.addAttribute("boardList", boardList);
+		return "board/boardList";	//ë·°ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.(ë·°ì˜ ìœ„ì¹˜)
 	}
 	
-	
-	//±âº»Çü(primitive) º¯¼ö
+	@GetMapping("/boardList2")
+	public String BoardList2(Model model, Criteria cri) {
+		System.out.println("ë„ì°©2");
+		List<BoardVO> boardList2 = boardService.getBoardList(cri);
+		//int totalCnt = boardService.getTotalCnt(cri);
+		//PageDto pageDto = new PageDto(cri, totalCnt);
+		
+		//model.addAttribute("pageDto", pageDto);
+		//model.addAttribute("totalCnt", totalCnt);
+		model.addAttribute("boardList2", boardList2);
+		return "board/boardList";
+	}
+	//ê¸°ë³¸í˜•(primitive) ë³€ìˆ˜
 	//int number = 1;
 	
-	//ÂüÁ¶Çü(reference) º¯¼ö
+	//ì°¸ì¡°í˜•(reference) ë³€ìˆ˜
 	//BoardVO vo = new BoardVO();
 	//vo.setB_NO(1);
 	//int bno = vo.getB_NO();
@@ -99,14 +92,13 @@ public class BoardController {
 	
 	@GetMapping("/deleteB")
 	public String deleteB(@RequestParam int checkNum) {
-		System.out.println("checkNum ÀÇ °ªÀº?! = " + checkNum);
 		int deleteCnt = boardService.delete(checkNum);
 		
 		if(deleteCnt > 0) {
-			System.out.println("»èÁ¦ ¼º°ø");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			return "board/boardList";
 		}else {
-			System.out.println("»èÁ¦ ½ÇÆĞ");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			return "";
 		}
 	}
@@ -119,7 +111,7 @@ public class BoardController {
 	@PostMapping("/createB")
 	//@ResponseBody
 	public String insertB(BoardVO datas) {
-		System.out.println("¸Ş¼­µå ½ÇÇà½ÃÀÛ");
+		System.out.println("ï¿½Ş¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		System.out.println("datas : " + datas);
 		
 		String BType = datas.getBType();
@@ -132,58 +124,22 @@ public class BoardController {
 		
 		int insertCnt = boardService.insertB(BType, BTitle, BContent);
 		if(insertCnt > 0) {
-			System.out.println("»ğÀÔ ¼º°ø");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			return "board/boardList";
 		}else {
-			System.out.println("»ğÀÔ ½ÇÆĞ");
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 			return "";
 		}
 	}
 	
-//	@PostMapping("/modifyB")
-//	//@ResponseBody //¸®ÅÏ¿¡ ÀÇÇÑ ÆäÀÌÁö ÀÌµ¿ ¹«È¿È­
-//	public String modifyB(@RequestBody int checkNum, Model model) {
-//		System.out.println("¸Ş¼­µå ½ÇÇà½ÃÀÛ");
-//		System.out.println("checkNum : " + checkNum);
-//		//int checkNum = 1;
-//		List<BoardVO> boardList = boardService.getModifyList(checkNum);
-//		System.out.println("¿©±â!");
-//		model.addAttribute("boardList" , boardList);
-//		System.out.println("¿©±â!2");
-//		//response.setContentType("text/html");
-//		
-//		return "board/boardModify";
-//	}
-	
-//	@GetMapping("/modifyB")
-//	//@ResponseBody ¸®ÅÏ¿¡ ÀÇÇÑ ÆäÀÌÁö ÀÌµ¿ ¹«È¿È­
-//	public String modifyB(@RequestParam int checkNum,  Model model) {
-//		System.out.println("¸Ş¼­µå ½ÇÇà½ÃÀÛ");
-//		System.out.println("checkNum : " + checkNum);
-//	
-//		List<BoardVO> boardList = boardService.getModifyList(checkNum);
-//		model.addAttribute("boardList" , boardList);
-//		
-//		return "board/boardModify";
-//	}
-	
 	@GetMapping("/modifyB")
 	public String modifyB(@RequestParam("bno") int bno, Model model) { /*@RequestParam int bno*/
-		System.out.println("½ÃÀÛ + °ªÀº : " + bno);
-		//List<BoardVO> boardList = boardService.getModifyList(bno);
-		//System.out.println("boardList + " + boardList);
-		//model.addAttribute("boardList" , boardList);
 		model.addAttribute("boardList" ,boardService.getModifyList(bno));
-		System.out.println("boardList + " + boardService.getModifyList(bno));
-		System.out.println("Á¾·á  + °ªÀº : " + bno );
 		return "board/boardModify";
 	}
 	
 	@PostMapping("/modifyB")
 	public String modifyB(BoardVO datas) {
-		System.out.println("¸Ş¼­µå ½ÇÇà½ÃÀÛ");
-		System.out.println("datas : " + datas);
-		
 		int BNO = datas.getBNO();
 		String BType = datas.getBType();
 		String BTitle = datas.getBTitle();
@@ -191,10 +147,8 @@ public class BoardController {
 		
 		int modifyCnt = boardService.modifyB(BNO, BType, BTitle, BContent);
 		if(modifyCnt > 0) {
-			System.out.println("¼öÁ¤ ¼º°ø");
 			return "board/boardList";
 		}else {
-			System.out.println("¼öÁ¤ ½ÇÆĞ");
 			return "";
 		}
 	}

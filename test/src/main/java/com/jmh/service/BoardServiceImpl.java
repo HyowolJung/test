@@ -16,10 +16,16 @@ public class BoardServiceImpl implements BoardService{
 	BoardMapper boardMapper;
 	
 	//1. 조회
+//	@Override
+//	public List<BoardVO> getBoardList(Criteria cri, int numberSearch) {
+//		// TODO Auto-generated method stub
+//		return boardMapper.getBoardList(cri, numberSearch);
+//	}
+	
 	@Override
-	public List<BoardVO> getBoardList(Criteria cri, int numberSearch) {
+	public List<BoardVO> getBoardList(Criteria cri) {
 		// TODO Auto-generated method stub
-		return boardMapper.getBoardList(cri, numberSearch);
+		return boardMapper.getBoardList(cri);
 	}
 
 	//2. 삭제

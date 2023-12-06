@@ -12,19 +12,20 @@ import com.jmh.vo.Criteria;
 @Repository
 public interface BoardMapper {
 
-	//1. Á¶È¸
-	List<BoardVO> getBoardList(@Param("cri") Criteria cri, @Param("numberSearch") int numberSearch);
-
-	//2. »èÁ¦
+	//1. ï¿½ï¿½È¸
+	//List<BoardVO> getBoardList(@Param("cri") Criteria cri, @Param("numberSearch") int numberSearch);
+	List<BoardVO> getBoardList(Criteria cri);
+	
+	//2. ï¿½ï¿½ï¿½ï¿½
 	int delete(int checkNum);
 
-	//3. »ðÀÔ
+	//3. ï¿½ï¿½ï¿½ï¿½
 	int insertB(@Param("BType") String BType, @Param("BTitle") String BTitle, @Param("BContent") String BContent);
 
-	//4. »ó¼¼
+	//4. ï¿½ï¿½
 	List<BoardVO> getModifyList(int bno);
 
-	//5. ¼öÁ¤
+	//5. ï¿½ï¿½ï¿½ï¿½
 	int modifyB(@Param("BNO") int BNO, @Param("BType") String BType, @Param("BTitle") String BTitle, @Param("BContent") String BContent);
 
 	//6. 

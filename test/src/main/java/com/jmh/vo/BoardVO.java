@@ -2,14 +2,12 @@ package com.jmh.vo;
 
 import lombok.Data;
 
-//VO, DTO ÀÇ Â÷ÀÌÁ¡
-//»ý¼ºÀÚ, OVERRIDE¶õ?
+//VO, DTO ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, OVERRIDEï¿½ï¿½?
 @Data
 public class BoardVO {
 	private int BNO;
 	private String BType;
 	private String BTitle;
 	private String BContent;
-	private int numberSearch;
-	
 }

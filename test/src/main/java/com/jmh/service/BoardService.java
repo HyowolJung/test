@@ -13,8 +13,8 @@ import com.jmh.vo.Criteria;
 public interface BoardService {
 
 	//1. 조회
-	public List<BoardVO> getBoardList(@Param("cri") Criteria cri, @Param("numberSearch") int numberSearch);
-	//public List<BoardVO> getBoardList(Criteria cri);
+	//public List<BoardVO> getBoardList(@Param("cri") Criteria cri, @Param("numberSearch") int numberSearch);
+	public List<BoardVO> getBoardList(Criteria cri);
 	
 	//2. 삭제
 	public int delete(int checkNum);

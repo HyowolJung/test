@@ -4,24 +4,24 @@
 <mapper namespace="com.jmh.mapper.BoardMapper">
 	
 	<!--  데이터베이스의 컬럼과 VO가 다를때-->
-	<!-- <resultMap type="com.jmh.vo.BoardVO" id="boardVO">
-    	<result property="boardType" 	column="BOARD_TYPE"/>
-    	<result property="boardNum" 	column="BOARD_NUM"/>
-    	<result property="boardTitle" 	column="BOARD_TITLE"/>
-    	<result property="boardComment" column="BOARD_COMMENT"/>
-    </resultMap> -->
+	<!-- <RESULTMAP TYPE="COM.JMH.VO.BOARDVO" ID="BOARDVO">
+    	<RESULT PROPERTY="BOARDTYPE" 	COLUMN="BOARD_TYPE"/>
+    	<RESULT PROPERTY="BOARDNUM" 	COLUMN="BOARD_NUM"/>
+    	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
+    	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
+    </RESULTMAP> -->
 	
-	<select id="getBoardList" resultType="com.jmh.vo.BoardVO" parameterType="int">
-		<!-- select * from board where bno > 0 -->
+	<select id="getBoardList" resultType="com.jmh.vo.BoardVO"><!-- <![CDATA[]]> -->
+		<!-- SELECT * FROM BOARD WHERE BNO > 0 -->
+		<![CDATA[
 		SELECT 
-		  BNO
+		 BNO
 		  ,BTYPE
 		  ,BTITLE
 		  ,BCONTENT
 		FROM 
 		(
-			CASE WHEN #{NUMBERSEARCH} NULL THEN 
-		  SELECT
+		   SELECT
 		      	BNO
 				,BTYPE
 				,BTITLE
@@ -29,92 +29,105 @@
 		      	,ROW_NUMBER() OVER(ORDER BY BNO DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
-				BOARD
-				
-			CASE WHEN #{NUMBERSEARCH} NOT NULL THEN 
-			SELECT
-		      	BNO
-				,BTYPE
-				,BTITLE
-				,BCONTENT
-		      	,ROW_NUMBER() OVER(ORDER BY BNO DESC) AS NUMROW
-		      	,COUNT(*) OVER() AS TOTAL_CNT
-			FROM
-				BOARD
-			WHERE BNO = #{NUMBERSEARCH}
+				(
+					SELECT
+						BNO
+						,BTYPE
+						,BTITLE
+						,BCONTENT
+					FROM
+						BOARD
+					WHERE
+						BNO > 0
+		]]>
+					<!-- <include refid="criteria"></include> -->
+		<choose>
+			<when test="searchField == 'title'">
+				and BTitle like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'content'">
+				and BContent like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'writer'">
+				and BTYPE like '%'||#{searchWord}||'%'
+			</when>
+		</choose>
+					
+				)
 		)
-		WHERE NUMROW between #{startNo} and #{endNo}
-				
-		<!-- WHERE RN > (#{pageNo} - 1) * #{amount} -->
-		<!-- AND ROWNUM <+ #{criteria.pageNum} * #{criteria.amount} -->
+		WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo}
 	</select>
 	
-	
 	<delete id="delete" parameterType="integer">
-		delete from board where bno = #{checkNum}
+		DELETE 
+		FROM 
+			BOARD
+		WHERE 
+			BNO = #{checkNum}
 	</delete>
 	
 	<insert id="insertB" parameterType="com.jmh.vo.BoardVO">
-		INSERT INTO board(BNO, BType, BTitle, BContent) 
-		VALUES ((SELECT TO_NUMBER(NVL(MAX(BNO), 0))+ 1 FROM BOARD),#{BType}, #{BTitle}, #{BContent})
+		INSERT 
+		INTO 
+			BOARD
+			(
+				BNO
+				,BTYPE
+				,BTITLE
+				,BCONTENT) 
+		VALUES 
+		(
+			(
+				SELECT 
+		  			TO_NUMBER(NVL(MAX(BNO), 0))+ 1 
+		  		FROM 
+		  			BOARD
+		  	)
+		  		,#{BType}
+		  		,#{BTitle}
+		  		,#{BContent}
+		 )
 	</insert>
 	
 	<select id="getModifyList" resultType="com.jmh.vo.BoardVO" parameterType="integer">
-		select * from board where BNO = #{bno}
+		SELECT 
+			* 
+		FROM 
+			BOARD
+		WHERE 
+			BNO = #{BNO}
 	</select>
 	
 	<update id="modifyB" parameterType="com.jmh.vo.BoardVO">
-		UPDATE BOARD SET BType = #{BType}, BTitle = #{BTitle}, BContent = #{BContent} WHERE bno = #{BNO}
+		UPDATE 
+			BOARD 
+		SET 
+			BTYPE = #{BType}
+			,BTITLE = #{BTitle}
+			,BCONTENT = #{BContent} 
+		WHERE 
+			BNO = #{BNO}
 	</update>
 	
-	<select id="getTotalCnt" resultType="integer"> <!--  parameterType="integer" -->
-		select COUNT(*) from board
+	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
+		SELECT 
+			COUNT(*) 
+		FROM 
+			BOARD
 	</select>
-	<!-- INSERT INTO BOARD(BOARD_TYPE
-        ,BOARD_NUM
-        ,BOARD_TITLE
-        ,BOARD_COMMENT
-        ,CREATOR
-        ,CREATE_TIME
-        ,MODIFIER
-        ,MODIFIED_TIME
-        )
-        VALUES
-        
-        (#{boardType}
-        ,(SELECT TO_NUMBER(NVL(MAX(BOARD_NUM), 0))+ 1
-	    FROM BOARD
-	    WHERE BOARD_TYPE = '1')
-        ,#{boardTitle}
-        ,#{boardComment}
-        ,'SYSTEM'
-        ,TO_CHAR(SYSDATE)
-        ,'SYSTEM'
-        ,TO_CHAR(SYSDATE)
-        ) -->
-	 <!-- <select id="boardInsert" parameterType="com.spring.board.vo.BoardVo">
-        INSERT INTO 
-        BOARD
-        (BOARD_TYPE
-        ,BOARD_NUM
-        ,BOARD_TITLE
-        ,BOARD_COMMENT
-        ,CREATOR
-        ,CREATE_TIME
-        ,MODIFIER
-        ,MODIFIED_TIME
-        )
-        VALUES
-        (#{boardType}
-        ,(SELECT TO_NUMBER(NVL(MAX(BOARD_NUM), 0))+ 1
-	    FROM BOARD
-	    WHERE BOARD_TYPE = '1')
-        ,#{boardTitle}
-        ,#{boardComment}
-        ,'SYSTEM'
-        ,TO_CHAR(SYSDATE)
-        ,'SYSTEM'
-        ,TO_CHAR(SYSDATE)
-        )
-    </select> -->
+	
+	<sql id="criteria">
+		<choose>
+			<when test="searchField == 'title'">
+				and BTitle like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'content'">
+				and BContent like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'writer'">
+				and BTYPE like '%'||#{searchWord}||'%'
+			</when>
+		</choose>
+	</sql>
 </mapper>  
