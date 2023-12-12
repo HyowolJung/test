@@ -6,29 +6,33 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.jmh.vo.BoardVO;
+import com.jmh.vo.memberVO;
 import com.jmh.vo.Criteria;
 
 @Repository
-public interface BoardMapper {
+public interface MemberMapper {
 
-	//1. ��ȸ
+	//1. 
 	//List<BoardVO> getBoardList(@Param("cri") Criteria cri, @Param("numberSearch") int numberSearch);
-	List<BoardVO> getBoardList(Criteria cri);
+	List<memberVO> getmemberList(Criteria cri);
 	
 	//2. ����
-	int delete(int checkNum);
+	int deleteMember(String member_Id);
 
 	//3. ����
-	int insertB(@Param("BType") String BType, @Param("BTitle") String BTitle, @Param("BContent") String BContent);
+	int insertMember(memberVO insertDatas);
 
 	//4. ��
-	List<BoardVO> getModifyList(int bno);
+	List<memberVO> getModifyList(String member_Id);
 
 	//5. ����
-	int modifyB(@Param("BNO") int BNO, @Param("BType") String BType, @Param("BTitle") String BTitle, @Param("BContent") String BContent);
+	int memberModify(memberVO modifyDatas);
 
 	//6. 
 	int getTotalCnt(Criteria cri);
+
+	boolean selectId(String member_Tel);
+
+	int member_Tel_ck(String member_Tel);
 	
 }

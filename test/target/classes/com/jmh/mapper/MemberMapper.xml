@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jmh.mapper.MemberMapper">
+	
+	<!--  데이터베이스의 컬럼과 VO가 다를때-->
+	<!-- <RESULTMAP TYPE="COM.JMH.VO.BOARDVO" ID="BOARDVO">
+    	<RESULT PROPERTY="BOARDTYPE" 	COLUMN="BOARD_TYPE"/>
+    	<RESULT PROPERTY="BOARDNUM" 	COLUMN="BOARD_NUM"/>
+    	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
+    	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
+    </RESULTMAP> -->
+	
+	<select id="getmemberList" resultType="com.jmh.vo.memberVO">
+		/*getmemberList*/
+		SELECT 
+		 MEMBER_ID
+		  ,MEMBER_NAME
+		  ,MEMBER_SEX
+		  ,MEMBER_POSITION
+		  ,MEMBER_TEL
+		  ,MEMBER_SKILL_LANGUAGE
+		  ,MEMBER_SKILL_DB
+		  ,MEMBER_STARTDATE
+		  <!-- ,TO_CHAR(MEMBER_STARTDATE, 'YY/MM/DD') MEMBER_STARTDATE -->
+		  <!-- ,MEMBER_STARTDATE -->
+		  <!-- ,TO_CHAR(MEMBER_STARTDATE, 'YYYY-MM-DD') MEMBER_STARTDATE -->
+		FROM 
+		(
+		   SELECT
+		      	MEMBER_ID
+		  		,MEMBER_NAME
+		  		,MEMBER_SEX
+		  		,MEMBER_POSITION
+		  		,MEMBER_TEL
+		  		,MEMBER_SKILL_LANGUAGE
+		  		,MEMBER_SKILL_DB
+		  		,MEMBER_STARTDATE
+		      	,ROW_NUMBER() OVER(ORDER BY member_id DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				MEMBER
+		)
+		WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo}
+	</select>
+	<!-- <select id="getTotalCnt" resultType="integer"  parameterType="integer">
+		/*getTotalCnt*/
+		SELECT 
+			COUNT(*) 
+		FROM 
+			MEMBER
+	</select> -->
+	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
+		/*getTotalCnt*/
+		SELECT 
+			COUNT(*) 
+		FROM 
+			MEMBER
+	</select>
+	
+	 <delete id="deleteMember" parameterType="String" >
+	 	/*deleteMember*/
+		DELETE 
+		FROM 
+			MEMBER
+		WHERE 
+			MEMBER_ID = #{member_Id}
+	</delete>
+	
+	<insert id="insertMember" parameterType="com.jmh.vo.memberVO">
+		/*insertMember*/
+		INSERT 
+		INTO 
+			MEMBER
+			(
+				MEMBER_ID
+		  		,MEMBER_NAME
+		  		,MEMBER_SEX
+		  		,MEMBER_POSITION
+		  		,MEMBER_TEL
+		  		,MEMBER_SKILL_LANGUAGE
+		  		,MEMBER_SKILL_DB
+		  		,MEMBER_STARTDATE
+		  		) 
+		VALUES 
+		(
+			(
+				SELECT 
+		  			TO_NUMBER(NVL(MAX(MEMBER_ID), 0))+ 1 
+		  		FROM 
+		  			MEMBER
+		  	)
+		  		,#{member_Name}
+		  		,#{member_Sex}
+		  		,#{member_Position}
+		  		,#{member_Tel}
+		  		,#{member_Skill_Language}
+		  		,#{member_Skill_DB}
+		  		,#{member_startDate}
+		 )
+	</insert>
+	
+	<select id="selectId" resultType="boolean"><!-- parameterType="String" -->
+		SELECT 
+			COUNT(*)
+		FROM 
+			MEMBER 
+		WHERE 
+			MEMBER_TEL = #{member_Tel}
+	</select>
+	
+	<select id="getModifyList" resultType="com.jmh.vo.memberVO" parameterType="String">
+		SELECT 
+			* 
+		FROM 
+			MEMBER
+		WHERE 
+			MEMBER_ID = #{member_Id}
+	</select>
+	
+	<update id="memberModify" parameterType="com.jmh.vo.memberVO">
+		UPDATE 
+			MEMBER 
+		SET 
+			MEMBER_NAME = #{member_Name}
+			,MEMBER_SEX = #{member_Sex}
+			,MEMBER_POSITION = #{member_Position}
+			,MEMBER_TEL = #{member_Tel} 
+			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
+			,MEMBER_SKILL_DB = #{member_Skill_DB} 
+			,MEMBER_STARTDATE = #{member_startDate}
+			,MEMBER_ENDDATE = #{member_endDate}  
+		WHERE 
+			MEMBER_ID = #{member_Id}
+	</update>
+	
+	<select id="member_Tel_ck" resultType="int"> <!-- parameterType="String"  -->
+		SELECT
+			COUNT(*)
+		FROM
+			MEMBER
+		WHERE 
+			MEMBER_TEL = #{member_Tel}
+	</select>
+	
+	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
+뷰단에 원하는 포맷으로 출력을 원하시면
+
+	 -->
+	<!--
+	<select id="getModifyList" resultType="com.jmh.vo.BoardVO" parameterType="integer">
+		SELECT 
+			* 
+		FROM 
+			BOARD
+		WHERE 
+			BNO = #{BNO}
+	</select>
+	
+	<update id="modifyB" parameterType="com.jmh.vo.BoardVO">
+		UPDATE 
+			BOARD 
+		SET 
+			BTYPE = #{BType}
+			,BTITLE = #{BTitle}
+			,BCONTENT = #{BContent} 
+		WHERE 
+			BNO = #{BNO}
+	</update>
+	
+	<sql id="criteria">
+		<choose>
+			<when test="searchField == 'title'">
+				and BTitle like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'content'">
+				and BContent like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'writer'">
+				and BTYPE like '%'||#{searchWord}||'%'
+			</when>
+		</choose>
+	</sql> -->
+</mapper>  
