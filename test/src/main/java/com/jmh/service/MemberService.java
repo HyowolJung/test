@@ -16,11 +16,11 @@ public interface MemberService {
 	public List<memberVO> getmemberList(Criteria cri);
 	public int insertMember(memberVO insertDatas);
 	
-	public int deleteMember(String member_Id);
+	public int deleteMember(int member_Id);
 
 	//public int insertB(@Param("BType") String BType, @Param("BTitle") String BTitle, @Param("BContent") String BContent);
 
-	public List<memberVO> getModifyList(String member_Id);
+	public List<memberVO> getModifyList(int member_Id);
 	
 	public int memberModify(memberVO modifyDatas);
 
@@ -28,5 +28,6 @@ public interface MemberService {
 	
 	public boolean selectId(String member_Tel);
 	public int member_Tel_ck(String member_Tel);
+	public List<memberVO> searchmemberList(Criteria cri);
 
 }

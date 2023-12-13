@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class memberVO {
-	private String member_Id;
+	private int member_Id;
 	private String member_Name;
 	private String member_Sex;
 	private String member_Position;

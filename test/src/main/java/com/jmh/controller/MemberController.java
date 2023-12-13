@@ -2,12 +2,14 @@ package com.jmh.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,47 +60,32 @@ public class MemberController {
 	
 	//1. 조회
 	@GetMapping("/memberList")
-	public String memberList1(Model model, Criteria cri, String search_ck, String searchWord) {
-		System.out.println("도착1");
-		if(search_ck != null) {	//조건 없이 조회 버튼만 누른 경우.
-			//System.err.println("검색어 없는 조회");
-			List<memberVO> memberList = memberService.getmemberList(cri); 
-			//System.out.println("뭐지");
-			int totalCnt = memberService.getTotalCnt(cri);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			//System.out.println("왜 반응이 없어");
-			model.addAttribute("pageDto", pageDto);
-			model.addAttribute("totalCnt", totalCnt);
-			model.addAttribute("memberList", memberList);
-			System.out.println(memberList.size());
-			//System.out.println("제발좀..");
-			return "member/memberList";
-		}else if(searchWord != null) {
-			System.err.println("검색어 있는 조회");
-		}
+	public String memberList1(Model model, Criteria cri) {
+		int totalCnt = memberService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		model.addAttribute("pageDto", pageDto);
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치)
 	}
 	
 	@PostMapping("/memberList")
-	public String memberList2(Model model, Criteria cri, String search_ck, String searchWord) {
+	@ResponseBody
+	public List<memberVO> memberList2(Model model, Criteria cri, String search_ck) {
 		System.out.println("도착1");
-		if(search_ck != null) {	//조건 없이 조회 버튼만 누른 경우.
+		System.out.println("searchWord : " + cri.getSearchWord());
+		List<memberVO> memberList = memberService.getmemberList(cri); 
+		if(search_ck != null && cri.getSearchWord() == null) {	//조건 없이 조회 버튼만 누른 경우.
 			System.err.println("검색어 없는 조회");
-			List<memberVO> memberList = memberService.getmemberList(cri); 
-			System.out.println("뭐지");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
-			System.out.println("왜 반응이 없어");
-			model.addAttribute("pageDto", pageDto);
-			model.addAttribute("totalCnt", totalCnt);
-			model.addAttribute("memberList", memberList);
-			System.out.println(memberList.size());
-			System.out.println("제발좀..");
-			return "member/memberList";
-		}else if(searchWord != null) {
+			memberList = memberService.getmemberList(cri); 
+			return memberList;
+		}else if(search_ck != null && cri.getSearchWord() != null) {
 			System.err.println("검색어 있는 조회");
+			memberList = memberService.searchmemberList(cri);
+			System.out.println("memberList : " + memberList);
+			return memberList;
 		}
-		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치)
+		return memberList;	//뷰를 반환합니다.(뷰의 위치)
 	}
 	
 	//2. 등록
@@ -153,7 +140,7 @@ public class MemberController {
 	}
 	
 	@GetMapping("/memberDelete")
-	public String memberDelete(@RequestParam String member_Id) {
+	public String memberDelete(@RequestParam int member_Id) {
 		int deleteCnt = memberService.deleteMember(member_Id);
 		
 		if(deleteCnt > 0) {
@@ -164,7 +151,8 @@ public class MemberController {
 	}
 	
 	@GetMapping("/memberModify")
-	public String modifyMember(@RequestParam("member_Id") String member_Id, Model model) { /*@RequestParam int bno*/
+	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model) { /*@RequestParam int bno*/
+		System.out.println("수정 화면 작동");
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
 		return "member/memberModify";
 	}

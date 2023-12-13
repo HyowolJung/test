@@ -30,7 +30,7 @@ public class MemberServiceImpl implements MemberService{
 
 	//2. ����
 	@Override
-	public int deleteMember(String member_Id) {
+	public int deleteMember(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.deleteMember(member_Id);
 	}
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public List<memberVO> getModifyList(String member_Id) {
+	public List<memberVO> getModifyList(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.getModifyList(member_Id);
 	}
@@ -69,6 +69,12 @@ public class MemberServiceImpl implements MemberService{
 	public int member_Tel_ck(String member_Tel) {
 		// TODO Auto-generated method stub
 		return memberMapper.member_Tel_ck(member_Tel);
+	}
+
+	@Override
+	public List<memberVO> searchmemberList(Criteria cri) {
+		// TODO Auto-generated method stub
+		return memberMapper.searchmemberList(cri);
 	}
 
 }

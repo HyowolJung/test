@@ -11,7 +11,7 @@
     	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
     </RESULTMAP> -->
 	
-	<select id="getmemberList" resultType="com.jmh.vo.memberVO">
+	<!-- <select id="getmemberList" resultType="com.jmh.vo.memberVO">
 		/*getmemberList*/
 		SELECT 
 		 MEMBER_ID
@@ -22,9 +22,9 @@
 		  ,MEMBER_SKILL_LANGUAGE
 		  ,MEMBER_SKILL_DB
 		  ,MEMBER_STARTDATE
-		  <!-- ,TO_CHAR(MEMBER_STARTDATE, 'YY/MM/DD') MEMBER_STARTDATE -->
-		  <!-- ,MEMBER_STARTDATE -->
-		  <!-- ,TO_CHAR(MEMBER_STARTDATE, 'YYYY-MM-DD') MEMBER_STARTDATE -->
+		  ,TO_CHAR(MEMBER_STARTDATE, 'YY/MM/DD') MEMBER_STARTDATE
+		  ,MEMBER_STARTDATE
+		  ,TO_CHAR(MEMBER_STARTDATE, 'YYYY-MM-DD') MEMBER_STARTDATE
 		FROM 
 		(
 		   SELECT
@@ -43,6 +43,115 @@
 		)
 		WHERE 
 			NUMROW BETWEEN #{startNo} AND #{endNo}
+	</select> -->
+	<select id="getmemberList" resultType="com.jmh.vo.memberVO">
+		/*getmemberList*/
+		SELECT 
+		 MEMBER_ID
+		  ,MEMBER_NAME
+		  ,CASE
+            WHEN MEMBER_SEX = 'D011' THEN '남자'
+            WHEN MEMBER_SEX = 'D012' THEN '여자'
+          END AS MEMBER_SEX
+          ,CASE
+            WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            WHEN MEMBER_POSITION = 'D021' THEN '사장'
+          END AS MEMBER_POSITION
+		  ,MEMBER_TEL
+		  ,CASE
+            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+          END AS MEMBER_SKILL_LANGUAGE
+          ,CASE
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+          END AS MEMBER_SKILL_DB
+		  ,MEMBER_STARTDATE
+		FROM 
+		(
+		   SELECT
+		      	MEMBER_ID
+		  		,MEMBER_NAME
+		  		,MEMBER_SEX
+		  		,MEMBER_POSITION
+		  		,MEMBER_TEL
+		  		,MEMBER_SKILL_LANGUAGE
+		  		,MEMBER_SKILL_DB
+		  		,MEMBER_STARTDATE
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				MEMBER
+		)
+		WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo}
+		
+	</select>
+	
+	<select id="searchmemberList" resultType="com.jmh.vo.memberVO"><!-- parameterType="com.jmh.vo.memberVO" -->
+		SELECT 
+		 MEMBER_ID
+		  ,MEMBER_NAME
+		  ,CASE
+            WHEN MEMBER_SEX = 'D011' THEN '남자'
+            WHEN MEMBER_SEX = 'D012' THEN '여자'
+          END AS MEMBER_SEX
+          ,CASE
+            WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            WHEN MEMBER_POSITION = 'D021' THEN '사장'
+          END AS MEMBER_POSITION
+		  ,MEMBER_TEL
+		  ,CASE
+            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+          END AS MEMBER_SKILL_LANGUAGE
+          ,CASE
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+          END AS MEMBER_SKILL_DB
+		  ,MEMBER_STARTDATE
+		FROM 
+		(
+		   SELECT
+		      	MEMBER_ID
+		  		,MEMBER_NAME
+		  		,MEMBER_SEX
+		  		,MEMBER_POSITION
+		  		,MEMBER_TEL
+		  		,MEMBER_SKILL_LANGUAGE
+		  		,MEMBER_SKILL_DB
+		  		,MEMBER_STARTDATE
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				MEMBER
+			WHERE
+				MEMBER_NAME LIKE '%'||#{searchWord}||'%'
+			<!-- <include refid="criteria"></include> -->
+		)
+		WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo} AND MEMBER_NAME = #{searchWord}
+		
 	</select>
 	<!-- <select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		/*getTotalCnt*/
@@ -59,7 +168,7 @@
 			MEMBER
 	</select>
 	
-	 <delete id="deleteMember" parameterType="String" >
+	 <delete id="deleteMember" parameterType="integer" >
 	 	/*deleteMember*/
 		DELETE 
 		FROM 
@@ -110,7 +219,7 @@
 			MEMBER_TEL = #{member_Tel}
 	</select>
 	
-	<select id="getModifyList" resultType="com.jmh.vo.memberVO" parameterType="String">
+	<select id="getModifyList" resultType="com.jmh.vo.memberVO" parameterType="integer">
 		SELECT 
 			* 
 		FROM 
@@ -148,31 +257,11 @@
 뷰단에 원하는 포맷으로 출력을 원하시면
 
 	 -->
-	<!--
-	<select id="getModifyList" resultType="com.jmh.vo.BoardVO" parameterType="integer">
-		SELECT 
-			* 
-		FROM 
-			BOARD
-		WHERE 
-			BNO = #{BNO}
-	</select>
 	
-	<update id="modifyB" parameterType="com.jmh.vo.BoardVO">
-		UPDATE 
-			BOARD 
-		SET 
-			BTYPE = #{BType}
-			,BTITLE = #{BTitle}
-			,BCONTENT = #{BContent} 
-		WHERE 
-			BNO = #{BNO}
-	</update>
-	
-	<sql id="criteria">
+	<!-- <sql id="criteria">
 		<choose>
-			<when test="searchField == 'title'">
-				and BTitle like '%'||#{searchWord}||'%'
+			<when test="searchField == 'name'">
+				MEMBER_NAME LIKE '%'||#{searchWord}||'%'
 			</when>
 			<when test="searchField == 'content'">
 				and BContent like '%'||#{searchWord}||'%'

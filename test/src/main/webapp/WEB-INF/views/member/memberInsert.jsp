@@ -84,8 +84,8 @@ $(document).ready(function() {
 			data : {
 				"member_Tel" : member_Tel	
 			},
-			success : 
-				function(result) {
+			success : 	
+				function(result) {			
 					if(result == true){
 						console.log("result : " + result);
 						result_Tel.css("color","red").html("중복된 번호입니다.");
@@ -95,6 +95,8 @@ $(document).ready(function() {
 						insert.disabled = false;
 					}
 				}
+			/* function(result) { */
+			/* } */
 		}); //ajax EndPoint	
 	});	//#check_Tel Click EndPoint
 	
@@ -151,7 +153,8 @@ $(document).ready(function() {
 			type : 'POST',
 			url : '/member/memberInsert',
 			contentType : 'application/json; charset=utf-8',
-			data : v
+			/* data : insertDatas, */
+			data: JSON.stringify(insertDatas),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("등록 성공");
 				location.href = "/member/memberList";
