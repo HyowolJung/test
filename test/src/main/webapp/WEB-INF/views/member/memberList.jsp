@@ -108,71 +108,6 @@
 			</c:forEach>
 		</tbody>
 	</table>
-	<%-- <c:forEach var="memberList" items="${memberList}">
-		<div id="memberList">			
-			<input type="radio" class="checkbox" name="checkbox"
-				value="${memberList.member_Id}" data-id="${memberList.member_Id}">
-			${memberList.member_Id }
-			${memberList.member_Name }
-			<c:if test="${memberList.member_Sex eq 'D011'}">
-				<p>남자</p>
-			</c:if>
-			<c:if test="${memberList.member_Sex eq 'D012'}">
-				<p>여자</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D028'}">
-				<p>사원</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D027'}">
-				<p>대리</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D026'}">
-				<p>과장</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D025'}">
-				<p>차장</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D024'}">
-				<p>부장</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D023'}">
-				<p>이사</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D022'}">
-				<p>상무</p>
-			</c:if>
-			<c:if test="${memberList.member_Position eq 'D021'}">
-				<p>사장</p>
-			</c:if>
-			<p>${memberList.member_Tel }</p>
-			<c:if test="${memberList.member_Skill_Language eq 'S010'}">
-				<p>JAVA</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_Language eq 'S011'}">
-				<p>PYTHON</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_Language eq 'S012'}">
-				<p>C++</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_Language eq 'S013'}">
-				<p>RUBY</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_DB eq 'S020'}">
-				<p>ORACLE</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_DB eq 'S021'}">
-				<p>MSSQL</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_DB eq 'S022'}">
-				<p>MYSQL</p>
-			</c:if>
-			<c:if test="${memberList.member_Skill_DB eq 'S023'}">
-				<p>POSTGRESQL</p>
-			</c:if>
-			${memberList.member_startDate}
-		</div>	
-	</c:forEach> --%>
-	
 	
 	<button type="button" value="delete" id="deleteButton">삭제</button>
 	<button type="button" value="modify" id="modifyButton">수정</button>
@@ -285,12 +220,23 @@ $(document).ready(function() {
                         	newRow.append("<td>" + result[i].member_startDate + "</td>");
 
                         	$("#memberTable tbody").append(newRow);
-                    	}
-                    	return;
+                        	//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+                        	return;
+               			}
+               			
+               			newRow.find('td:eq(2)').click(function() {
+               			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
+               			    var member_Id = result[i].member_Id;
+               			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
+
+               			    // 새로운 페이지로 이동
+               			    window.location.href = newPageURL;
+               			});
                		}
+               		
                		if(result == null){
-               			$("#memberTable tbody").empty();
-               		    $("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
+               			//$("#memberTable tbody").empty();
+               		    //$("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 					}
 				}, 
 				error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -305,10 +251,15 @@ $(document).ready(function() {
 	//$(document).on('click', '.radiobox', function() {});
 	//$(".radiobox").click(function() {});
 	
-	/* $(".radiobox").click(function() { ... }); 코드는 페이지가 로드될 때 존재하는 모든 라디오 박스에 대해 클릭 이벤트 핸들러를 등록합니다. 그러나 동적으로 생성된 엘리먼트에 대한 이벤트 핸들러는 이 방식으로는 작동하지 않습니다.
-	동적으로 생성된 엘리먼트에 대한 이벤트 핸들링을 위해서는 이벤트 위임(Event Delegation)을 사용해야 합니다. 이는 동적으로 생성된 엘리먼트가 특정한 상위 엘리먼트에 의해 관리되는 방식입니다.
-	$(document).on('click', '.radiobox', function() { ... }); 코드에서는 document가 이벤트를 관리하는 상위 엘리먼트가 되어 동적으로 생성된 라디오 박스에도 이벤트가 적용됩니다. 이 방식을 사용하면 동적으로 생성된 엘리먼트에 대해서도 클릭 이벤트를 처리할 수 있습니다.
-	만약 $(".radiobox").click(function() { ... }); 코드로 작성했을 때 작동하지 않는다면, 해당 라디오 박스가 동적으로 생성되었거나 이벤트가 등록되기 전에 실행되는 문제가 있을 수 있습니다. 이 경우 이벤트 위임을 사용하면 동적으로 생성된 엘리먼트에도 적용할 수 있습니다. */
+	/* $(".radiobox").click(function() { ... }); 
+	코드는 페이지가 로드될 때 존재하는 모든 라디오 박스에 대해 클릭 이벤트 핸들러를 등록합니다. 
+	그러나 동적으로 생성된 엘리먼트에 대한 이벤트 핸들러는 이 방식으로는 작동하지 않습니다.
+	동적으로 생성된 엘리먼트에 대한 이벤트 핸들링을 위해서는 이벤트 위임(Event Delegation)을 사용해야 합니다. 
+	이는 동적으로 생성된 엘리먼트가 특정한 상위 엘리먼트에 의해 관리되는 방식입니다.
+	
+	$(document).on('click', '.radiobox', function() { ... }); 
+	코드에서는 document가 이벤트를 관리하는 상위 엘리먼트가 되어 동적으로 생성된 라디오 박스에도 이벤트가 적용됩니다. 
+	이 방식을 사용하면 동적으로 생성된 엘리먼트에 대해서도 클릭 이벤트를 처리할 수 있습니다. */
 	
 	//1. 체크 박스를 선택했을 때
 	$(document).on('click', '.radiobox', function() {
@@ -345,7 +296,6 @@ $(document).ready(function() {
 					console.log(result);
 					console.log("전송 성공");
 					alert("수정 버튼 작동")
-					//window.location.href = "/board/modifyB";
 					location.href = "/member/memberModify?member_Id=" + member_Id;						
 				},    
 				error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -359,14 +309,19 @@ $(document).ready(function() {
 });//document EndPoint
 
 function go(pageNo){
+	let searchField = document.getElementById("searchField").value; 
+	let searchWord = document.getElementById("searchWord").value;
+	
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
 		data: {
-			 "pageNo" : pageNo
+			 "pageNo" : pageNo,
+			 "searchWord" : searchWord,
+			 "searchField" : searchField
 		},
 		success : function(result) { // 결과 성공 콜백함수        
-			location.href = "/member/memberList?pageNo="+pageNo;
+			location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("작동 실패");

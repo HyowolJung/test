@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
@@ -8,7 +8,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-		<table border="1">
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<table border="1">
 			<thead>
 				<tr>
 					<th>번호</th>
@@ -67,62 +68,11 @@
 				</c:forEach>
 			</tbody>
 		</table>
-
-		<button type="button" id="modifyButton">수정하기</button>
-		
-	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script type="text/javascript">
-	$(document).ready(function() {
-		$("#modifyButton").click(function() {
-			console.log("수정버튼 클릭됨");
-			
-			let member_Tel = $("#member_Tel").val();//입력한 전화번호
-			let member_Tel_Check = /^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$/;
-			
-			//2-1. 전화번호 유효성 체크(비어있는지)
-			if(member_Tel.length == 0){
-				alert("전화번호는 반드시 입력해야 합니다.")
-				return;
-			}else if(member_Tel.length != 0){
-				//2-2. 전화번호 유효성체크(적절한 조합인지)
-				if (member_Tel_Check.test(member_Tel) != true){
-					alert("적절한 형식이 아닙니다.")
-					return;
-				}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
-					let modifyDatas = {
-						member_Id : $("#member_Id").val()
-						,member_Name : $("#member_Name").val()
-						,member_Position : $("#member_Position").val()
-						,member_Sex : $("#member_Sex").val()
-						,member_Tel : $("#member_Tel").val()
-						,member_Skill_DB : $("#member_Skill_DB").val()
-						,member_Skill_Language : $("#member_Skill_Language").val()
-						,member_startDate : $("#member_startDate").val()
-						,member_endDate : $("#member_endDate").val()
-					}	
+		<button type="button" id="modify">수정</button>
+		<script type="text/javascript">
+			$("#modify").click(function{
 				
-					console.log("member_Name : " , member_Name);	
-					$.ajax({
-						type : 'POST',
-						url: '/member/memberModify',
-						contentType : 'application/json; charset=utf-8',
-						data: JSON.stringify(modifyDatas),
-						success : function(result) { // 결과 성공 콜백함수        
-							if(result == true){
-								alert("수정 성공");
-								location.href = "/member/memberList";
-							}else if(result == false){
-								alert("수정하려는 번호는 현재 존재하는 번호입니다.");
-							}				
-						},    
-						error : function(request, status, error) { // 결과 에러 콜백함수        
-							alert("수정 실패");
-						}
-					}); //ajax EndPoint
-				}// elseIf EndPoint
-			}// elseIf EndPoint
-		});
-	});
-	</script>
+			});
+		</script>
 </body>
 </html>

@@ -11,40 +11,8 @@
     	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
     </RESULTMAP> -->
 	
-	<!-- <select id="getmemberList" resultType="com.jmh.vo.memberVO">
-		/*getmemberList*/
-		SELECT 
-		 MEMBER_ID
-		  ,MEMBER_NAME
-		  ,MEMBER_SEX
-		  ,MEMBER_POSITION
-		  ,MEMBER_TEL
-		  ,MEMBER_SKILL_LANGUAGE
-		  ,MEMBER_SKILL_DB
-		  ,MEMBER_STARTDATE
-		  ,TO_CHAR(MEMBER_STARTDATE, 'YY/MM/DD') MEMBER_STARTDATE
-		  ,MEMBER_STARTDATE
-		  ,TO_CHAR(MEMBER_STARTDATE, 'YYYY-MM-DD') MEMBER_STARTDATE
-		FROM 
-		(
-		   SELECT
-		      	MEMBER_ID
-		  		,MEMBER_NAME
-		  		,MEMBER_SEX
-		  		,MEMBER_POSITION
-		  		,MEMBER_TEL
-		  		,MEMBER_SKILL_LANGUAGE
-		  		,MEMBER_SKILL_DB
-		  		,MEMBER_STARTDATE
-		      	,ROW_NUMBER() OVER(ORDER BY member_id DESC) AS NUMROW
-		      	,COUNT(*) OVER() AS TOTAL_CNT
-			FROM
-				MEMBER
-		)
-		WHERE 
-			NUMROW BETWEEN #{startNo} AND #{endNo}
-	</select> -->
-	<select id="getmemberList" resultType="com.jmh.vo.memberVO">
+	<!-- 1. 조회(검색어 X) -->
+	<select id="getmemberList" resultType="com.jmh.dto.MemberDto">
 		/*getmemberList*/
 		SELECT 
 		 MEMBER_ID
@@ -98,7 +66,8 @@
 		
 	</select>
 	
-	<select id="searchmemberList" resultType="com.jmh.vo.memberVO"><!-- parameterType="com.jmh.vo.memberVO" -->
+	<!-- 1. 조회(검색어 O) -->
+	<select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
 		SELECT 
 		 MEMBER_ID
 		  ,MEMBER_NAME
@@ -150,34 +119,42 @@
 			<!-- <include refid="criteria"></include> -->
 		)
 		WHERE 
-			NUMROW BETWEEN #{startNo} AND #{endNo} AND MEMBER_NAME = #{searchWord}
+			NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
 		
 	</select>
-	<!-- <select id="getTotalCnt" resultType="integer"  parameterType="integer">
-		/*getTotalCnt*/
-		SELECT 
-			COUNT(*) 
-		FROM 
-			MEMBER
-	</select> -->
+	
+	<!-- 1. 조회(페이징 정보) -->
 	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		/*getTotalCnt*/
+		<if test="searchWord == null">
 		SELECT 
 			COUNT(*) 
 		FROM 
 			MEMBER
-	</select>
-	
-	 <delete id="deleteMember" parameterType="integer" >
-	 	/*deleteMember*/
-		DELETE 
+		</if>
+		
+		<if test="searchWord != null">
+		SELECT 
+			COUNT(*) 
 		FROM 
 			MEMBER
-		WHERE 
-			MEMBER_ID = #{member_Id}
-	</delete>
+		WHERE
+			MEMBER_NAME LIKE '%'||#{searchWord}||'%'
+		</if>	
+	</select>
 	
-	<insert id="insertMember" parameterType="com.jmh.vo.memberVO">
+	<!-- 2. 등록(아이디 체크) -->
+	<select id="selectId" resultType="boolean"><!-- parameterType="String" -->
+		SELECT 
+			COUNT(*)
+		FROM 
+			MEMBER 
+		WHERE 
+			MEMBER_TEL = #{member_Tel}
+	</select>
+	
+	<!-- 2. 등록(회원 등록) -->
+	<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
 		/*insertMember*/
 		INSERT 
 		INTO 
@@ -210,16 +187,8 @@
 		 )
 	</insert>
 	
-	<select id="selectId" resultType="boolean"><!-- parameterType="String" -->
-		SELECT 
-			COUNT(*)
-		FROM 
-			MEMBER 
-		WHERE 
-			MEMBER_TEL = #{member_Tel}
-	</select>
-	
-	<select id="getModifyList" resultType="com.jmh.vo.memberVO" parameterType="integer">
+	<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
+	<select id="getModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer">
 		SELECT 
 			* 
 		FROM 
@@ -228,7 +197,18 @@
 			MEMBER_ID = #{member_Id}
 	</select>
 	
-	<update id="memberModify" parameterType="com.jmh.vo.memberVO">
+	<!-- 3. 수정(전화번호 중복체크) -->
+	<select id="member_Tel_ck" resultType="int"> <!-- parameterType="String"  -->
+		SELECT
+			COUNT(*)
+		FROM
+			MEMBER
+		WHERE 
+			MEMBER_TEL = #{member_Tel}
+	</select>
+	
+	<!-- 3. 수정(회원 정보 수정) -->
+	<update id="memberModify" parameterType="com.jmh.dto.MemberDto">
 		UPDATE 
 			MEMBER 
 		SET 
@@ -244,14 +224,19 @@
 			MEMBER_ID = #{member_Id}
 	</update>
 	
-	<select id="member_Tel_ck" resultType="int"> <!-- parameterType="String"  -->
-		SELECT
-			COUNT(*)
-		FROM
+	<!-- 4. 삭제(회원 정보 삭제) -->
+	<delete id="deleteMember" parameterType="integer" >
+	 	/*deleteMember*/
+		DELETE 
+		FROM 
 			MEMBER
 		WHERE 
-			MEMBER_TEL = #{member_Tel}
-	</select>
+			MEMBER_ID = #{member_Id}
+	</delete>
+	
+	
+	
+	
 	
 	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
 뷰단에 원하는 포맷으로 출력을 원하시면

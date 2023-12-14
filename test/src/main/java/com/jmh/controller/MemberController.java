@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jmh.dto.Criteria;
+import com.jmh.dto.MemberDto;
+import com.jmh.dto.PageDto;
 import com.jmh.mapper.MemberMapper;
 import com.jmh.service.MemberService;
-import com.jmh.vo.memberVO;
-import com.jmh.vo.Criteria;
-import com.jmh.vo.PageDto;
 
 //ResoponseBody , RequestBody 
 //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
@@ -45,56 +45,72 @@ import com.jmh.vo.PageDto;
 @Controller
 @RequestMapping("/member")
 public class MemberController {
-	//argument & parameter
 	//변수
 	//						선언위치		선언타입					특징
 	//지역(Local)변수			메서드 안
 	//전역(Global)변수			메서드 밖
 	//기본(Primitive)변수					Int, String, Boolean	리터럴(Literal)이 저장됨(stack에 실제값이 저장됨)
-	//참조형(Reference)변수					new						주소값이 저장됨(heap에 실제값이, stack에 주소값이 저장됨)
+	//참조형(Reference)변수				new						주소값이 저장됨(heap에 실제값이, stack에 주소값이 저장됨)
 	
+	//기본형(primitive) 변수
+	//int number = 1;
+		
+	//참조형(reference) 변수
+	//BoardVO vo = new BoardVO();
+	//vo.setB_NO(1);
+	//int bno = vo.getB_NO();
+	//System.out.println("bno : " + bno);
 	
 	@Autowired	//의존성 주입
 	private MemberService memberService;
 	
-	
-	//1. 조회
-	@GetMapping("/memberList")
+	//1. 조회(페이징 정보)
+	@GetMapping("/memberList")	//parameter 와 argument의 차이
 	public String memberList1(Model model, Criteria cri) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
+		System.out.println("pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
 		model.addAttribute("pageDto", pageDto);
-		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치)
+		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
 	
+	//1. 조회(회원 정보)
 	@PostMapping("/memberList")
 	@ResponseBody
-	public List<memberVO> memberList2(Model model, Criteria cri, String search_ck) {
+	public List<MemberDto> memberList2(Model model, Criteria cri, String search_ck) {
 		System.out.println("도착1");
 		System.out.println("searchWord : " + cri.getSearchWord());
-		List<memberVO> memberList = memberService.getmemberList(cri); 
+		List<MemberDto> memberList = memberService.getmemberList(cri); 
+		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		if(search_ck != null && cri.getSearchWord() == null) {	//조건 없이 조회 버튼만 누른 경우.
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri); 
 			return memberList;
-		}else if(search_ck != null && cri.getSearchWord() != null) {
+		}
+		//2. 검색어 있고 조회 버튼을 클릭한 경우
+		else if(search_ck != null && cri.getSearchWord() != null) {
 			System.err.println("검색어 있는 조회");
+			int totalCnt = memberService.getTotalCnt(cri);
+			System.out.println("totalCnt : " + totalCnt);
+			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
 			System.out.println("memberList : " + memberList);
 			return memberList;
 		}
-		return memberList;	//뷰를 반환합니다.(뷰의 위치)
+		return memberList;	
+		
 	}
 	
-	//2. 등록
+	//2. 등록(페이지 이동)
 	@GetMapping("/memberInsert")
 	public String memberInsert() {
 				
 		return "member/memberInsert";
 	}
 	
+	//2. 등록(아이디 체크)
 	@GetMapping("/memberInsert_ck")
 	@ResponseBody
 	public ResponseEntity<Boolean> insertMember_ck(String member_Tel) {
@@ -118,14 +134,9 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-//	@GetMapping("/insertMember_ck")
-//	public String insertMember_ck() {
-//		
-//		return "memeber/insertMember";
-//	}
-	
+	//2. 등록(회원 등록)
 	@PostMapping("/memberInsert")
-	public String insertMember(@RequestBody memberVO insertDatas) {
+	public String insertMember(@RequestBody MemberDto insertDatas) {
 		System.out.println("insertDatas.getMember_startDate : " + insertDatas.getMember_Name());
 		System.out.println("insertDatas.getMember_startDate : " + insertDatas.getMember_startDate());
 		
@@ -139,17 +150,7 @@ public class MemberController {
 		}
 	}
 	
-	@GetMapping("/memberDelete")
-	public String memberDelete(@RequestParam int member_Id) {
-		int deleteCnt = memberService.deleteMember(member_Id);
-		
-		if(deleteCnt > 0) {
-			return "member/memberList";
-		}else {
-			return "";
-		}
-	}
-	
+	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@GetMapping("/memberModify")
 	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model) { /*@RequestParam int bno*/
 		System.out.println("수정 화면 작동");
@@ -157,8 +158,9 @@ public class MemberController {
 		return "member/memberModify";
 	}
 	
+	//3. 수정(회원 정보 수정)
 	@PostMapping("/memberModify")
-	public ResponseEntity<Boolean> memberModify(@RequestBody memberVO modifyDatas) {
+	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {
 		String member_Tel = modifyDatas.getMember_Tel();
 		System.out.println("member_Tel : " + member_Tel);
 		
@@ -182,26 +184,22 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	//기본형(primitive) 변수
-	//int number = 1;
+	//4. 삭제(회원 정보 삭제)
+	@GetMapping("/memberDelete")
+	public String memberDelete(@RequestParam int member_Id) {
+		int deleteCnt = memberService.deleteMember(member_Id);
+		
+		if(deleteCnt > 0) {
+			return "member/memberList";
+		}else {
+			return "";
+		}
+	}
 	
-	//참조형(reference) 변수
-	//BoardVO vo = new BoardVO();
-	//vo.setB_NO(1);
-	//int bno = vo.getB_NO();
-	//System.out.println("bno : " + bno);
-	
-//	@GetMapping("/deleteB")
-//	public String deleteB(@RequestParam int checkNum) {
-//		int deleteCnt = boardService.delete(checkNum);
-//		
-//		if(deleteCnt > 0) {
-//			System.out.println("���� ����");
-//			return "board/boardList";
-//		}else {
-//			System.out.println("���� ����");
-//			return "";
-//		}
-//	}
+	@GetMapping("/memberRead")
+	public String memberRead(Model model, @RequestParam int member_Id) {
+		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
+		return "member/memberRead";
+	}
 
 }

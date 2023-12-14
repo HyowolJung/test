@@ -1,17 +1,17 @@
-package com.jmh.vo;
+package com.jmh.dto;
 
 import lombok.Data;
 
 @Data
 public class PageDto {
 	
-	private Criteria cri;	
-	private int total;		
+	public Criteria cri;	
+	public int total;		
 	
-	private int startNo;	
-	private int endNo;		
+	public int startNo;	
+	public int endNo;		
 	
-	private boolean prev, next;	
+	public boolean prev, next;	
 	
 	public PageDto(Criteria cri, int total){
 		this.cri = cri;
