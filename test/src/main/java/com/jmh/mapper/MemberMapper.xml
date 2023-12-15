@@ -4,7 +4,7 @@
 <mapper namespace="com.jmh.mapper.MemberMapper">
 	
 	<!--  데이터베이스의 컬럼과 VO가 다를때-->
-	<!-- <RESULTMAP TYPE="COM.JMH.VO.BOARDVO" ID="BOARDVO">
+	<!-- <RESULTMAP TYPE="com.jmh.dto.MemberDto" ID="MemberDto">
     	<RESULT PROPERTY="BOARDTYPE" 	COLUMN="BOARD_TYPE"/>
     	<RESULT PROPERTY="BOARDNUM" 	COLUMN="BOARD_NUM"/>
     	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
@@ -31,7 +31,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,MEMBER_TEL
+		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -85,7 +85,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,MEMBER_TEL
+		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -190,7 +190,37 @@
 	<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
 	<select id="getModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer">
 		SELECT 
-			* 
+			MEMBER_ID
+		  ,MEMBER_NAME
+		  ,CASE
+            WHEN MEMBER_SEX = 'D011' THEN '남자'
+            WHEN MEMBER_SEX = 'D012' THEN '여자'
+          END AS MEMBER_SEX
+          ,CASE
+            WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            WHEN MEMBER_POSITION = 'D021' THEN '사장'
+          END AS MEMBER_POSITION
+		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
+		  ,CASE
+            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+          END AS MEMBER_SKILL_LANGUAGE
+          ,CASE
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+          END AS MEMBER_SKILL_DB
+		  ,MEMBER_STARTDATE
+		  ,MEMBER_ENDDATE	 
 		FROM 
 			MEMBER
 		WHERE 
@@ -234,7 +264,24 @@
 			MEMBER_ID = #{member_Id}
 	</delete>
 	
-	
+	<select id="getmemberprojectList" resultType="java.util.Map" parameterType="integer">
+	SELECT 
+    	M.MEMBER_ID
+    	,MP.PROJECT_ID
+    	,mp.PROJECT_NAME
+    	,MP.PROJECT_SKILL_LANGUAGE
+    	,MP.PROJECT_SKILL_DB
+    	,MP.PROJECT_STARTDATE
+    	,MP.PROJECT_ENDDATE
+	FROM 
+    	MEMBER M
+	JOIN
+    	MEMBER_PROJECT MP
+	ON
+    	M.MEMBER_ID = MP.MEMBER_ID
+	WHERE 
+    	M.MEMBER_ID = #{member_Id}
+	</select>
 	
 	
 	

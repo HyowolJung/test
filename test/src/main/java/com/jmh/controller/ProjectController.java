@@ -29,7 +29,7 @@ public class ProjectController {
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		System.out.println("pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
 		model.addAttribute("pageDto", pageDto);
-		return "project/projectList";	
+		return "project/projecList";	
 	}
 	
 	//1. 조회(회원 정보)
@@ -48,16 +48,17 @@ public class ProjectController {
 			return projectList;
 		}
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-//		else if(search_ck != null && cri.getSearchWord() != null) {
-//			System.err.println("검색어 있는 조회");
-//			int totalCnt = projectService.getTotalCnt(cri);
-//			System.out.println("totalCnt : " + totalCnt);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
-//			memberList = projectService.searchmemberList(cri);
-//			System.out.println("memberList : " + memberList);
-//			return memberList;
-//		}
+		else if(search_ck != null && cri.getSearchWord() != null) {
+			System.err.println("검색어 있는 조회");
+			int totalCnt = projectService.getTotalCnt(cri);
+			System.out.println("totalCnt : " + totalCnt);
+			PageDto pageDto = new PageDto(cri, totalCnt);
+			projectList = projectService.searchProjectList(cri);
+			System.out.println("memberList : " + projectList);
+			return projectList;
+		}
 		return projectList;	
-		
 	}
+	
+	
 }

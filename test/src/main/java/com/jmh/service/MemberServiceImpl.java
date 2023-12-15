@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,12 @@ public class MemberServiceImpl implements MemberService{
 	public int deleteMember(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.deleteMember(member_Id);
+	}
+
+	@Override
+	public HashMap<String, Object> getmemberprojectList(int member_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.getmemberprojectList(member_Id);
 	}
 
 	

@@ -179,8 +179,17 @@ $(document).ready(function() {
 
                         	$("#memberTable tbody").append(newRow);
                     	}
-                    	return;
                		}
+               		
+               		newRow.find('td:eq(2)').click(function() {
+           			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
+           			    var member_Id = result[i].member_Id;
+           			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
+
+           			    // 새로운 페이지로 이동
+           			    window.location.href = newPageURL;
+           			});
+               		
                		if(result == null){
                			$("#memberTable tbody").empty();
                		    $("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
@@ -210,7 +219,8 @@ $(document).ready(function() {
                			for (let i = 0; i < result.length; i++) {
                         	let newRow = $("<tr>");
                         	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + result[i].member_Id + "' data-id='" + result[i].member_Id + "'></td>");
-                        	newRow.append("<td>" + result[i].member_Id + "</td>");
+                        	newRow.append("<td><a href= '/member/memberRead?member_Id="+ result[i].member_Id + "'>" + result[i].member_Id + "</a></td>");
+                        	//newRow.append("<td><a href= '/member/detailPage?memberId=" + result[i].member_Id + "'>" + result[i].member_Name + "</a></td>");
                         	newRow.append("<td>" + result[i].member_Name + "</td>");
                         	newRow.append("<td>" + result[i].member_Sex + "</td>");
                         	newRow.append("<td>" + result[i].member_Position + "</td>");
@@ -221,18 +231,16 @@ $(document).ready(function() {
 
                         	$("#memberTable tbody").append(newRow);
                         	//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-                        	return;
                			}
-               			
-               			newRow.find('td:eq(2)').click(function() {
-               			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
-               			    var member_Id = result[i].member_Id;
-               			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
-
-               			    // 새로운 페이지로 이동
-               			    window.location.href = newPageURL;
-               			});
                		}
+               		newRow.find('td:eq(2)').click(function() {
+           			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
+           			    var member_Id = result[i].member_Id;
+           			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
+
+           			    // 새로운 페이지로 이동
+           			    window.location.href = newPageURL;
+           			});
                		
                		if(result == null){
                			//$("#memberTable tbody").empty();
@@ -245,7 +253,14 @@ $(document).ready(function() {
 			});
 		}
 	});
+	
+	$("#memberTable").on("click", ".member-id", function () {
+	    // Retrieve the member ID from the data attribute
+	    let member_Id = $(this).data("memberid");
 
+	    // Navigate to the new page with the member ID
+	    window.location.href = "/member/memberRead?member_Id=" + member_Id;
+	});
 	
 	//두 메서드의 차이는 무엇일까요? 단순히 바닐라와 제이쿼리 버전의 차이? 다른 이유도 있어요
 	//$(document).on('click', '.radiobox', function() {});

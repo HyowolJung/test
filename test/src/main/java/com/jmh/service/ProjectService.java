@@ -15,5 +15,7 @@ public interface ProjectService {
 	
 	int getTotalCnt(Criteria cri);
 
+	List<ProjectDto> searchProjectList(Criteria cri);
+
 
 }

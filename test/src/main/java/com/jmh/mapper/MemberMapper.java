@@ -1,5 +1,6 @@
 package com.jmh.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -38,5 +39,7 @@ public interface MemberMapper {
 	
 	//4. 삭제(회원 정보 삭제)
 	int deleteMember(int member_Id);
+
+	HashMap<String, Object> getmemberprojectList(int member_Id);
 	
 }

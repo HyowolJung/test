@@ -9,6 +9,7 @@
 </head>
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+상세정보
 <table border="1">
 			<thead>
 				<tr>
@@ -25,54 +26,61 @@
 			</thead>
 			<tbody>
 				<c:forEach var="memberList" items="${memberList}">
-				<tr>
-					<td><input type="text" name="member_Id" id="member_Id" disabled="disabled" value ="${memberList.member_Id }"/></td>
-					<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }"/></td>
-					<%-- <td><input type="text" name="member_Position" id="member_Position" value ="${memberList.member_Position }"/></td> --%>
-					<td>
-						<select id="member_Position">
-		  					<option value="D028" selected="selected">사원</option>
-		  					<option value="D027">대리</option>
-		  					<option value="D026">과장</option>
-						</select>
-					</td>
-					<%-- <td><input type="text" name="member_Sex" id="member_Sex" value ="${memberList.member_Sex }"/></td> --%>
-					<td>
-						<select id="member_Sex">
-		  					<option value="D011" selected="selected">남자</option>
-		  					<option value="D012">여자</option>
-						</select>
-					</td><br>
-					<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
-					<%-- <td><input type="text" name="member_Skill_DB" id="member_Skill_DB" value ="${memberList.member_Skill_DB }"/></td> --%>
-					<td>
-						<select id="member_Skill_Language">
-		  					<option value="S010">JAVA</option>
-		  					<option value="S011">PYTHON</option>
-		  					<option value="S012">C++</option>
-		  					<option value="S013">RUBY</option>
-						</select>
-					</td><br>
-					<%-- <td><input type="text" name="member_Skill_Language" id="member_Skill_Language" value ="${memberList.member_Skill_Language }"/></td> --%>
-					<td>
-						<select id="member_Skill_DB">
-		  					<option value="S020">ORACLE</option>
-		 		 			<option value="S021">MSSQL</option>
-		  					<option value="S022">MYSQL</option>
-		  					<option value="S023">POSTGRESQL</option>
-						</select>
-					</td><br>
-					<td><input type="date" name="member_startDate" id="member_startDate" value ="${memberList.member_startDate }"/></td>
-					<td><input type="date" name="member_endDate" id="member_endDate" value ="${memberList.member_endDate }"/></td>
-				</tr>
+					<tr>
+						<td>${memberList.member_Id }</td>
+						<td>${memberList.member_Name }</td>
+						<td>${memberList.member_Position}</td>
+						<td>${memberList.member_Sex} </td>
+						<td>${memberList.member_Tel }</td>
+						<td>${memberList.member_Skill_Language}</td>
+						<td>${memberList.member_Skill_DB}</td>
+						<td>${memberList.member_startDate }</td>
+						<td>${memberList.member_endDate }</td>
+					</tr>
 				</c:forEach>
 			</tbody>
-		</table>
+</table>
+참여중인 프로젝트
+<table border="1">
+<thead>
+	<tr>
+		<th>ㅁ</th>
+		<th>번호(회원)</th>
+		<th>번호(프로젝트)</th>
+		<th>이름(프로젝트)</th>
+		<th>언어</th>
+		<th>데이터베이스</th>
+		<th>투입일</th>
+		<th>철수일</th>
+	</tr>
+</thead>
+<tbody>
+	<c:forEach var="memberprojectList" items="${memberprojectList}">
+		<tr>
+			<td><input type="radio"></td>
+			<%-- <td>${member_projectList[member_Id] }</td>
+			<td>${member_projectList.project_Id }</td>
+			<td>${member_projectList.project_Name }</td>
+			<td>${member_projectList.project_Skill_Language}</td>
+			<td>${member_projectList.project_Skill_DB} </td>
+			<td>${member_projectList.project_startDate }</td>
+			<td>${member_projectList.project_endDate}</td> --%>
+			<td>${memberprojectList['member_Id']}</td>
+        	<td>${memberprojectList['project_Id']}</td>
+        	<td>${memberprojectList['project_Name']}</td>
+        	<td>${memberprojectList['project_Skill_Language']}</td>
+        	<td>${memberprojectList['project_Skill_DB']}</td>
+        	<td>${memberprojectList['project_startDate']}</td>
+        	<td>${memberprojectList['project_endDate']}</td>
+		</tr>
+	</c:forEach>
+</tbody>
+</table>
 		<button type="button" id="modify">수정</button>
 		<script type="text/javascript">
-			$("#modify").click(function{
+			/* $("#modify").click(function{
 				
-			});
+			}); */
 		</script>
 </body>
 </html>

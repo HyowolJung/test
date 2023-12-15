@@ -117,18 +117,18 @@ $("#searchButton").click(function(){
            		    $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 				}
 			},
-				error : function(request, status, error) { // 결과 에러 콜백함수        
-					alert("검색어 없이 조회 실패");
-					return;
-				}
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("검색어 없이 조회 실패");
+				return;
+			}
 		});	//ajax EndPoint
 	}//if EndPoint
 	
 	//2. 조건 검색
-	/*if(searchWord !== "" || searchWord != null){  
+	if(searchWord !== "" || searchWord != null){  
 		$.ajax({
 			type : 'POST',
-			url: '/member/memberList',
+			url: '/project/projectList',
 			data: {
 			 	"searchField" :  searchField,
 			 	"searchWord" : searchWord,
@@ -136,33 +136,29 @@ $("#searchButton").click(function(){
 			 	"pageNo" : pageNo
 			},
 			success : function(result) { // 결과 성공 콜백함수  
-				$("#memberTable tbody").empty();
+				$("#projectTable tbody").empty();
            		if(result != null){
            			for (let i = 0; i < result.length; i++) {
                     	let newRow = $("<tr>");
-                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + result[i].member_Id + "' data-id='" + result[i].member_Id + "'></td>");
-                    	newRow.append("<td>" + result[i].member_Id + "</td>");
-                    	newRow.append("<td>" + result[i].member_Name + "</td>");
-                    	newRow.append("<td>" + result[i].member_Sex + "</td>");
-                    	newRow.append("<td>" + result[i].member_Position + "</td>");
-                    	newRow.append("<td>" + result[i].member_Tel + "</td>");
-                    	newRow.append("<td>" + result[i].member_Skill_Language + "</td>");
-                    	newRow.append("<td>" + result[i].member_Skill_DB + "</td>");
-                    	newRow.append("<td>" + result[i].member_startDate + "</td>");
+                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + result[i].project_id + "' data-id='" + result[i].project_id + "'></td>");
+                    	newRow.append("<td>" + result[i].project_id + "</td>");
+                    	newRow.append("<td>" + result[i].custom_company_id + "</td>");
+                    	newRow.append("<td>" + result[i].project_name + "</td>");
+                    	newRow.append("<td>" + result[i].project_Skill_Language + "</td>");
+                    	newRow.append("<td>" + result[i].project_Skill_DB + "</td>");
+                    	newRow.append("<td>" + result[i].project_startdate + "</td>");
 
-                    	$("#memberTable tbody").append(newRow);
-                    	//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-                    	return;
-           			}
+                    	$("#projectTable tbody").append(newRow);
+                	}
            			
-           			newRow.find('td:eq(2)').click(function() {
+           			/* newRow.find('td:eq(2)').click(function() {
            			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
            			    var member_Id = result[i].member_Id;
            			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
 
            			    // 새로운 페이지로 이동
            			    window.location.href = newPageURL;
-           			});
+           			}); */
            		}
            		
            		if(result == null){
@@ -174,7 +170,7 @@ $("#searchButton").click(function(){
 				alert("검색 실패");
 			}
 		});
-	} */
+	}
 });	
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 

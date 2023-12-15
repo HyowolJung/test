@@ -15,4 +15,6 @@ public interface ProjectMapper {
 
 	int getTotalCnt(Criteria cri);
 
+	List<ProjectDto> searchProjectList(Criteria cri);
+
 }

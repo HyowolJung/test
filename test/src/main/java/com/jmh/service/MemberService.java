@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -38,5 +39,7 @@ public interface MemberService {
 	
 	//4. 삭제(회원 정보 삭제)
 	public int deleteMember(int member_Id);
+
+	public HashMap<String, Object> getmemberprojectList(int member_Id);
 
 }

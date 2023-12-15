@@ -47,21 +47,66 @@
 </select>
 
 <select id="getTotalCnt" resultType="integer"  parameterType="integer">
-		/*getTotalCnt*/
-		<if test="searchWord == null">
-		SELECT 
-			COUNT(*) 
-		FROM 
-			PROJECT
-		</if>
+	/*getTotalCnt*/
+	<if test="searchWord == null">
+	SELECT 
+		COUNT(*) 
+	FROM 
+		PROJECT
+	</if>
 		
-		<if test="searchWord != null">
-		SELECT 
-			COUNT(*) 
+	<if test="searchWord != null">
+	SELECT 
+		COUNT(*) 
+	FROM 
+		PROJECT
+	WHERE
+		PROJECT_NAME LIKE '%'||#{searchWord}||'%'
+	</if>	
+</select>
+
+<select id="searchProjectList" resultType="com.jmh.dto.ProjectDto">
+	SELECT 
+		 PROJECT_ID
+		  ,CASE
+            WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+            WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+            WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+            WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+            WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+          END AS CUSTOM_COMPANY_ID
+		  ,PROJECT_NAME
+		  ,CASE
+            WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+          END AS PROJECT_SKILL_LANGUAGE
+          ,CASE
+            WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+          END AS PROJECT_SKILL_DB
+		  ,PROJECT_STARTDATE
+		 
 		FROM 
-			PROJECT
-		WHERE
-			PROJECT_NAME LIKE '%'||#{searchWord}||'%'
-		</if>	
-	</select>
+		(
+			SELECT
+		    	PROJECT_ID
+		  		,CUSTOM_COMPANY_ID
+		  		,PROJECT_NAME
+		  		,PROJECT_SKILL_LANGUAGE
+		  		,PROJECT_SKILL_DB
+		  		,PROJECT_STARTDATE
+		      	,ROW_NUMBER() OVER(ORDER BY PROJECT_ID DESC) AS NUMROW
+		      	,COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+				PROJECT
+			WHERE
+				PROJECT_NAME LIKE '%'||#{searchWord}||'%'
+		)
+		WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo}
+</select>
 </mapper>

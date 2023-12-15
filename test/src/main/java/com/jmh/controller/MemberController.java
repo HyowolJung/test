@@ -82,23 +82,23 @@ public class MemberController {
 		System.out.println("searchWord : " + cri.getSearchWord());
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(search_ck != null && cri.getSearchWord() == null) {	//조건 없이 조회 버튼만 누른 경우.
+		if(search_ck != null && cri.getSearchWord() == null || cri.getSearchWord().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri); 
 			return memberList;
 		}
-		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		else if(search_ck != null && cri.getSearchWord() != null) {
-			System.err.println("검색어 있는 조회");
-			int totalCnt = memberService.getTotalCnt(cri);
-			System.out.println("totalCnt : " + totalCnt);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			memberList = memberService.searchmemberList(cri);
-			System.out.println("memberList : " + memberList);
-			return memberList;
-		}
+//		//2. 검색어 있고 조회 버튼을 클릭한 경우
+//		else if(search_ck != null && cri.getSearchWord() != null) {
+//			System.err.println("검색어 있는 조회");
+//			int totalCnt = memberService.getTotalCnt(cri);
+//			System.out.println("totalCnt : " + totalCnt);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			memberList = memberService.searchmemberList(cri);
+//			System.out.println("memberList : " + memberList);
+//			return memberList;
+//		}
 		return memberList;	
 		
 	}
@@ -197,9 +197,13 @@ public class MemberController {
 	}
 	
 	@GetMapping("/memberRead")
-	public String memberRead(Model model, @RequestParam int member_Id) {
+	public HashMap<String, Object> memberRead(Model model, @RequestParam int member_Id) {
+		HashMap<String, Object> member_projectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("member_projectList : " + member_projectList);
+		//model.addAttribute("member_projectList", memberService.getmemberprojectList(member_Id));
+		model.addAttribute("memberprojectList" , member_projectList);
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
-		return "member/memberRead";
+		return member_projectList;
 	}
 
 }

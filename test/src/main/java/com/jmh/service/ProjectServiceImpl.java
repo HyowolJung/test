@@ -28,4 +28,10 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.getTotalCnt(cri);
 	}
 
+	@Override
+	public List<ProjectDto> searchProjectList(Criteria cri) {
+		// TODO Auto-generated method stub
+		return projectMapper.searchProjectList(cri);
+	}
+
 }
