@@ -59,7 +59,7 @@ $(document).ready(function() {
 	$('#check_Tel').click(function() {
 		let result_Tel = $("#result_Tel");		//결과를 출력할 공간(div)
 		let member_Tel = $("#member_Tel").val();//입력한 전화번호
-		let member_Tel_Check = /^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$/;
+		let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 		
 		//2-1. 전화번호 유효성 체크(비어있는지)
 		if(member_Tel.length == 0){
@@ -157,7 +157,7 @@ $(document).ready(function() {
 			data: JSON.stringify(insertDatas),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("등록 성공");
-				location.href = "/member/memberList";
+				location.href = "/member/memberList?pageNo=1";
 			},
 			error : function(request, status, error) { // 결과 에러 콜백함수        
 				alert("다시 한번 확인해주세요.");

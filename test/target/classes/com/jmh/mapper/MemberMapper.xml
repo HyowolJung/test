@@ -31,7 +31,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
+		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -85,7 +85,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
+		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -206,7 +206,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL
+		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -234,7 +234,7 @@
 		FROM
 			MEMBER
 		WHERE 
-			MEMBER_TEL = #{member_Tel}
+			MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
 	</select>
 	
 	<!-- 3. 수정(회원 정보 수정) -->
@@ -264,7 +264,7 @@
 			MEMBER_ID = #{member_Id}
 	</delete>
 	
-	<select id="getmemberprojectList" resultType="java.util.Map" parameterType="integer">
+	<!-- <select id="getmemberprojectList" resultType="java.util.Map" parameterType="integer">
 	SELECT 
     	M.MEMBER_ID
     	,MP.PROJECT_ID
@@ -281,9 +281,29 @@
     	M.MEMBER_ID = MP.MEMBER_ID
 	WHERE 
     	M.MEMBER_ID = #{member_Id}
+	</select> -->
+	
+	<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
+	SELECT 
+    	MP.PROJECT_ID
+    	,mp.PROJECT_NAME
+    	,MP.PROJECT_SKILL_LANGUAGE
+    	,MP.PROJECT_SKILL_DB
+    	,MP.PROJECT_STARTDATE
+    	,MP.PROJECT_ENDDATE
+	FROM 
+    	MEMBER M
+	JOIN
+    	MEMBER_PROJECT MP
+	ON
+    	M.MEMBER_ID = MP.MEMBER_ID
+	WHERE 
+    	M.MEMBER_ID = #{member_Id}
 	</select>
 	
-	
+	<select id="getmemberId" resultType="com.jmh.dto.MemberDto">
+		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID=#{member_Id}
+	</select>
 	
 	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
 뷰단에 원하는 포맷으로 출력을 원하시면

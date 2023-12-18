@@ -3,11 +3,14 @@ package com.jmh.service;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 
 @Service
@@ -60,9 +63,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//3. 수정(전화번호 중복체크) - 수정하려는 전화번호가 다른 회원의 전화번호와 겹치는지
 	@Override
-	public int member_Tel_ck(String member_Tel) {
+	public int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id) {
 		// TODO Auto-generated method stub
-		return memberMapper.member_Tel_ck(member_Tel);
+		return memberMapper.member_Tel_ck(member_Tel, member_Id);
 	}
 	
 	//3. 수정(회원 정보 수정)
@@ -79,12 +82,23 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.deleteMember(member_Id);
 	}
 
+//	@Override
+//	public HashMap<String, Object> getmemberprojectList(int member_Id) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.getmemberprojectList(member_Id);
+//	}
+
 	@Override
-	public HashMap<String, Object> getmemberprojectList(int member_Id) {
+	public List<ProjectDto> getmemberprojectList(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.getmemberprojectList(member_Id);
 	}
 
+	@Override
+	public int getmemberId(int member_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.getmemberId(member_Id);
+	}
 	
 	
 

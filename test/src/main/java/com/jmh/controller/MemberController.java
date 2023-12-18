@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 import com.jmh.service.MemberService;
 
@@ -69,7 +70,8 @@ public class MemberController {
 	public String memberList1(Model model, Criteria cri) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		System.out.println("pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
+		System.out.println("GET)pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
+		System.out.println("GET)pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
@@ -79,28 +81,33 @@ public class MemberController {
 	@ResponseBody
 	public List<MemberDto> memberList2(Model model, Criteria cri, String search_ck) {
 		System.out.println("도착1");
-		System.out.println("searchWord : " + cri.getSearchWord());
+		System.out.println("POST) searchWord : " + cri.getSearchWord());
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		if(search_ck != null && cri.getSearchWord() == null || cri.getSearchWord().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
-			memberList = memberService.getmemberList(cri); 
+			memberList = memberService.getmemberList(cri);
+			//model.addAttribute("memberList", memberList);
+			model.addAttribute("totalCnt" , totalCnt);
+			model.addAttribute("pageDto" , pageDto);
 			return memberList;
 		}
-//		//2. 검색어 있고 조회 버튼을 클릭한 경우
-//		else if(search_ck != null && cri.getSearchWord() != null) {
+		//2. 검색어 있고 조회 버튼을 클릭한 경우
+		else if(search_ck != null && cri.getSearchWord() != null) {
 //			System.err.println("검색어 있는 조회");
-//			int totalCnt = memberService.getTotalCnt(cri);
-//			System.out.println("totalCnt : " + totalCnt);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
 //			memberList = memberService.searchmemberList(cri);
-//			System.out.println("memberList : " + memberList);
-//			return memberList;
-//		}
+			System.err.println("검색어 있는 조회");
+			int totalCnt = memberService.getTotalCnt(cri);
+			PageDto pageDto = new PageDto(cri, totalCnt);
+			memberList = memberService.searchmemberList(cri);
+			//model.addAttribute("memberList", memberList);
+			model.addAttribute("totalCnt" , totalCnt);
+			model.addAttribute("pageDto" , pageDto);
+			return memberList;
+		}
 		return memberList;	
-		
 	}
 	
 	//2. 등록(페이지 이동)
@@ -161,26 +168,71 @@ public class MemberController {
 	//3. 수정(회원 정보 수정)
 	@PostMapping("/memberModify")
 	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {
-		String member_Tel = modifyDatas.getMember_Tel();
-		System.out.println("member_Tel : " + member_Tel);
+		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
+		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
+		//int member_Id_ck = memberService.getmemberId(member_Id);
 		
-		int member_Tel_ck = memberService.member_Tel_ck(member_Tel);
-		System.out.println("member_Tel_ck : " + member_Tel_ck);
+//		if(member_Id == member_Id_ck && member_Tel == ) {
+//			
+//		}
+	
 		
+		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
+		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
+			//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
 		boolean result = false;
-		if(member_Tel_ck >= 0) {
-			System.out.println("1");
-			result = false;
-		}
 		
-		if(member_Tel_ck <= 0) {
-			System.out.println("2");
+		System.out.println("member_Tel_ck : " + member_Tel_ck);
+		if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
+			System.out.println("내 번호가 맞아");
 			int modifyCnt = memberService.memberModify(modifyDatas);
 			if(modifyCnt > 0) {
-				System.out.println("3");
+				System.out.println("수정 성공1");
 				result = true;
+			}else if(modifyCnt < 0 ) {
+				System.out.println("수정 실패1");
+				result = false;
+			}
+		}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
+			System.out.println("내 번호가 아니야");
+			int modifyCnt = memberService.memberModify(modifyDatas);
+			if(modifyCnt > 0) {
+				System.out.println("수정 성공2");
+				result = true;
+			}else if(modifyCnt < 0) {
+				System.out.println("수정 실패2");
+				result = false;
 			}
 		}
+		
+		
+		
+		//1-1. member_Tel_ck 가 1 이면 수정하고자 하는 사람이 가진 원래 번호이므로 중복되는 번호여도 수정이 되야함(원래 내가 가진 번호니까)
+//		if(member_Tel_ck <= 0) {
+//			System.out.println("2");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if(modifyCnt > 0) {
+//				System.out.println("3");
+//				result = true;
+//			}
+//		}
+//		//1-2. member_Tel_ck 가 0 이면 수정하고자 하는 사람이 가지지 않은 번호이므로 중복되면 수정이 되지 말아야함(원래 내 번호와 다른데 바꾸고자 하는 번호가 겹치면 다른사람번호니까)
+//		System.out.println("member_Tel_ck : " + member_Tel_ck);
+//		
+//		if(member_Tel_ck >= 0) {
+//			System.out.println("1");
+//			result = false;
+//		}
+		
+//		if(member_Tel_ck <= 0) {
+//			System.out.println("2");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if(modifyCnt > 0) {
+//				System.out.println("3");
+//				result = true;
+//			}
+//		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -197,9 +249,11 @@ public class MemberController {
 	}
 	
 	@GetMapping("/memberRead")
-	public HashMap<String, Object> memberRead(Model model, @RequestParam int member_Id) {
-		HashMap<String, Object> member_projectList = memberService.getmemberprojectList(member_Id);
+	public List<ProjectDto> memberRead(Model model, @RequestParam int member_Id) {
+		//HashMap<String, Object> member_projectList = memberService.getmemberprojectList(member_Id);
+		List<ProjectDto> member_projectList = memberService.getmemberprojectList(member_Id);
 		System.out.println("member_projectList : " + member_projectList);
+		System.out.println("memberService.getModifyList(member_Id) : " + memberService.getModifyList(member_Id));
 		//model.addAttribute("member_projectList", memberService.getmemberprojectList(member_Id));
 		model.addAttribute("memberprojectList" , member_projectList);
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));

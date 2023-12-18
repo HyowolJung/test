@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDto;
 
 @Repository
 public interface MemberMapper {
@@ -32,7 +34,7 @@ public interface MemberMapper {
 	List<MemberDto> getModifyList(int member_Id);
 	
 	//3. 수정(전화번호 중복체크)
-	int member_Tel_ck(String member_Tel);
+	int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);
 	
 	//3. 수정(회원 정보 수정)
 	int memberModify(MemberDto modifyDatas);
@@ -40,6 +42,9 @@ public interface MemberMapper {
 	//4. 삭제(회원 정보 삭제)
 	int deleteMember(int member_Id);
 
-	HashMap<String, Object> getmemberprojectList(int member_Id);
+	//HashMap<String, Object> getmemberprojectList(int member_Id);
+	List<ProjectDto> getmemberprojectList(int member_Id);
+
+	int getmemberId(int member_Id);
 	
 }

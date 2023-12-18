@@ -77,11 +77,19 @@
 			console.log("수정버튼 클릭됨");
 			
 			let member_Tel = $("#member_Tel").val();//입력한 전화번호
-			let member_Tel_Check = /^01([0|1|6|7|8|9])?([0-9]{3,4})?([0-9]{4})$/;
+			let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+			let member_Id = $("#member_Id").val();
+			let member_startDate = $("#member_startDate").val();
+			let member_endDate = $("#member_endDate").val();
+			
+			if (member_endDate < member_startDate) {
+		        alert("퇴사날짜는 입사날짜보다 이전일 수 없습니다.");
+		        return;
+		    }
 			
 			//2-1. 전화번호 유효성 체크(비어있는지)
 			if(member_Tel.length == 0){
-				alert("전화번호는 반드시 입력해야 합니다.")
+				alert("전화번호는 반드시 입력해야 합니다.");
 				return;
 			}else if(member_Tel.length != 0){
 				//2-2. 전화번호 유효성체크(적절한 조합인지)
@@ -110,7 +118,7 @@
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
 								alert("수정 성공");
-								location.href = "/member/memberList";
+								location.href = "/member/memberRead?member_Id=" + member_Id;
 							}else if(result == false){
 								alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 							}				

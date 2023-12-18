@@ -27,7 +27,7 @@
 			<tbody>
 				<c:forEach var="memberList" items="${memberList}">
 					<tr>
-						<td>${memberList.member_Id }</td>
+						<td id="td_Id">${memberList.member_Id }</td>
 						<td>${memberList.member_Name }</td>
 						<td>${memberList.member_Position}</td>
 						<td>${memberList.member_Sex} </td>
@@ -39,13 +39,12 @@
 					</tr>
 				</c:forEach>
 			</tbody>
-</table>
+</table><br><br>
 참여중인 프로젝트
 <table border="1">
 <thead>
 	<tr>
 		<th>ㅁ</th>
-		<th>번호(회원)</th>
 		<th>번호(프로젝트)</th>
 		<th>이름(프로젝트)</th>
 		<th>언어</th>
@@ -58,6 +57,37 @@
 	<c:forEach var="memberprojectList" items="${memberprojectList}">
 		<tr>
 			<td><input type="radio"></td>
+        	<%-- <td>${memberprojectList.value.member_Id}</td> --%>
+        	<%-- <td>${memberprojectList.value.project_Id}</td>
+        	<td>${memberprojectList.value.project_Name}</td>
+        	<td>${memberprojectList.value.project_Skill_Language}</td>
+        	<td>${memberprojectList.value.project_Skill_DB}</td>
+        	<td>${memberprojectList.value.project_startDate}</td>
+        	<td>${memberprojectList.value.project_endDate}</td> --%>
+			<td>${memberprojectList.project_Id }</td>
+			<td>${memberprojectList.project_Name }</td>
+			<td>${memberprojectList.project_Skill_Language}</td>
+			<td>${memberprojectList.project_Skill_DB} </td>
+			<td>${memberprojectList.project_startDate }</td>
+			<td>${memberprojectList.project_endDate}</td> 
+		</tr>
+	</c:forEach>
+</tbody>
+</table>
+		<button type="button" id="modify">수정</button>
+		<script type="text/javascript">
+			//let member_Id = $("#td_Id").val();
+			var member_Id = document.getElementById("td_Id").innerText;
+			console.log("member_Id : " + member_Id);
+			$("#modify").click(function(){
+				location.href = "/member/memberModify?member_Id=" + member_Id;
+			});
+			
+			
+		</script>
+</body>
+</html>
+
 			<%-- <td>${member_projectList[member_Id] }</td>
 			<td>${member_projectList.project_Id }</td>
 			<td>${member_projectList.project_Name }</td>
@@ -65,22 +95,10 @@
 			<td>${member_projectList.project_Skill_DB} </td>
 			<td>${member_projectList.project_startDate }</td>
 			<td>${member_projectList.project_endDate}</td> --%>
-			<td>${memberprojectList['member_Id']}</td>
+			<%-- <td>${memberprojectList['member_Id']}</td>
         	<td>${memberprojectList['project_Id']}</td>
         	<td>${memberprojectList['project_Name']}</td>
         	<td>${memberprojectList['project_Skill_Language']}</td>
         	<td>${memberprojectList['project_Skill_DB']}</td>
         	<td>${memberprojectList['project_startDate']}</td>
-        	<td>${memberprojectList['project_endDate']}</td>
-		</tr>
-	</c:forEach>
-</tbody>
-</table>
-		<button type="button" id="modify">수정</button>
-		<script type="text/javascript">
-			/* $("#modify").click(function{
-				
-			}); */
-		</script>
-</body>
-</html>
+        	<td>${memberprojectList['project_endDate']}</td> --%>

@@ -42,8 +42,8 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="memberList" items="${memberList}">
-				<tr id="boardListTR" class='boardListTR'>
+			<%-- <c:forEach var="memberList" items="${memberList}">
+				<tr> --%>
 					<%-- <td><input type="radio" class="checkbox" name="checkbox"
 						value="${memberList.member_Id}" data-id="${memberList.member_Id}"></td>
 					<td>${memberList.member_Id }</td>
@@ -104,8 +104,8 @@
 						<td>POSTGRESQL</td>
 					</c:if>
 					<td>${memberList.member_startDate}</td> --%>
-				</tr>
-			</c:forEach>
+				<%-- </tr>
+			</c:forEach> --%>
 		</tbody>
 	</table>
 	
@@ -114,7 +114,7 @@
 	<!-- <a href="/member/insertMember">추가</a> -->
 	<button onclick="insertMember();">등록</button>
 	
-	<div>
+	<div id="pagination">
 		<ul class="pagination" style= "list-style: none;">
 			<c:if test="${pageDto.prev }">
 				<li class="pagination_button" style= "float: left; margin-right: 10px"><a onclick="go(${pageDto.startNo-1 })" href="#" style= "float: left; margin-right: 10px">Previous</a>
@@ -142,68 +142,28 @@ $(document).ready(function() {
 	//$("tr.boardListTR").hide();
 	$("#memberTable tbody").empty();
     $("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
+    
+    $("#memberTable").on("click", ".member-id", function () {
+	    let member_Id = $(this).data("memberid");
+
+	    window.location.href = "/member/memberRead?member_Id=" + member_Id;
+	});
+    
 	//1. 검색 폼
 	$("#searchButton").click(function(){
 		let searchField = document.getElementById("searchField").value; 
-		let searchWord = document.getElementById("searchWord").value;
+		//let searchWord = document.getElementById("searchWord").value;
+		let searchWord = $("#searchWord").val();
 		let search_ck = "1";
 		let pageNo = document.getElementById("pageNo").value; 
 		console.log("pageNo : " + pageNo);
 		console.log("searchWord : " + searchWord);
-		
-		//1. 조건 없이 조회하는거니까 그냥 전체 조회
-		if(searchWord === "" || searchWord == null){
-			//alert("검색어가 없어요.");
-			//1. 데이터 불러오기
-			$.ajax({
-				type : 'POST',
-				url: '/member/memberList',
-				data: {
-						"search_ck" : search_ck,
-						"pageNo" : pageNo
-				},
-				success : function(result) { // 결과 성공 콜백함수  
-					$("#memberTable tbody").empty();
-               		if(result != null){
-               			for (let i = 0; i < result.length; i++) {
-                        	let newRow = $("<tr>");
-                        	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + result[i].member_Id + "' data-id='" + result[i].member_Id + "'></td>");
-                        	newRow.append("<td>" + result[i].member_Id + "</td>");
-                        	newRow.append("<td>" + result[i].member_Name + "</td>");
-                        	newRow.append("<td>" + result[i].member_Sex + "</td>");
-                        	newRow.append("<td>" + result[i].member_Position + "</td>");
-                        	newRow.append("<td>" + result[i].member_Tel + "</td>");
-                        	newRow.append("<td>" + result[i].member_Skill_Language + "</td>");
-                        	newRow.append("<td>" + result[i].member_Skill_DB + "</td>");
-                        	newRow.append("<td>" + result[i].member_startDate + "</td>");
-
-                        	$("#memberTable tbody").append(newRow);
-                    	}
-               		}
-               		
-               		newRow.find('td:eq(2)').click(function() {
-           			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
-           			    var member_Id = result[i].member_Id;
-           			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
-
-           			    // 새로운 페이지로 이동
-           			    window.location.href = newPageURL;
-           			});
-               		
-               		if(result == null){
-               			$("#memberTable tbody").empty();
-               		    $("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
-					}
-				},
-					error : function(request, status, error) { // 결과 에러 콜백함수        
-						alert("검색어 없이 조회 실패");
-						return;
-					}
-			});	//ajax EndPoint
-		}//if EndPoint
+		//$("#pagination").empty();
 		
 		//2. 조건 검색
-		if(searchWord !== "" || searchWord != null){ 
+		//if($("#searchWord").val != '' || $("#searchWord").val != null){
+		if($("#searchWord").val){ 
+			console.log("검색버튼이 클릭됬어요.");
 			$.ajax({
 				type : 'POST',
 				url: '/member/memberList',
@@ -214,7 +174,20 @@ $(document).ready(function() {
 				 	"pageNo" : pageNo
 				},
 				success : function(result) { // 결과 성공 콜백함수  
+					$.ajax({
+						type : 'GET',
+						url: '/member/memberList',
+						data: {
+						 	"search_ck" : search_ck
+						},
+						success : function(result) {
+							console.log("페이징")
+						}
+					});
+				
 					$("#memberTable tbody").empty();
+					$("#pagination").empty();
+					
                		if(result != null){
                			for (let i = 0; i < result.length; i++) {
                         	let newRow = $("<tr>");
@@ -230,37 +203,53 @@ $(document).ready(function() {
                         	newRow.append("<td>" + result[i].member_startDate + "</td>");
 
                         	$("#memberTable tbody").append(newRow);
-                        	//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
                			}
-               		}
-               		newRow.find('td:eq(2)').click(function() {
-           			    // 클릭한 열의 member_Name 값을 가져와서 새로운 페이지 URL을 생성
-           			    var member_Id = result[i].member_Id;
-           			    var newPageURL = '/member/memberRead?member_Id=' + encodeURIComponent(member_Id);
+               			
+               			$("#pagination").html(result.pagination);
+               			
+               			/* let newRow2 = $("#pagination");
+               			newRow2.append(
+               			"<li class='pagination_button' style= 'float: left; margin-right: 10px'><a onclick='go(${pageDto.startNo-1 })' href='#' style= 'float: left; margin-right: 10px '> " + Previous + "</a></li>"		
+               			);
+               			newRow2.append(
+               			"<li class='pagination_button' style= 'float: left; margin-right: 10px'><a onclick='go(${pageDto.startNo-1 })' href='#' style= 'float: left; margin-right: 10px'>" + Next + "</a></li>"	
+               			);
+               			
+               			for(let i = 0; i < result.length; i++){
+							newRow2.append(
+							"<li class='page-item'><a class='page-link ${pageDto.cri.pageNo==i ? 'active':'' }' onclick='go(${i})'	href='#' style= 'float: left; margin-right: 10px'>" + ${i } + "</a></li>"	
+							);
+               			} */
+               			/* let newRow2 = $("#pagination");
+                        newRow2.append(
+                            `<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(${pageDto.startNo - 1})' href='#' style='float: left; margin-right: 10px'>Previous</a></li>`
+                        );
 
-           			    // 새로운 페이지로 이동
-           			    window.location.href = newPageURL;
-           			});
+                        for (let i = 0; i < result.length; i++) {
+                            newRow2.append(
+                                `<li class='page-item'><a class='page-link ${pageDto.cri.pageNo == i ? 'active' : ''}' onclick='go(${i})' href='#' style='float: left; margin-right: 10px'>${i}</a></li>`
+                            );
+                        }
+
+                        newRow2.append(
+                            `<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(${pageDto.endNo + 1})' href='#' style='float: left; margin-right: 10px'>Next</a></li>`
+                        ); */
+               			
+               			//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+               		}else{
+               			$("#memberTable tbody").empty();
+               		    $("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
+               		}
                		
-               		if(result == null){
-               			//$("#memberTable tbody").empty();
-               		    //$("#memberTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
-					}
 				}, 
 				error : function(request, status, error) { // 결과 에러 콜백함수        
 					alert("검색 실패");
 				}
-			});
-		}
-	});
-	
-	$("#memberTable").on("click", ".member-id", function () {
-	    // Retrieve the member ID from the data attribute
-	    let member_Id = $(this).data("memberid");
-
-	    // Navigate to the new page with the member ID
-	    window.location.href = "/member/memberRead?member_Id=" + member_Id;
-	});
+			});	//ajax EndPoint
+			//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+		}//if EndPoint
+		
+	});//
 	
 	//두 메서드의 차이는 무엇일까요? 단순히 바닐라와 제이쿼리 버전의 차이? 다른 이유도 있어요
 	//$(document).on('click', '.radiobox', function() {});
@@ -291,7 +280,7 @@ $(document).ready(function() {
 				},
 				success : function(result) { // 결과 성공 콜백함수        
 					alert("삭제 성공");
-					location.href = "/member/memberList";
+					location.href = "/member/memberList?pageNo=1";
 				}, 
 				error : function(request, status, error) { // 결과 에러 콜백함수        
 					alert("삭제 실패");
@@ -311,7 +300,7 @@ $(document).ready(function() {
 					console.log(result);
 					console.log("전송 성공");
 					alert("수정 버튼 작동")
-					location.href = "/member/memberModify?member_Id=" + member_Id;						
+					location.href = "/member/memberRead?member_Id=" + member_Id;						
 				},    
 				error : function(request, status, error) { // 결과 에러 콜백함수        
 					console.log(error);
@@ -336,7 +325,12 @@ function go(pageNo){
 			 "searchField" : searchField
 		},
 		success : function(result) { // 결과 성공 콜백함수        
-			location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			if(searchWord != null){
+				location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			}
+			if(searchWord == null){
+				location.href = "/member/memberList?pageNo=" + pageNo;
+			}
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("작동 실패");

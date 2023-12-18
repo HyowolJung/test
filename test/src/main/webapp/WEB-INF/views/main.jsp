@@ -8,7 +8,7 @@
 </head>
 <body>
 메인 페이지
-<a href="/member/memberList">회원 관리</a>
+<a href="/member/memberList?pageNo=1">회원 관리</a>
 <a href="/proejct/projectList">프로젝트 관리</a>
 </body>
 </html>
