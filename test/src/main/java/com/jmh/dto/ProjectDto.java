@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDto {
+	private int project_No;
 	private int project_Id;
 	private String custom_company_id;
 	private String project_Name;

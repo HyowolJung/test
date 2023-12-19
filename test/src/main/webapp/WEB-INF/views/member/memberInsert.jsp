@@ -8,6 +8,10 @@
 </head>
 <body>
 <div>
+	<label>아이디</label>
+	<input type="text" id="member_Id" value=""/><br>
+	<div id="result_Id"></div>
+
 	<label>이름</label>
 	<input type="text" id="member_Name" value="안녕"/><br>
 	<div id="result_Name"></div>
@@ -127,7 +131,6 @@ $(document).ready(function() {
 			}
 		}
 		
-		
 		//3-1. 
 		let member_startDate = $("#member_startDate").val();
 		let result_Date = $("#result_Date");
@@ -140,7 +143,8 @@ $(document).ready(function() {
 		}
 		
 		let insertDatas = {
-			member_Name : $("#member_Name").val()
+			member_Id : $("member_Id").val()	
+			,member_Name : $("#member_Name").val()
 			,member_Position : $("#member_Position").val()
 			,member_Sex : $("#member_Sex").val()
 			,member_Tel : $("#member_Tel").val()

@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
+	private int member_No;
 	private int member_Id;
 	private String member_Name;
 	private String member_Sex;

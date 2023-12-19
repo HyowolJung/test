@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -77,37 +78,70 @@ public class MemberController {
 	}
 	
 	//1. 조회(회원 정보)
+//	@PostMapping("/memberList")
+//	@ResponseBody
+//	public List<?> memberList2(Model model, Criteria cri, String search_ck) {
+//		System.out.println("도착1");
+//		System.out.println("POST) searchWord : " + cri.getSearchWord());
+//		List<MemberDto> memberList = memberService.getmemberList(cri); 
+//		//1. 검색어 없이 조회 버튼을 클릭한 경우
+//		if(search_ck != null && cri.getSearchWord() == null || cri.getSearchWord().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
+//			System.err.println("검색어 없는 조회");
+//			int totalCnt = memberService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			memberList = memberService.getmemberList(cri);
+//			//model.addAttribute("memberList", memberList);
+//			model.addAttribute("totalCnt" , totalCnt);
+//			model.addAttribute("pageDto" , pageDto);
+//			return memberList;
+//		}
+//		//2. 검색어 있고 조회 버튼을 클릭한 경우
+//		else if(search_ck != null && cri.getSearchWord() != null) {
+////			System.err.println("검색어 있는 조회");
+////			memberList = memberService.searchmemberList(cri);
+//			System.err.println("검색어 있는 조회");
+//			int totalCnt = memberService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			memberList = memberService.searchmemberList(cri);
+//			//model.addAttribute("memberList", memberList);
+//			model.addAttribute("totalCnt" , totalCnt);
+//			model.addAttribute("pageDto" , pageDto);
+//			return memberList;
+//		}
+//		return memberList;	
+//	}
 	@PostMapping("/memberList")
 	@ResponseBody
-	public List<MemberDto> memberList2(Model model, Criteria cri, String search_ck) {
+	public Map<String, Object> memberList2(Model model, Criteria cri, String search_ck) {
 		System.out.println("도착1");
 		System.out.println("POST) searchWord : " + cri.getSearchWord());
+		System.out.println("POST) searchDate : " + cri.getSearchDate());
+		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
+		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(search_ck != null && cri.getSearchWord() == null || cri.getSearchWord().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
+		if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchDate().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri);
-			//model.addAttribute("memberList", memberList);
-			model.addAttribute("totalCnt" , totalCnt);
-			model.addAttribute("pageDto" , pageDto);
-			return memberList;
+			resultMap.put("pageDto", pageDto);
+			resultMap.put("memberList", memberList);
+			return resultMap;
 		}
+		
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		else if(search_ck != null && cri.getSearchWord() != null) {
-//			System.err.println("검색어 있는 조회");
-//			memberList = memberService.searchmemberList(cri);
+		else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchWord() != null) {
 			System.err.println("검색어 있는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
-			//model.addAttribute("memberList", memberList);
-			model.addAttribute("totalCnt" , totalCnt);
-			model.addAttribute("pageDto" , pageDto);
-			return memberList;
+			resultMap.put("pageDto", pageDto);
+			resultMap.put("memberList", memberList);
+			return resultMap;
 		}
-		return memberList;	
+		System.out.println("resultMap : " + resultMap);
+		return resultMap;	
 	}
 	
 	//2. 등록(페이지 이동)
@@ -171,11 +205,6 @@ public class MemberController {
 		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
 		//int member_Id_ck = memberService.getmemberId(member_Id);
-		
-//		if(member_Id == member_Id_ck && member_Tel == ) {
-//			
-//		}
-	
 		
 		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
 		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우

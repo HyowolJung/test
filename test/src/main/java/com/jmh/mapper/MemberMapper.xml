@@ -14,8 +14,9 @@
 	<!-- 1. 조회(검색어 X) -->
 	<select id="getmemberList" resultType="com.jmh.dto.MemberDto">
 		/*getmemberList*/
-		SELECT 
-		 MEMBER_ID
+		SELECT
+		 MEMBER_NO 
+		  ,MEMBER_ID
 		  ,MEMBER_NAME
 		  ,CASE
             WHEN MEMBER_SEX = 'D011' THEN '남자'
@@ -48,7 +49,8 @@
 		FROM 
 		(
 		   SELECT
-		      	MEMBER_ID
+		   		MEMBER_NO
+		      	,MEMBER_ID
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
@@ -56,7 +58,7 @@
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
 		  		,MEMBER_STARTDATE
-		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				MEMBER
@@ -68,8 +70,9 @@
 	
 	<!-- 1. 조회(검색어 O) -->
 	<select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
-		SELECT 
-		 MEMBER_ID
+	SELECT 
+		MEMBER_NO
+		  ,MEMBER_ID
 		  ,MEMBER_NAME
 		  ,CASE
             WHEN MEMBER_SEX = 'D011' THEN '남자'
@@ -85,7 +88,7 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
-		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
+		  ,MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
             WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
@@ -102,7 +105,8 @@
 		FROM 
 		(
 		   SELECT
-		      	MEMBER_ID
+		   		MEMBER_NO
+		      	,MEMBER_ID
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
@@ -110,18 +114,32 @@
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
 		  		,MEMBER_STARTDATE
-		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				MEMBER
-			WHERE
-				MEMBER_NAME LIKE '%'||#{searchWord}||'%'
-			<!-- <include refid="criteria"></include> -->
+			
+			<include refid="criteria"></include>	
+			
 		)
 		WHERE 
 			NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
 		
 	</select>
+	
+	<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->
+	<!-- <when test="searchField == 'name'">
+				WHERE MEMBER_NAME LIKE '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'tel'">
+				WHERE MEMBER_TEL like '%'||#{searchWord}||'%'
+			</when>
+			<when test="searchField == 'startdate'">
+				WHERE MEMBER_STARTDATE like '%'||#{searchWord}||'%'
+			</when> -->
+				<!-- MEMBER_NAME LIKE '%'||#{searchWord}||'%' -->
+				<!-- <include refid="criteria"></include> -->
+	
 	
 	<!-- 1. 조회(페이징 정보) -->
 	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
@@ -160,7 +178,8 @@
 		INTO 
 			MEMBER
 			(
-				MEMBER_ID
+				MEMBER_NO
+				,MEMBER_ID
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
@@ -173,10 +192,12 @@
 		(
 			(
 				SELECT 
-		  			TO_NUMBER(NVL(MAX(MEMBER_ID), 0))+ 1 
+		  			TO_NUMBER(NVL(MAX(MEMBER_NO), 0))+ 1 
 		  		FROM 
 		  			MEMBER
-		  	)
+		  	)	
+		  		,#{member_No}
+		  		,#{member_Id}
 		  		,#{member_Name}
 		  		,#{member_Sex}
 		  		,#{member_Position}
@@ -228,7 +249,7 @@
 	</select>
 	
 	<!-- 3. 수정(전화번호 중복체크) -->
-	<select id="member_Tel_ck" resultType="int"> <!-- parameterType="String"  -->
+	<select id="member_Tel_ck" resultType="integer"> <!-- parameterType="String"  -->
 		SELECT
 			COUNT(*)
 		FROM
@@ -310,17 +331,17 @@
 
 	 -->
 	
-	<!-- <sql id="criteria">
+	<sql id="criteria">
 		<choose>
 			<when test="searchField == 'name'">
-				MEMBER_NAME LIKE '%'||#{searchWord}||'%'
+				WHERE MEMBER_NAME LIKE '%'||#{searchWord}||'%'
 			</when>
-			<when test="searchField == 'content'">
-				and BContent like '%'||#{searchWord}||'%'
+			<when test="searchField == 'tel'">
+				WHERE MEMBER_TEL like '%'||#{searchWord}||'%'
 			</when>
-			<when test="searchField == 'writer'">
-				and BTYPE like '%'||#{searchWord}||'%'
+			<when test="#{searchDate} != null">
+				WHERE MEMBER_STARTDATE = #{searchDate}
 			</when>
 		</choose>
-	</sql> -->
+	</sql>
 </mapper>  

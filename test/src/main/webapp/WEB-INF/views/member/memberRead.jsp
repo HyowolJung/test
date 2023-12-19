@@ -39,7 +39,9 @@
 					</tr>
 				</c:forEach>
 			</tbody>
-</table><br><br>
+</table>
+<button type="button" id="modify">수정</button>
+<br><br>
 참여중인 프로젝트
 <table border="1">
 <thead>
@@ -74,7 +76,7 @@
 	</c:forEach>
 </tbody>
 </table>
-		<button type="button" id="modify">수정</button>
+		
 		<script type="text/javascript">
 			//let member_Id = $("#td_Id").val();
 			var member_Id = document.getElementById("td_Id").innerText;
@@ -82,8 +84,6 @@
 			$("#modify").click(function(){
 				location.href = "/member/memberModify?member_Id=" + member_Id;
 			});
-			
-			
 		</script>
 </body>
 </html>
