@@ -42,9 +42,16 @@ public class MemberServiceImpl implements MemberService{
 	
 	//2. 등록(아이디 체크)
 	@Override
-	public boolean selectId(String member_Tel) {
+	public boolean checkId(int member_Id) {
 		// TODO Auto-generated method stub
-		return memberMapper.selectId(member_Tel);
+		return memberMapper.checkId(member_Id);
+	}
+	
+	//2. 등록(아이디 체크)
+	@Override
+	public boolean checkTel(String member_Tel) {
+		// TODO Auto-generated method stub
+		return memberMapper.checkTel(member_Tel);
 	}
 	
 	//2. 등록(회원 등록)
@@ -81,12 +88,6 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.deleteMember(member_Id);
 	}
-
-//	@Override
-//	public HashMap<String, Object> getmemberprojectList(int member_Id) {
-//		// TODO Auto-generated method stub
-//		return memberMapper.getmemberprojectList(member_Id);
-//	}
 
 	@Override
 	public List<ProjectDto> getmemberprojectList(int member_Id) {

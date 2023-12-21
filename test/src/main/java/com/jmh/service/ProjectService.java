@@ -10,12 +10,20 @@ import com.jmh.dto.ProjectDto;
 
 @Service
 public interface ProjectService {
+	//1. 조회(검색어 X)
+	public List<ProjectDto> getProjectList(Criteria cri);
 	
-	List<ProjectDto> getProjectList(Criteria cri);
+	//1. 조회(페이징 정보)	
+	public int getTotalCnt(Criteria cri);
 	
-	int getTotalCnt(Criteria cri);
+	//1. 조회(검색어 O)
+	public List<ProjectDto> searchProjectList(Criteria cri);
 
-	List<ProjectDto> searchProjectList(Criteria cri);
-
+	//2. 등록(아이디 체크)
+	public boolean checkId(int project_Id);
+	public boolean checkName(String project_Name);
+		
+	//2. 등록(회원 등록)
+	public int insertProject(ProjectDto insertDatas);
 
 }

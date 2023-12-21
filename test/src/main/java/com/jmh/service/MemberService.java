@@ -26,7 +26,8 @@ public interface MemberService {
 	public int getTotalCnt(Criteria cri);
 	
 	//2. 등록(아이디 체크)
-	public boolean selectId(String member_Tel);
+	public boolean checkId(int member_Id);
+	public boolean checkTel(String member_Tel);
 	
 	//2. 등록(회원 등록)
 	public int insertMember(MemberDto insertDatas);

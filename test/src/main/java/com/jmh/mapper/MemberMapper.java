@@ -25,7 +25,8 @@ public interface MemberMapper {
 	int getTotalCnt(Criteria cri);
 	
 	//2. 등록(아이디 체크)
-	boolean selectId(String member_Tel);
+	boolean checkId(int member_Id);
+	boolean checkTel(String member_Tel);
 	
 	//2. 등록(회원 등록)
 	int insertMember(MemberDto insertDatas);

@@ -5,82 +5,128 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>회원 목록 조회</title>
+  <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            margin-right: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #pagination {
+            margin-top: 20px;
+        }
+
+        ul.pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.page-item {
+            margin-right: 10px;
+        }
+
+        a.page-link {
+            text-decoration: none;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            color: #333;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        a.page-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .result-message {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+    </style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
-	<div>
-		<%-- <div>현재 ${pageDto.cri.pageNo } 페이지 입니다.</div><br> --%> <!-- id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" -->
-		<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
-		<select name="searchField" class="form-select" 
-	    		aria-label="Default select example" id="searchField">
-		  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
-		  <!-- TODO : SELECT 검색 고치기 -->
-		  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>
-		  <%-- <option value="startdate" ${pageDto.cri.searchField == 'startdate' ? 'selected' : ''}>입사일</option> --%>
-		</select>
-		<!-- <label for="searchWord" class="visually-hidden">Password</label> -->
-	    <input name="searchWord" type="text" class="form-control" 
-	    		id="searchWord" placeholder="검색어" 
-	    		value="${pageDto.cri.searchWord }">
-	    <label>입사일</label>
-	    <input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "date" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
-		<button id="searchButton">조회</button>
-	</div>
+<div>
+	<%-- <div>현재 ${pageDto.cri.pageNo } 페이지 입니다.</div><br> --%> <!-- id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
+	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
+	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
+	  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>
+	</select>
+    <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+    <label>입사일</label>
+	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
+	<button id="searchButton">조회</button>
+</div>
 	
-	<table border="1" id="memberTable">
-		<thead>
-			<tr>
-				<th>ㅁ</th>
-				<th>번호</th>
-				<th>아이디</th>
-				<th>이름</th>
-				<th>성별</th>
-				<th>직급</th>
-				<th>전화번호</th>
-				<th>언어</th>
-				<th>데이터베이스</th>
-				<th>입사일</th>
-				<!--<th>투입여부</th> -->
-			</tr>
-		</thead>
-		<tbody>
-			
-		</tbody>
-	</table>
-	
-	<button type="button" value="delete" id="deleteButton">삭제</button>
-	<button type="button" value="modify" id="modifyButton">수정</button>
-	<!-- <a href="/member/insertMember">추가</a> -->
-	<button onclick="insertMember();">등록</button>
-	
-	<div id="pagination">
-		<ul class="pagination" style= "list-style: none;">
-			<%-- <c:if test="${pageDto.prev }">
-				<li class="pagination_button" style= "float: left; margin-right: 10px"><a onclick="go(${pageDto.startNo-1 })" href="#" style= "float: left; margin-right: 10px">Previous</a>
-				</li>
-			</c:if>
+<table border="1" id="memberTable">
+	<thead>
+		<tr>
+			<th>ㅁ</th>
+			<th>번호</th>
+			<th>아이디</th>
+			<th>이름</th>
+			<th>성별</th>
+			<th>직급</th>
+			<th>전화번호</th>
+			<th>언어</th>
+			<th>데이터베이스</th>
+			<th>입사일</th>
+			<th>투입여부</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+	</tbody>
+</table>
 
-			<c:forEach var="i" begin="${pageDto.startNo }" end="${pageDto.endNo }">
-				<li class="page-item">
-		    	<a class="page-link ${pageDto.cri.pageNo==i ? 'active':'' }" 
-		    		onclick="go(${i})"
-		    		href="#" style= "float: left; margin-right: 10px">${i }</a>
-		    	</li>
-			</c:forEach>
-	
-			<c:if test="${pageDto.next }">
-				<li class="pagination_button" style= "float: left; margin-right: 10px"><a onclick="go(${pageDto.endNo + 1 })"  href="#" style= "float: left; margin-right: 10px">Next</a>
-				</li>
-			</c:if> --%>
-		</ul>
-	</div>
-	
-	<br><br><br><br><br><br><br>
+<button type="button" value="delete" id="deleteButton">삭제</button>
+<button type="button" value="modify" id="modifyButton">수정</button>
+<button onclick="insertMember();">등록</button>
+
+<div id="pagination">
+	<ul class="pagination" style= "list-style: none;">
+	</ul>
+</div>
+
+<br><br><br><br><br><br><br>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("#memberTable tbody").empty();
-    $("#memberTable tbody").html("<tr><td colspan='10' style='text-align:center;'>결과가 없어요.</td></tr>");
+    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
     
     $("#memberTable").on("click", ".member-id", function () {
 	    let member_Id = $(this).data("memberid");
@@ -89,20 +135,20 @@ $(document).ready(function() {
     
 	//1. 검색 폼
 	$("#searchButton").click(function(){
-		let searchDate = $("#date").val();
-		console.log("searchDate1 : " + searchDate);
+		let searchDate = $("#searchDate").val();
+		//console.log("searchDate1 : " + searchDate);
 		let searchField = document.getElementById("searchField").value; 
 		let searchWord = $("#searchWord").val();
 		let search_ck = "1";
 		let pageNo = document.getElementById("pageNo").value; 
-		console.log("pageNo : " + pageNo);
-		console.log("searchWord : " + searchWord);
+		//console.log("pageNo : " + pageNo);
+		//console.log("searchWord : " + searchWord);
 		
 		//2. 조건 검색
 		//if($("#searchWord").val != '' || $("#searchWord").val != null){
 		if($("#searchWord").val || $("#date").val){ 
 			//console.log("검색버튼이 클릭됬어요.");
-			console.log("searchDate2 : " + searchDate);
+			//console.log("searchDate2 : " + searchDate);
 			$.ajax({
 				type : 'POST',
 				url: '/member/memberList',
@@ -118,19 +164,17 @@ $(document).ready(function() {
  					var pageDto = resultMap.pageDto;
 					$("#memberTable tbody").empty();
 					//$("#pagination").empty();
-					console.log("resultMap : " + Object.keys(resultMap).length);
+					//console.log("resultMap : " + Object.keys(resultMap).length);
 					
-					
-               		//if(resultMap != null){
-               		//if(Object.keys(resultMap).length > 3){
-               		//if(memberList != null){
                		if (memberList && memberList.length > 0) {
 						console.log("memberList가 있어요");               			
                			for (let i = 0; i < memberList.length; i++) {
                         	let newRow = $("<tr>");
                         	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                         	newRow.append("<td>" + memberList[i].member_No + "</td>");
-                        	newRow.append("<td><a href= '/member/memberRead?member_Id="+ memberList[i].member_Id + "'>" + memberList[i].member_Id + "</a></td>");
+                        	//newRow.append("<td><a href= '/member/memberRead?member_Id="+ memberList[i].member_Id + "'>" + memberList[i].member_Id + "</a></td>");
+                        	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&page_No="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                        	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                         	//newRow.append("<td><a href= '/member/detailPage?memberId=" + result[i].member_Id + "'>" + result[i].member_Name + "</a></td>");
                         	newRow.append("<td>" + memberList[i].member_Name + "</td>");
                         	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
@@ -139,16 +183,20 @@ $(document).ready(function() {
                         	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
                         	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
                         	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
-
+                        	/* newRow.append("<td>" + "개발중" + "</td>"); */
+                        	newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
+                        	
                         	$("#memberTable tbody").append(newRow);
                         	//$("#pagination").html(result.pagination);
                			}
                			
                			var pagination = $("#pagination ul");
+               			//console.log("페이징번호 삭제");
                	        pagination.empty();
 
                	        if (pageDto.prev) {
-               	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+               	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+               	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
                	        }
 
                	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
@@ -156,14 +204,14 @@ $(document).ready(function() {
                	        }
 
                	        if (pageDto.next) {
-               	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+               	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+               	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
                	        }
                			
                		}else{
                			console.log("memberList 가 NULL 이에요.")
                			$("#memberTable tbody").empty();
-               		    $("#memberTable tbody").html("<tr><td colspan='10' style='text-align:center;'>결과가 없어요.</td></tr>");
-               			
+               		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
                		}
 				}, 
 				error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -175,25 +223,11 @@ $(document).ready(function() {
 		
 	});//$("#searchButton").click EndPoint
 	
-	//두 메서드의 차이는 무엇일까요? 단순히 바닐라와 제이쿼리 버전의 차이? 다른 이유도 있어요
-	//$(document).on('click', '.radiobox', function() {});
-	//$(".radiobox").click(function() {});
-	
-	/* $(".radiobox").click(function() { ... }); 
-	코드는 페이지가 로드될 때 존재하는 모든 라디오 박스에 대해 클릭 이벤트 핸들러를 등록합니다. 
-	그러나 동적으로 생성된 엘리먼트에 대한 이벤트 핸들러는 이 방식으로는 작동하지 않습니다.
-	동적으로 생성된 엘리먼트에 대한 이벤트 핸들링을 위해서는 이벤트 위임(Event Delegation)을 사용해야 합니다. 
-	이는 동적으로 생성된 엘리먼트가 특정한 상위 엘리먼트에 의해 관리되는 방식입니다.
-	
-	$(document).on('click', '.radiobox', function() { ... }); 
-	코드에서는 document가 이벤트를 관리하는 상위 엘리먼트가 되어 동적으로 생성된 라디오 박스에도 이벤트가 적용됩니다. 
-	이 방식을 사용하면 동적으로 생성된 엘리먼트에 대해서도 클릭 이벤트를 처리할 수 있습니다. */
-	
 	//1. 체크 박스를 선택했을 때
 	$(document).on('click', '.radiobox', function() {
-		console.log("체크박스");
+		//console.log("체크박스");
 		let member_Id = $(this).data("id");
-		console.log("체크박스 번호: " + member_Id);
+		//console.log("체크박스 번호: " + member_Id);
 		
 		$("#deleteButton").click(function() {
 			$.ajax({
@@ -213,22 +247,25 @@ $(document).ready(function() {
 		});	//#deleteButton EndPoint
 
 		$("#modifyButton").click(function() {
-			//console.log("수정 버튼 작동")
+			//console.log("수정 버튼 작동");
+			var pageNo = $("#pageNo").val();
 			$.ajax({
 				type : 'get',
 				url: '/member/memberModify',
 				data: {
-					 "member_Id" : member_Id
+					 "member_Id" : member_Id,
+					 "pageNo" : pageNo
 				},
 				success : function(result) { // 결과 성공 콜백함수        
-					console.log(result);
-					console.log("전송 성공");
+					//console.log(result);
+					//console.log("전송 성공");
 					//alert("수정 버튼 작동")
-					location.href = "/member/memberModify?member_Id=" + member_Id;						
+					//var pageNo = $("#pageNo").val();
+					location.href = "/member/memberModify?member_Id=" + member_Id + "&pageNo=" + pageNo;						
 				},    
 				error : function(request, status, error) { // 결과 에러 콜백함수        
-					console.log(error);
-					console.log("전송 실패")
+					//console.log(error);
+					//console.log("전송 실패")
 				}
 			});	//ajax EndPoint
 		});	//#modifyButton EndPoint
@@ -250,10 +287,10 @@ function go(pageNo){
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수    
 			if (searchWord.trim() !== "") {
-			    console.log("검색어가 있습니다.");
+			    //console.log("검색어가 있습니다.");
 			    location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
 			} else {
-			    console.log("검색어가 없습니다.");
+			    //console.log("검색어가 없습니다.");
 			    location.href = "/member/memberList?pageNo=" + pageNo;
 			}
 			

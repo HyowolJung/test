@@ -34,4 +34,22 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.searchProjectList(cri);
 	}
 
+	@Override
+	public boolean checkId(int project_Id) {
+		// TODO Auto-generated method stub
+		return projectMapper.checkId(project_Id);
+	}
+
+	@Override
+	public boolean checkName(String project_Name) {
+		// TODO Auto-generated method stub
+		return projectMapper.checkName(project_Name);
+	}
+
+	@Override
+	public int insertProject(ProjectDto insertDatas) {
+		// TODO Auto-generated method stub
+		return projectMapper.insertProject(insertDatas);
+	}
+
 }

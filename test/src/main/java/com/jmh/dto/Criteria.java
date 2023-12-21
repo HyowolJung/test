@@ -30,4 +30,8 @@ public class Criteria {
 			startNo = pageNo * amount - (amount-1);
 		}
 	}
+	
+	public void setSearchDate(LocalDate searchDate) {
+	    this.searchDate = searchDate;
+	}
 }

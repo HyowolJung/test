@@ -17,4 +17,10 @@ public interface ProjectMapper {
 
 	List<ProjectDto> searchProjectList(Criteria cri);
 
+	boolean checkId(int project_Id);
+
+	boolean checkName(String project_Name);
+
+	int insertProject(ProjectDto insertDatas);
+
 }
