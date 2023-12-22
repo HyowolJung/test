@@ -23,4 +23,12 @@ public interface ProjectMapper {
 
 	int insertProject(ProjectDto insertDatas);
 
+	List<ProjectDto> getModifyList(int project_Id);
+
+	int projectModify(ProjectDto modifyDatas);
+
+	int deleteProject(int project_Id);
+
+	List<MemberDto> getprojectmemberList(int project_Id);
+
 }

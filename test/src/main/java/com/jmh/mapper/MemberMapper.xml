@@ -125,20 +125,6 @@ FROM
 		NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
 </select>
 	
-	<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->
-	<!-- <when test="searchField == 'name'">
-				WHERE MEMBER_NAME LIKE '%'||#{searchWord}||'%'
-			</when>
-			<when test="searchField == 'tel'">
-				WHERE MEMBER_TEL like '%'||#{searchWord}||'%'
-			</when>
-			<when test="searchField == 'startdate'">
-				WHERE MEMBER_STARTDATE like '%'||#{searchWord}||'%'
-			</when> -->
-				<!-- MEMBER_NAME LIKE '%'||#{searchWord}||'%' -->
-				<!-- <include refid="criteria"></include> -->
-	
-	
 	<!-- 1. 조회(페이징 정보) -->
 	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		/*getTotalCnt*/
@@ -296,8 +282,6 @@ FROM
 		WHERE 
 			MEMBER_ID = #{member_Id}
 		</if>
-		
-		
 	</update>
 	
 	<!-- 4. 삭제(회원 정보 삭제) -->
@@ -309,25 +293,6 @@ FROM
 		WHERE 
 			MEMBER_ID = #{member_Id}
 	</delete>
-	
-	<!-- <select id="getmemberprojectList" resultType="java.util.Map" parameterType="integer">
-	SELECT 
-    	M.MEMBER_ID
-    	,MP.PROJECT_ID
-    	,mp.PROJECT_NAME
-    	,MP.PROJECT_SKILL_LANGUAGE
-    	,MP.PROJECT_SKILL_DB
-    	,MP.PROJECT_STARTDATE
-    	,MP.PROJECT_ENDDATE
-	FROM 
-    	MEMBER M
-	JOIN
-    	MEMBER_PROJECT MP
-	ON
-    	M.MEMBER_ID = MP.MEMBER_ID
-	WHERE 
-    	M.MEMBER_ID = #{member_Id}
-	</select> -->
 	
 	<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
 	SELECT 

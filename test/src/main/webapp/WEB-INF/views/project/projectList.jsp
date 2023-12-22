@@ -81,7 +81,7 @@
 <body>
 <div>
 	<%-- <div>현재 ${pageDto.cri.pageNo } 페이지 입니다.</div><br> --%> <!-- id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" ><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
 	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
@@ -116,18 +116,6 @@
 
 <div id="pagination">
 	<ul class="pagination" style= "list-style: none;">
-		<%-- <c:if test="${pageDto.prev }">
-			<li class="pagination_button" style= "float: left; margin-right: 10px"><a onclick="go(${pageDto.startNo-1 })" href="#" style= "float: left; margin-right: 10px">Previous</a>
-			</li>
-		</c:if>
-			<c:forEach var="i" begin="${pageDto.startNo }" end="${pageDto.endNo }">
-			<li class="page-item"><a class="page-link ${pageDto.cri.pageNo==i ? 'active':'' }" onclick="go(${i})" href="#" style= "float: left; margin-right: 10px">${i }</a>
-	    	</li>
-		</c:forEach>
-		<c:if test="${pageDto.next }">
-			<li class="pagination_button" style= "float: left; margin-right: 10px"><a onclick="go(${pageDto.endNo + 1 })"  href="#" style= "float: left; margin-right: 10px">Next</a>
-			</li>
-		</c:if> --%>
 	</ul>
 </div>
 <br><br><br><br><br><br><br>
@@ -144,10 +132,10 @@ $("#searchButton").click(function(){
 	let search_ck = "1";
 	let pageNo = document.getElementById("pageNo").value; 
 	
-	//1. 조건 없이 조회하는거니까 그냥 전체 조회
+	//1. 검색어 있음
 	if($("#searchWord").val || $("#date").val){ 
-		console.log("1차 실행");
-		//alert("검색어가 없어요.");
+		//console.log("1차 실행");
+		console.log("검색어가 있어요.");
 		//1. 데이터 불러오기
 		$.ajax({
 			type : 'POST',
@@ -167,9 +155,10 @@ $("#searchButton").click(function(){
 				if (projectList && projectList.length > 0) {
            			for (let i = 0; i < projectList.length; i++) {
                     	let newRow = $("<tr>");
-                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_id + "' data-id='" + projectList[i].project_id + "'></td>");
+                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
                     	newRow.append("<td>" + projectList[i].project_No + "</td>");
-                    	newRow.append("<td>" + projectList[i].project_Id + "</td>");
+                    	/* newRow.append("<td>" + projectList[i].project_Id + "</td>"); */
+                    	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Id + "</a></td>");
                     	newRow.append("<td>" + projectList[i].project_Name + "</td>");
                     	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
                     	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
@@ -180,9 +169,10 @@ $("#searchButton").click(function(){
                 	}
            			
            			var pagination = $("#pagination ul");
-           			//console.log("페이징번호 삭제");
+           			console.log("페이징번호 삭제");
            	        pagination.empty();
-
+					console.log("pageDto.startNo : " + pageDto.startNo);
+					console.log("pageDto.endNo : " + pageDto.endNo);
            	        if (pageDto.prev) {
            	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
            	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
@@ -208,7 +198,52 @@ $("#searchButton").click(function(){
 			}
 		});	//ajax EndPoint
 	}//if EndPoint
-});	
+});		//$("#searchButton").click(function(){ EndPoint
+	
+$(document).on('click', '.radiobox', function() {
+	//console.log("체크박스");
+	let project_Id = $(this).data("id");
+	console.log("아이디: " + project_Id);
+	
+	$("#deleteButton").click(function() {
+		$.ajax({
+			type : 'get',
+			url: '/project/projectDelete',
+			data: {
+				 "project_Id" : project_Id
+			},
+			success : function(result) { // 결과 성공 콜백함수        
+				alert("삭제 성공");
+				location.href = "/project/projectList?pageNo=1";
+			}, 
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("삭제 실패");
+			}
+		}); //ajax EndPoint
+	});	//#deleteButton EndPoint
+
+	$("#modifyButton").click(function() {
+		//console.log("수정 버튼 작동");
+		var pageNo = $("#pageNo").val();
+		//console.log("ddd");
+		//console.log("project_Id : " + project_Id);
+		$.ajax({
+			type : 'get',
+			url: '/project/projectModify',
+			data: {
+				 "project_Id" : project_Id,
+				 "pageNo" : pageNo
+			},
+			success : function(result) { // 결과 성공 콜백함수        
+				location.href = "/project/projectModify?project_Id=" + project_Id + "&pageNo=" + pageNo;						
+			},    
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				//console.log(error);
+				//console.log("전송 실패")
+			}
+		});	//ajax EndPoint
+	});	//#modifyButton EndPoint
+});//$(document).on('click', '.radiobox', function() { EndPoint
 
 
 

@@ -123,8 +123,15 @@
 </div>
 
 <br><br><br><br><br><br><br>
+</body>
 <script type="text/javascript">
 $(document).ready(function() {
+	//let searchWord = $("#searchWord").val();
+	//<input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+	//이렇게 하면 검색어를 입력하지 않았어도초기 브라우저가 로딩되면 당연히 공백같은 값들이 들어가지..
+	//우리는 입력된 값을 원하는 거지 value 값을 원하는게 아니잖아?
+	//그러니까 .value 혹은 .val() 를 하는게 아니라 innerText 같은걸 써야지...
+	
 	$("#memberTable tbody").empty();
     $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
     
@@ -136,91 +143,81 @@ $(document).ready(function() {
 	//1. 검색 폼
 	$("#searchButton").click(function(){
 		let searchDate = $("#searchDate").val();
-		//console.log("searchDate1 : " + searchDate);
 		let searchField = document.getElementById("searchField").value; 
 		let searchWord = $("#searchWord").val();
-		let search_ck = "1";
+		let search_ck = 1;
 		let pageNo = document.getElementById("pageNo").value; 
-		//console.log("pageNo : " + pageNo);
-		//console.log("searchWord : " + searchWord);
+		console.log("searchWord : " + searchWord);
 		
-		//2. 조건 검색
-		//if($("#searchWord").val != '' || $("#searchWord").val != null){
-		if($("#searchWord").val || $("#date").val){ 
-			//console.log("검색버튼이 클릭됬어요.");
-			//console.log("searchDate2 : " + searchDate);
-			$.ajax({
-				type : 'POST',
-				url: '/member/memberList',
-				data: {
-				 	"searchField" :  searchField,
-				 	"searchWord" : searchWord,
-				 	"search_ck" : search_ck,
-				 	"pageNo" : pageNo,
-				 	"searchDate" : searchDate
-				},
-				success : function(resultMap) { // 결과 성공 콜백함수  
-					var memberList = resultMap.memberList;
- 					var pageDto = resultMap.pageDto;
-					$("#memberTable tbody").empty();
-					//$("#pagination").empty();
-					//console.log("resultMap : " + Object.keys(resultMap).length);
-					
-               		if (memberList && memberList.length > 0) {
-						console.log("memberList가 있어요");               			
-               			for (let i = 0; i < memberList.length; i++) {
-                        	let newRow = $("<tr>");
-                        	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                        	newRow.append("<td>" + memberList[i].member_No + "</td>");
-                        	//newRow.append("<td><a href= '/member/memberRead?member_Id="+ memberList[i].member_Id + "'>" + memberList[i].member_Id + "</a></td>");
-                        	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&page_No="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-                        	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-                        	//newRow.append("<td><a href= '/member/detailPage?memberId=" + result[i].member_Id + "'>" + result[i].member_Name + "</a></td>");
-                        	newRow.append("<td>" + memberList[i].member_Name + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_Position + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
-                        	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
-                        	/* newRow.append("<td>" + "개발중" + "</td>"); */
-                        	newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
-                        	
-                        	$("#memberTable tbody").append(newRow);
-                        	//$("#pagination").html(result.pagination);
-               			}
-               			
-               			var pagination = $("#pagination ul");
-               			//console.log("페이징번호 삭제");
-               	        pagination.empty();
+		$.ajax({
+			type : 'POST',
+			url: '/member/memberList',
+			data: {
+			 	"searchField" :  searchField,
+			 	"searchWord" : searchWord,
+			 	"search_ck" : search_ck,
+			 	"pageNo" : pageNo,
+			 	"searchDate" : searchDate
+			},
+			success : function(resultMap) { // 결과 성공 콜백함수  
+				var memberList = resultMap.memberList;
+					var pageDto = resultMap.pageDto;
+				$("#memberTable tbody").empty();
+				//$("#pagination").empty();
+				//console.log("resultMap : " + Object.keys(resultMap).length);
+				
+           		if (memberList && memberList.length > 0) {
+					console.log("memberList가 있어요");               			
+           			for (let i = 0; i < memberList.length; i++) {
+                    	let newRow = $("<tr>");
+                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
+                    	newRow.append("<td>" + memberList[i].member_No + "</td>");
+                    	//newRow.append("<td><a href= '/member/memberRead?member_Id="+ memberList[i].member_Id + "'>" + memberList[i].member_Id + "</a></td>");
+                    	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&page_No="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                    	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                    	//newRow.append("<td><a href= '/member/detailPage?memberId=" + result[i].member_Id + "'>" + result[i].member_Name + "</a></td>");
+                    	newRow.append("<td>" + memberList[i].member_Name + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_Position + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
+                    	/* newRow.append("<td>" + "개발중" + "</td>"); */
+                    	newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
+                    	
+                    	$("#memberTable tbody").append(newRow);
+                    	//$("#pagination").html(result.pagination);
+           			}
+           			
+           			var pagination = $("#pagination ul");
+           			//console.log("페이징번호 삭제");
+           	        pagination.empty();
 
-               	        if (pageDto.prev) {
-               	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-               	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
-               	        }
+           	        if (pageDto.prev) {
+           	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+           	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
+           	        }
 
-               	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
-               	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
-               	        }
+           	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+           	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+           	        }
 
-               	        if (pageDto.next) {
-               	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-               	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
-               	        }
-               			
-               		}else{
-               			console.log("memberList 가 NULL 이에요.")
-               			$("#memberTable tbody").empty();
-               		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-               		}
-				}, 
-				error : function(request, status, error) { // 결과 에러 콜백함수        
-					alert("검색 실패");
-				}
-			});	//ajax EndPoint
-			//location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-		}//if EndPoint
-		
+           	        if (pageDto.next) {
+           	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+           	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
+           	        }
+           			
+           		}else{
+           			console.log("memberList 가 NULL 이에요.")
+           			$("#memberTable tbody").empty();
+           		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+           		}
+			}, 
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("검색 실패");
+			}
+		}); //$.ajax EndPoint
 	});//$("#searchButton").click EndPoint
 	
 	//1. 체크 박스를 선택했을 때
@@ -306,7 +303,6 @@ function insertMember(){
 }
 
 </script>
-</body>
 </html>
 
 <%-- <c:forEach var="memberList" items="${memberList}">

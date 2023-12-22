@@ -52,4 +52,28 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.insertProject(insertDatas);
 	}
 
+	@Override
+	public List<ProjectDto> getModifyList(int project_Id) {
+		// TODO Auto-generated method stub
+		return projectMapper.getModifyList(project_Id);
+	}
+
+	@Override
+	public int projectModify(ProjectDto modifyDatas) {
+		// TODO Auto-generated method stub
+		return projectMapper.projectModify(modifyDatas);
+	}
+
+	@Override
+	public int deleteProject(int project_Id) {
+		// TODO Auto-generated method stub
+		return projectMapper.deleteProject(project_Id);
+	}
+
+	@Override
+	public List<MemberDto> getprojectmemberList(int project_Id) {
+		// TODO Auto-generated method stub
+		return projectMapper.getprojectmemberList(project_Id);
+	}
+
 }

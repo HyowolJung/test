@@ -52,8 +52,10 @@ public class ProjectController {
 		if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
+			System.out.println("totalCnt : " + totalCnt);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			projectList = projectService.getProjectList(cri);
+			System.out.println("projectList : " + projectList);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("projectList", projectList);
 			return resultMap;
@@ -132,5 +134,54 @@ public class ProjectController {
 		}
 	}
 	
+	//3. 수정(페이지 이동 + 회원 정보 조회)
+	@GetMapping("/projectModify")
+	public String modifyMember(@RequestParam("project_Id") int project_Id, Model model, @RequestParam int pageNo) { /* , @RequestParam int pageNo */
+		System.out.println("수정 화면 작동");
+		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
+		model.addAttribute("pageNo" , pageNo);
+		return "project/projectModify";
+	}
+		
+	//3. 수정(회원 정보 수정)
+	@PostMapping("/projectModify")
+	public ResponseEntity<Boolean> modifyProject(@RequestBody ProjectDto modifyDatas) {
+		//int project_Id = modifyDatas.getProject_Id();		//jsp 에서 보내온 아이디
+		//int member_Id_ck = memberService.getmemberId(member_Id);
+		
+		boolean result = false;
+		
+		int modifyCnt = projectService.projectModify(modifyDatas);
+		if(modifyCnt > 0) {
+			System.out.println("수정 성공1");
+			result = true;
+		}else if(modifyCnt < 0 ) {
+			System.out.println("수정 실패1");
+			result = false;
+		}
+			
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 	
+	//4. 삭제(회원 정보 삭제)
+	@GetMapping("/projectDelete")
+	public String projectDelete(@RequestParam int project_Id) {
+		int deleteCnt = projectService.deleteProject(project_Id);
+		
+		if(deleteCnt > 0) {
+			return "project/projectList";
+		}else {
+			return "";
+		}
+	}
+	
+	@GetMapping("/projectRead")
+	public List<MemberDto> projectRead(Model model, @RequestParam int project_Id, Criteria cri, @RequestParam int pageNo) {
+		List<MemberDto> projectmemberList = projectService.getprojectmemberList(project_Id);
+		System.out.println("pageNo : " + pageNo);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("projectmemberList" , projectmemberList);
+		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
+		return projectmemberList;
+	}
 }

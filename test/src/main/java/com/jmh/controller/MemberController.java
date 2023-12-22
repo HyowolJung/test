@@ -71,8 +71,8 @@ public class MemberController {
 	public String memberList1(Model model, Criteria cri, @RequestParam int pageNo) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		System.out.println("GET)pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
-		System.out.println("GET)pageDto : " + pageDto);
+		//System.out.println("GET)pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
+		//System.out.println("GET)pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
@@ -80,14 +80,16 @@ public class MemberController {
 	@PostMapping("/memberList")
 	@ResponseBody
 	public Map<String, Object> memberList2(Model model, Criteria cri, String search_ck) {
-		System.out.println("도착1");
 		System.out.println("POST) searchWord : " + cri.getSearchWord());
-		System.out.println("POST) searchDate : " + cri.getSearchDate());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
 		
-		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchDate().equals("")) {	//조건 없이 조회 버튼만 누른 경우.
+		//검색어가 없을 때
+		//작동안함 : cri.getSearchWord().length() == 0
+		//cri.getSearchWord() == null
+		//cri.getSearchWord().trim().isEmpty()
+		//cri.getSearchWord().equals("")
+		if(search_ck != null && (cri.getSearchWord().equals("") && cri.getSearchDate() == null)) {
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
@@ -97,8 +99,7 @@ public class MemberController {
 			return resultMap;
 		}
 		
-		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null) {
+		if(search_ck != null && (!cri.getSearchWord().equals("") || cri.getSearchDate() != null)) {
 			System.err.println("검색어 있는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
@@ -107,7 +108,6 @@ public class MemberController {
 			resultMap.put("memberList", memberList);
 			return resultMap;
 		}
-		//System.out.println("resultMap : " + resultMap);
 		return resultMap;	
 	}
 	

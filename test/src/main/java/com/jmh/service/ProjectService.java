@@ -26,4 +26,12 @@ public interface ProjectService {
 	//2. 등록(회원 등록)
 	public int insertProject(ProjectDto insertDatas);
 
+	public List<ProjectDto> getModifyList(int project_Id);
+
+	public int projectModify(ProjectDto modifyDatas);
+
+	public int deleteProject(int project_Id);
+
+	public List<MemberDto> getprojectmemberList(int project_Id);
+
 }
