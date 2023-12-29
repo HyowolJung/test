@@ -34,4 +34,8 @@ public interface ProjectService {
 
 	public List<MemberDto> getprojectmemberList(int project_Id);
 
+	//public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
+	
+	
+
 }

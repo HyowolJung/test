@@ -2,6 +2,7 @@ package com.jmh.mapper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -47,5 +48,9 @@ public interface MemberMapper {
 	List<ProjectDto> getmemberprojectList(int member_Id);
 
 	int getmemberId(int member_Id);
+
+	Object projectInmember(int project_Id);
+
+	int memberInmember(Map<String, Object> resultMap);
 	
 }

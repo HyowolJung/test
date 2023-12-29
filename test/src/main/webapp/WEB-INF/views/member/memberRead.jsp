@@ -67,7 +67,7 @@ table {
 				<td id="td_Id">${memberList.member_Id }</td>
 				<td>${memberList.member_Name }</td>
 				<td>${memberList.member_Position}</td>
-				<td>${memberList.member_Sex} </td>
+				<td>${memberList.member_Sex}</td>
 				<td>${memberList.member_Tel }</td>
 				<td>${memberList.member_Skill_Language}</td>
 				<td>${memberList.member_Skill_DB}</td>
@@ -87,8 +87,8 @@ table {
 		<th>ㅁ</th>
 		<th>번호(프로젝트)</th>
 		<th>이름(프로젝트)</th>
-		<th>언어</th>
-		<th>데이터베이스</th>
+		<!-- <th>언어</th>
+		<th>데이터베이스</th> -->
 		<th>투입일</th>
 		<th>철수일</th>
 	</tr>
@@ -99,10 +99,8 @@ table {
 			<td><input type="radio"></td>
 			<td>${memberprojectList.project_Id }</td>
 			<td>${memberprojectList.project_Name }</td>
-			<td>${memberprojectList.project_Skill_Language}</td>
-			<td>${memberprojectList.project_Skill_DB} </td>
-			<td>${memberprojectList.project_startDate }</td>
-			<td>${memberprojectList.project_endDate}</td> 
+			<td>${memberprojectList.pushDate}</td>
+			<td>${memberprojectList.pullDate} </td>
 		</tr>
 	</c:forEach>
 </tbody>
@@ -111,7 +109,7 @@ table {
 <script type="text/javascript">
 var member_Id = document.getElementById("td_Id").innerText;
 var pageNo = $("#pageNo").val();
-console.log("member_Id : " + member_Id);
+//console.log("member_Id : " + member_Id);
 
 $("#modify").click(function(){
 	location.href = "/member/memberModify?member_Id=" + member_Id + "&pageNo=" + pageNo;

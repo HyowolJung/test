@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MemberDto {
+	private ProjectDto projectDto;
 	private int member_No;
 	private int member_Id;
 	private String member_Name;
@@ -46,6 +47,9 @@ public class MemberDto {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate member_endDate;
 	
+	private String member_status;
+	
+	private int member_endDate_ck;
 	//Date : 자바 8 이전에 다루던 날짜 관련 타입이다. (+Calenar) 
 	//따라서 해당 타입은 deprecated 이다. (+java.util.Date)
 	//LocalDateTime, LocalDate, LocalTime : 자바 8 이후에 등장한 날짜 관련 타입이다. 	

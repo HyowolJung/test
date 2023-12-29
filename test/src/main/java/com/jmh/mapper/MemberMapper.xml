@@ -46,6 +46,13 @@
             WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
           END AS MEMBER_SKILL_DB
 		  ,MEMBER_STARTDATE
+		  ,CASE
+            WHEN MEMBER_STATUS = 'S01' THEN '대기중'
+            WHEN MEMBER_STATUS = 'S02' THEN '파견중'
+            WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
+            WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+          END AS MEMBER_STATUS
+		  
 		FROM 
 		(
 		   SELECT
@@ -58,6 +65,7 @@
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
 		  		,MEMBER_STARTDATE
+		  		,MEMBER_STATUS
 		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
@@ -102,6 +110,12 @@ SELECT
            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
          END AS MEMBER_SKILL_DB
 	  ,MEMBER_STARTDATE
+	  ,CASE
+            WHEN MEMBER_STATUS = 'S01' THEN '대기중'
+            WHEN MEMBER_STATUS = 'S02' THEN '파견중'
+            WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
+            WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+          END AS MEMBER_STATUS
 FROM 
 	(
     SELECT
@@ -114,6 +128,7 @@ FROM
   		,MEMBER_SKILL_LANGUAGE
  		,MEMBER_SKILL_DB
   		,MEMBER_STARTDATE
+  		,MEMBER_STATUS
       	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
       	,COUNT(*) OVER() AS TOTAL_CNT
 	FROM
@@ -127,7 +142,6 @@ FROM
 	
 	<!-- 1. 조회(페이징 정보) -->
 	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
-		/*getTotalCnt*/
 		
 		<if test="searchWord == null and searchDate == null">
 		SELECT 
@@ -264,7 +278,8 @@ FROM
 			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
 			,MEMBER_SKILL_DB = #{member_Skill_DB} 
 			,MEMBER_STARTDATE = #{member_startDate}
-			,MEMBER_ENDDATE = #{member_endDate}  
+			,MEMBER_ENDDATE = #{member_endDate}
+			,MEMBER_STATUS = 'S04'
 		WHERE 
 			MEMBER_ID = #{member_Id}
 		</if>
@@ -279,6 +294,7 @@ FROM
 			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
 			,MEMBER_SKILL_DB = #{member_Skill_DB} 
 			,MEMBER_STARTDATE = #{member_startDate}
+			,MEMBER_ENDDATE = NULL
 		WHERE 
 			MEMBER_ID = #{member_Id}
 		</if>
@@ -295,26 +311,71 @@ FROM
 	</delete>
 	
 	<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
+		SELECT
+    		p.project_id,
+    		p.PROJECT_NAME,
+    		pd.PUSHDATE,
+    		pd.PULLDATE
+		FROM
+    		member m
+		JOIN
+    		PROJECT_DETAIL PD ON M.MEMBER_ID = PD.MEMBER_ID
+		JOIN
+    		PROJECT P ON PD.PROJECT_ID = P.PROJECT_ID
+		WHERE
+    		M.MEMBER_ID = #{member_Id}
+	</select>
+	
+	<!-- 
 	SELECT 
-    	MP.PROJECT_ID
-    	,mp.PROJECT_NAME
-    	,MP.PROJECT_SKILL_LANGUAGE
-    	,MP.PROJECT_SKILL_DB
-    	,MP.PROJECT_STARTDATE
-    	,MP.PROJECT_ENDDATE
+    	M.MEMBER_ID
+    	,PD.PROJECT_ID
+    	,PD.PROJECT_NAME
+    	,PD.PUSHDATE
+    	,PD.PULLDATE
 	FROM 
     	MEMBER M
 	JOIN
-    	MEMBER_PROJECT MP
+    	PROJECT_DETAIL PD
 	ON
-    	M.MEMBER_ID = MP.MEMBER_ID
+    	M.MEMBER_ID = PD.MEMBER_ID
 	WHERE 
-    	M.MEMBER_ID = #{member_Id}
-	</select>
+    	PD.MEMBER_ID = #{member_Id}
+	
+	 -->
+	
 	
 	<select id="getmemberId" resultType="com.jmh.dto.MemberDto">
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID=#{member_Id}
 	</select>
+
+	<insert id = "memberInmember" parameterType="hashMap">
+		INSERT 
+   			INTO 
+        		PROJECT_DETAIL
+                            (
+                                PROJECT_NO
+                                ,MEMBER_ID
+                                ,PROJECT_ID
+                                ,PROJECT_NAME
+                                ,PUSHDATE
+                                ,PULLDATE
+                            )
+        VALUES                        
+        (
+			(
+				SELECT 
+		  			TO_NUMBER(NVL(MAX(PROJECT_NO), 0))+ 1 
+		  		FROM 
+		  			PROJECT_DETAIL
+		  	)	
+		  		,#{member_Id}
+		  		,#{project_Id}
+		  		,#{project_Name}
+		  		,#{pushDate}
+		  		,#{pullDate}
+		 )
+	</insert>
 	
 	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
 뷰단에 원하는 포맷으로 출력을 원하시면
@@ -344,7 +405,6 @@ FROM
             AND MEMBER_TEL LIKE '%'||#{searchWord}||'%'
         </if>
         <if test="searchDate != null">
-            <!-- MEMBER_STARTDATE = TO_DATE(#{searchDate}, 'YYYY-MM-DD') -->
             AND MEMBER_STARTDATE = #{searchDate}
         </if>
     </where>

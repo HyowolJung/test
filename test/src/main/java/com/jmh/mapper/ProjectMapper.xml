@@ -95,25 +95,24 @@ SELECT
 	WHERE 
 		NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
 </select>
-<select id="getTotalCnt" resultType="integer"  parameterType="integer">
-		/*getTotalCnt*/
+	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		
 		<if test="searchWord == null and searchDate == null">
 		SELECT 
 			COUNT(*) 
 		FROM 
-			PROJECT
+			project
 		</if>
 		
 		<if test="searchWord != null or searchDate != null">
 		SELECT 
 			COUNT(*) 
 		FROM 
-			PROJECT
+			project
 			
 		<include refid="criteria"></include>
 		
-		</if>	
+		</if>
 	</select>
 
 	<!-- 2. 등록(아이디 체크) -->
@@ -283,13 +282,15 @@ SELECT
 	<select id="getProjectId" resultType="com.jmh.dto.ProjectDto">
 		SELECT PROJECT_ID FROM PROJECT WHERE PROJECT_ID=#{project_Id}
 	</select>
-
+	
+	<select id="getProjectListWithId">
+	
+	</select>
 <sql id="criteria">
     <where>
        <if test="searchField == 'id'"> 
-        <!-- <if test="searchField != null"> -->
-            <!-- AND PROJECT_ID LIKE '%'||#{searchWord}||'%' -->
-            AND PROJECT_ID = #{searchWord}
+           <!--  AND PROJECT_ID = #{searchWord} -->
+            AND PROJECT_ID LIKE '%'||#{searchWord}||'%'
         </if>
         <if test="searchField == 'name'">
             AND PROJECT_NAME LIKE '%'||#{searchWord}||'%'

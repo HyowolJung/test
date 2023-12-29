@@ -50,8 +50,9 @@ table {
 <table border="1">
 	<thead>
 		<tr>
-			<th>번호(회원)</th>
-			<th>이름(회원)</th>
+			<th>아이디(프로젝트)</th>
+			<th>이름(프로젝트)</th>
+			<th>고객사</th>
 			<th>언어</th>
 			<th>데이터베이스</th>
 			<th>투입일</th>
@@ -61,7 +62,8 @@ table {
 	<tbody>
 		<c:forEach var="projectList" items="${projectList}">
 			<tr>
-				<td id="td_Id">${projectList.project_Name }</td>
+				<td id="td_Id">${projectList.project_Id }</td>
+				<td>${projectList.project_Name }</td>
 				<td>${projectList.custom_company_id }</td>
 				<td>${projectList.project_Skill_Language}</td>
 				<td>${projectList.project_Skill_DB} </td>

@@ -135,7 +135,7 @@
 							if(result == true){
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
-								//location.href = "/project/projectRead?project_Id=" + project_Id + "&pageNo=" + pageNo;
+								location.href = "/project/projectRead?project_Id=" + project_Id + "&pageNo=" + pageNo;
 							}				
 						},    
 						error : function(request, status, error) { // 결과 에러 콜백함수        

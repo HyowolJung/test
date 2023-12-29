@@ -91,7 +91,7 @@
 	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
 	<button id="searchButton">조회</button>
 </div>
-	
+
 <table border="1" id="memberTable">
 	<thead>
 		<tr>
@@ -128,7 +128,7 @@
 $(document).ready(function() {
 	//let searchWord = $("#searchWord").val();
 	//<input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
-	//이렇게 하면 검색어를 입력하지 않았어도초기 브라우저가 로딩되면 당연히 공백같은 값들이 들어가지..
+	//이렇게 하면 검색어를 입력하지 않았어도 최초 브라우저가 로딩되면 당연히 공백같은 값들이 들어가지..
 	//우리는 입력된 값을 원하는 거지 value 값을 원하는게 아니잖아?
 	//그러니까 .value 혹은 .val() 를 하는게 아니라 innerText 같은걸 써야지...
 	
@@ -161,10 +161,8 @@ $(document).ready(function() {
 			},
 			success : function(resultMap) { // 결과 성공 콜백함수  
 				var memberList = resultMap.memberList;
-					var pageDto = resultMap.pageDto;
+				var pageDto = resultMap.pageDto;
 				$("#memberTable tbody").empty();
-				//$("#pagination").empty();
-				//console.log("resultMap : " + Object.keys(resultMap).length);
 				
            		if (memberList && memberList.length > 0) {
 					console.log("memberList가 있어요");               			
@@ -172,10 +170,7 @@ $(document).ready(function() {
                     	let newRow = $("<tr>");
                     	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                     	newRow.append("<td>" + memberList[i].member_No + "</td>");
-                    	//newRow.append("<td><a href= '/member/memberRead?member_Id="+ memberList[i].member_Id + "'>" + memberList[i].member_Id + "</a></td>");
-                    	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&page_No="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-                    	//newRow.append("<td><a href= '/member/detailPage?memberId=" + result[i].member_Id + "'>" + result[i].member_Name + "</a></td>");
                     	newRow.append("<td>" + memberList[i].member_Name + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Position + "</td>");
@@ -183,20 +178,17 @@ $(document).ready(function() {
                     	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
                     	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
-                    	/* newRow.append("<td>" + "개발중" + "</td>"); */
-                    	newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
+                    	newRow.append("<td>" + memberList[i].member_status + "</td>");
+                    	//newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
                     	
                     	$("#memberTable tbody").append(newRow);
-                    	//$("#pagination").html(result.pagination);
            			}
            			
            			var pagination = $("#pagination ul");
-           			//console.log("페이징번호 삭제");
            	        pagination.empty();
 
            	        if (pageDto.prev) {
            	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-           	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
            	        }
 
            	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
@@ -205,7 +197,6 @@ $(document).ready(function() {
 
            	        if (pageDto.next) {
            	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-           	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
            	        }
            			
            		}else{
@@ -254,14 +245,9 @@ $(document).ready(function() {
 					 "pageNo" : pageNo
 				},
 				success : function(result) { // 결과 성공 콜백함수        
-					//console.log(result);
-					//console.log("전송 성공");
-					//alert("수정 버튼 작동")
-					//var pageNo = $("#pageNo").val();
 					location.href = "/member/memberModify?member_Id=" + member_Id + "&pageNo=" + pageNo;						
 				},    
 				error : function(request, status, error) { // 결과 에러 콜백함수        
-					//console.log(error);
 					//console.log("전송 실패")
 				}
 			});	//ajax EndPoint

@@ -31,4 +31,6 @@ public interface ProjectMapper {
 
 	List<MemberDto> getprojectmemberList(int project_Id);
 
+	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
+
 }

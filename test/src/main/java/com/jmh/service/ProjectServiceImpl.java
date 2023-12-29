@@ -76,4 +76,10 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.getprojectmemberList(project_Id);
 	}
 
+//	@Override
+//	public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id) {
+//		// TODO Auto-generated method stub
+//		return projectMapper.getProjectListWithId(cri, member_Id);
+//	}
+
 }

@@ -2,6 +2,7 @@ package com.jmh.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,18 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.getmemberId(member_Id);
 	}
+
+	@Override
+	public int memberInmember(Map<String, Object> resultMap) {
+		// TODO Auto-generated method stub
+		return memberMapper.memberInmember(resultMap);
+	}
+
+//	@Override
+//	public void projectInmember(int project_Id) {
+//		return memberMapper.projectInmember(project_Id);
+//		
+//	}
 	
 	
 

@@ -80,8 +80,7 @@
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
 <div>
-	<%-- <div>현재 ${pageDto.cri.pageNo } 페이지 입니다.</div><br> --%> <!-- id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" ><!-- type="hidden" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
 	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
@@ -105,7 +104,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		
+	
 	</tbody>
 </table>
 	
@@ -132,72 +131,68 @@ $("#searchButton").click(function(){
 	let search_ck = "1";
 	let pageNo = document.getElementById("pageNo").value; 
 	
-	//1. 검색어 있음
-	if($("#searchWord").val || $("#date").val){ 
-		//console.log("1차 실행");
-		console.log("검색어가 있어요.");
-		//1. 데이터 불러오기
-		$.ajax({
-			type : 'POST',
-			url: '/project/projectList',
-			data: {
-				"searchField" :  searchField,
-			 	"searchWord" : searchWord,
-			 	"search_ck" : search_ck,
-			 	"pageNo" : pageNo,
-			 	"searchDate" : searchDate
-			},
-			success : function(resultMap) { // 결과 성공 콜백함수 
-				console.log("success");
-				var projectList = resultMap.projectList;
-				var pageDto = resultMap.pageDto;
-				$("#projectTable tbody").empty();
-				if (projectList && projectList.length > 0) {
-           			for (let i = 0; i < projectList.length; i++) {
-                    	let newRow = $("<tr>");
-                    	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
-                    	newRow.append("<td>" + projectList[i].project_No + "</td>");
-                    	/* newRow.append("<td>" + projectList[i].project_Id + "</td>"); */
-                    	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Id + "</a></td>");
-                    	newRow.append("<td>" + projectList[i].project_Name + "</td>");
-                    	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
-                    	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
-                    	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
-                    	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
+	$.ajax({
+		type : 'POST',
+		url: '/project/projectList',
+		data: {
+			"searchField" :  searchField,
+		 	"searchWord" : searchWord,
+		 	"search_ck" : search_ck,
+		 	"pageNo" : pageNo,
+		 	"searchDate" : searchDate
+		},
+		success : function(resultMap) { // 결과 성공 콜백함수 
+			console.log("success");
+			var projectList = resultMap.projectList;
+			var pageDto = resultMap.pageDto;
+			$("#projectTable tbody").empty();
+			
+			if (projectList && projectList.length > 0) {
+       			for (let i = 0; i < projectList.length; i++) {
+                	let newRow = $("<tr>");
+                	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
+                	newRow.append("<td>" + projectList[i].project_No + "</td>");
+                	/* newRow.append("<td>" + projectList[i].project_Id + "</td>"); */
+                	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Id + "</a></td>");
+                	newRow.append("<td>" + projectList[i].project_Name + "</td>");
+                	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
+                	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
+                	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
+                	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
 
-                    	$("#projectTable tbody").append(newRow);
-                	}
-           			
-           			var pagination = $("#pagination ul");
-           			console.log("페이징번호 삭제");
-           	        pagination.empty();
-					console.log("pageDto.startNo : " + pageDto.startNo);
-					console.log("pageDto.endNo : " + pageDto.endNo);
-           	        if (pageDto.prev) {
-           	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-           	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
-           	        }
+                	$("#projectTable tbody").append(newRow);
+            	}
+       			
+       			var pagination = $("#pagination ul");
+       			console.log("페이징번호 삭제");
+       	        pagination.empty();
+				console.log("pageDto.startNo : " + pageDto.startNo);
+				console.log("pageDto.endNo : " + pageDto.endNo);
+       	        
+				if (pageDto.prev) {
+       	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+       	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
+       	        }
 
-           	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
-           	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
-           	        }
+       	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+       	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+       	        }
 
-           	        if (pageDto.next) {
-           	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-           	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
-           	        }
-           		}else{
-           			console.log("projectList 가 NULL 이에요.")
-           			$("#projectTable tbody").empty();
-           		    $("#projectTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-           		}
-			},
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("검색어 없이 조회 실패");
-				return;
-			}
-		});	//ajax EndPoint
-	}//if EndPoint
+       	        if (pageDto.next) {
+       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+       	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
+       	        }
+       		}else{
+       			console.log("projectList 가 NULL 이에요.")
+       			$("#projectTable tbody").empty();
+       		    $("#projectTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+       		}
+		},
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("조회 실패");
+			//return;
+		}
+	});	//ajax EndPoint
 });		//$("#searchButton").click(function(){ EndPoint
 	
 $(document).on('click', '.radiobox', function() {

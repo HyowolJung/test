@@ -94,6 +94,9 @@ public class MemberController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri);
+			System.out.println("POST X) searchWord : " + cri.getSearchWord());
+			System.out.println("POST X) searchDate : " + cri.getSearchDate());
+			System.out.println("POST X) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
 			return resultMap;
@@ -104,6 +107,9 @@ public class MemberController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
+			System.out.println("POST O) searchWord : " + cri.getSearchWord());
+			System.out.println("POST O) searchDate : " + cri.getSearchDate());
+			System.out.println("POST O) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
 			return resultMap;
@@ -170,8 +176,10 @@ public class MemberController {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@GetMapping("/memberModify")
-	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo) { /* , @RequestParam int pageNo */
-		System.out.println("수정 화면 작동");
+	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo,  ProjectDto projectDto) { /* , @RequestParam int pageNo */
+		//System.out.println("수정 화면 작동");
+		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+		model.addAttribute("memberprojectList", memberprojectList);
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
 		model.addAttribute("pageNo" , pageNo);
 		return "member/memberModify";
@@ -182,6 +190,10 @@ public class MemberController {
 	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {
 		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
+		int member_endDate_ck = modifyDatas.getMember_endDate_ck();
+		System.out.println("member_endDate_ck : " + member_endDate_ck);
+		
+		
 		//int member_Id_ck = memberService.getmemberId(member_Id);
 		
 		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우

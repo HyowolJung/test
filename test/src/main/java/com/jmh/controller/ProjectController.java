@@ -49,12 +49,15 @@ public class ProjectController {
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		//if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchWord().length() == 0 && cri.getSearchWord().trim().isEmpty()) {	//조건 없이 조회 버튼만 누른 경우.
-		if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
+		//if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
+		if(search_ck != null && (cri.getSearchWord().equals("") && cri.getSearchDate() == null)) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
-			System.out.println("totalCnt : " + totalCnt);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			projectList = projectService.getProjectList(cri);
+			System.out.println("POST X) searchWord : " + cri.getSearchWord());
+			System.out.println("POST X) searchDate : " + cri.getSearchDate());
+			System.out.println("POST X) totalCnt : " + totalCnt);
 			System.out.println("projectList : " + projectList);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("projectList", projectList);
@@ -62,11 +65,14 @@ public class ProjectController {
 		}
 		
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null || !cri.getSearchWord().trim().isEmpty()) {
+		//else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null || !cri.getSearchWord().trim().isEmpty()) {
 		//else if (search_ck != null && (cri.getSearchWord() != null || cri.getSearchDate() != null)) {
+		if(search_ck != null && (!cri.getSearchWord().equals("") || cri.getSearchDate() != null)) {	
 			System.err.println("검색어 있는 조회");
-			System.out.println("POST) searchWord : " + cri.getSearchWord());
+			System.out.println("POST O) searchWord : " + cri.getSearchWord());
+			System.out.println("POST O) searchDate : " + cri.getSearchDate());
 			int totalCnt = projectService.getTotalCnt(cri);
+			System.out.println("POST O) totalCnt : " + totalCnt);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			projectList = projectService.searchProjectList(cri);
 			resultMap.put("pageDto", pageDto);
@@ -138,12 +144,14 @@ public class ProjectController {
 	@GetMapping("/projectModify")
 	public String modifyMember(@RequestParam("project_Id") int project_Id, Model model, @RequestParam int pageNo) { /* , @RequestParam int pageNo */
 		System.out.println("수정 화면 작동");
+		List<MemberDto> projectmemberList = projectService.getprojectmemberList(project_Id);
+		model.addAttribute("projectmemberList" , projectmemberList);
 		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
 		model.addAttribute("pageNo" , pageNo);
 		return "project/projectModify";
 	}
 		
-	//3. 수정(회원 정보 수정)
+	//3. 수정(회원 정보 수정 버튼 클릭)
 	@PostMapping("/projectModify")
 	public ResponseEntity<Boolean> modifyProject(@RequestBody ProjectDto modifyDatas) {
 		//int project_Id = modifyDatas.getProject_Id();		//jsp 에서 보내온 아이디
@@ -184,4 +192,6 @@ public class ProjectController {
 		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
 		return projectmemberList;
 	}
+	
+	
 }

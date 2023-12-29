@@ -2,6 +2,7 @@ package com.jmh.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -48,5 +49,9 @@ public interface MemberService {
 	public List<ProjectDto> getmemberprojectList(int member_Id);
 
 	public int getmemberId(int member_Id);
+
+	public int memberInmember(Map<String, Object> resultMap);
+
+	//public void projectInmember(int project_Id);
 
 }
