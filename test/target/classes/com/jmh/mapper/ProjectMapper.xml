@@ -28,6 +28,7 @@ SELECT
            WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
          END AS PROJECT_SKILL_DB
 	  ,PROJECT_STARTDATE
+	  ,PROJECT_ENDDATE
 	 
 FROM 
 (
@@ -39,6 +40,7 @@ FROM
 		,PROJECT_SKILL_LANGUAGE
 		,PROJECT_SKILL_DB
   		,PROJECT_STARTDATE
+  		,PROJECT_ENDDATE
       	,ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW
       	,COUNT(*) OVER() AS TOTAL_CNT
 	FROM
@@ -74,6 +76,7 @@ SELECT
            WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
          END AS PROJECT_SKILL_DB
 	  ,PROJECT_STARTDATE
+	  ,PROJECT_ENDDATE
 	 
 	FROM 
 	(
@@ -85,6 +88,7 @@ SELECT
 	  		,PROJECT_SKILL_LANGUAGE
 	  		,PROJECT_SKILL_DB
 	  		,PROJECT_STARTDATE
+	  		,PROJECT_ENDDATE
 	      	,ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW
 	      	,COUNT(*) OVER() AS TOTAL_CNT
 		FROM
@@ -101,14 +105,14 @@ SELECT
 		SELECT 
 			COUNT(*) 
 		FROM 
-			project
+			PROJECT
 		</if>
 		
 		<if test="searchWord != null or searchDate != null">
 		SELECT 
 			COUNT(*) 
 		FROM 
-			project
+			PROJECT
 			
 		<include refid="criteria"></include>
 		
@@ -272,9 +276,9 @@ SELECT
 	FROM 
     	MEMBER M
 	JOIN
-    	MEMBER_PROJECT MP
+    	PROJECT_DETAIL PD
 	ON
-    	M.MEMBER_ID = MP.MEMBER_ID
+    	M.MEMBER_ID = PD.MEMBER_ID
 	WHERE 
     	M.MEMBER_ID = #{member_Id}
 	</select>
@@ -286,6 +290,48 @@ SELECT
 	<select id="getProjectListWithId">
 	
 	</select>
+	
+	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDetailDto">
+	SELECT 
+PD.PROJECT_NO 
+	  ,PD.PROJECT_ID
+	  ,CASE
+           WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+           WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+           WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+           WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+           WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+         END AS CUSTOM_COMPANY_ID
+	  ,PD.PROJECT_NAME
+	  ,CASE
+           WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+           WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+           WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+           WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+         END AS PROJECT_SKILL_LANGUAGE
+      ,CASE
+           WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+           WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+           WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+           WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+         END AS PROJECT_SKILL_DB
+	  ,P.PROJECT_STARTDATE
+	  ,P.PROJECT_ENDDATE
+	  ,PD.PUSHDATE
+	  ,PD.PULLDATE
+	FROM 
+		PROJECT P
+	JOIN
+		PROJECT_DETAIL PD
+	ON
+		P.PROJECT_ID = PD.PROJECT_ID
+	JOIN
+		MEMBER M
+	ON
+		M.MEMBER_ID = PD.MEMBER_ID
+	</select>
+	
+	
 <sql id="criteria">
     <where>
        <if test="searchField == 'id'"> 

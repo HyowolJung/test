@@ -96,7 +96,7 @@ table {
 <tbody>
 	<c:forEach var="memberprojectList" items="${memberprojectList}">
 		<tr>
-			<td><input type="radio"></td>
+			<!-- <td><input type="radio"></td> -->
 			<td>${memberprojectList.project_Id }</td>
 			<td>${memberprojectList.project_Name }</td>
 			<td>${memberprojectList.pushDate}</td>

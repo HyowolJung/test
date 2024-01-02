@@ -105,7 +105,7 @@
 			<th>언어</th>
 			<th>데이터베이스</th>
 			<th>입사일</th>
-			<th>투입여부</th>
+			<!-- <th>상태</th> -->
 		</tr>
 	</thead>
 	<tbody>
@@ -178,7 +178,7 @@ $(document).ready(function() {
                     	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
                     	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_status + "</td>");
+                    	//newRow.append("<td>" + memberList[i].member_status + "</td>");
                     	//newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
                     	
                     	$("#memberTable tbody").append(newRow);

@@ -2,6 +2,7 @@ package com.jmh.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.jmh.dto.Criteria;
@@ -30,6 +31,8 @@ public interface ProjectMapper {
 	int deleteProject(int project_Id);
 
 	List<MemberDto> getprojectmemberList(int project_Id);
+
+	List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
 	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 

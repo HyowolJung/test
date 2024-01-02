@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
 @Repository
@@ -51,6 +52,6 @@ public interface MemberMapper {
 
 	Object projectInmember(int project_Id);
 
-	int memberInmember(Map<String, Object> resultMap);
+	int projectDetailInsert(ProjectDetailDto selectedRowData);
 	
 }

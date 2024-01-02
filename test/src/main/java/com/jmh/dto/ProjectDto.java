@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDto extends ProjectDetailDto{
-	private MemberDto memberDto;
 	private int project_No;
 	private int project_Id;
 	private String custom_company_id;

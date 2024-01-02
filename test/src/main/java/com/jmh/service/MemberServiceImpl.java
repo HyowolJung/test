@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 
@@ -103,9 +104,9 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int memberInmember(Map<String, Object> resultMap) {
+	public int projectDetailInsert(ProjectDetailDto selectedRowData) {
 		// TODO Auto-generated method stub
-		return memberMapper.memberInmember(resultMap);
+		return memberMapper.projectDetailInsert(selectedRowData);
 	}
 
 //	@Override

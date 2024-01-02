@@ -32,23 +32,10 @@ public class PopUpController {
 	private MemberService memberService;
 	
 	@Autowired
-	ProjectService projectService;
-	
-//	@GetMapping("/popProject")	//parameter 와 argument의 차이
-//	public ResponseEntity<String> popProject(Model model, Criteria cri) {
-//		//System.out.println("GET / popProject : " + member_Id);
-//		int totalCnt = projectService.getTotalCnt(cri);
-//		PageDto pageDto = new PageDto(cri, totalCnt);
-//		//model.addAttribute("member_Id", member_Id);
-//		model.addAttribute("pageDto", pageDto);
-//		return ResponseEntity.ok("Success");	
-//	}
+	private ProjectService projectService;
 	
 	@GetMapping("/popProject")
 	public String popProject(Model model, Criteria cri) {
-		//System.out.println("GET / popProject : " + member_Id);
-		//List<ProjectDto> projectList = projectService.getProjectList(cri);
-		//model.addAttribute("projectList" , projectList);
 		int totalCnt = projectService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		//model.addAttribute("member_Id", member_Id);
@@ -59,25 +46,25 @@ public class PopUpController {
 	//1. 조회(프로젝트 정보)
 	@PostMapping("/popProject")
 	@ResponseBody
-	public Map<String, Object> popProject(Model model, Criteria cri, String search_ck) {
-		//System.out.println("POST / popProject");
-		//System.out.println("member_Id : " + member_Id);
+	public Map<String, Object> popProject(Model model, Criteria cri, String search_ck, int member_Id) {
+		System.out.println("member_Id : " + member_Id);
 		Map<String, Object> resultMap = new HashMap<>();
-
-		List<ProjectDto> projectList = projectService.getProjectList(cri); 
-		//System.out.println("여기까지왔어");
+		List<ProjectDto> projectList = projectService.getProjectList(cri);
+		List<ProjectDto> Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		if(search_ck != null && (cri.getSearchWord().equals("") && cri.getSearchDate() == null)) {	
 			//System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			projectList = projectService.getProjectList(cri);
+			//Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
 			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
 			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
 			//System.out.println("POST X) totalCnt : " + totalCnt);
 			//System.out.println("projectList : " + projectList);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("projectList", projectList);
+			//resultMap.put("Filterd_pro_List", Filterd_pro_List);
 			return resultMap;
 		}
 		
@@ -104,34 +91,19 @@ public class PopUpController {
 		return "popup/popProject";
 	}
 	
-	@PostMapping("/memberInmember")
-	public String memberInproject(@RequestBody List<?> selectedRowData, ProjectDto projectDto, ProjectDetailDto projectDetailDto, MemberDto memberDto) {//, 
-		System.out.println("여기왔어요.");
-        System.out.println("memberDto.getMember_Id() : " + memberDto.getMember_Id());
-        System.out.println("projectDto.getProject_Id(); : " + projectDto.getProject_Id());
-        System.out.println("projectDto.getProject_Name(); : " + projectDto.getProject_Name());
-        //System.out.println("projectDto.getProject_Name(); : " + projectDto.getCustom_company_id());
-        //System.out.println("projectDto.getProject_Name(); : " + projectDto.getProject_Skill_Language());
-        //System.out.println("projectDto.getProject_Name(); : " + projectDto.getProject_Skill_DB());
-        //System.out.println("projectDto.getProject_Name(); : " + projectDto.getProject_startDate());
-        System.out.println("ProjectDetailDto.pushDate(); : " + projectDetailDto.getPushDate());
-        System.out.println("ProjectDetailDto.pullDate(); : " + projectDetailDto.getPullDate());
-        
-        int project_Id = projectDto.getProject_Id();
-        System.out.println("project_Id : " + project_Id);
-        
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("member_Id", memberDto.getMember_Id());
-        resultMap.put("project_Id", projectDto.getProject_Id());
-        resultMap.put("project_Name", projectDto.getProject_Name());
-        //resultMap.put("custom_company_id", projectDto.getCustom_company_id());
-        resultMap.put("pushDate", projectDetailDto.getPushDate());
-        resultMap.put("pullDate", projectDetailDto.getPullDate());
-        
-        System.out.println("resultMap : " + resultMap);
-        //int insertCnt = memberService.memberInmember(resultMap);
-        
-		return "popup/popProject";
+	@PostMapping("/projectDetailInsert")
+	public String projectDetailInsert(@RequestBody ProjectDetailDto selectedRowData) {
+		System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+		System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+		System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+        int insertCnt = memberService.projectDetailInsert(selectedRowData);
+        if(insertCnt > 0) {
+			System.out.println("등록성공");
+			return "popup/popProject";
+		}else {
+			System.out.println("실패");
+			return "";
+		}
 	}
 	
 	

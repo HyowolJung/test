@@ -97,13 +97,14 @@
 	<thead>
 		<tr>
 			<th>ㅁ</th>
-			<th>번호</th>
-			<th>아이디</th>
+			<th style="display: none">번호</th>
+			<th style="display: none">아이디</th>
 			<th>이름</th>
 			<th>고객사</th>
-			<th>언어</th>
-			<th>데이터베이스</th>
+			<!-- <th>언어</th> -->
+			<!-- <th>데이터베이스</th> -->
 			<th>시작일</th>
+			<th>종료일</th>
 			<th>투입일</th>
 			<th>철수일</th>
 		</tr>
@@ -165,13 +166,14 @@ $("#searchButton").click(function(){
        			for (let i = 0; i < projectList.length; i++) {
                 	var newRow = $("<tr>");
                 	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
-                	newRow.append("<td>" + projectList[i].project_No + "</td>");
-                	newRow.append("<td>" + projectList[i].project_Id + "</td>");
+                	newRow.append("<td hidden>" + projectList[i].project_No + "</td>");
+                	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Name + "</td>");
                 	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
-                	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
-                	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
+                	//newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
+                	//newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
+                	newRow.append("<td>" + projectList[i].project_endDate + "</td>");
                 	newRow.append("<td><input type='date' name='pushdate')></td>");
                 	newRow.append("<td><input type='date' name='pulldate')></td>");
                 	$("#projectTable tbody").append(newRow);
@@ -234,23 +236,20 @@ $("#insert").click(function() {
  
         let selectedRowData = {
 	       	member_Id : $("#result_member_Id").val()
+	       	,project_No : selectedRow.find("td:nth-child(2)").text()
 			,project_Id : selectedRow.find("td:nth-child(3)").text()
 			,project_Name : selectedRow.find("td:nth-child(4)").text()
-			,pushDate : selectedRow.find("td:nth-child(9)").text()
-			,pullDate : selectedRow.find("td:nth-child(10)").text()
-		}
+			,pushDate : selectedRow.find("td:nth-child(8) input[name='pushdate']").val()
+			,pullDate : selectedRow.find("td:nth-child(9) input[name='pulldate']").val()
+        }
+        console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
+        console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
         $.ajax({
 			type : 'POST',
-			url: '/popup/memberInmember',
-			//contentType : 'application/json; charset=utf-8',
-			//data: JSON.stringify(selectedRowData), 
-			data: {
-				"member_Id" : member_Id
-				,"project_Id" : project_Id
-				,"project_Name" : project_Name
-				,"pushDate" : pushDate
-				,
-			},
+			url: '/popup/projectDetailInsert',
+			//data: selectedRowData,
+			contentType: 'application/json; charset=utf-8',
+			data: JSON.stringify(selectedRowData),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("등록 성공1");
 				//location.href = "/popup/projectInmember?pageNo=1";
@@ -258,16 +257,12 @@ $("#insert").click(function() {
 			error : function(request, status, error) { // 결과 에러 콜백함수        
 				alert("등록 실패");
 			}
-
 		}); //ajax EndPoint
     } else {
         // 선택된 라디오 버튼이 없는 경우, 알림 표시
         alert("라디오 버튼을 선택하세요.");
     }
 });
-	
-
-	
 	
 });	
 /* $(document).on('click', '.radiobox', function() {	

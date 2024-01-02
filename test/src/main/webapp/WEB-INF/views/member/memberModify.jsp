@@ -110,7 +110,7 @@
 <table border="1">
 <thead>
 	<tr>
-		<th>ㅁ</th>
+		<!-- <th>ㅁ</th> -->
 		<th>번호(프로젝트)</th>
 		<th>이름(프로젝트)</th>
 		<th>투입일</th>
@@ -120,7 +120,7 @@
 <tbody>
 	<c:forEach var="memberprojectList" items="${memberprojectList}">
 		<tr>
-			<td><input type="radio"></td>
+			<!-- <td><input type="radio"></td> -->
 			<td>${memberprojectList.project_Id }</td>
 			<td>${memberprojectList.project_Name }</td>
 			<td>${memberprojectList.pushDate}</td>

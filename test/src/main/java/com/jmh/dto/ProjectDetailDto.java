@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDetailDto {
+	private int member_Id;
+	private int project_Id;
+	private int project_No;
+	private String project_Name;
 	private LocalDate pushDate;
 	private LocalDate pullDate;
 }

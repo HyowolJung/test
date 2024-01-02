@@ -101,6 +101,7 @@
 			<th>언어</th>
 			<th>데이터베이스</th>
 			<th>시작일</th>
+			<th>종료일</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -159,7 +160,7 @@ $("#searchButton").click(function(){
                 	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
-
+                	newRow.append("<td>" + projectList[i].project_endDate + "</td>");
                 	$("#projectTable tbody").append(newRow);
             	}
        			

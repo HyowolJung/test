@@ -2,6 +2,7 @@ package com.jmh.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
@@ -34,6 +35,9 @@ public interface ProjectService {
 
 	public List<MemberDto> getprojectmemberList(int project_Id);
 
+	public List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
+
+	
 	//public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 	
 	

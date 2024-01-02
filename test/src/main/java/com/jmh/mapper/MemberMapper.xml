@@ -51,6 +51,8 @@
             WHEN MEMBER_STATUS = 'S02' THEN '파견중'
             WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
             WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+            WHEN MEMBER_STATUS = 'null' THEN '대기중'
+            WHEN MEMBER_STATUS = '' THEN '대기중'
           END AS MEMBER_STATUS
 		  
 		FROM 
@@ -349,7 +351,7 @@ FROM
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID=#{member_Id}
 	</select>
 
-	<insert id = "memberInmember" parameterType="hashMap">
+	<insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
 		INSERT 
    			INTO 
         		PROJECT_DETAIL
@@ -361,40 +363,30 @@ FROM
                                 ,PUSHDATE
                                 ,PULLDATE
                             )
-        VALUES                        
-        (
-			(
-				SELECT 
-		  			TO_NUMBER(NVL(MAX(PROJECT_NO), 0))+ 1 
-		  		FROM 
-		  			PROJECT_DETAIL
-		  	)	
-		  		,#{member_Id}
-		  		,#{project_Id}
-		  		,#{project_Name}
-		  		,#{pushDate}
-		  		,#{pullDate}
-		 )
+        
+		 VALUES
+    		(
+        		(
+            		SELECT TO_NUMBER(NVL(MAX(PROJECT_NO), 0)) + 1
+            		FROM PROJECT_DETAIL
+        		),
+        		#{member_Id},
+        		#{project_Id},
+        		#{project_Name},
+        		#{pushDate},
+        		<if test="pullDate != null">
+            		#{pullDate}
+        		</if>
+        		<if test="pullDate == null">
+            		''
+        		</if>
+    		)
 	</insert>
 	
 	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
 뷰단에 원하는 포맷으로 출력을 원하시면
 
 	 -->
-	
-	<!-- <sql id="criteria">
-		<choose>
-			<when test="searchField == 'name'">
-				WHERE MEMBER_NAME LIKE '%'||#{searchWord}||'%'
-			</when>
-			<when test="searchField == 'tel'">
-				WHERE MEMBER_TEL like '%'||#{searchWord}||'%'
-			</when>
-			<when test="searchDate == 'date'">
-				WHERE MEMBER_STARTDATE = #{searchDate}
-			</when>
-		</choose>
-	</sql> -->
 	
 <sql id="criteria">
     <where>
@@ -409,19 +401,5 @@ FROM
         </if>
     </where>
 </sql>
-<!-- <sql id="criteria">
-    <where>
-        <choose>
-            <when test="searchField == 'name'">
-                AND MEMBER_NAME LIKE '%'||#{searchWord}||'%'
-            </when>
-            <when test="searchField == 'tel'">
-                AND MEMBER_TEL LIKE '%'||#{searchWord}||'%'
-            </when>
-        </choose>
-        <when test="searchDate != null and searchDate != ''">
-            AND MEMBER_STARTDATE = TO_DATE(#{searchDate}, 'YYYY-MM-DD')
-        </when>
-    </where>
-</sql> -->
+
 </mapper>  
