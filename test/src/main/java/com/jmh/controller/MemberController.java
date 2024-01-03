@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 import com.jmh.service.MemberService;
@@ -187,14 +188,16 @@ public class MemberController {
 	
 	//3. 수정(회원 정보 수정)
 	@PostMapping("/memberModify")
-	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {
+	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
 		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
 		int member_endDate_ck = modifyDatas.getMember_endDate_ck();
 		System.out.println("member_endDate_ck : " + member_endDate_ck);
 		
-		
-		//int member_Id_ck = memberService.getmemberId(member_Id);
+		//System.out.println("selectedProjectData.getProject_Id() : " + selectedProjectData.getProject_Id());
+		//System.out.println("selectedProjectData.getPullDate() : " + selectedProjectData.getPullDate());
+		//System.out.println("selectedProjectData.getPushDate() : " + selectedProjectData.getPushDate());
+		//System.out.println(selectedProjectData.getProject_Id());
 		
 		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
 		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
@@ -224,6 +227,15 @@ public class MemberController {
 				result = false;
 			}
 		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/memberModify2")
+	public ResponseEntity<Boolean> memberModify2(@RequestBody ProjectDetailDto selectedProjectData) {
+		boolean result = false;
+		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
+		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

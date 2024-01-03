@@ -90,8 +90,10 @@
     <label>시작일</label>
 	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
 	<button id="searchButton">검색</button>
+	<button id="insert">추가</button>	
 </div>
-<input type="text" id="result_member_Id" readonly/>
+
+<input type="text" id="result_member_Id" readonly style="display: none"/>
 
 <table border="1" id="projectTable">
 	<thead>
@@ -118,8 +120,7 @@
 	<ul class="pagination" style= "list-style: none;">
 	</ul>
 </div>	
-<button id="insert">투입</button>	<!--  투입버튼을 누르면, 1. 투입일 -->
-<button id="delete">철수</button>
+<!--  투입버튼을 누르면, 1. 투입일 -->
 
 </body>
 <script>
@@ -142,16 +143,13 @@ $("#searchButton").click(function(){
 	let searchDate = $("#searchDate").val();
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = $("#searchWord").val();
-	let search_ck = "1";
 	let pageNo = document.getElementById("pageNo").value; 
-	//console.log("member_Idfffffff : " + member_Id);
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popProject',
 		data: {
-			"searchField" :  searchField,
+			"searchField" : searchField,
 		 	"searchWord" : searchWord,
-		 	"search_ck" : search_ck,
 		 	"pageNo" : pageNo,
 		 	"searchDate" : searchDate,
 		 	"member_Id" : member_Id
@@ -173,21 +171,17 @@ $("#searchButton").click(function(){
                 	//newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
                 	//newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
-                	newRow.append("<td>" + projectList[i].project_endDate + "</td>");
+                	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>");
                 	newRow.append("<td><input type='date' name='pushdate')></td>");
                 	newRow.append("<td><input type='date' name='pulldate')></td>");
                 	$("#projectTable tbody").append(newRow);
             	}
        			
        			var pagination = $("#pagination ul");
-       			//console.log("페이징번호 삭제");
        	        pagination.empty();
-				//console.log("pageDto.startNo : " + pageDto.startNo);
-				//console.log("pageDto.endNo : " + pageDto.endNo);
        	        
 				if (pageDto.prev) {
        	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-       	         	/* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>"); */
        	        }
 
        	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
@@ -196,8 +190,8 @@ $("#searchButton").click(function(){
 
        	        if (pageDto.next) {
        	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-       	            /* pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>"); */
        	        }
+       	     	
        		}else{
        			console.log("projectList 가 NULL 이에요.")
        			$("#projectTable tbody").empty();
@@ -206,7 +200,6 @@ $("#searchButton").click(function(){
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("조회 실패");
-			//return;
 		}
 	});	//ajax EndPoint
 });	//$("#searchButton").click(function(){ EndPoint
@@ -221,19 +214,6 @@ $("#insert").click(function() {
     if (selectedRadio) {
         var selectedRow = selectedRadio.closest("tr");
 
-        //let project_Id = selectedRow.find("td:nth-child(3)").text();
-		//let project_Name = selectedRow.find("td:nth-child(4)").text();
-		//let custom_company_id = selectedRow.find("td:nth-child(5)").text();
-		//let project_Skill_Language = selectedRow.find("td:nth-child(6)").text();
-		//let project_Skill_DB = selectedRow.find("td:nth-child(7)").text();
-		//let project_startDate = selectedRow.find("td:nth-child(8)").text();
-		//let pushDate = selectedRow.find("td:nth-child(9)").text();
-		//let pullDate = selectedRow.find("td:nth-child(10)").text();
-		
-        // 추출된 데이터 처리 (예: 콘솔에 출력)
-        //console.log("project_Id : " + project_Id);
-        //console.log("project_Name : " + project_Name);
- 
         let selectedRowData = {
 	       	member_Id : $("#result_member_Id").val()
 	       	,project_No : selectedRow.find("td:nth-child(2)").text()
@@ -251,7 +231,8 @@ $("#insert").click(function() {
 			contentType: 'application/json; charset=utf-8',
 			data: JSON.stringify(selectedRowData),
 			success : function(result) { // 결과 성공 콜백함수        
-				alert("등록 성공1");
+				alert("추가 성공");
+				window.location.reload();
 				//location.href = "/popup/projectInmember?pageNo=1";
 			}, 
 			error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -263,27 +244,9 @@ $("#insert").click(function() {
         alert("라디오 버튼을 선택하세요.");
     }
 });
-	
+
+
 });	
-/* $(document).on('click', '.radiobox', function() {	
-	let project_Id = $(this).data("id");
-	alert("project_Id : " , project_Id);
-	$("#insert").click(function(){
-		$.ajax({
-			type : 'GET',
-			url: '/popup/projectInmember',
-			data: {
-				 "project_Id" : project_Id
-			},
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("등록 성공");
-				location.href = "/popup/popProject?pageNo=1";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("삭제 실패");
-			}
-		}); //ajax EndPoint
-	});	//$("#insert").click(function(){	EndPoint
-}); //$(document).on('click', '.radiobox', function() {		EndPoint */
+
 </script>
 </html>

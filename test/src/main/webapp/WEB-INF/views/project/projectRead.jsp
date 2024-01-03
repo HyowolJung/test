@@ -45,7 +45,7 @@ table {
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <div class="centered">
-상세정보
+프로젝트 상세정보
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"> <!--  -->
 <table border="1">
 	<thead>

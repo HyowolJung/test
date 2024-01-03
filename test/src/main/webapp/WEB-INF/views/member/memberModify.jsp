@@ -44,6 +44,7 @@
 </head>
 <body>
 <div class="centered">
+멤버 수정화면
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"><!--  type="hidden" --> 
 <table border="1">
 	<thead>
@@ -105,13 +106,15 @@
 		</tbody>
 	</table>
 </div>
+<button type="button" id="modifyButton">수정하기</button>
+<button type="button" id="back">뒤로 가기</button>
 <br><br>
-참여중인 프로젝트 <button id="push">투입</button><button id="pull">철수</button>
-<table border="1">
+참여중인 프로젝트
+<table border="1" id="mem_pro_List">
 <thead>
 	<tr>
-		<!-- <th>ㅁ</th> -->
-		<th>번호(프로젝트)</th>
+		<th>ㅁ</th>
+		<th style="display: none">번호(프로젝트)</th>
 		<th>이름(프로젝트)</th>
 		<th>투입일</th>
 		<th>철수일</th>
@@ -120,27 +123,28 @@
 <tbody>
 	<c:forEach var="memberprojectList" items="${memberprojectList}">
 		<tr>
-			<!-- <td><input type="radio"></td> -->
-			<td>${memberprojectList.project_Id }</td>
+			<td><input type="radio"></td>
+			<td style="display: none">${memberprojectList.project_Id }</td>
 			<td>${memberprojectList.project_Name }</td>
-			<td>${memberprojectList.pushDate}</td>
-			<td>${memberprojectList.pullDate} </td>
+			<td><input type="date" value="${memberprojectList.pushDate}"></td>
+			<td><input type="date" value="${memberprojectList.pullDate}"></td>
+			
+			<!-- newRow.append("<td><input type='date' name='pushdate')></td>");
+            newRow.append("<td><input type='date' name='pulldate')></td>"); -->
 		</tr>
 	</c:forEach>
 </tbody>
 </table>
+ <button type="button" id="push">추가</button>
+<button type="button" id="modifyButton2">수정하기</button>
 
-<button type="button" id="modifyButton">수정하기</button>
-<button type="button" id="back">뒤로 가기</button>
 	
 	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		
+			
 		//1. 수정버튼 클릭
 		$("#modifyButton").click(function() {
-			console.log("수정버튼 클릭됨");
-			
 			let member_Tel = $("#member_Tel").val();//입력한 전화번호
 			let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 			let member_Id = $("#member_Id").val();
@@ -166,6 +170,7 @@
 				}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
 					if(member_endDate.length == 0){
 						console.log("퇴사일이 없어요.");
+						
 						let modifyDatas = {
 							member_Id : $("#member_Id").val()
 							,member_Name : $("#member_Name").val()
@@ -223,7 +228,7 @@
 							if(result == true){
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
+								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 							}else if(result == false){
 								alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 							}				
@@ -233,7 +238,6 @@
 						}
 					}); //ajax EndPoint
 			}
-			
 			
 		}// elseIf EndPoint
 	}// elseIf EndPoint
@@ -266,7 +270,47 @@
 		    },
 		}); //ajax EndPoint
 	});//$("#insert").click(function() { EndPoint
-		
+
+	var radioClicked = false; // 라디오 버튼 클릭 상태 추적 변수
+	var selectedProjectData = {};
+    // 라디오 버튼 클릭 이벤트 핸들러
+    $("#mem_pro_List tbody").on("click", "input[type='radio']", function() {
+        radioClicked = true; // 라디오 버튼이 클릭되었다고 표시
+        console.log("선택되었다.");
+        var tr = $(this).closest("tr");
+
+        // 행의 데이터 추출
+        var projectId = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
+        var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
+        var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
+        var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
+        
+        console.log("선택된 프로젝트: ", projectId, projectName, pushDate, pullDate);
+        
+        selectedProjectData = {
+        	projectId: tr.find("td:nth-child(2)").text().trim(),
+            projectName: tr.find("td:nth-child(3)").text().trim(),
+            pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
+            pullDate: tr.find("td:nth-child(5) input[type='date']").val()
+        };
+    });
+
+    $("#modifyButton2").click(function() {
+        if (!radioClicked) { // 라디오 버튼이 클릭되지 않았다면
+            alert("수정할 데이터를 체크해주세욧");
+        } else { // 라디오 버튼이 클릭되었다면
+            console.log("여기서부터 해야함 : " + selectedProjectData);
+            $.ajax({
+    			type : 'POST',
+    			url: '/member/memberModify2',
+    			contentType : 'application/json; charset=utf-8',
+				data: JSON.stringify(selectedProjectData),
+    			success: function(result) {
+    		        console.log("성공ㅇ")
+    		    },
+            });
+        }
+    });
 });
 	</script>
 </body>

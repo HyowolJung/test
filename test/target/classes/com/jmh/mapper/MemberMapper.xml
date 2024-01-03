@@ -314,18 +314,22 @@ FROM
 	
 	<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
 		SELECT
-    		p.project_id,
-    		p.PROJECT_NAME,
-    		pd.PUSHDATE,
-    		pd.PULLDATE
-		FROM
-    		member m
+    		P.PROJECT_ID,
+    		P.PROJECT_NAME,
+    		PD.PUSHDATE,
+    		PD.PULLDATE
+		FROM 
+			PROJECT P
 		JOIN
-    		PROJECT_DETAIL PD ON M.MEMBER_ID = PD.MEMBER_ID
-		JOIN
-    		PROJECT P ON PD.PROJECT_ID = P.PROJECT_ID
+			PROJECT_DETAIL PD
+		ON
+			P.PROJECT_ID = PD.PROJECT_ID
+    	JOIN
+        	MEMBER M
+    	ON
+        	M.MEMBER_ID = PD.MEMBER_ID
 		WHERE
-    		M.MEMBER_ID = #{member_Id}
+        	PD.MEMBER_ID = #{member_Id}
 	</select>
 	
 	<!-- 
@@ -374,12 +378,13 @@ FROM
         		#{project_Id},
         		#{project_Name},
         		#{pushDate},
-        		<if test="pullDate != null">
+        		#{pullDate}
+        		<!-- <if test="pullDate != null">
             		#{pullDate}
         		</if>
         		<if test="pullDate == null">
-            		''
-        		</if>
+					''
+        		</if> -->
     		)
 	</insert>
 	

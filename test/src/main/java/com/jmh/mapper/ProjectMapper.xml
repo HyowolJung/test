@@ -291,46 +291,85 @@ SELECT
 	
 	</select>
 	
-	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDetailDto">
+	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
 	SELECT 
-PD.PROJECT_NO 
-	  ,PD.PROJECT_ID
-	  ,CASE
-           WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
-           WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
-           WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
-           WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
-           WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
-         END AS CUSTOM_COMPANY_ID
-	  ,PD.PROJECT_NAME
-	  ,CASE
-           WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-         END AS PROJECT_SKILL_LANGUAGE
-      ,CASE
-           WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
-           WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
-           WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
-           WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-         END AS PROJECT_SKILL_DB
-	  ,P.PROJECT_STARTDATE
-	  ,P.PROJECT_ENDDATE
-	  ,PD.PUSHDATE
-	  ,PD.PULLDATE
-	FROM 
-		PROJECT P
-	JOIN
-		PROJECT_DETAIL PD
-	ON
-		P.PROJECT_ID = PD.PROJECT_ID
-	JOIN
-		MEMBER M
-	ON
-		M.MEMBER_ID = PD.MEMBER_ID
-	</select>
+    P.PROJECT_NO,
+    P.PROJECT_ID,
+    CASE
+        WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+        WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+        WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+        WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+        WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+    END AS CUSTOM_COMPANY_ID,
+    P.PROJECT_NAME,
+    CASE
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+    END AS PROJECT_SKILL_LANGUAGE,
+    CASE
+        WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+        WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+        WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+        WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+    END AS PROJECT_SKILL_DB,
+    P.PROJECT_STARTDATE,
+   	NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
 	
+	FROM 
+    	PROJECT P
+	WHERE NOT EXISTS (
+    	SELECT 1
+    	FROM 
+    		PROJECT_DETAIL PD
+    	WHERE 
+    		PD.PROJECT_ID = P.PROJECT_ID
+    	AND 
+    		PD.MEMBER_ID = #{member_Id}
+	)
+	</select>	
+	
+	<select id="getFilterd_search_pro_List" resultType="com.jmh.dto.ProjectDto">
+	SELECT 
+    P.PROJECT_NO,
+    P.PROJECT_ID,
+    CASE
+        WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+        WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+        WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+        WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+        WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+    END AS CUSTOM_COMPANY_ID,
+    P.PROJECT_NAME,
+    CASE
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+        WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+    END AS PROJECT_SKILL_LANGUAGE,
+    CASE
+        WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+        WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+        WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+        WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+    END AS PROJECT_SKILL_DB,
+    P.PROJECT_STARTDATE,
+   	NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
+	FROM 
+    	PROJECT P
+	WHERE NOT EXISTS (
+    	SELECT 1
+    	FROM 
+    		PROJECT_DETAIL PD
+    	WHERE 
+    		PD.PROJECT_ID = P.PROJECT_ID
+    	AND 
+    		PD.MEMBER_ID = #{member_Id}
+	)
+	 <include refid="criteria2"/>
+	</select>
 	
 <sql id="criteria">
     <where>
@@ -345,5 +384,16 @@ PD.PROJECT_NO
             AND PROJECT_STARTDATE = #{searchDate}
         </if>
     </where>
+</sql>
+<sql id="criteria2">
+    <if test="cri.searchField == 'id'"> 
+        AND P.PROJECT_ID LIKE '%' || #{cri.searchWord} || '%'
+    </if>
+    <if test="cri.searchField == 'name'">
+        AND P.PROJECT_NAME LIKE '%' || #{cri.searchWord} || '%'
+    </if>
+    <if test="cri.searchDate != null">
+        AND P.PROJECT_STARTDATE = #{cri.searchDate}
+    </if>
 </sql>
 </mapper>

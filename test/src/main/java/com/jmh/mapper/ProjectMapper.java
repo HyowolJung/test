@@ -33,6 +33,8 @@ public interface ProjectMapper {
 	List<MemberDto> getprojectmemberList(int project_Id);
 
 	List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
+	
+	List<ProjectDto> getFilterd_search_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
 	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 

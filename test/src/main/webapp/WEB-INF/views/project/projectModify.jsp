@@ -44,6 +44,7 @@
 </head>
 <body>
 <div class="centered">
+프로젝트 수정화면
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"><!--  type="hidden" --> 
 <table border="1">
 	<thead>
