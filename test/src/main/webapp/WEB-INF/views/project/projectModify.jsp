@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,7 +98,40 @@
 	<button type="button" id="modifyButton">수정하기</button>
 	<button type="button" id="back">뒤로 가기</button>
 </div>
-		
+참여중인 회원
+<table border="1">
+<thead>
+	<tr>
+		<th>ㅁ</th>
+		<th>사번</th>
+		<th>이름</th>
+		<!-- <th>성별</th> -->
+		<th>직급</th>
+		<th>전화번호</th>
+		<th>언어</th>
+		<th>데이터베이스</th>
+		<th>투입일</th>
+		<th>철수일</th>
+	</tr>
+</thead>
+<tbody>
+	<c:forEach var="projectmember" items="${projectmemberList}">
+		<tr>
+			<td><input type="radio"></td>
+        	<td>${projectmember['MEMBER_ID']}</td>
+        	<td>${projectmember['MEMBER_NAME']}</td>
+        	<td>${projectmember['MEMBER_POSITION']}</td>
+        	<td>${projectmember['MEMBER_TEL']}</td>
+        	<td>${projectmember['MEMBER_SKILL_LANGUAGE']}</td>
+        	<td>${projectmember['MEMBER_SKILL_DB']}</td>
+        	<td><input type="date" name="pushDate" id="pushDate" value="${projectmember['PUSHDATE']}"/></td>
+        	<td><input type="date" name="pullDate" id="pullDate" value="${projectmember['PULLDATE']}"/></td>
+    	</tr>
+	</c:forEach>
+</tbody>
+</table>
+
+	
 	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {

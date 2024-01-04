@@ -332,6 +332,15 @@ FROM
         	PD.MEMBER_ID = #{member_Id}
 	</select>
 	
+	<delete id="memberDelete2" parameterType="int">
+		DELETE 
+		FROM 
+			PROJECT_DETAIL
+		WHERE 
+			MEMBER_ID = #{member_Id}
+		AND
+			PROJECT_ID = #{project_Id}
+	</delete>
 	<!-- 
 	SELECT 
     	M.MEMBER_ID
@@ -379,19 +388,32 @@ FROM
         		#{project_Name},
         		#{pushDate},
         		#{pullDate}
-        		<!-- <if test="pullDate != null">
+    		)
+	</insert>
+	        		<!-- <if test="pullDate != null">
             		#{pullDate}
         		</if>
         		<if test="pullDate == null">
 					''
         		</if> -->
-    		)
-	</insert>
 	
 	<!-- 20/05/06 과 같이 값이 보일 뿐, 실제 값이 YY/MM/DD 로 저장된게 아닙니다.
 뷰단에 원하는 포맷으로 출력을 원하시면
 
 	 -->
+
+<update id="memberModify2" parameterType="com.jmh.dto.ProjectDetailDto">
+	UPDATE 
+   		PROJECT_DETAIL
+   	SET
+		PUSHDATE = #{pushDate},
+		PULLDATE = #{pullDate}
+	WHERE 
+		MEMBER_ID = #{member_Id}
+	AND
+		PROJECT_ID = #{project_Id}
+	
+</update>
 	
 <sql id="criteria">
     <where>

@@ -109,6 +109,18 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.projectDetailInsert(selectedRowData);
 	}
 
+	@Override
+	public int memberModify2(ProjectDetailDto selectedProjectData) {
+		// TODO Auto-generated method stub
+		return memberMapper.memberModify2(selectedProjectData);
+	}
+
+	@Override
+	public int memberDelete2(ProjectDetailDto selectedProjectData) {
+		// TODO Auto-generated method stub
+		return memberMapper.memberDelete2(selectedProjectData);
+	}
+
 //	@Override
 //	public void projectInmember(int project_Id) {
 //		return memberMapper.projectInmember(project_Id);

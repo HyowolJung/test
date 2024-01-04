@@ -160,7 +160,8 @@ $("#searchButton").click(function(){
                 	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
-                	newRow.append("<td>" + projectList[i].project_endDate + "</td>");
+                	//newRow.append("<td>" + projectList[i].project_endDate + "</td>");
+                	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>");
                 	$("#projectTable tbody").append(newRow);
             	}
        			
@@ -240,8 +241,6 @@ $(document).on('click', '.radiobox', function() {
 		});	//ajax EndPoint
 	});	//#modifyButton EndPoint
 });//$(document).on('click', '.radiobox', function() { EndPoint
-
-
 
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 

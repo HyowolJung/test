@@ -234,8 +234,39 @@ public class MemberController {
 	@PostMapping("/memberModify2")
 	public ResponseEntity<Boolean> memberModify2(@RequestBody ProjectDetailDto selectedProjectData) {
 		boolean result = false;
+		System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
 		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
 		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
+		
+		int modifyCnt = memberService.memberModify2(selectedProjectData);
+		
+		if(modifyCnt > 0) {
+			System.out.println("수정성공");
+			result = true;
+		}else if(modifyCnt < 0) {
+			System.out.println("수정실패");
+			result = false;
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/memberDelete2")
+	public ResponseEntity<Boolean> memberDelete2(@RequestBody ProjectDetailDto selectedProjectData) {
+		boolean result = false;
+		System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
+		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
+		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
+		
+		int deleteCnt = memberService.memberDelete2(selectedProjectData);
+		
+		if(deleteCnt > 0) {
+			System.out.println("수정성공");
+			result = true;
+		}else if(deleteCnt < 0) {
+			System.out.println("수정실패");
+			result = false;
+		}
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

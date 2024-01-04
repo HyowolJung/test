@@ -53,6 +53,10 @@ public interface MemberService {
 
 	public int projectDetailInsert(ProjectDetailDto selectedRowData);
 
+	public int memberModify2(ProjectDetailDto selectedProjectData);
+
+	public int memberDelete2(ProjectDetailDto selectedProjectData);
+
 	//public void projectInmember(int project_Id);
 
 }

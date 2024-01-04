@@ -53,5 +53,9 @@ public interface MemberMapper {
 	Object projectInmember(int project_Id);
 
 	int projectDetailInsert(ProjectDetailDto selectedRowData);
+
+	int memberModify2(ProjectDetailDto selectedProjectData);
+
+	int memberDelete2(ProjectDetailDto selectedProjectData);
 	
 }

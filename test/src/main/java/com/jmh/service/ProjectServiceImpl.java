@@ -1,6 +1,7 @@
 package com.jmh.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Override
-	public List<MemberDto> getprojectmemberList(int project_Id) {
+	public List<Map<String, Object>> getprojectmemberList(int project_Id) {
 		// TODO Auto-generated method stub
 		return projectMapper.getprojectmemberList(project_Id);
 	}

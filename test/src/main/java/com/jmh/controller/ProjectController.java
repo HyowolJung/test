@@ -1,5 +1,10 @@
 package com.jmh.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +149,7 @@ public class ProjectController {
 	@GetMapping("/projectModify")
 	public String modifyMember(@RequestParam("project_Id") int project_Id, Model model, @RequestParam int pageNo) { /* , @RequestParam int pageNo */
 		System.out.println("수정 화면 작동");
-		List<MemberDto> projectmemberList = projectService.getprojectmemberList(project_Id);
+		List<Map<String, Object>> projectmemberList = projectService.getprojectmemberList(project_Id);
 		model.addAttribute("projectmemberList" , projectmemberList);
 		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
 		model.addAttribute("pageNo" , pageNo);
@@ -184,13 +189,27 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/projectRead")
-	public List<MemberDto> projectRead(Model model, @RequestParam int project_Id, Criteria cri, @RequestParam int pageNo) {
-		List<MemberDto> projectmemberList = projectService.getprojectmemberList(project_Id);
+	public String projectRead(Model model, @RequestParam int project_Id, Criteria cri, @RequestParam int pageNo) {
+		//List<Map<String, Object>> projectmemberList = new ArrayList<Map<String, Object>>();
+		//projectmemberList = projectService.getprojectmemberList(project_Id);
+		List<Map<String, Object>> projectmemberList = projectService.getprojectmemberList(project_Id);
+		SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+		SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy/MM/dd");
+
+		for(Map<String, Object> member : projectmemberList) {
+			String originalDate = member.get("PUSHDATE").toString();
+		    LocalDate date = LocalDate.parse(originalDate, originalFormat);
+		    String formattedDate = date.format(targetFormat);
+		    member.put("PUSHDATE", formattedDate);
+		    
+		}
+		
 		System.out.println("pageNo : " + pageNo);
 		model.addAttribute("pageNo", pageNo);
+		System.out.println("projectmemberList : " + projectmemberList);
 		model.addAttribute("projectmemberList" , projectmemberList);
 		model.addAttribute("projectList" ,projectService.getModifyList(project_Id));
-		return projectmemberList;
+		return "project/projectRead"; //projectmemberList
 	}
 	
 	

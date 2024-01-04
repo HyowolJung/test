@@ -84,8 +84,8 @@ table {
 <table border="1">
 <thead>
 	<tr>
-		<th>ㅁ</th>
-		<th>번호(프로젝트)</th>
+		<!-- <th>ㅁ</th> -->
+		<th style="display: none">번호(프로젝트)</th>
 		<th>이름(프로젝트)</th>
 		<!-- <th>언어</th>
 		<th>데이터베이스</th> -->
@@ -97,7 +97,7 @@ table {
 	<c:forEach var="memberprojectList" items="${memberprojectList}">
 		<tr>
 			<!-- <td><input type="radio"></td> -->
-			<td>${memberprojectList.project_Id }</td>
+			<td style="display: none">${memberprojectList.project_Id }</td>
 			<td>${memberprojectList.project_Name }</td>
 			<td>${memberprojectList.pushDate}</td>
 			<td>${memberprojectList.pullDate} </td>

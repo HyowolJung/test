@@ -1,6 +1,7 @@
 package com.jmh.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public interface ProjectService {
 	public int deleteProject(int project_Id);
 
 	//
-	public List<MemberDto> getprojectmemberList(int project_Id);
+	public List<Map<String, Object>> getprojectmemberList(int project_Id);
 
 	public List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 

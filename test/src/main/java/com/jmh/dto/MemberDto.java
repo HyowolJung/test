@@ -35,6 +35,8 @@ public class MemberDto {
 	private String member_Tel;
 	private String member_Skill_Language;
 	private String member_Skill_DB;
+	private ProjectDetailDto projectDetail;
+	
 	
 	//@DateTimeFormat(pattern = "yy/MM/dd")
 	//@PastOrPresent
