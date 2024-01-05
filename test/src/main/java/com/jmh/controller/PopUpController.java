@@ -110,28 +110,63 @@ public class PopUpController {
 		}
 	}
 	
-//	@PostMapping("/projectDetailUpdate")
-//	public String projectDetailUPDATE(@RequestBody ProjectDetailDto selectedRowData) {
-//		System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-//		System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-//		System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-//        int insertCnt = memberService.projectDetailInsert(selectedRowData);
-//        if(insertCnt > 0) {
-//			System.out.println("등록성공");
-//			return "popup/popProject";
-//		}else {
-//			System.out.println("실패");
-//			return "";
+	@GetMapping("/popMember")
+	public String popMember(Model model, Criteria cri) {
+		int totalCnt = memberService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		System.out.println("cri.getStartNo()1 : " + cri.getStartNo());
+		System.out.println("cri.getEndNo()1 : " + cri.getEndNo());
+		//model.addAttribute("member_Id", member_Id);
+		//System.out.println("pageDto : " + pageDto);
+		model.addAttribute("pageDto", pageDto);
+		return "popup/popMember";	
+	}
+	
+	@PostMapping("/popMember")
+	@ResponseBody
+	public Map<String, Object> popMember(Model model, Criteria cri, int project_Id) {
+		System.out.println("cri.getsearchWord() : " + cri.getSearchWord());
+		System.out.println("cri.getsearchField() : " + cri.getSearchField());
+		int totalCnt = memberService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id);
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("memberList", memberList);
+		resultMap.put("pageDto", pageDto);
+		//List<ProjectDto> projectList = projectService.getProjectList(cri);
+		 //Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
+		// Filterd_search_pro_List = projectService.getFilterd_search_pro_List(cri,member_Id); 
+		//1. 검색어 없이 조회 버튼을 클릭한 경우
+//		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
+//			System.err.println("검색어 없는 조회");
+//			int totalCnt = projectService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			//projectList = projectService.getProjectList(cri);
+//			List<ProjectDto> Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
+//			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
+//			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
+//			//System.out.println("POST X) totalCnt : " + totalCnt);
+//			//System.out.println("projectList : " + projectList);
+//			resultMap.put("pageDto", pageDto);
+//			//resultMap.put("projectList", projectList);
+//			resultMap.put("projectList", Filterd_pro_List);
+//			return resultMap;
 //		}
-//	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+//		
+//		//2. 검색어 있고 조회 버튼을 클릭한 경우
+//		if(!cri.getSearchWord().equals("") || cri.getSearchDate() != null) {	
+//			System.err.println("검색어 있는 조회");
+//			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
+//			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
+//			int totalCnt = projectService.getTotalCnt(cri);
+//			//System.out.println("POST O) totalCnt : " + totalCnt);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			//projectList = projectService.searchProjectList(cri);
+//			List<ProjectDto> Filterd_search_pro_List = projectService.getFilterd_search_pro_List(cri,member_Id); 
+//			resultMap.put("pageDto", pageDto);
+//			resultMap.put("projectList", Filterd_search_pro_List);
+//			return resultMap;
+//		}
+		return resultMap;	
+	}
 }

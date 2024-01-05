@@ -109,7 +109,7 @@
 <button type="button" id="modifyButton">수정하기</button>
 <button type="button" id="back1">뒤로 가기</button>
 <br><br>
-참여중인 프로젝트<button type="button" id="push">추가</button><button type="button" id="removeButton2">삭제</button>
+참여중인 프로젝트 <button type="button" id="push">추가</button><button type="button" id="removeButton2">삭제</button>
 <table border="1" id="mem_pro_List">
 <thead>
 	<tr>
@@ -260,7 +260,7 @@
 		let openURL = '/popup/popProject?pageNo=1&member_Id='+member_Id;
 		window.open(openURL, 'pop', popOption);
 		$.ajax({
-			type : 'POST',
+			type : 'GET',
 			url: '/popup/popProject',
 			data: {
 				 "member_Id" : member_Id

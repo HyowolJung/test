@@ -89,8 +89,8 @@
 	  					<option value="S023" ${projectList.project_Skill_DB == 'POSTGRESQL' ? 'selected' : ''}>POSTGRESQL</option>
 					</select>
 				</td><br>
-				<td><input type="date" name="project_startDate" id="project_startDate" value ="${projectList.project_startDate }"/></td>
-				<td><input type="date" name="project_endDate" id="project_endDate" value ="${projectList.project_endDate }"/></td>
+				<td><input type="date" name="project_startDate" id="project_startDate" value = "${projectList.project_startDate }"/></td>
+				<td><input type="date" name="project_endDate" id="project_endDate" value = "${projectList.project_endDate }"/></td>
 			</tr>
 		</c:forEach>
 	</tbody>
@@ -98,7 +98,7 @@
 	<button type="button" id="modifyButton">수정하기</button>
 	<button type="button" id="back">뒤로 가기</button>
 </div>
-참여중인 회원
+참여중인 회원 <button type="button" id="push">추가</button><button type="button" id="removeButton2">삭제</button>
 <table border="1">
 <thead>
 	<tr>
@@ -124,13 +124,12 @@
         	<td>${projectmember['MEMBER_TEL']}</td>
         	<td>${projectmember['MEMBER_SKILL_LANGUAGE']}</td>
         	<td>${projectmember['MEMBER_SKILL_DB']}</td>
-        	<td><input type="date" name="pushDate" id="pushDate" value="${projectmember['PUSHDATE']}"/></td>
-        	<td><input type="date" name="pullDate" id="pullDate" value="${projectmember['PULLDATE']}"/></td>
+        	<td><input type="date" value="<fmt:formatDate value="${projectmember['PUSHDATE']}" pattern = "yyyy-MM-dd"/>"></td>
+        	<td><input type="date" value="<fmt:formatDate value="${projectmember['PULLDATE']}" pattern = "yyyy-MM-dd"/>"></td>
     	</tr>
 	</c:forEach>
 </tbody>
 </table>
-
 	
 	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript">
@@ -218,6 +217,26 @@
 			var pageNo = $("#pageNo").val();
 			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
 		});
+	    
+		$("#push").click(function() {
+			var project_Id = $("#project_Id").val();
+			let popOption = "width = 1050xp, height = 650px, top = 200px, left = 300px, scrollbars = yes";
+			//let openURL = '/popup/popProject';
+			let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id;
+			window.open(openURL, 'pop', popOption);
+			$.ajax({
+				type : 'GET',
+				url: '/popup/popMember',
+				data: {
+					 "project_Id" : project_Id
+				},
+				success: function(response) {
+			        if (response === "Success") {
+			        } else {
+			        }
+			    },
+			}); //ajax EndPoint
+		});//$("#insert").click(function() { EndPoint
 });
 </script>
 </body>

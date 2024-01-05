@@ -140,8 +140,10 @@ $(document).ready(function() {
 	let result_Name = $("#result_Name");		//결과를 출력할 공간(div)
 	   		
 	project_Name.on('blur', function() { 		
-		let project_Name_Check1 = /([^가-힣\x20])/i;	//정규식1(자음 모음 불가능)
-		let project_Name_Check2 = /^[가-힣]{1,15}$/;	//정규식2(1~15자 글자만 가능)
+		//let project_Name_Check1 = /([^가-힣\x20])/i;	//정규식1(자음 모음 불가능)
+		let project_Name_Check1 = /^[가-힣A-Za-z ()]{0,30}$/;	//정규식1(자음 모음 불가능)
+		//let project_Name_Check2 = /^[가-힣A-Za-z ()]{0,30}$/; //한글,영문,공백,특수문자()만 허용
+		//let project_Name_Check2 = /^[가-힣]{1,15}$/;	//정규식2(1~15자 글자만 가능)
 		//let member_Name_Check3 = /^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\x20]*$/gi;	//특수문자 및 이모티콘 불가능
 			
 		//console.log("member_Name : " + member_Name);
@@ -153,9 +155,9 @@ $(document).ready(function() {
 		
 		}else if(project_Name.val().length != 0){
 			//1-2. 이름 유효성 체크(자음 모음 불가능)
-			if(project_Name_Check1.test(project_Name.val()) != true){	//자음, 모음만으로 이루어지지 않았을 때
+			if(project_Name_Check1.test(project_Name.val()) == true ){	//자음, 모음만으로 이루어지지 않았을 때
 				result_Name.css("color", "green").html("");
-			}else if(project_Name_Check1.test(project_Name.val()) == true){ //자음, 모음만으로 이루어졌을 때
+			}else if(project_Name_Check1.test(project_Name.val()) != true){ //자음, 모음만으로 이루어졌을 때
 				result_Name.css("color","red").html("적절한 형식이 아닙니다.");
 				return;
 			}

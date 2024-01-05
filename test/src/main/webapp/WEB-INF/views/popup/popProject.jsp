@@ -83,11 +83,11 @@
 <div>
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
-	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
-	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
+		<option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
+	  	<option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
-    <label>시작일</label>
+    <label>시작일</label>S
 	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
 	<button id="searchButton">검색</button>
 	<button id="insert">추가</button>	
@@ -120,7 +120,6 @@
 	<ul class="pagination" style= "list-style: none;">
 	</ul>
 </div>	
-<!--  투입버튼을 누르면, 1. 투입일 -->
 
 </body>
 <script>

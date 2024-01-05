@@ -57,6 +57,8 @@ public interface MemberService {
 
 	public int memberDelete2(ProjectDetailDto selectedProjectData);
 
+	public List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
+
 	//public void projectInmember(int project_Id);
 
 }

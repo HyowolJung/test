@@ -193,16 +193,16 @@ public class ProjectController {
 		//List<Map<String, Object>> projectmemberList = new ArrayList<Map<String, Object>>();
 		//projectmemberList = projectService.getprojectmemberList(project_Id);
 		List<Map<String, Object>> projectmemberList = projectService.getprojectmemberList(project_Id);
-		SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-		SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy/MM/dd");
-
-		for(Map<String, Object> member : projectmemberList) {
-			String originalDate = member.get("PUSHDATE").toString();
-		    LocalDate date = LocalDate.parse(originalDate, originalFormat);
-		    String formattedDate = date.format(targetFormat);
-		    member.put("PUSHDATE", formattedDate);
-		    
-		}
+//		SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//		SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy/MM/dd");
+//
+//		for(Map<String, Object> member : projectmemberList) {
+//			String originalDate = member.get("PUSHDATE").toString();
+//		    LocalDate date = LocalDate.parse(originalDate, originalFormat);
+//		    String formattedDate = date.format(targetFormat);
+//		    member.put("PUSHDATE", formattedDate);
+//		    
+//		}
 		
 		System.out.println("pageNo : " + pageNo);
 		model.addAttribute("pageNo", pageNo);

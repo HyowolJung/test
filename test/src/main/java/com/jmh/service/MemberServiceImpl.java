@@ -121,6 +121,12 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.memberDelete2(selectedProjectData);
 	}
 
+	@Override
+	public List<MemberDto> getFilterd_search_mem_List(Criteria cri, int project_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.getFilterd_search_mem_List(cri, project_Id);
+	}
+
 //	@Override
 //	public void projectInmember(int project_Id) {
 //		return memberMapper.projectInmember(project_Id);
