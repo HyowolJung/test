@@ -11,8 +11,8 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.jmh.test">
-		<level value="debug" />
+	<logger name="com.jmh.controller">
+		<level value="info" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
@@ -65,7 +65,7 @@
 	
 	<!-- Root Logger -->
 	<root>
-		<priority value="warn" />
+		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
 	

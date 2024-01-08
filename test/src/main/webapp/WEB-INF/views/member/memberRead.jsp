@@ -50,7 +50,7 @@ table {
 <table border="1">
 	<thead>
 		<tr>
-			<th>아이디</th>
+			<th>사번</th>
 			<th>이름</th>
 			<th>성별</th>
 			<th>직급</th>

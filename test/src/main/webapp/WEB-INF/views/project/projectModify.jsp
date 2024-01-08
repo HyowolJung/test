@@ -218,25 +218,25 @@
 			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
 		});
 	    
-		$("#push").click(function() {
+		$("#push").click(function() {	//1
 			var project_Id = $("#project_Id").val();
-			let popOption = "width = 1050xp, height = 650px, top = 200px, left = 300px, scrollbars = yes";
-			//let openURL = '/popup/popProject';
-			let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id;
-			window.open(openURL, 'pop', popOption);
+			var project_Name = $("#project_Name").val();
+			//let popOption = "width = 1050xp, height = 650px, top = 200px, left = 300px, scrollbars = yes";
+			//let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id;
+			//window.open(openURL, 'pop', popOption);
 			$.ajax({
 				type : 'GET',
 				url: '/popup/popMember',
 				data: {
-					 "project_Id" : project_Id
+					"project_Id" : project_Id,
+					"project_Name" : project_Name
 				},
 				success: function(response) {
-			        if (response === "Success") {
-			        } else {
-			        }
+					alert("success")
+			        //location.href = "/popup/popMember?pageNo=1&project_Id=" + project_Id;
 			    },
 			}); //ajax EndPoint
-		});//$("#insert").click(function() { EndPoint
+		});//$("#push").click(function() {
 });
 </script>
 </body>

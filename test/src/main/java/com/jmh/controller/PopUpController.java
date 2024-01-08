@@ -1,6 +1,7 @@
 package com.jmh.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
@@ -23,6 +25,9 @@ import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.service.MemberService;
 import com.jmh.service.ProjectService;
+
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
 @RequestMapping("/popup")
@@ -97,59 +102,67 @@ public class PopUpController {
 	
 	@PostMapping("/projectDetailInsert")
 	public String projectDetailInsert(@RequestBody ProjectDetailDto selectedRowData) {
-		System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-		System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-		System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-        int insertCnt = memberService.projectDetailInsert(selectedRowData);
-        if(insertCnt > 0) {
-			System.out.println("등록성공");
-			return "popup/popProject";
-		}else {
-			System.out.println("실패");
-			return "";
+		if(selectedRowData.getCheck() == "m") {
+			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+			int insertCnt = memberService.projectDetailInsert(selectedRowData);
+			if(insertCnt > 0) {
+				System.out.println("등록성공");
+				return "popup/popMember";
+			}else {
+				System.out.println("실패");
+				return "";
+			}
 		}
+		
+		if(selectedRowData.getCheck() == "f") {
+			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+	        int insertCnt = memberService.projectDetailInsert(selectedRowData);
+	        if(insertCnt > 0) {
+				System.out.println("등록성공");
+				return "popup/popProject";
+			}else {
+				System.out.println("실패");
+				return "";
+			}
+		}
+		return "";
 	}
 	
 	@GetMapping("/popMember")
-	public String popMember(Model model, Criteria cri) {
+	public String popMember(Model model, Criteria cri,
+			@RequestParam(value = "project_Id", required = false) String project_Id,
+			@RequestParam(value = "project_Name", required = false) String project_Name) {
+		System.err.println("project_Name11 : " + project_Name);
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		System.out.println("cri.getStartNo()1 : " + cri.getStartNo());
-		System.out.println("cri.getEndNo()1 : " + cri.getEndNo());
-		//model.addAttribute("member_Id", member_Id);
-		//System.out.println("pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
-		return "popup/popMember";	
+		model.addAttribute("project_Name", project_Name);
+		return "popup/popMember";
 	}
 	
 	@PostMapping("/popMember")
 	@ResponseBody
-	public Map<String, Object> popMember(Model model, Criteria cri, int project_Id) {
-		System.out.println("cri.getsearchWord() : " + cri.getSearchWord());
-		System.out.println("cri.getsearchField() : " + cri.getSearchField());
-		int totalCnt = memberService.getTotalCnt(cri);
-		PageDto pageDto = new PageDto(cri, totalCnt);
-		List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id);
+	public Map<String, Object> popMember(Model model, Criteria cri, int project_Id, String project_Name) {
+		System.out.println("project_Name : " + project_Name);
 		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("memberList", memberList);
-		resultMap.put("pageDto", pageDto);
-		//List<ProjectDto> projectList = projectService.getProjectList(cri);
-		 //Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
-		// Filterd_search_pro_List = projectService.getFilterd_search_pro_List(cri,member_Id); 
+		if(project_Name != null) {
+			ModelAndView mav = new ModelAndView();
+			mav.setViewName("/pop/popMember");
+			mav.addObject("project_Name" , project_Name);
+		}
+		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 //		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
 //			System.err.println("검색어 없는 조회");
-//			int totalCnt = projectService.getTotalCnt(cri);
+//			int totalCnt = memberService.getTotalCnt(cri);
 //			PageDto pageDto = new PageDto(cri, totalCnt);
-//			//projectList = projectService.getProjectList(cri);
-//			List<ProjectDto> Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
-//			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
-//			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
-//			//System.out.println("POST X) totalCnt : " + totalCnt);
-//			//System.out.println("projectList : " + projectList);
+//			List<MemberDto> memberList = memberService.getFilterd_mem_List(cri, project_Id);
 //			resultMap.put("pageDto", pageDto);
-//			//resultMap.put("projectList", projectList);
-//			resultMap.put("projectList", Filterd_pro_List);
+//			resultMap.put("memberList", memberList);
 //			return resultMap;
 //		}
 //		
@@ -158,13 +171,11 @@ public class PopUpController {
 //			System.err.println("검색어 있는 조회");
 //			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
 //			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
-//			int totalCnt = projectService.getTotalCnt(cri);
-//			//System.out.println("POST O) totalCnt : " + totalCnt);
+//			int totalCnt = memberService.getTotalCnt(cri);
 //			PageDto pageDto = new PageDto(cri, totalCnt);
-//			//projectList = projectService.searchProjectList(cri);
-//			List<ProjectDto> Filterd_search_pro_List = projectService.getFilterd_search_pro_List(cri,member_Id); 
+//			List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id); 
 //			resultMap.put("pageDto", pageDto);
-//			resultMap.put("projectList", Filterd_search_pro_List);
+//			resultMap.put("memberList", memberList);
 //			return resultMap;
 //		}
 		return resultMap;	

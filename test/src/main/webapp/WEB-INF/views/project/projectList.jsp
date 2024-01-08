@@ -95,7 +95,7 @@
 		<tr>
 			<th>ㅁ</th>
 			<th>번호</th>
-			<th>아이디</th>
+			<th style="display: none">아이디</th>
 			<th>이름</th>
 			<th>고객사</th>
 			<th>언어</th>
@@ -154,8 +154,8 @@ $("#searchButton").click(function(){
                 	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
                 	newRow.append("<td>" + projectList[i].project_No + "</td>");
                 	/* newRow.append("<td>" + projectList[i].project_Id + "</td>"); */
-                	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Id + "</a></td>");
-                	newRow.append("<td>" + projectList[i].project_Name + "</td>");
+                	newRow.append("<td hidden>" + projectList[i].project_Id + "</a></td>");
+                	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Name + "</td>");
                 	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");

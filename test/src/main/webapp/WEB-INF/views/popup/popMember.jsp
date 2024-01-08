@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -79,7 +80,7 @@
 </style>
 <body>
 <div>
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
 	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
@@ -91,7 +92,13 @@
 	<button id="insert">추가</button>	
 </div>
 
+
 <input type="text" id="result_project_Id" readonly style="display: none"/>
+<input id="project_Name11" name="project_Name11" value="${project_Data.project_Name}">
+
+
+<input id="project_Name12" name="project_Name12" value="${project_Name}">
+<c:out value="${project_Name}"></c:out>
 
 <table border="1" id="memberTable">
 	<thead>
@@ -100,12 +107,12 @@
 			<th style="display: none">번호</th>
 			<th style="display: none">아이디</th>
 			<th>이름</th>
-			<th>성별</th>
 			<th>직급</th>
 			<th>전화번호</th>
 			<th>언어</th>
 			<th>데이터베이스</th>
-			<th>입사일</th>
+			<th>투입일</th>
+			<th>철수일</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -123,7 +130,11 @@
 const urlParams = new URLSearchParams(window.location.search);
 const project_Id = urlParams.get('project_Id');
 $("#result_project_Id").val(project_Id);
+
 $(document).ready(function() {
+	var project_Name = "${project_Name}"; // JSP 템플릿 엔진을 사용한 방식
+    console.log("프로젝트 이름: " + project_Name);
+	
 	$("#searchButton").click(function(){
 		let searchDate = $("#searchDate").val();
 		let searchField = document.getElementById("searchField").value; 
@@ -152,12 +163,12 @@ $(document).ready(function() {
                     	newRow.append("<td hidden>" + memberList[i].member_No + "</td>");
                     	newRow.append("<td hidden>" + memberList[i].member_Id + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Name + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Position + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
+                    	newRow.append("<td><input type='date' name='pushdate')></td>");
+                    	newRow.append("<td><input type='date' name='pulldate')></td>");
 	                	$("#memberTable tbody").append(newRow);
 	            	}
 	       			
@@ -187,8 +198,74 @@ $(document).ready(function() {
 			}
 		});	//ajax EndPoint
 	});	//$("#searchButton").click(function(){ EndPoint
+	
+	$("#insert").click(function() {
+	    // 선택된 라디오 버튼이 있는지 확인
+	    if (selectedRadio) {
+	        var selectedRow = selectedRadio.closest("tr");
 
+	        let selectedRowData = {
+	        	project_Id : $("#result_project_Id").val()
+	        	,project_Name : $("#project_Name").val()
+		       	,member_No : selectedRow.find("td:nth-child(2)").text()
+				,member_Id : selectedRow.find("td:nth-child(3)").text()
+				,member_Name : selectedRow.find("td:nth-child(4)").text()
+				,pushDate : selectedRow.find("td:nth-child(9) input[name='pushdate']").val()
+				,pullDate : selectedRow.find("td:nth-child(10) input[name='pulldate']").val()
+				,check : m
+	        }
+	        console.log("pushDate : " + selectedRow.find("td:nth-child(9) input[name='pushdate']").val());
+	        console.log("pullDate : " + selectedRow.find("td:nth-child(10) input[name='pulldate']").val());
+	        $.ajax({
+				type : 'POST',
+				url: '/popup/projectDetailInsert',
+				//data: selectedRowData,
+				contentType: 'application/json; charset=utf-8',
+				data: JSON.stringify(selectedRowData),
+				success : function(result) { // 결과 성공 콜백함수        
+					alert("추가 성공");
+					window.location.reload();
+					//location.href = "/popup/projectInmember?pageNo=1";
+				}, 
+				error : function(request, status, error) { // 결과 에러 콜백함수        
+					alert("등록 실패");
+				}
+			}); //ajax EndPoint
+	    } else {
+	        // 선택된 라디오 버튼이 없는 경우, 알림 표시
+	        alert("라디오 버튼을 선택하세요.");
+	    }
+	});
+		
 });
+	
+function go(pageNo){
+	let searchField = document.getElementById("searchField").value; 
+	let searchWord = document.getElementById("searchWord").value;
+	//var pageNo = document.getElementById("pageNo").value; 
+	$.ajax({
+		type : 'POST',
+		url: '/member/memberList',
+		data: {
+			 "pageNo" : pageNo,
+			 "searchWord" : searchWord,
+			 "searchField" : searchField,
+		},
+		success : function(resultMap) { // 결과 성공 콜백함수    
+			if (searchWord.trim() !== "") {
+			    //console.log("검색어가 있습니다.");
+			    location.href = "/popup/popMember?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			} else {
+			    //console.log("검색어가 없습니다.");
+			    location.href = "/popup/popMember?pageNo=" + pageNo;
+			}
+			
+		},
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("작동 실패");
+		}
+	});	//ajax EndPoint
+};//function go EndPoint
 </script>
 </body>
 </html>

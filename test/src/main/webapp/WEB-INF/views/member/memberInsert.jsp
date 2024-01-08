@@ -52,7 +52,7 @@
 	<input type="text" id="member_Id"/><br>
 	<div id="result_Id"></div><br>
 	
-	<label>이름</label>
+	<label>사번</label>
 	<input type="text" id="member_Name" value="안녕"/><br>
 	<div id="result_Name"></div><br>
 	

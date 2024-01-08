@@ -122,7 +122,13 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public List<MemberDto> getFilterd_search_mem_List(Criteria cri, int project_Id) {
+	public List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id) {
+		System.out.println("Service) cri.getStartNo() : " + cri.getStartNo());
+		return memberMapper.getFilterd_mem_List(cri, project_Id);
+	}
+
+	@Override
+	public List<MemberDto> getFilterd_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.getFilterd_search_mem_List(cri, project_Id);
 	}

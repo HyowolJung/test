@@ -220,6 +220,7 @@ $("#insert").click(function() {
 			,project_Name : selectedRow.find("td:nth-child(4)").text()
 			,pushDate : selectedRow.find("td:nth-child(8) input[name='pushdate']").val()
 			,pullDate : selectedRow.find("td:nth-child(9) input[name='pulldate']").val()
+			,check : p
         }
         console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
         console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
@@ -242,10 +243,36 @@ $("#insert").click(function() {
         // 선택된 라디오 버튼이 없는 경우, 알림 표시
         alert("라디오 버튼을 선택하세요.");
     }
-});
-
-
-});	
+});	//$("#insert").click(function() {
+});	//$(document).ready(function() {
+	
+function go(pageNo){
+	let searchField = document.getElementById("searchField").value; 
+	let searchWord = document.getElementById("searchWord").value;
+	//var pageNo = document.getElementById("pageNo").value; 
+	$.ajax({
+		type : 'POST',
+		url: '/member/memberList',
+		data: {
+			 "pageNo" : pageNo,
+			 "searchWord" : searchWord,
+			 "searchField" : searchField,
+		},
+		success : function(resultMap) { // 결과 성공 콜백함수    
+			if (searchWord.trim() !== "") {
+			    //console.log("검색어가 있습니다.");
+			    location.href = "/popup/popProject?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			} else {
+			    //console.log("검색어가 없습니다.");
+			    location.href = "/popup/popProject?pageNo=" + pageNo;
+			}
+			
+		},
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("작동 실패");
+		}
+	});	//ajax EndPoint
+};//function go EndPoint
 
 </script>
 </html>

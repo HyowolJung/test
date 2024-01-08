@@ -58,6 +58,8 @@ public interface MemberMapper {
 
 	int memberDelete2(ProjectDetailDto selectedProjectData);
 
+	List<MemberDto> getFilterd_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
+	
 	List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	
 	

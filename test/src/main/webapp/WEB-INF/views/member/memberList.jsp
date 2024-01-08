@@ -97,7 +97,7 @@
 		<tr>
 			<th>ㅁ</th>
 			<th>번호</th>
-			<th>아이디</th>
+			<th>사번</th>
 			<th>이름</th>
 			<th>성별</th>
 			<th>직급</th>
