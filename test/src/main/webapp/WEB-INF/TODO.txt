@@ -48,3 +48,14 @@
 회원 관리
 프로젝트 관리
 	
+
+	
+
+--꼭 생각해봐야 하는 거	
+1. RESTFUL 게시판을 구현해보기. (GET, POST, PUT, PATCH, DELETE 등)
+
+
+
+
+--비축벌레가 가져온 거
+1. history.replaceState({}, null, location.pathname);

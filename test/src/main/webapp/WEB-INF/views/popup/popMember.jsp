@@ -80,7 +80,7 @@
 </style>
 <body>
 <div>
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"><!-- type="hidden" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
 	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
@@ -94,11 +94,10 @@
 
 
 <input type="text" id="result_project_Id" readonly style="display: none"/>
-<input id="project_Name11" name="project_Name11" value="${project_Data.project_Name}">
+<input id="project_Name" name="project_Name" value="${project_Name}" style="display: none">
 
-
-<input id="project_Name12" name="project_Name12" value="${project_Name}">
-<c:out value="${project_Name}"></c:out>
+<%-- <input id="project_Name" name="project_Name" value="${project_Data.project_Name}"> 
+<c:out value="${project_Name}"></c:out> --%>
 
 <table border="1" id="memberTable">
 	<thead>
@@ -130,12 +129,13 @@
 const urlParams = new URLSearchParams(window.location.search);
 const project_Id = urlParams.get('project_Id');
 $("#result_project_Id").val(project_Id);
-
+let project_Name = $("#project_Name").val();
 $(document).ready(function() {
 	var project_Name = "${project_Name}"; // JSP 템플릿 엔진을 사용한 방식
     console.log("프로젝트 이름: " + project_Name);
 	
 	$("#searchButton").click(function(){
+		alert("searchButton 버튼이 클릭되었어요.")		
 		let searchDate = $("#searchDate").val();
 		let searchField = document.getElementById("searchField").value; 
 		let searchWord = $("#searchWord").val();
@@ -148,7 +148,8 @@ $(document).ready(function() {
 			 	"searchWord" : searchWord,
 			 	"pageNo" : pageNo,
 			 	"searchDate" : searchDate,
-			 	"project_Id" : project_Id
+			 	"project_Id" : project_Id,
+			 	"project_Name" : project_Name
 			},
 			success : function(resultMap) { // 결과 성공 콜백함수 
 				console.log("success");
@@ -190,7 +191,7 @@ $(document).ready(function() {
 	       		}else{
 	       			console.log("memberList 가 NULL 이에요.")
 	       			$("#memberTable tbody").empty();
-	       		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+	       		    $("#memberTable tbody").html("<tr><td colspan='10' style='text-align:center;'>결과가 없어요.</td></tr>");
 	       		}
 			},
 			error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -198,12 +199,14 @@ $(document).ready(function() {
 			}
 		});	//ajax EndPoint
 	});	//$("#searchButton").click(function(){ EndPoint
-	
+	$(document).on("change", ".radiobox", function() {
+	    selectedRadio = $(this);
+	});
 	$("#insert").click(function() {
 	    // 선택된 라디오 버튼이 있는지 확인
 	    if (selectedRadio) {
 	        var selectedRow = selectedRadio.closest("tr");
-
+	        let check = 2;
 	        let selectedRowData = {
 	        	project_Id : $("#result_project_Id").val()
 	        	,project_Name : $("#project_Name").val()
@@ -212,7 +215,7 @@ $(document).ready(function() {
 				,member_Name : selectedRow.find("td:nth-child(4)").text()
 				,pushDate : selectedRow.find("td:nth-child(9) input[name='pushdate']").val()
 				,pullDate : selectedRow.find("td:nth-child(10) input[name='pulldate']").val()
-				,check : m
+				,check : check
 	        }
 	        console.log("pushDate : " + selectedRow.find("td:nth-child(9) input[name='pushdate']").val());
 	        console.log("pullDate : " + selectedRow.find("td:nth-child(10) input[name='pulldate']").val());
@@ -245,7 +248,7 @@ function go(pageNo){
 	//var pageNo = document.getElementById("pageNo").value; 
 	$.ajax({
 		type : 'POST',
-		url: '/member/memberList',
+		url: '/popup/popMember',
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,

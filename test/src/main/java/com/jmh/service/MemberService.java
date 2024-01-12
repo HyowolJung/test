@@ -61,5 +61,6 @@ public interface MemberService {
 	
 	public List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	//public void projectInmember(int project_Id);
+	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
 
 }

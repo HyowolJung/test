@@ -212,7 +212,7 @@ $("#insert").click(function() {
     // 선택된 라디오 버튼이 있는지 확인
     if (selectedRadio) {
         var selectedRow = selectedRadio.closest("tr");
-
+		let check = 1;
         let selectedRowData = {
 	       	member_Id : $("#result_member_Id").val()
 	       	,project_No : selectedRow.find("td:nth-child(2)").text()
@@ -220,7 +220,7 @@ $("#insert").click(function() {
 			,project_Name : selectedRow.find("td:nth-child(4)").text()
 			,pushDate : selectedRow.find("td:nth-child(8) input[name='pushdate']").val()
 			,pullDate : selectedRow.find("td:nth-child(9) input[name='pulldate']").val()
-			,check : p
+			,check : check
         }
         console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
         console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
@@ -244,7 +244,16 @@ $("#insert").click(function() {
         alert("라디오 버튼을 선택하세요.");
     }
 });	//$("#insert").click(function() {
+	
+	
+	
+	
+	
 });	//$(document).ready(function() {
+	
+	
+	
+	
 	
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 
@@ -252,7 +261,7 @@ function go(pageNo){
 	//var pageNo = document.getElementById("pageNo").value; 
 	$.ajax({
 		type : 'POST',
-		url: '/member/memberList',
+		url: '/popup/popProject',
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,

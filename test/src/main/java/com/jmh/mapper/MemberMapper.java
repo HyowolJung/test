@@ -61,6 +61,8 @@ public interface MemberMapper {
 	List<MemberDto> getFilterd_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	
 	List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
+
+	List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
 	
 	
 }

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.service.ProjectService;
 
@@ -35,17 +38,18 @@ public class ProjectController {
 	ProjectService projectService;
 	
 	@GetMapping("/projectList")
-	public String projectList1(Model model, Criteria cri, @RequestParam int pageNo) {
+	public String projectList1(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
 		int totalCnt = projectService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
+		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
 		return "project/projectList";	
 	}
 	
 	//1. 조회(회원 정보)
 	@PostMapping("/projectList")
 	@ResponseBody
-	public Map<String, Object> projectList2(Model model, Criteria cri, String search_ck) {
+	public Map<String, Object> projectList2(Model model, Criteria cri, String search_ck, HttpSession session) {
 		System.out.println("도착1");
 		//System.out.println("POST) searchWord : " + cri.getSearchWord());
 		System.out.println("POST) searchDate : " + cri.getSearchDate());
@@ -66,6 +70,7 @@ public class ProjectController {
 			System.out.println("projectList : " + projectList);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("projectList", projectList);
+			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
 			return resultMap;
 		}
 		
@@ -82,6 +87,7 @@ public class ProjectController {
 			projectList = projectService.searchProjectList(cri);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("projectList", projectList);
+			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
 			return resultMap;
 		}
 		//System.out.println("resultMap : " + resultMap);
@@ -212,5 +218,44 @@ public class ProjectController {
 		return "project/projectRead"; //projectmemberList
 	}
 	
+	@PostMapping("/projectModify2")
+	public ResponseEntity<Boolean> projectModify2(@RequestBody ProjectDetailDto selectedMemberData) {
+		boolean result = false;
+		System.out.println("selectedMemberData : " + selectedMemberData.getProject_Id());
+		System.out.println("selectedMemberData : " + selectedMemberData.getPullDate());
+		System.out.println("selectedMemberData : " + selectedMemberData.getPushDate());
+		
+		int modifyCnt = projectService.projectModify2(selectedMemberData);
+		
+		if(modifyCnt > 0) {
+			System.out.println("수정성공");
+			result = true;
+		}else if(modifyCnt < 0) {
+			System.out.println("수정실패");
+			result = false;
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@PostMapping("/projectDelete2")
+	public ResponseEntity<Boolean> memberDelete2(@RequestBody ProjectDetailDto selectedMemberData) {
+		boolean result = false;
+		System.out.println("selectedMemberData : " + selectedMemberData.getProject_Id());
+		System.out.println("selectedMemberData : " + selectedMemberData.getPullDate());
+		System.out.println("selectedMemberData : " + selectedMemberData.getPushDate());
+		
+		int deleteCnt = projectService.projectDelete2(selectedMemberData);
+		
+		if(deleteCnt > 0) {
+			System.out.println("수정성공");
+			result = true;
+		}else if(deleteCnt < 0) {
+			System.out.println("수정실패");
+			result = false;
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 	
 }

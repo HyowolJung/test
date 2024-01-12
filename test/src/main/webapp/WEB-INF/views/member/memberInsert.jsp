@@ -56,6 +56,14 @@
 	<input type="text" id="member_Name" value="안녕"/><br>
 	<div id="result_Name"></div><br>
 	
+	<label>부서</label>
+	<select id="member_Department">
+		  <option value="A020" selected="selected">경영지원부</option>
+		  <option value="A021">인사부</option>
+		  <option value="A022">IT부</option>
+		  <option value="A023">마케팅부</option>
+	</select><br>
+	
 	<label>직급</label>
 	<select id="member_Position">
 		  <option value="D028" selected="selected">사원</option>
@@ -64,7 +72,7 @@
 	</select><br>
 	
 	<label>성별</label>
-	<select id="member_Sex">
+	<select id="member_Gender">
 		  <option value="D011" selected="selected">남자</option>
 		  <option value="D012">여자</option>
 	</select><br>
@@ -73,7 +81,6 @@
 	("-"포함)</label>
 	<input type="text" id="member_Tel"><br>
 	<div id="result_Tel"></div><br>
-	
 	
 	<label>언어</label>
 	<select id="member_Skill_Language">
@@ -240,7 +247,8 @@ $(document).ready(function() {
 					member_Id : $("#member_Id").val()	
 					,member_Name : $("#member_Name").val()
 					,member_Position : $("#member_Position").val()
-					,member_Sex : $("#member_Sex").val()
+					,member_Department : $("#member_Department").val()
+					,member_Sex : $("#member_Gender").val()
 					,member_Tel : $("#member_Tel").val()
 					,member_Skill_Language : $("#member_Skill_Language").val()
 					,member_Skill_DB : $("#member_Skill_DB").val()

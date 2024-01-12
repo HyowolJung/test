@@ -3,30 +3,6 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jmh.mapper.ProjectMapper">
 
-<!-- <resultMap id="MemberDetailMap" type="com.jmh.dto.MemberDto">
-    <result property="member_Id" column="MEMBER_ID"/>
-    <result property="member_Name" column="MEMBER_NAME"/>
-    <result property="member_Position" column="MEMBER_POSITION"/>
-    <result property="member_Tel" column="MEMBER_TEL"/>
-    <result property="member_Skill_Language" column="MEMBER_SKILL_LANGUAGE"/>
-    <result property="member_Skill_DB" column="MEMBER_SKILL_DB"/>
-    <association property="projectDetail" javaType="com.jmh.dto.ProjectDetailDto">
-        <result property="pushDate" column="PUSHDATE"/>
-        <result property="pullDate" column="PULLDATE"/>
-    </association>
-</resultMap> -->
-<!-- <resultMap id="MemberDetailMap" type="com.jmh.dto.MemberDto">
-    <result property="member_Id" column="MEMBER_ID"/>
-    <result property="member_Name" column="MEMBER_NAME"/>
-    <result property="member_Position" column="MEMBER_POSITION"/>
-    <result property="member_Tel" column="MEMBER_TEL"/>
-    <result property="member_Skill_Language" column="MEMBER_SKILL_LANGUAGE"/>
-    <result property="member_Skill_DB" column="MEMBER_SKILL_DB"/>
-    <association property="projectDetail" javaType="com.jmh.dto.ProjectDetailDto">
-        <result property="pushDate" column="PUSHDATE"/>
-        <result property="pullDate" column="PULLDATE"/>
-    </association>
-</resultMap> -->
 	<select id="getprojectmemberList" resultType="map" parameterType="int">
 	SELECT 
 		M.MEMBER_ID
@@ -305,8 +281,6 @@ SELECT
 			PROJECT_ID = #{project_Id}
 	</delete>
 	
-
-	
 	<select id="getProjectId" resultType="com.jmh.dto.ProjectDto">
 		SELECT 
 			PROJECT_ID 
@@ -314,10 +288,6 @@ SELECT
 			PROJECT 
 		WHERE 
 			PROJECT_ID=#{project_Id}
-	</select>
-	
-	<select id="getProjectListWithId">
-	
 	</select>
 	
 	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
@@ -399,6 +369,28 @@ SELECT
 	)
 	 <include refid="criteria2"/>
 	</select>
+	
+	<update id="projectModify2" parameterType="com.jmh.dto.ProjectDetailDto">
+	UPDATE 
+   		PROJECT_DETAIL
+   	SET
+		PUSHDATE = #{pushDate},
+		PULLDATE = #{pullDate}
+	WHERE 
+		MEMBER_ID = #{member_Id}
+	AND
+		PROJECT_ID = #{project_Id}
+	
+</update>
+<delete id="projectDelete2" parameterType="int">
+		DELETE 
+		FROM 
+			PROJECT_DETAIL
+		WHERE 
+			MEMBER_ID = #{member_Id}
+		AND
+			PROJECT_ID = #{project_Id}
+	</delete>
 	
 <sql id="criteria">
     <where>

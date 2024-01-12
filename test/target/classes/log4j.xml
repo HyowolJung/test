@@ -39,12 +39,12 @@
 	</logger>
 	
 	<logger name="jdbc.audit" additivity="false"> 
-		<level value="warn"/>  
+		<level value="info"/>  
 		<appender-ref ref="console"/> 
 	</logger> 
     
 	<logger name="jdbc.resultset" additivity="false">
-		<level value="warn" />
+		<level value="info" />
 		<appender-ref ref="console"/> 
 	</logger>
 	
@@ -65,7 +65,7 @@
 	
 	<!-- Root Logger -->
 	<root>
-		<priority value="info" />
+		<priority value="warn" />
 		<appender-ref ref="console" />
 	</root>
 	

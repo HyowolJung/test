@@ -44,7 +44,6 @@ table {
 </style>
 </head>
 <body>
-<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <div class="centered">
 프로젝트 상세정보
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"> <!--  -->
@@ -93,19 +92,6 @@ table {
 	</tr>
 </thead>
 <tbody>
-	<%-- <c:forEach var="projectmember" items="${projectmemberList}">
-		<tr>
-			<!-- <td><input type="radio"></td> -->
-			<td>${projectmember['member_Id']}</td>
-			<td>${projectmember[member_Name]}</td>
-			<td>${projectmember[member_Position]}</td>
-			<td>${projectmember[member_Tel]}</td>
-			<td>${projectmember[member_Skill_Language]}</td>
-			<td>${projectmember[member_Skill_DB]}</td>
-			<td>${projectmember[pushDate]}</td>
-			<td>${projectmember[pullDate]}</td>
-		</tr>
-	</c:forEach> --%>
 	<c:forEach var="projectmember" items="${projectmemberList}">
     <tr>
         <td>${projectmember['MEMBER_ID']}</td>
@@ -121,7 +107,8 @@ table {
 </c:forEach>
 </tbody>
 </table>
-</div>		
+</div>
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>		
 <script type="text/javascript">
 //const urlParams = new URLSearchParams(window.location.search);
 //const member_Id = urlParams.get('member_Id');

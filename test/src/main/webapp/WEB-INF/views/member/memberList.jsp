@@ -12,9 +12,9 @@
             margin: 20px;
         }
 
-        div {
+        /* div {
             margin-bottom: 20px;
-        }
+        } */
 
         input, select {
             margin-right: 10px;
@@ -79,6 +79,7 @@
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div>
 	<%-- <div>현재 ${pageDto.cri.pageNo } 페이지 입니다.</div><br> --%> <!-- id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
@@ -91,7 +92,7 @@
 	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
 	<button id="searchButton">조회</button>
 </div>
-
+<br><br>
 <table border="1" id="memberTable">
 	<thead>
 		<tr>

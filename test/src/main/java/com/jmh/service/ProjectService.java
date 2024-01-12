@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
 @Service
@@ -43,6 +44,10 @@ public interface ProjectService {
 	public List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
 	public List<ProjectDto> getFilterd_search_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
+
+	public int projectModify2(ProjectDetailDto selectedMemberData);
+
+	public int projectDelete2(ProjectDetailDto selectedMemberData);
 
 	
 	//public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);

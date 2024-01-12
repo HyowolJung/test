@@ -10,8 +10,24 @@
     	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
     	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
     </RESULTMAP> -->
+<select id="loginCk" resultType="com.jmh.dto.MemberDto">
+  SELECT 
+		MEMBER_ID
+		,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
+  FROM 
+  		MEMBER
+  WHERE 
+  		MEMBER_ID=#{member_Id} AND MEMBER_PW=#{member_Pw}
+</select>
+	
 	
 	 <select id="getFilterd_search_mem_List" resultType="com.jmh.dto.MemberDto">
+	 /* getFilterd_search_mem_List */
 		SELECT
 		 MEMBER_NO  
 		  ,MEMBER_ID
@@ -30,6 +46,12 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
+          ,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
 		  ,MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
@@ -61,6 +83,7 @@
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
+		  		,MEMBER_DEPARTMENT
 		  		,MEMBER_TEL
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
@@ -76,6 +99,7 @@
 	</select>	
 	
 	<select id="getFilterd_mem_List" resultType="com.jmh.dto.MemberDto">
+	/*getFilterd_mem_List*/
 		SELECT
 		 MEMBER_NO  
 		  ,MEMBER_ID
@@ -94,6 +118,12 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
+          ,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
 		  ,MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
@@ -116,8 +146,7 @@
             WHEN MEMBER_STATUS = 'null' THEN '대기중'
             WHEN MEMBER_STATUS = '' THEN '대기중'
           END AS MEMBER_STATUS
-		  
-		FROM 
+		FROM
 		(
 			SELECT
 		   		MEMBER_NO
@@ -125,6 +154,7 @@
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
+		  		,MEMBER_DEPARTMENT
 		  		,MEMBER_TEL
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
@@ -134,8 +164,17 @@
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				MEMBER
+		)M
+		WHERE NOT EXISTS(
+			SELECT 1
+			FROM
+				PROJECT_DETAIL PD
+			WHERE
+				PD.MEMBER_ID = M.MEMBER_ID
+			AND
+				PD.PROJECT_ID = #{project_Id}
 		)
-		WHERE 
+		AND
 			NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
 	</select>
 	
@@ -161,6 +200,12 @@
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
+		  ,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
 		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
@@ -192,6 +237,7 @@
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
+		  		,MEMBER_DEPARTMENT
 		  		,MEMBER_TEL
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
@@ -209,6 +255,7 @@
 	
 	<!-- 1. 조회(검색어 O) -->
 <select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
+/*searchmemberList*/
 SELECT 
 	MEMBER_NO
 	  ,MEMBER_ID
@@ -227,6 +274,12 @@ SELECT
            WHEN MEMBER_POSITION = 'D022' THEN '상무'
            WHEN MEMBER_POSITION = 'D021' THEN '사장'
          END AS MEMBER_POSITION
+	  ,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
 	  ,MEMBER_TEL
 	  ,CASE
            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
@@ -255,6 +308,7 @@ FROM
   		,MEMBER_NAME
   		,MEMBER_SEX
   		,MEMBER_POSITION
+  		,MEMBER_DEPARTMENT
   		,MEMBER_TEL
   		,MEMBER_SKILL_LANGUAGE
  		,MEMBER_SKILL_DB
@@ -322,6 +376,7 @@ FROM
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
+		  		,MEMBER_DEPARTMENT
 		  		,MEMBER_TEL
 		  		,MEMBER_SKILL_LANGUAGE
 		  		,MEMBER_SKILL_DB
@@ -339,6 +394,7 @@ FROM
 		  		,#{member_Name}
 		  		,#{member_Sex}
 		  		,#{member_Position}
+		  		,#{member_Department}
 		  		,#{member_Tel}
 		  		,#{member_Skill_Language}
 		  		,#{member_Skill_DB}
@@ -365,6 +421,12 @@ FROM
             WHEN MEMBER_POSITION = 'D022' THEN '상무'
             WHEN MEMBER_POSITION = 'D021' THEN '사장'
           END AS MEMBER_POSITION
+		 ,CASE
+          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+          END AS MEMBER_DEPARTMENT
 		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
 		  ,CASE
             WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
@@ -405,6 +467,7 @@ FROM
 			MEMBER_NAME = #{member_Name}
 			,MEMBER_SEX = #{member_Sex}
 			,MEMBER_POSITION = #{member_Position}
+			,MEMBER_DEPARTMENT = #{member_Department}
 			,MEMBER_TEL = #{member_Tel} 
 			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
 			,MEMBER_SKILL_DB = #{member_Skill_DB} 
@@ -421,6 +484,7 @@ FROM
 			MEMBER_NAME = #{member_Name}
 			,MEMBER_SEX = #{member_Sex}
 			,MEMBER_POSITION = #{member_Position}
+			,MEMBER_DEPARTMENT = #{member_Department}
 			,MEMBER_TEL = #{member_Tel} 
 			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
 			,MEMBER_SKILL_DB = #{member_Skill_DB} 
@@ -493,13 +557,13 @@ FROM
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID=#{member_Id}
 	</select>
 
-	<insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
+	<insert id = "projectDetailInsert2" parameterType="com.jmh.dto.ProjectDetailDto">
 		INSERT 
    			INTO 
         		PROJECT_DETAIL
                             (
-                                PROJECT_NO
-                                ,MEMBER_ID
+                                 MEMBER_ID
+                                ,MEMBER_NAME
                                 ,PROJECT_ID
                                 ,PROJECT_NAME
                                 ,PUSHDATE
@@ -508,11 +572,32 @@ FROM
         
 		 VALUES
     		(
-        		(
-            		SELECT TO_NUMBER(NVL(MAX(PROJECT_NO), 0)) + 1
-            		FROM PROJECT_DETAIL
-        		),
+        		
         		#{member_Id},
+        		#{member_Name},
+        		#{project_Id},
+        		#{project_Name},
+        		#{pushDate},
+        		#{pullDate}
+    		)
+	</insert>
+
+	<insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
+		INSERT 
+		INTO 
+		PROJECT_DETAIL
+		(
+        	MEMBER_ID
+            ,MEMBER_NAME
+            ,PROJECT_ID
+            ,PROJECT_NAME
+            ,PUSHDATE
+            ,PULLDATE
+         )        
+		 VALUES
+    		(
+        		#{member_Id},
+        		#{member_Name},
         		#{project_Id},
         		#{project_Name},
         		#{pushDate},

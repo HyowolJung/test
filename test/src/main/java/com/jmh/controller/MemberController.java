@@ -1,13 +1,17 @@
 package com.jmh.controller;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.javassist.expr.NewArray;
@@ -24,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
@@ -69,22 +75,26 @@ public class MemberController {
 	
 	//1. 조회(페이징 정보)
 	@GetMapping("/memberList")	//parameter 와 argument의 차이
-	public String memberList1(Model model, Criteria cri, @RequestParam int pageNo) {
+	public String memberList1(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		//System.out.println("GET)pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
 		//System.out.println("GET)pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
+		//String member_Id_SE = session.getAttribute("member_Id");
+		System.out.println("memberListGet)member_Id_SE : " + session.getAttribute("member_Id"));
+		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
 	
 	@PostMapping("/memberList")
 	@ResponseBody
-	public Map<String, Object> memberList2(Model model, Criteria cri, String search_ck) {
+	public Map<String, Object> memberList2(Model model, Criteria cri, String search_ck, HttpSession session) {
 		System.out.println("POST) searchWord : " + cri.getSearchWord());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
-		
+		//String member_Id_SE = (String) session.getAttribute("member_Id");
+		System.out.println("memberListPost)member_Id_SE : " + session.getAttribute("member_Id"));
 		//검색어가 없을 때
 		//작동안함 : cri.getSearchWord().length() == 0
 		//cri.getSearchWord() == null
@@ -100,6 +110,7 @@ public class MemberController {
 			System.out.println("POST X) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
+			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
 			return resultMap;
 		}
 		
@@ -113,6 +124,7 @@ public class MemberController {
 			System.out.println("POST O) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
+			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
 			return resultMap;
 		}
 		return resultMap;	
@@ -234,7 +246,6 @@ public class MemberController {
 	@PostMapping("/memberModify2")
 	public ResponseEntity<Boolean> memberModify2(@RequestBody ProjectDetailDto selectedProjectData) {
 		boolean result = false;
-		System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
 		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
 		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
 		
@@ -283,6 +294,7 @@ public class MemberController {
 		}
 	}
 	
+	//5. 멤버 상세화면
 	@GetMapping("/memberRead")
 	public List<ProjectDto> memberRead(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
 		List<ProjectDto> member_projectList = memberService.getmemberprojectList(member_Id);
@@ -292,5 +304,6 @@ public class MemberController {
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
 		return member_projectList;
 	}
-
+	
+	
 }

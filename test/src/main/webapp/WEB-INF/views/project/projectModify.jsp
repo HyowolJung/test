@@ -99,7 +99,7 @@
 	<button type="button" id="back">뒤로 가기</button>
 </div>
 참여중인 회원 <button type="button" id="push">추가</button><button type="button" id="removeButton2">삭제</button>
-<table border="1">
+<table border="1" id="pro_mem_List">
 <thead>
 	<tr>
 		<th>ㅁ</th>
@@ -130,7 +130,8 @@
 	</c:forEach>
 </tbody>
 </table>
-	
+<button type="button" id="modifyButton2">수정</button>
+<button type="button" id="back2">뒤로 가기</button>	
 	<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -211,19 +212,97 @@
 			}
 	    });//$("#modifyButton").click(function() { EndPoint
 		
+	    $("#back2").click(function() {
+			console.log("뒤로가기 클릭")
+			var project_Id = $("#project_Id").val();
+			var pageNo = $("#pageNo").val();
+			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
+		});
+	    	
 		$("#back").click(function() {
 			console.log("뒤로가기 클릭")
 			let project_Id = $("#project_Id").val();
 			var pageNo = $("#pageNo").val();
 			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
 		});
+		
+		var radioClicked = false; // 라디오 버튼 클릭 상태 추적 변수
+		var selectedMemberData = {};
+		
+		 $("#pro_mem_List tbody").on("click", "input[type='radio']", function() {
+		        radioClicked = true; // 라디오 버튼이 클릭되었다고 표시
+		      	console.log("선택되었다.");
+		        var tr = $(this).closest("tr");
+				
+		        // 행의 데이터 추출
+		        var project_Id = $("#project_Id").val();
+		        var project_Name = $("#project_Name").val();
+		        var member_Id = tr.find("td:nth-child(2)").text().trim();//$("#member_Id").val();
+		        var member_Name = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 번호
+		        var pushDate = tr.find("td:nth-child(8) input[type='date']").val(); // 투입일
+		        var pullDate = tr.find("td:nth-child(9) input[type='date']").val(); // 철수일
+		        
+		        console.log("선택된 pushDate 1 : " + pushDate);
+		        console.log("선택된 pullDate 1 : " + pullDate);
+		        
+		        selectedMemberData = {
+		            project_Id : $("#project_Id").val(),
+		            project_Name : $("#project_Name").val(),
+		            member_Id : tr.find("td:nth-child(2)").text().trim(),
+		            member_Name : tr.find("td:nth-child(3)").text().trim(),
+		            pushDate : tr.find("td:nth-child(8) input[type='date']").val(),
+		            pullDate : tr.find("td:nth-child(9) input[type='date']").val()
+		        };
+		    });
+		
+		$("#modifyButton2").click(function() {
+			alert("클릭이 됬습니다.")			
+			//console.log("선택된 pushDate 2 : " + pushDate);
+		    //console.log("선택된 pullDate 2 : " + pullDate);
+	        if (!radioClicked) { // 라디오 버튼이 클릭되지 않았다면
+	            alert("수정할 데이터를 체크해주세욧");
+	        } else { // 라디오 버튼이 클릭되었다면
+	            $.ajax({
+	    			type : 'POST',
+	    			url: '/project/projectModify2',
+	    			contentType : 'application/json; charset=utf-8',
+					data: JSON.stringify(selectedMemberData),
+	    			success: function(result) {
+						if(result = true){
+							alert("수정 성공ㅇ");
+							window.location.reload();
+						}
+						if(result = false){
+							alert("수정 실패");
+						}
+	    		        
+	    		    }
+	            });	//ajax EndPoint
+	        }//else EndPoint
+	    }); //$("#modifyButton2").click(function() EndPoint
 	    
-		$("#push").click(function() {	//1
+	    $("#removeButton2").click(function() {
+	    	$.ajax({
+				type : 'POST',
+				url: '/project/projectDelete2',
+				contentType : 'application/json; charset=utf-8',
+				data: JSON.stringify(selectedMemberData),
+				success: function(result) {
+					if(result = true){
+						alert("삭제 성공");
+						window.location.reload();
+					}
+					if(result = false){
+						alert("삭제 실패");
+					}
+			        
+			    }
+	        });	//ajax EndPoint
+	    });		
+	    		
+		/* $("#push").click(function() {	//1
 			var project_Id = $("#project_Id").val();
 			var project_Name = $("#project_Name").val();
-			//let popOption = "width = 1050xp, height = 650px, top = 200px, left = 300px, scrollbars = yes";
-			//let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id;
-			//window.open(openURL, 'pop', popOption);
 			$.ajax({
 				type : 'GET',
 				url: '/popup/popMember',
@@ -232,11 +311,37 @@
 					"project_Name" : project_Name
 				},
 				success: function(response) {
-					alert("success")
-			        //location.href = "/popup/popMember?pageNo=1&project_Id=" + project_Id;
+					let popOption = "width = 1050px, height = 650px, top = 200px, left = 300px, scrollbars = yes";
+					//let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id;
+					let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id + '&project_Name=' + encodeURIComponent(project_Name);
+					window.open(openURL, 'pop', popOption);
 			    },
 			}); //ajax EndPoint
-		});//$("#push").click(function() {
+		});//$("#push").click(function() { */
+			
+		/* $("#push").click(function() {
+		    var project_Id = $("#project_Id").val();
+		    var project_Name = $("#project_Name").val();
+		    $.ajax({
+		        type: 'GET',
+		        url: '/popup/popMember',
+		        data: {
+		            "project_Id": project_Id,
+		            "project_Name": project_Name
+		        },
+		        success: function(response) {
+		            // 필요한 처리 수행
+		        },
+		    });
+		}); */
+		
+		$("#push").click(function() {
+		    var project_Id = $("#project_Id").val();
+		    var project_Name = $("#project_Name").val();
+		    let popOption = "width = 1050px, height = 650px, top = 200px, left = 300px, scrollbars = yes";
+		    let openURL = '/popup/popMember?pageNo=1&project_Id=' + project_Id + '&project_Name=' + project_Name;
+		    window.open(openURL, 'pop', popOption);
+		});
 });
 </script>
 </body>

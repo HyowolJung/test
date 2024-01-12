@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
 @Repository
@@ -36,6 +37,10 @@ public interface ProjectMapper {
 	List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 	
 	List<ProjectDto> getFilterd_search_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
+
+	int projectModify2(ProjectDetailDto selectedMemberData);
+
+	int projectDelete2(ProjectDetailDto selectedMemberData);
 
 	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 

@@ -102,11 +102,15 @@ public class PopUpController {
 	
 	@PostMapping("/projectDetailInsert")
 	public String projectDetailInsert(@RequestBody ProjectDetailDto selectedRowData) {
-		if(selectedRowData.getCheck() == "m") {
+		System.out.println("selectedRowData : " + selectedRowData.getCheck());
+		
+		if(selectedRowData.getCheck() == 2) {
+			System.out.println("m 진입");
 			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
 			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
 			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
 			int insertCnt = memberService.projectDetailInsert(selectedRowData);
+			
 			if(insertCnt > 0) {
 				System.out.println("등록성공");
 				return "popup/popMember";
@@ -116,7 +120,8 @@ public class PopUpController {
 			}
 		}
 		
-		if(selectedRowData.getCheck() == "f") {
+		if(selectedRowData.getCheck() == 1) {
+			System.out.println("p 진입");
 			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
 			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
 			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
@@ -143,41 +148,55 @@ public class PopUpController {
 		model.addAttribute("project_Name", project_Name);
 		return "popup/popMember";
 	}
+//	
+//	@GetMapping("/popMember")
+//	public ResponseEntity<?> popMember(Model model, Criteria cri,
+//			@RequestParam(value = "project_Id", required = false) String project_Id,
+//			@RequestParam(value = "project_Name", required = false) String project_Name) {
+//		System.err.println("project_Name11 : " + project_Name);
+//		int totalCnt = memberService.getTotalCnt(cri);
+//		PageDto pageDto = new PageDto(cri, totalCnt);
+//		model.addAttribute("pageDto", pageDto);
+//		model.addAttribute("project_Name", project_Name);
+//		return ResponseEntity.ok(project_Name); //"/popup/popMember?pageNo=1&project_Id=" + project_Id
+//	}
 	
 	@PostMapping("/popMember")
 	@ResponseBody
 	public Map<String, Object> popMember(Model model, Criteria cri, int project_Id, String project_Name) {
-		System.out.println("project_Name : " + project_Name);
+		System.out.println("popMember)project_Name : " + project_Name);
+		System.out.println("popMember)project_Id : " + project_Id);
 		Map<String, Object> resultMap = new HashMap<>();
-		if(project_Name != null) {
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName("/pop/popMember");
-			mav.addObject("project_Name" , project_Name);
-		}
+//		if(project_Name != null) {
+//			ModelAndView mav = new ModelAndView();
+//			mav.setViewName("/pop/popMember");
+//			mav.addObject("project_Name" , project_Name);
+//		}
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-//		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
-//			System.err.println("검색어 없는 조회");
-//			int totalCnt = memberService.getTotalCnt(cri);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
-//			List<MemberDto> memberList = memberService.getFilterd_mem_List(cri, project_Id);
-//			resultMap.put("pageDto", pageDto);
-//			resultMap.put("memberList", memberList);
-//			return resultMap;
-//		}
-//		
-//		//2. 검색어 있고 조회 버튼을 클릭한 경우
-//		if(!cri.getSearchWord().equals("") || cri.getSearchDate() != null) {	
-//			System.err.println("검색어 있는 조회");
-//			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
-//			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
-//			int totalCnt = memberService.getTotalCnt(cri);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
-//			List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id); 
-//			resultMap.put("pageDto", pageDto);
-//			resultMap.put("memberList", memberList);
-//			return resultMap;
-//		}
+		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
+			System.err.println("검색어 없는 조회");
+			int totalCnt = memberService.getTotalCnt(cri);
+			PageDto pageDto = new PageDto(cri, totalCnt);
+			List<MemberDto> getFilterd_mem_List = memberService.getFilterd_mem_List(cri, project_Id);
+			resultMap.put("pageDto", pageDto);
+			resultMap.put("memberList", getFilterd_mem_List);
+			System.err.println("popMemberpopMemberpopMember");
+			return resultMap;
+		}
+		
+		//2. 검색어 있고 조회 버튼을 클릭한 경우
+		if(!cri.getSearchWord().equals("") || cri.getSearchDate() != null) {	
+			System.err.println("검색어 있는 조회");
+			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
+			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
+			int totalCnt = memberService.getTotalCnt(cri);
+			PageDto pageDto = new PageDto(cri, totalCnt);
+			//List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id); 
+			resultMap.put("pageDto", pageDto);
+			//resultMap.put("memberList", memberList);
+			return resultMap;
+		}
 		return resultMap;	
 	}
 }

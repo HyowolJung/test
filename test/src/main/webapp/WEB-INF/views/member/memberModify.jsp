@@ -43,6 +43,7 @@
 </style>
 </head>
 <body>
+<%-- <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br> --%>
 <div class="centered">
 멤버 수정화면
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"><!--  type="hidden" --> 
@@ -232,11 +233,10 @@
 							alert("수정 실패");
 						}
 					}); //ajax EndPoint
-			}
-			
+				}
+			}// elseIf EndPoint
 		}// elseIf EndPoint
-	}// elseIf EndPoint
-});
+	});//$("#modifyButton").click(function() {
 	
 	$("#back1").click(function() {
 		console.log("뒤로가기 클릭")

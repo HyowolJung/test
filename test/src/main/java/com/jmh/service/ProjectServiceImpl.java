@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.ProjectMapper;
 
@@ -87,6 +88,18 @@ public class ProjectServiceImpl implements ProjectService{
 	public List<ProjectDto> getFilterd_search_pro_List(Criteria cri, int member_Id) {
 		// TODO Auto-generated method stub
 		return projectMapper.getFilterd_search_pro_List(cri, member_Id);
+	}
+
+	@Override
+	public int projectModify2(ProjectDetailDto selectedMemberData) {
+		// TODO Auto-generated method stub
+		return projectMapper.projectModify2(selectedMemberData);
+	}
+
+	@Override
+	public int projectDelete2(ProjectDetailDto selectedMemberData) {
+		// TODO Auto-generated method stub
+		return projectMapper.projectDelete2(selectedMemberData);
 	}
 
 //	@Override

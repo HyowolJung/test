@@ -27,6 +27,7 @@ import lombok.NoArgsConstructor;
 public class MemberDto {
 	private ProjectDto projectDto;
 	private int member_No;
+	private String member_Pw;
 	private int member_Id;
 	private String member_Name;
 	private String member_Sex;
@@ -36,7 +37,7 @@ public class MemberDto {
 	private String member_Skill_Language;
 	private String member_Skill_DB;
 	private ProjectDetailDto projectDetail;
-	
+	private String member_Department;
 	
 	//@DateTimeFormat(pattern = "yy/MM/dd")
 	//@PastOrPresent
