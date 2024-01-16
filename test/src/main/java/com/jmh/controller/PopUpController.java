@@ -40,11 +40,14 @@ public class PopUpController {
 	private ProjectService projectService;
 	
 	@GetMapping("/popProject")
-	public String popProject(Model model, Criteria cri) {
+	public String popProject(Model model, Criteria cri, int member_Id, String member_Name) {
+		System.out.println("pop)member_Id : " + member_Id);
+		System.out.println("pop)member_Name : " + member_Name);
 		int totalCnt = projectService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		//model.addAttribute("member_Id", member_Id);
 		model.addAttribute("pageDto", pageDto);
+		model.addAttribute("member_Name", member_Name);
 		return "popup/popProject";	
 	}
 	
@@ -52,15 +55,15 @@ public class PopUpController {
 	@PostMapping("/popProject")
 	@ResponseBody
 	public Map<String, Object> popProject(Model model, Criteria cri, int member_Id) {
-		System.out.println("cri.getsearchWord() : " + cri.getSearchWord());
-		System.out.println("cri.getsearchField() : " + cri.getSearchField());
-		System.out.println("member_Id : " + member_Id);
+		System.out.println("cri.getSearchField() : " + cri.getSearchField());
+		System.out.println("cri.getSearchWord() : " + cri.getSearchWord());
+		System.out.println("pop)member_Id : " + member_Id);
 		Map<String, Object> resultMap = new HashMap<>();
-		//List<ProjectDto> projectList = projectService.getProjectList(cri);
-		 //Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
-		// Filterd_search_pro_List = projectService.getFilterd_search_pro_List(cri,member_Id); 
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
+		System.err.println("popProject 분기점 도착");
+		//System.out.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
+		//System.out.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null && cri.getSearchField() == null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
@@ -77,7 +80,7 @@ public class PopUpController {
 		}
 		
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		if(!cri.getSearchWord().equals("") || cri.getSearchDate() != null) {	
+		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null || cri.getSearchField() != null) {	
 			System.err.println("검색어 있는 조회");
 			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
 			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
@@ -174,7 +177,7 @@ public class PopUpController {
 //		}
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(cri.getSearchWord().equals("") && cri.getSearchDate() == null) {	
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() != null && cri.getSearch_endDate() != null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
@@ -186,7 +189,7 @@ public class PopUpController {
 		}
 		
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		if(!cri.getSearchWord().equals("") || cri.getSearchDate() != null) {	
+		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {	
 			System.err.println("검색어 있는 조회");
 			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
 			//System.out.println("POST O) searchDate : " + cri.getSearchDate());

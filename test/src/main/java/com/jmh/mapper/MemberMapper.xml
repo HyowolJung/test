@@ -19,6 +19,7 @@
             WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
             WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
           END AS MEMBER_DEPARTMENT
+        ,MEMBER_PW
   FROM 
   		MEMBER
   WHERE 
@@ -178,219 +179,235 @@
 			NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
 	</select>
 	
-	
-	<!-- 1. 조회(검색어 X) -->
+<!-- NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE	 -->
+<!-- 1. 조회(검색어 X) -->
 <select id="getmemberList" resultType="com.jmh.dto.MemberDto">
-	/*getmemberList*/
-		SELECT
-		 MEMBER_NO 
-		  ,MEMBER_ID
-		  ,MEMBER_NAME
-		  ,CASE
-            WHEN MEMBER_SEX = 'D011' THEN '남자'
+/*getmemberList*/
+SELECT 
+		MEMBER_ID ,
+		MEMBER_NAME ,
+		CASE
+			WHEN MEMBER_SEX = NULL THEN '미정'
+			WHEN MEMBER_SEX = 'D011' THEN '남자'
             WHEN MEMBER_SEX = 'D012' THEN '여자'
-          END AS MEMBER_SEX
-          ,CASE
-            WHEN MEMBER_POSITION = 'D028' THEN '사원'
-            WHEN MEMBER_POSITION = 'D027' THEN '대리'
-            WHEN MEMBER_POSITION = 'D026' THEN '과장'
-            WHEN MEMBER_POSITION = 'D025' THEN '차장'
-            WHEN MEMBER_POSITION = 'D024' THEN '부장'
-            WHEN MEMBER_POSITION = 'D023' THEN '이사'
-            WHEN MEMBER_POSITION = 'D022' THEN '상무'
-            WHEN MEMBER_POSITION = 'D021' THEN '사장'
-          END AS MEMBER_POSITION
-		  ,CASE
-          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
-            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
-            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
-            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
-          END AS MEMBER_DEPARTMENT
-		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
-		  ,CASE
-            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-          END AS MEMBER_SKILL_LANGUAGE
-          ,CASE
-            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-          END AS MEMBER_SKILL_DB
-		  ,MEMBER_STARTDATE
-		  ,CASE
-            WHEN MEMBER_STATUS = 'S01' THEN '대기중'
-            WHEN MEMBER_STATUS = 'S02' THEN '파견중'
-            WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
-            WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
-            WHEN MEMBER_STATUS = 'null' THEN '대기중'
-            WHEN MEMBER_STATUS = '' THEN '대기중'
-          END AS MEMBER_STATUS
-		  
-		FROM 
+		END, 
+		'미정'
+		AS MEMBER_SEX ,
+		CASE
+			WHEN MEMBER_POSITION = 'D028' THEN '사원'
+			WHEN MEMBER_POSITION = 'D027' THEN '대리'
+			WHEN MEMBER_POSITION = 'D026' THEN '과장'
+			WHEN MEMBER_POSITION = 'D025' THEN '차장'
+			WHEN MEMBER_POSITION = 'D024' THEN '부장'
+			WHEN MEMBER_POSITION = 'D023' THEN '이사'
+			WHEN MEMBER_POSITION = 'D022' THEN '상무'
+			WHEN MEMBER_POSITION = 'D021' THEN '사장'
+		END, 
+		'미정'
+		AS MEMBER_POSITION ,
+		CASE
+			WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+			WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+			WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+			WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+		END, 
+		'미정'
+		AS MEMBER_DEPARTMENT ,
+        MEMBER_TEL ,
+		CASE
+			WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+			WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+			WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+			WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+		END, 
+		'미정'
+		AS MEMBER_SKILL_LANGUAGE ,
+		CASE
+			WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+			WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+			WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+			WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+		END,
+		'미정'
+		AS MEMBER_SKILL_DB ,
+		MEMBER_STARTDATE ,
+		MEMBER_ENDDATE ,
+		CASE
+			WHEN MEMBER_STATUS = 'S01' THEN '대기중'
+			WHEN MEMBER_STATUS = 'S02' THEN '파견중'
+			WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
+			WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+			WHEN MEMBER_STATUS = 'NULL' THEN '대기중'
+			WHEN MEMBER_STATUS = '' THEN '대기중'
+		END, 
+		'미정'
+		AS MEMBER_STATUS
+FROM   
 		(
-		   SELECT
-		   		MEMBER_NO
-		      	,MEMBER_ID
-		  		,MEMBER_NAME
-		  		,MEMBER_SEX
-		  		,MEMBER_POSITION
-		  		,MEMBER_DEPARTMENT
-		  		,MEMBER_TEL
-		  		,MEMBER_SKILL_LANGUAGE
-		  		,MEMBER_SKILL_DB
-		  		,MEMBER_STARTDATE
-		  		,MEMBER_STATUS
-		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
-		      	,COUNT(*) OVER() AS TOTAL_CNT
-			FROM
-				MEMBER
+			SELECT   
+					MEMBER_ID ,
+					MEMBER_NAME ,
+					MEMBER_SEX ,
+					MEMBER_POSITION ,
+					MEMBER_DEPARTMENT ,
+					MEMBER_TEL ,
+					MEMBER_SKILL_LANGUAGE ,
+					MEMBER_SKILL_DB ,
+					MEMBER_STARTDATE ,
+					MEMBER_ENDDATE ,
+					MEMBER_STATUS ,
+					ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+					COUNT(*) OVER() AS TOTAL_CNT
+			FROM     
+					MEMBER 
 		)
-		WHERE 
-			NUMROW BETWEEN #{startNo} AND #{endNo}
-		
-	</select>
+WHERE 
+		NUMROW BETWEEN #{startNo} AND #{endNo}
+</select>
 	
 	<!-- 1. 조회(검색어 O) -->
 <select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
 /*searchmemberList*/
-SELECT 
-	MEMBER_NO
-	  ,MEMBER_ID
-	  ,MEMBER_NAME
-	  ,CASE
-           WHEN MEMBER_SEX = 'D011' THEN '남자'
-           WHEN MEMBER_SEX = 'D012' THEN '여자'
-         END AS MEMBER_SEX
-         ,CASE
-           WHEN MEMBER_POSITION = 'D028' THEN '사원'
-           WHEN MEMBER_POSITION = 'D027' THEN '대리'
-           WHEN MEMBER_POSITION = 'D026' THEN '과장'
-           WHEN MEMBER_POSITION = 'D025' THEN '차장'
-           WHEN MEMBER_POSITION = 'D024' THEN '부장'
-           WHEN MEMBER_POSITION = 'D023' THEN '이사'
-           WHEN MEMBER_POSITION = 'D022' THEN '상무'
-           WHEN MEMBER_POSITION = 'D021' THEN '사장'
-         END AS MEMBER_POSITION
-	  ,CASE
-          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
-            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
-            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
-            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
-          END AS MEMBER_DEPARTMENT
-	  ,MEMBER_TEL
-	  ,CASE
-           WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-           WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-           WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-           WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-         END AS MEMBER_SKILL_LANGUAGE
-         ,CASE
-           WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-           WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-           WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-           WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-         END AS MEMBER_SKILL_DB
-	  ,MEMBER_STARTDATE
-	  ,CASE
-            WHEN MEMBER_STATUS = 'S01' THEN '대기중'
-            WHEN MEMBER_STATUS = 'S02' THEN '파견중'
-            WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
-            WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
-          END AS MEMBER_STATUS
-FROM 
-	(
-    SELECT
-   		MEMBER_NO
-      	,MEMBER_ID
-  		,MEMBER_NAME
-  		,MEMBER_SEX
-  		,MEMBER_POSITION
-  		,MEMBER_DEPARTMENT
-  		,MEMBER_TEL
-  		,MEMBER_SKILL_LANGUAGE
- 		,MEMBER_SKILL_DB
-  		,MEMBER_STARTDATE
-  		,MEMBER_STATUS
-      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
-      	,COUNT(*) OVER() AS TOTAL_CNT
-	FROM
-		MEMBER
-			
-	<include refid="criteria"></include>	
-	)
-	WHERE 
-		NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
+SELECT MEMBER_ID ,
+       MEMBER_NAME ,
+       CASE
+              WHEN MEMBER_SEX = 'D011' THEN '남자'
+              WHEN MEMBER_SEX = 'D012' THEN '여자'
+       END, 
+       '미정'
+       AS MEMBER_SEX ,
+       CASE
+              WHEN MEMBER_POSITION = 'D028' THEN '사원'
+              WHEN MEMBER_POSITION = 'D027' THEN '대리'
+              WHEN MEMBER_POSITION = 'D026' THEN '과장'
+              WHEN MEMBER_POSITION = 'D025' THEN '차장'
+              WHEN MEMBER_POSITION = 'D024' THEN '부장'
+              WHEN MEMBER_POSITION = 'D023' THEN '이사'
+              WHEN MEMBER_POSITION = 'D022' THEN '상무'
+              WHEN MEMBER_POSITION = 'D021' THEN '사장'
+       END, 
+       '미정'
+       AS MEMBER_POSITION ,
+       CASE
+              WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+              WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+              WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+              WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+       END, 
+       '미정'
+       AS MEMBER_DEPARTMENT ,
+       MEMBER_TEL ,
+       CASE
+              WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+              WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+              WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+              WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+       END, 
+       '미정'
+       AS MEMBER_SKILL_LANGUAGE ,
+       CASE
+              WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+              WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+              WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+              WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+       END, 
+       '미정'
+       AS MEMBER_SKILL_DB ,
+       MEMBER_STARTDATE ,
+       MEMBER_ENDDATE ,
+       CASE
+              WHEN MEMBER_STATUS = 'S01' THEN '대기중'
+              WHEN MEMBER_STATUS = 'S02' THEN '파견중'
+              WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
+              WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+       END,
+       '미정'
+       AS MEMBER_STATUS
+FROM   (
+                SELECT   MEMBER_ID ,
+                         MEMBER_NAME ,
+                         MEMBER_SEX ,
+                         MEMBER_POSITION ,
+                         MEMBER_DEPARTMENT ,
+                         MEMBER_TEL ,
+                         MEMBER_SKILL_LANGUAGE ,
+                         MEMBER_SKILL_DB ,
+                         MEMBER_STARTDATE ,
+                         MEMBER_ENDDATE ,
+                         MEMBER_STATUS ,
+                         ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+                         COUNT(*) OVER()                            AS TOTAL_CNT
+                FROM     MEMBER 
+<include refid="criteria"></include> 
+        )
+WHERE NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
 	
-	<!-- 1. 조회(페이징 정보) -->
-	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
+<!-- 1. 조회(페이징 정보) -->
+<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		
-		<if test="searchWord == null and searchDate == null">
-		SELECT 
+	<if test="searchWord == null and search_startDate == null and search_endDate == null">
+	SELECT 
 			COUNT(*) 
-		FROM 
+	FROM 
 			MEMBER
-		</if>
-		
-		<if test="searchWord != null or searchDate != null">
-		SELECT 
-			COUNT(*) 
-		FROM 
-			MEMBER
-			
-		<include refid="criteria"></include>
-		
-		</if>	
-	</select>
+	</if>
 	
-	<!-- 2. 등록(아이디 체크) -->
-	<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
-		SELECT 
-			COUNT(*)
-		FROM 
-			MEMBER 
-		WHERE 
-			MEMBER_ID = #{member_Id}
-	</select>
-	<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
-		SELECT 
-			COUNT(*)
-		FROM 
-			MEMBER 
-		WHERE 
-			MEMBER_TEL = #{member_Tel}
-	</select>
-		
-	<!-- 2. 등록(회원 등록) -->
-	<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
-		/*insertMember*/
-		INSERT 
-		INTO 
+	<if test="searchWord != null or search_startDate != null or search_endDate != null">
+	SELECT 
+			COUNT(*) 
+	FROM 
 			MEMBER
-			(
-				MEMBER_NO
-				,MEMBER_ID
-		  		,MEMBER_NAME
-		  		,MEMBER_SEX
-		  		,MEMBER_POSITION
-		  		,MEMBER_DEPARTMENT
-		  		,MEMBER_TEL
-		  		,MEMBER_SKILL_LANGUAGE
-		  		,MEMBER_SKILL_DB
-		  		,MEMBER_STARTDATE
-		  	) 
-		VALUES 
+	<include refid="criteria"></include>
+	</if>	
+</select>
+	
+<!-- 2. 등록(아이디 체크) -->
+<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER 
+WHERE 
+		MEMBER_ID = #{member_Id}
+</select>
+
+<!-- 2. 등록(전화번호 체크) -->
+<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER 
+WHERE 
+		MEMBER_TEL = #{member_Tel}
+</select>
+		
+		
+<!-- 2. 등록(회원 등록) -->
+<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
+/*insertMember*/
+INSERT 
+INTO 
+		MEMBER
+				(
+					MEMBER_ID,
+		  			MEMBER_NAME,
+		  			MEMBER_SEX,
+		  			MEMBER_POSITION,
+		  			MEMBER_DEPARTMENT,
+		  			MEMBER_TEL,
+		  			MEMBER_SKILL_LANGUAGE,
+		  			MEMBER_SKILL_DB,
+		  			MEMBER_STARTDATE
+		  		) 
+VALUES 
 		(
 			(
 				SELECT 
-		  			TO_NUMBER(NVL(MAX(MEMBER_NO), 0))+ 1 
+		  				TO_NUMBER(NVL(MAX(MEMBER_ID), 00000000))+ 1 
 		  		FROM 
-		  			MEMBER
+		  				MEMBER
 		  	)	
-		  		,#{member_Id}
 		  		,#{member_Name}
 		  		,#{member_Sex}
 		  		,#{member_Position}
@@ -400,70 +417,81 @@ FROM
 		  		,#{member_Skill_DB}
 		  		,#{member_startDate}
 		 )
-	</insert>
+</insert>
 	
-	<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
-	<select id="getModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer">
-		SELECT 
-			MEMBER_ID
-		  ,MEMBER_NAME
-		  ,CASE
-            WHEN MEMBER_SEX = 'D011' THEN '남자'
-            WHEN MEMBER_SEX = 'D012' THEN '여자'
-          END AS MEMBER_SEX
-          ,CASE
-            WHEN MEMBER_POSITION = 'D028' THEN '사원'
-            WHEN MEMBER_POSITION = 'D027' THEN '대리'
-            WHEN MEMBER_POSITION = 'D026' THEN '과장'
-            WHEN MEMBER_POSITION = 'D025' THEN '차장'
-            WHEN MEMBER_POSITION = 'D024' THEN '부장'
-            WHEN MEMBER_POSITION = 'D023' THEN '이사'
-            WHEN MEMBER_POSITION = 'D022' THEN '상무'
-            WHEN MEMBER_POSITION = 'D021' THEN '사장'
-          END AS MEMBER_POSITION
-		 ,CASE
-          	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
-            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
-            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
-            WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
-          END AS MEMBER_DEPARTMENT
-		  ,<!-- REGEXP_REPLACE(MEMBER_TEL, '(.{3})(.+)(.{4})', '\1-\2-\3') MEMBER_TEL -->MEMBER_TEL
-		  ,CASE
-            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-          END AS MEMBER_SKILL_LANGUAGE
-          ,CASE
-            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-          END AS MEMBER_SKILL_DB
-		  ,MEMBER_STARTDATE
-		  ,MEMBER_ENDDATE	 
-		FROM 
-			MEMBER
-		WHERE 
-			MEMBER_ID = #{member_Id}
-	</select>
+<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
+<select id="getModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer">
+SELECT 
+		MEMBER_ID
+		,MEMBER_NAME
+		,CASE
+				WHEN MEMBER_SEX = 'D011' THEN '남자'
+            	WHEN MEMBER_SEX = 'D012' THEN '여자'
+		END, 
+		'미정'
+		AS MEMBER_SEX
+        ,CASE
+            	WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            	WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            	WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            	WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            	WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            	WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            	WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            	WHEN MEMBER_POSITION = 'D021' THEN '사장'
+		END,
+		'미정'
+		AS MEMBER_POSITION
+		,CASE
+        	  	WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            	WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            	WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+            	WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+		END, 
+		'미정'
+		AS MEMBER_DEPARTMENT
+		,MEMBER_TEL
+		,CASE
+            	WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            	WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            	WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            	WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+		END, 
+		'미정'
+		AS MEMBER_SKILL_LANGUAGE
+        ,CASE
+            	WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            	WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            	WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            	WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+		END, 
+		'미정'
+		AS MEMBER_SKILL_DB
+		,MEMBER_STARTDATE
+		<!-- ,NVL(MEMBER_ENDDATE,'1900-01-01') AS MEMBER_ENDDATE  -->
+		,MEMBER_ENDDATE
+FROM 
+		MEMBER
+WHERE 
+		MEMBER_ID = #{member_Id}
+</select>
 	
-	<!-- 3. 수정(전화번호 중복체크) -->
-	<select id="member_Tel_ck" resultType="integer"> <!-- parameterType="String"  -->
-		SELECT
-			COUNT(*)
-		FROM
-			MEMBER
-		WHERE 
-			MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
-	</select>
+<!-- 3. 수정(전화번호 중복체크) -->
+<select id="member_Tel_ck" resultType="integer"> <!-- parameterType="String"  -->
+SELECT
+		COUNT(*)
+FROM
+		MEMBER
+WHERE 
+		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
+</select>
 	
-	<!-- 3. 수정(회원 정보 수정) -->
-	<update id="memberModify" parameterType="com.jmh.dto.MemberDto">
-		<if test="member_endDate != null">
-		UPDATE 
+<!-- 3. 수정(회원 정보 수정) -->
+<update id="memberModify" parameterType="com.jmh.dto.MemberDto">
+	<if test="member_endDate != null">
+	UPDATE 
 			MEMBER 
-		SET 
+	SET 
 			MEMBER_NAME = #{member_Name}
 			,MEMBER_SEX = #{member_Sex}
 			,MEMBER_POSITION = #{member_Position}
@@ -474,13 +502,14 @@ FROM
 			,MEMBER_STARTDATE = #{member_startDate}
 			,MEMBER_ENDDATE = #{member_endDate}
 			,MEMBER_STATUS = 'S04'
-		WHERE 
+	WHERE 
 			MEMBER_ID = #{member_Id}
-		</if>
-		<if test="member_endDate == null">
-		UPDATE 
+	</if>
+	
+	<if test="member_endDate == null">
+	UPDATE 
 			MEMBER 
-		SET 
+	SET 
 			MEMBER_NAME = #{member_Name}
 			,MEMBER_SEX = #{member_Sex}
 			,MEMBER_POSITION = #{member_Position}
@@ -490,41 +519,41 @@ FROM
 			,MEMBER_SKILL_DB = #{member_Skill_DB} 
 			,MEMBER_STARTDATE = #{member_startDate}
 			,MEMBER_ENDDATE = NULL
-		WHERE 
+	WHERE 
 			MEMBER_ID = #{member_Id}
-		</if>
-	</update>
+	</if>
+</update>
 	
-	<!-- 4. 삭제(회원 정보 삭제) -->
-	<delete id="deleteMember" parameterType="integer" >
-	 	/*deleteMember*/
-		DELETE 
-		FROM 
-			MEMBER
-		WHERE 
-			MEMBER_ID = #{member_Id}
-	</delete>
+<!-- 4. 삭제(회원 정보 삭제) -->
+<delete id="deleteMember" parameterType="integer" >
+/*deleteMember*/
+DELETE 
+FROM 
+		MEMBER
+WHERE 
+		MEMBER_ID = #{member_Id}
+</delete>
 	
-	<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
-		SELECT
-    		P.PROJECT_ID,
-    		P.PROJECT_NAME,
-    		PD.PUSHDATE,
-    		PD.PULLDATE
-		FROM 
-			PROJECT P
-		JOIN
-			PROJECT_DETAIL PD
-		ON
-			P.PROJECT_ID = PD.PROJECT_ID
-    	JOIN
-        	MEMBER M
-    	ON
-        	M.MEMBER_ID = PD.MEMBER_ID
-		WHERE
-        	PD.MEMBER_ID = #{member_Id}
-	</select>
-	
+<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
+SELECT
+   		P.PROJECT_ID,
+   		P.PROJECT_NAME,
+   		PD.PUSHDATE,
+   		PD.PULLDATE
+FROM 
+		PROJECT P
+JOIN
+		PROJECT_DETAIL PD
+ON
+		P.PROJECT_ID = PD.PROJECT_ID
+JOIN
+       	MEMBER M
+ON
+       	M.MEMBER_ID = PD.MEMBER_ID
+WHERE
+       	PD.MEMBER_ID = #{member_Id}
+</select>
+
 	<delete id="memberDelete2" parameterType="int">
 		DELETE 
 		FROM 
@@ -637,8 +666,11 @@ FROM
         <if test="searchField == 'tel'">
             AND MEMBER_TEL LIKE '%'||#{searchWord}||'%'
         </if>
-        <if test="searchDate != null">
-            AND MEMBER_STARTDATE = #{searchDate}
+        <if test="search_startDate != null">
+            AND MEMBER_STARTDATE = #{search_startDate}
+        </if>
+         <if test="search_endDate != null">
+            AND MEMBER_ENDDATE = #{search_endDate}
         </if>
     </where>
 </sql>

@@ -46,6 +46,8 @@ table {
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <div class="centered">
 멤버 상세정보
+<br>
+<br>
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"> <!--  -->
 <table border="1">
 	<thead>
@@ -72,15 +74,20 @@ table {
 				<td>${memberList.member_Skill_Language}</td>
 				<td>${memberList.member_Skill_DB}</td>
 				<td>${memberList.member_startDate }</td>
-				<td>${memberList.member_endDate }</td>
+				<%-- <td>${memberList.member_endDate == '1900-01-01' ? '미정' :  memberList.member_endDate}</td> --%>
+				<td>${memberList.member_endDate == null ? '미정' :  memberList.member_endDate}</td>
 			</tr>
 		</c:forEach>
 	</tbody>
 </table>
 <button type="button" id="modify">수정</button>
 <button type="button" id="back">뒤로 가기</button>
+</div>
 <br><br>
+<div class="centered">
 참여중인 프로젝트
+<br>
+<br>
 <table border="1">
 <thead>
 	<tr>
@@ -94,15 +101,24 @@ table {
 	</tr>
 </thead>
 <tbody>
-	<c:forEach var="memberprojectList" items="${memberprojectList}">
-		<tr>
-			<!-- <td><input type="radio"></td> -->
-			<td style="display: none">${memberprojectList.project_Id }</td>
-			<td>${memberprojectList.project_Name }</td>
-			<td>${memberprojectList.pushDate}</td>
-			<td>${memberprojectList.pullDate} </td>
-		</tr>
-	</c:forEach>
+	<c:choose>
+	<c:when test="${empty memberprojectList}">
+      <tr>
+        <td colspan="5" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
+      </tr>
+    </c:when>
+    <c:otherwise>
+		<c:forEach var="memberprojectList" items="${memberprojectList}">
+			<tr>
+				<!-- <td><input type="radio"></td> -->
+				<td style="display: none">${memberprojectList.project_Id }</td>
+				<td>${memberprojectList.project_Name }</td>
+				<td>${memberprojectList.pushDate}</td>
+				<td>${memberprojectList.pullDate} </td>
+			</tr>
+		</c:forEach>
+	</c:otherwise>
+	</c:choose>
 </tbody>
 </table>
 </div>		

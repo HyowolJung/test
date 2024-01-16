@@ -89,7 +89,10 @@
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
     <label>입사일</label>
-	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
+	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
+	~
+	<label>퇴사일</label>
+	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
 	<button id="searchButton">조회</button>
 </div>
 <br><br>
@@ -97,7 +100,7 @@
 	<thead>
 		<tr>
 			<th>ㅁ</th>
-			<th>번호</th>
+			<!-- <th>번호</th> -->
 			<th>사번</th>
 			<th>이름</th>
 			<th>성별</th>
@@ -106,6 +109,7 @@
 			<th>언어</th>
 			<th>데이터베이스</th>
 			<th>입사일</th>
+			<th>퇴사일</th>
 			<!-- <th>상태</th> -->
 		</tr>
 	</thead>
@@ -143,10 +147,10 @@ $(document).ready(function() {
     
 	//1. 검색 폼
 	$("#searchButton").click(function(){
-		let searchDate = $("#searchDate").val();
+		let search_startDate = $("#search_startDate").val();
+		let search_endDate = $("#search_endDate").val();
 		let searchField = document.getElementById("searchField").value; 
 		let searchWord = $("#searchWord").val();
-		let search_ck = 1;
 		let pageNo = document.getElementById("pageNo").value; 
 		console.log("searchWord : " + searchWord);
 		
@@ -156,9 +160,9 @@ $(document).ready(function() {
 			data: {
 			 	"searchField" :  searchField,
 			 	"searchWord" : searchWord,
-			 	"search_ck" : search_ck,
 			 	"pageNo" : pageNo,
-			 	"searchDate" : searchDate
+			 	"search_startDate" : search_startDate,
+			 	"search_endDate" : search_endDate
 			},
 			success : function(resultMap) { // 결과 성공 콜백함수  
 				var memberList = resultMap.memberList;
@@ -170,15 +174,21 @@ $(document).ready(function() {
            			for (let i = 0; i < memberList.length; i++) {
                     	let newRow = $("<tr>");
                     	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                    	newRow.append("<td>" + memberList[i].member_No + "</td>");
+                    	/* newRow.append("<td>" + memberList[i].member_No + "</td>"); */
                     	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td>" + memberList[i].member_Name + "</td>");
+                    	//newRow.append("<td>" + (memberList[i].member_Sex === null ? '미정' : memberList[i].member_Sex) + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+                    	//newRow.append("<td>" + (memberList[i].member_Position === null ? '미정' : memberList[i].member_Position) + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Position + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
+                    	//newRow.append("<td>" + (memberList[i].member_Skill_Language === null ? '미정' : memberList[i].member_Skill_Language) + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
+                    	//newRow.append("<td>" + (memberList[i].member_Skill_DB === null ? '미정' : memberList[i].member_Skill_DB) + "</td>");
                     	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
+                    	//newRow.append("<td>" + memberList[i].member_endDate + "</td>");
+                    	newRow.append("<td>" + (memberList[i].member_endDate === null ? '미정' : memberList[i].member_endDate) + "</td>");
                     	//newRow.append("<td>" + memberList[i].member_status + "</td>");
                     	//newRow.append("<td style='color: red;'>" + "미구현" + "</td>");
                     	
@@ -220,7 +230,7 @@ $(document).ready(function() {
 		
 		$("#deleteButton").click(function() {
 			$.ajax({
-				type : 'get',
+				type : 'GET',
 				url: '/member/memberDelete',
 				data: {
 					 "member_Id" : member_Id
@@ -239,7 +249,7 @@ $(document).ready(function() {
 			//console.log("수정 버튼 작동");
 			var pageNo = $("#pageNo").val();
 			$.ajax({
-				type : 'get',
+				type : 'GET',
 				url: '/member/memberModify',
 				data: {
 					 "member_Id" : member_Id,

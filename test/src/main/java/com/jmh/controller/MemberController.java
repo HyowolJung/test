@@ -89,24 +89,26 @@ public class MemberController {
 	
 	@PostMapping("/memberList")
 	@ResponseBody
-	public Map<String, Object> memberList2(Model model, Criteria cri, String search_ck, HttpSession session) {
+	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {
 		System.out.println("POST) searchWord : " + cri.getSearchWord());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
-		//String member_Id_SE = (String) session.getAttribute("member_Id");
-		System.out.println("memberListPost)member_Id_SE : " + session.getAttribute("member_Id"));
+		//System.out.println("memberListPost)member_Id_SE : " + session.getAttribute("member_Id"));
 		//검색어가 없을 때
 		//작동안함 : cri.getSearchWord().length() == 0
 		//cri.getSearchWord() == null
 		//cri.getSearchWord().trim().isEmpty()
 		//cri.getSearchWord().equals("")
-		if(search_ck != null && (cri.getSearchWord().equals("") && cri.getSearchDate() == null)) {
+		System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
+		System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri);
 			System.out.println("POST X) searchWord : " + cri.getSearchWord());
-			System.out.println("POST X) searchDate : " + cri.getSearchDate());
+			System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
+			System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
 			System.out.println("POST X) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
@@ -114,13 +116,14 @@ public class MemberController {
 			return resultMap;
 		}
 		
-		if(search_ck != null && (!cri.getSearchWord().equals("") || cri.getSearchDate() != null)) {
+		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
 			System.err.println("검색어 있는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
 			System.out.println("POST O) searchWord : " + cri.getSearchWord());
-			System.out.println("POST O) searchDate : " + cri.getSearchDate());
+			System.out.println("POST O) getSearch_startDate : " + cri.getSearch_startDate());
+			System.out.println("POST O) getSearch_endDate : " + cri.getSearch_endDate());
 			System.out.println("POST O) totalCnt : " + totalCnt);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
@@ -174,8 +177,8 @@ public class MemberController {
 	//2. 등록(회원 등록)
 	@PostMapping("/memberInsert")
 	public String insertMember(@RequestBody MemberDto insertDatas) {
-		System.out.println("insertDatas.getMember_startDate : " + insertDatas.getMember_Name());
-		System.out.println("insertDatas.getMember_startDate : " + insertDatas.getMember_startDate());
+		//System.err.println("insertDatas.getMember_Department : " + insertDatas.getMember_Department());
+		//System.err.println("insertDatas.getMember_startDate : " + insertDatas.getMember_startDate());
 		
 		int insertCnt = memberService.insertMember(insertDatas);
 		if(insertCnt > 0) {
@@ -203,9 +206,9 @@ public class MemberController {
 	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
 		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
-		int member_endDate_ck = modifyDatas.getMember_endDate_ck();
-		System.out.println("member_endDate_ck : " + member_endDate_ck);
-		
+		//int member_endDate_ck = modifyDatas.getMember_endDate_ck();
+		//System.out.println("member_endDate_ck : " + member_endDate_ck);
+		System.err.println("modifyDatas.getMember_Department : " + modifyDatas.getMember_Department());
 		//System.out.println("selectedProjectData.getProject_Id() : " + selectedProjectData.getProject_Id());
 		//System.out.println("selectedProjectData.getPullDate() : " + selectedProjectData.getPullDate());
 		//System.out.println("selectedProjectData.getPushDate() : " + selectedProjectData.getPushDate());
@@ -241,6 +244,29 @@ public class MemberController {
 		}
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	//4. 삭제(회원 정보 삭제)
+	@GetMapping("/memberDelete")
+	public String memberDelete(@RequestParam int member_Id) {
+		int deleteCnt = memberService.deleteMember(member_Id);
+			
+		if(deleteCnt > 0) {
+			return "member/memberList";
+		}else {
+			return "";
+		}
+	}
+		
+	//5. 멤버 상세화면
+	@GetMapping("/memberRead")
+	public List<ProjectDto> memberRead(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
+		List<ProjectDto> member_projectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("pageNo : " + pageNo);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("memberprojectList" , member_projectList);
+		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
+		return member_projectList;
 	}
 	
 	@PostMapping("/memberModify2")
@@ -282,28 +308,7 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	//4. 삭제(회원 정보 삭제)
-	@GetMapping("/memberDelete")
-	public String memberDelete(@RequestParam int member_Id) {
-		int deleteCnt = memberService.deleteMember(member_Id);
-		
-		if(deleteCnt > 0) {
-			return "member/memberList";
-		}else {
-			return "";
-		}
-	}
 	
-	//5. 멤버 상세화면
-	@GetMapping("/memberRead")
-	public List<ProjectDto> memberRead(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
-		List<ProjectDto> member_projectList = memberService.getmemberprojectList(member_Id);
-		System.out.println("pageNo : " + pageNo);
-		model.addAttribute("pageNo", pageNo);
-		model.addAttribute("memberprojectList" , member_projectList);
-		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
-		return member_projectList;
-	}
 	
 	
 }

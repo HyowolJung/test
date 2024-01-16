@@ -16,7 +16,11 @@ public class Criteria {
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate searchDate;
+	private LocalDate search_startDate;
+	
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate search_endDate;
 	
 	private int pageNo = 1;		
 	private int amount = 5; 	
@@ -31,7 +35,5 @@ public class Criteria {
 		}
 	}
 	
-	public void setSearchDate(LocalDate searchDate) {
-	    this.searchDate = searchDate;
-	}
+	
 }

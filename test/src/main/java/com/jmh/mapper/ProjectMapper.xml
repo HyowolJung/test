@@ -142,14 +142,14 @@ SELECT
 </select>
 	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		
-		<if test="searchWord == null and searchDate == null">
+		<if test="searchWord == null and search_startDate == null and search_endDate == null">
 		SELECT 
 			COUNT(*) 
 		FROM 
 			PROJECT
 		</if>
 		
-		<if test="searchWord != null or searchDate != null">
+		<if test="searchWord != null or search_startDate != null or search_endDate != null">
 		SELECT 
 			COUNT(*) 
 		FROM 
@@ -292,42 +292,43 @@ SELECT
 	
 	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
 	SELECT 
-    P.PROJECT_NO,
-    P.PROJECT_ID,
+    		P.PROJECT_NO,
+    		P.PROJECT_ID,
     CASE
-        WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
-        WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
-        WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
-        WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
-        WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+        	WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+        	WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+        	WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+        	WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+        	WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
     END AS CUSTOM_COMPANY_ID,
-    P.PROJECT_NAME,
+    		P.PROJECT_NAME,
     CASE
-        WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-        WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-        WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
-        WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
     END AS PROJECT_SKILL_LANGUAGE,
     CASE
-        WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
-        WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
-        WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
-        WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+        	WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+        	WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+        	WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+        	WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
     END AS PROJECT_SKILL_DB,
-    P.PROJECT_STARTDATE,
+    		P.PROJECT_STARTDATE,
    	NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
 	
 	FROM 
-    	PROJECT P
-	WHERE NOT EXISTS (
-    	SELECT 1
-    	FROM 
-    		PROJECT_DETAIL PD
-    	WHERE 
-    		PD.PROJECT_ID = P.PROJECT_ID
-    	AND 
-    		PD.MEMBER_ID = #{member_Id}
-	)
+    		PROJECT P
+	WHERE 
+			NOT EXISTS (
+    			SELECT 1
+    			FROM 
+    				PROJECT_DETAIL PD
+    			WHERE 
+    				PD.PROJECT_ID = P.PROJECT_ID
+    			AND 
+    				PD.MEMBER_ID = #{member_Id}
+			)
 	</select>	
 	
 	<select id="getFilterd_search_pro_List" resultType="com.jmh.dto.ProjectDto">
@@ -401,20 +402,31 @@ SELECT
         <if test="searchField == 'name'">
             AND PROJECT_NAME LIKE '%'||#{searchWord}||'%'
         </if>
-        <if test="searchDate != null">
-            AND PROJECT_STARTDATE = #{searchDate}
+        <if test="search_startDate != null">
+            AND PROJECT_STARTDATE = #{search_startDate}
+        </if>
+         <if test="search_endDate != null">
+            AND PROJECT_ENDDATE = #{search_endDate}
         </if>
     </where>
 </sql>
 <sql id="criteria2">
-    <if test="cri.searchField == 'id'"> 
-        AND P.PROJECT_ID LIKE '%' || #{cri.searchWord} || '%'
+    <!-- <if test="cri.searchField == 'D062'">  -->
+    <!-- <if test="cri.searchField in ('D062', 'D061', 'D063', 'D064', 'D065')">
+        AND P.CUSTOM_COMPANY_ID LIKE '%' || #{cri.searchField} || '%'
+    </if> -->
+    <if test="cri.searchField == 'D061' || cri.searchField == 'D062' || cri.searchField == 'D063' || cri.searchField == 'D064' || cri.searchField == 'D065'">
+    	<!-- AND P.CUSTOM_COMPANY_ID LIKE '%' || #{cri.searchField} || '%' -->
+    	AND P.CUSTOM_COMPANY_ID = #{cri.searchField}
     </if>
-    <if test="cri.searchField == 'name'">
+    <if test="cri.searchWord != null">
         AND P.PROJECT_NAME LIKE '%' || #{cri.searchWord} || '%'
     </if>
-    <if test="cri.searchDate != null">
-        AND P.PROJECT_STARTDATE = #{cri.searchDate}
+    <if test="cri.search_startDate != null">
+        AND P.PROJECT_STARTDATE = #{cri.search_startDate}
+    </if>
+    <if test="cri.search_endDate != null">
+        AND P.PROJECT_ENDDATE = #{cri.search_endDate}
     </if>
 </sql>
 </mapper>

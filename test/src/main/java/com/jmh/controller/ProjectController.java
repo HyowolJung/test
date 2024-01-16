@@ -49,23 +49,23 @@ public class ProjectController {
 	//1. 조회(회원 정보)
 	@PostMapping("/projectList")
 	@ResponseBody
-	public Map<String, Object> projectList2(Model model, Criteria cri, String search_ck, HttpSession session) {
+	public Map<String, Object> projectList2(Model model, Criteria cri, HttpSession session) {
 		System.out.println("도착1");
 		//System.out.println("POST) searchWord : " + cri.getSearchWord());
-		System.out.println("POST) searchDate : " + cri.getSearchDate());
+		//System.out.println("POST) searchDate : " + cri.getSearchDate());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<ProjectDto> projectList = projectService.getProjectList(cri); 
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		//if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchWord().length() == 0 && cri.getSearchWord().trim().isEmpty()) {	//조건 없이 조회 버튼만 누른 경우.
 		//if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
-		if(search_ck != null && (cri.getSearchWord().equals("") && cri.getSearchDate() == null)) {	
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			projectList = projectService.getProjectList(cri);
 			System.out.println("POST X) searchWord : " + cri.getSearchWord());
-			System.out.println("POST X) searchDate : " + cri.getSearchDate());
+			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
 			System.out.println("POST X) totalCnt : " + totalCnt);
 			System.out.println("projectList : " + projectList);
 			resultMap.put("pageDto", pageDto);
@@ -77,10 +77,10 @@ public class ProjectController {
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
 		//else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null || !cri.getSearchWord().trim().isEmpty()) {
 		//else if (search_ck != null && (cri.getSearchWord() != null || cri.getSearchDate() != null)) {
-		if(search_ck != null && (!cri.getSearchWord().equals("") || cri.getSearchDate() != null)) {	
+		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {	
 			System.err.println("검색어 있는 조회");
 			System.out.println("POST O) searchWord : " + cri.getSearchWord());
-			System.out.println("POST O) searchDate : " + cri.getSearchDate());
+			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
 			int totalCnt = projectService.getTotalCnt(cri);
 			System.out.println("POST O) totalCnt : " + totalCnt);
 			PageDto pageDto = new PageDto(cri, totalCnt);

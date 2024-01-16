@@ -82,18 +82,35 @@
 <body>
 <div>
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
+	프로젝트명 : <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+	<%-- <select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
+		<option selected>고객사</option>
+		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D062'}"/>>엘지</option>
+		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D065'}"/>>아마존</option>
+		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D061'}"/>>삼성</option>
+		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D063'}"/>>애플</option>
+		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D064'}"/>>구글</option>
+	</select> --%>
+	
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
-		<option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
-	  	<option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>
+		<option selected>고객사</option>
+    	<option value="D062" ${pageDto.cri.searchField == 'D062' ? 'selected' : ''}>엘지</option>
+    	<option value="D065" ${pageDto.cri.searchField == 'D065' ? 'selected' : ''}>아마존</option>
+		<option value="D061" ${pageDto.cri.searchField == 'D061' ? 'selected' : ''}>삼성</option>
+		<option value="D063" ${pageDto.cri.searchField == 'D063' ? 'selected' : ''}>애플</option>
+		<option value="D064" ${pageDto.cri.searchField == 'D064' ? 'selected' : ''}>구글</option>
 	</select>
-    <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
-    <label>시작일</label>S
-	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
+   	<label>시작일</label>
+   	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" >
+	~
+	<label>종료일</label>
+	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" >
 	<button id="searchButton">검색</button>
 	<button id="insert">추가</button>	
 </div>
 
-<input type="text" id="result_member_Id" readonly style="display: none"/>
+<input type="text" id="result_member_Id" readonly /><!-- style="display: none" -->
+<input type="text" id="result_member_Name" readonly /><!-- style="display: none" -->
 
 <table border="1" id="projectTable">
 	<thead>
@@ -124,6 +141,8 @@
 </body>
 <script>
 $(document).ready(function() {
+var member_Name = localStorage.getItem('member_Name');
+//alert("member_Name : " + member_Name);	
 $("#projectTable tbody").empty();
 $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 
@@ -132,6 +151,7 @@ const member_Id = urlParams.get('member_Id');
 
 // 가져온 member_Id 값을 input 요소에 설정합니다.
 $("#result_member_Id").val(member_Id);
+$("#result_member_Name").val(member_Name);
 //alert("member_Id : " + member_Id);
 
 //alert("result_member_Id : " + $("#result_member_Id").val(member_Id));
@@ -139,9 +159,17 @@ $("#result_member_Id").val(member_Id);
 //1. 검색 폼
 //let newRow = $("<tr>");
 $("#searchButton").click(function(){
-	let searchDate = $("#searchDate").val();
-	let searchField = document.getElementById("searchField").value; 
+	let searchField = null	
+	//let searchDate = $("#searchDate").val();
+	searchField = document.getElementById("searchField").value;
+	
+	if(searchField == '고객사'){
+		searchField = null;
+	}
+	alert("searchField : " + searchField);
 	let searchWord = $("#searchWord").val();
+	let search_startDate = $("#search_startDate").val();
+	let search_endDate = $("#search_endDate").val();
 	let pageNo = document.getElementById("pageNo").value; 
 	$.ajax({
 		type : 'POST',
@@ -150,7 +178,8 @@ $("#searchButton").click(function(){
 			"searchField" : searchField,
 		 	"searchWord" : searchWord,
 		 	"pageNo" : pageNo,
-		 	"searchDate" : searchDate,
+		 	"search_startDate" : search_startDate,
+		 	"search_endDate" : search_endDate,
 		 	"member_Id" : member_Id
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수 
@@ -158,7 +187,7 @@ $("#searchButton").click(function(){
 			var projectList = resultMap.projectList;
 			var pageDto = resultMap.pageDto;
 			$("#projectTable tbody").empty();
-			
+			//console.log("프로젝트 테이블 재 가동")
 			if (projectList && projectList.length > 0) {
        			for (let i = 0; i < projectList.length; i++) {
                 	var newRow = $("<tr>");
@@ -215,6 +244,7 @@ $("#insert").click(function() {
 		let check = 1;
         let selectedRowData = {
 	       	member_Id : $("#result_member_Id").val()
+	       	,member_Name : $("#result_member_Name").val()
 	       	,project_No : selectedRow.find("td:nth-child(2)").text()
 			,project_Id : selectedRow.find("td:nth-child(3)").text()
 			,project_Name : selectedRow.find("td:nth-child(4)").text()
@@ -222,8 +252,8 @@ $("#insert").click(function() {
 			,pullDate : selectedRow.find("td:nth-child(9) input[name='pulldate']").val()
 			,check : check
         }
-        console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
-        console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
+        //console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
+        //console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
         $.ajax({
 			type : 'POST',
 			url: '/popup/projectDetailInsert',
@@ -245,15 +275,7 @@ $("#insert").click(function() {
     }
 });	//$("#insert").click(function() {
 	
-	
-	
-	
-	
 });	//$(document).ready(function() {
-	
-	
-	
-	
 	
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 

@@ -5,109 +5,123 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 등록</title>
-<style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-            text-align: center; /* 가운데 정렬을 위한 추가된 속성 */
-        }
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        text-align: center;
+    }
 
-        div {
-            margin-bottom: 20px;
-            display: inline-block; /* 가운데 정렬을 위한 추가된 속성 */
-            text-align: center; /* 내용은 왼쪽 정렬 유지 */
-        }
+    .column {
+        display: inline-block;
+        vertical-align: top;
+        width: 45%;
+    }
 
-        label {
-            display: inline-block;
-            width: 120px;
-            font-weight: bold;
-            text-align: right; /* 라벨을 오른쪽 정렬 */
-            /* margin-right: 10px; */
-        }
+    .buttons {
+        text-align: center;
+    }
 
-        input, select {
-            width: 200px;
-            padding: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
+    label {
+        display: inline-block;
+        width: 120px;
+        font-weight: bold;
+        text-align: right;
+    }
 
-        #result_Id, #result_Name, #result_Tel, #result_Date {
-            color: red;
-            margin-bottom: 10px;
-            margin-left: 80px;
-        }
+    input, select {
+        width: 200px;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-        }
-    </style>
+    #result_Id, #result_Name, #result_Tel, #result_Date {
+        color: red;
+        margin-bottom: 10px;
+        margin-left: 125px;
+    }
+
+    button {
+        padding: 10px;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-<div>
-	<label>아이디</label>
+<div class="column" style="text-align: left;">
+	<p style="color: red; text-align: center;" >필수 입력</p>
+
+	<label style="color: red">사번</label>
 	<input type="text" id="member_Id"/><br>
-	<div id="result_Id"></div><br>
+	<div id="result_Id"></div>
 	
-	<label>사번</label>
+	<label style="color: red">이름</label>
 	<input type="text" id="member_Name" value="안녕"/><br>
-	<div id="result_Name"></div><br>
+	<div id="result_Name"></div>
 	
-	<label>부서</label>
-	<select id="member_Department">
-		  <option value="A020" selected="selected">경영지원부</option>
-		  <option value="A021">인사부</option>
-		  <option value="A022">IT부</option>
-		  <option value="A023">마케팅부</option>
-	</select><br>
-	
-	<label>직급</label>
-	<select id="member_Position">
-		  <option value="D028" selected="selected">사원</option>
-		  <option value="D027">대리</option>
-		  <option value="D026">과장</option>
-	</select><br>
-	
-	<label>성별</label>
-	<select id="member_Gender">
-		  <option value="D011" selected="selected">남자</option>
-		  <option value="D012">여자</option>
-	</select><br>
-	
-	<label>전화번호<br>
+	<label style="color: red">전화번호<br>
 	("-"포함)</label>
 	<input type="text" id="member_Tel"><br>
 	<div id="result_Tel"></div><br>
 	
+	<label style="color: red">입사(예정)일</label>
+	<input type="date" id="member_startDate" name="member_startDate"/><br>
+	<div id="result_Date"></div>
+</div>
+
+<div class="column" style="text-align: left;">
+	<p style="text-align: center;">선택 입력</p>
+
+	<label>부서</label>
+	<select id="member_Department">
+		<option value="S000" selected="selected">선택</option>
+		<option value="A020">경영지원부</option>
+		<option value="A021">인사부</option>
+		<option value="A022">IT부</option>
+		<option value="A023">마케팅부</option>
+	</select><br><br>
+	
+	<label>직급</label>
+	<select id="member_Position">
+		<option value="S000" selected="selected">선택</option>
+		<option value="D028" >사원</option>
+		<option value="D027">대리</option>
+		<option value="D026">과장</option>
+	</select><br><br>
+	
+	<label>성별</label>
+	<select id="member_Gender">
+		<option value="S000" selected="selected">선택</option>
+		<option value="D011" >남자</option>
+		<option value="D012">여자</option>
+	</select><br><br>
 	<label>언어</label>
 	<select id="member_Skill_Language">
-		  <option value="S010" selected="selected">JAVA</option>
-		  <option value="S011">PYTHON</option>
-		  <option value="S012">C++</option>
-		  <option value="S013">RUBY</option>
-	</select><br>
+		<option value="S000" selected="selected">선택</option>
+		<option value="S010">JAVA</option>
+		<option value="S011">PYTHON</option>
+		<option value="S012">C++</option>
+		<option value="S013">RUBY</option>
+	</select><br><br>
 	
 	<label>데이터베이스</label>
 	<select id="member_Skill_DB">
-		  <option value="S020" selected="selected">ORACLE</option>
-		  <option value="S021">MSSQL</option>
-		  <option value="S022">MYSQL</option>
-		  <option value="S023">POSTGRESQL</option>
-	</select><br>
-	
-	<label>입사(예정)일</label>
-	<input type="date" id="member_startDate" name="member_startDate"/><br>
-	<div id="result_Date"></div><br>
-	
+		<option value="S000" selected="selected">선택</option>
+		<option value="S020">ORACLE</option>
+		<option value="S021">MSSQL</option>
+		<option value="S022">MYSQL</option>
+		<option value="S023">POSTGRESQL</option>
+	</select><br><br>
 </div>
-<br>
-<br>
-<button type="button" value="insert" id="insert">추가</button>
-<button type="button" value="back" id="back">뒤로 가기</button>
 
+<div class="buttons">
+	<button type="button" value="insert" id="insert">추가</button>
+	<button type="button" value="back" id="back">뒤로 가기</button>
+</div>
+
+</body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -283,5 +297,4 @@ $(document).ready(function() {
 	});
 });
 </script>
-</body>
 </html>

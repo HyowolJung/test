@@ -26,7 +26,8 @@
 	<beans:bean id="Login" class="com.jmh.intercepter.Login"/>
 	<interceptors>
 		<interceptor>
-			<mapping path="/*"/>
+			<mapping path="/member/*"/>
+			<mapping path="/project/*"/>
 			<exclude-mapping path="/login"/>
 			<beans:ref bean="Login"/>
 		</interceptor>
