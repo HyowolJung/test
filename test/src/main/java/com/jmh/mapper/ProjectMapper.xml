@@ -2,74 +2,42 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jmh.mapper.ProjectMapper">
-
-	<select id="getprojectmemberList" resultType="map" parameterType="int">
-	SELECT 
-		M.MEMBER_ID
-		  ,M.MEMBER_NAME
-          ,CASE
-            WHEN MEMBER_POSITION = 'D028' THEN '사원'
-            WHEN MEMBER_POSITION = 'D027' THEN '대리'
-            WHEN MEMBER_POSITION = 'D026' THEN '과장'
-            WHEN MEMBER_POSITION = 'D025' THEN '차장'
-            WHEN MEMBER_POSITION = 'D024' THEN '부장'
-            WHEN MEMBER_POSITION = 'D023' THEN '이사'
-            WHEN MEMBER_POSITION = 'D022' THEN '상무'
-            WHEN MEMBER_POSITION = 'D021' THEN '사장'
-          END AS MEMBER_POSITION
-		  ,M.MEMBER_TEL
-		  ,CASE
-            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-          END AS MEMBER_SKILL_LANGUAGE
-          ,CASE
-            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-          END AS MEMBER_SKILL_DB
-          ,PD.PUSHDATE
-          ,PD.PULLDATE
-	FROM 
-    	MEMBER M
-	JOIN
-    	PROJECT_DETAIL PD
-	ON
-    	M.MEMBER_ID = PD.MEMBER_ID
-	WHERE 
-    	PROJECT_ID = #{project_Id}
-	</select>
-
-
-
+<!-- 1. 조회(검색어 X) -->
 <select id="getProjectList" resultType="com.jmh.dto.ProjectDto">
 SELECT
-	PROJECT_NO 
-	  ,PROJECT_ID
-	  ,CASE
+	PROJECT_NO ,
+	  PROJECT_ID ,
+	  NVL(
+	  CASE
            WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
            WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
            WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
            WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
            WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
-         END AS CUSTOM_COMPANY_ID
-	  ,PROJECT_NAME
-	  ,CASE
+      END, 
+      '미정')
+      AS CUSTOM_COMPANY_ID ,
+	  PROJECT_NAME ,
+	  NVL(
+	  CASE
            WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
            WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
            WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
            WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-         END AS PROJECT_SKILL_LANGUAGE
-      ,CASE
+      END, 
+      '미정')
+      AS PROJECT_SKILL_LANGUAGE,
+      NVL(
+      CASE
            WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
            WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
            WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
            WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-         END AS PROJECT_SKILL_DB
-	  ,PROJECT_STARTDATE
-	  ,NVL(PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
+      END,
+      '미정')
+      AS PROJECT_SKILL_DB ,
+	  PROJECT_STARTDATE ,
+	  NVL(PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
 	 
 FROM 
 (
@@ -94,46 +62,54 @@ WHERE
 <!-- 1. 조회(검색어 O) -->
 <select id="searchProjectList" resultType="com.jmh.dto.ProjectDto"><!-- parameterType="com.jmh.vo.memberVO" -->
 SELECT
-	PROJECT_NO 
-	  ,PROJECT_ID
-	  ,CASE
-           WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
-           WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
-           WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
-           WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
-           WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
-         END AS CUSTOM_COMPANY_ID
-	  ,PROJECT_NAME
-	  ,CASE
-           WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
-           WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-         END AS PROJECT_SKILL_LANGUAGE
-         ,CASE
-           WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
-           WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
-           WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
-           WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-         END AS PROJECT_SKILL_DB
-	  ,PROJECT_STARTDATE
-	  ,PROJECT_ENDDATE
+		PROJECT_NO ,
+	  	PROJECT_ID ,
+	  	NVL(
+	  	CASE
+           	WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+           	WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+           	WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+           	WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+           	WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+        END,
+        '미정') 
+        AS CUSTOM_COMPANY_ID ,
+	  	PROJECT_NAME ,
+	  	NVL(
+	  	CASE
+           	WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+           	WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+           	WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+           	WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+         END,
+         '미정')
+         AS PROJECT_SKILL_LANGUAGE ,
+         CASE
+           	WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+           	WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+           	WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+           	WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+        END,
+        '미정')
+        AS PROJECT_SKILL_DB ,
+	  	PROJECT_STARTDATE ,
+	  	PROJECT_ENDDATE ,
 	 
 	FROM 
 	(
 	   SELECT
-	   		PROJECT_NO
-	      	,PROJECT_ID
-	  		,CUSTOM_COMPANY_ID
-	  		,PROJECT_NAME
-	  		,PROJECT_SKILL_LANGUAGE
-	  		,PROJECT_SKILL_DB
-	  		,PROJECT_STARTDATE
-	  		,PROJECT_ENDDATE
-	      	,ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW
-	      	,COUNT(*) OVER() AS TOTAL_CNT
+	   			PROJECT_NO ,
+	      		PROJECT_ID ,
+	  			CUSTOM_COMPANY_ID ,
+	  			PROJECT_NAME ,
+	  			PROJECT_SKILL_LANGUAGE ,
+	  			PROJECT_SKILL_DB ,
+	  			PROJECT_STARTDATE ,
+	  			PROJECT_ENDDATE ,
+	      		ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW ,
+	      		COUNT(*) OVER() AS TOTAL_CNT
 		FROM
-			PROJECT
+				PROJECT
 			
 		<include refid="criteria"></include>	
 	)
@@ -392,7 +368,45 @@ SELECT
 		AND
 			PROJECT_ID = #{project_Id}
 	</delete>
-	
+
+	<select id="getprojectmemberList" resultType="map" parameterType="int">
+	SELECT 
+		M.MEMBER_ID
+		  ,M.MEMBER_NAME
+          ,CASE
+            WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            WHEN MEMBER_POSITION = 'D021' THEN '사장'
+          END AS MEMBER_POSITION
+		  ,M.MEMBER_TEL
+		  ,CASE
+            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+          END AS MEMBER_SKILL_LANGUAGE
+          ,CASE
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+          END AS MEMBER_SKILL_DB
+          ,PD.PUSHDATE
+          ,PD.PULLDATE
+	FROM 
+    	MEMBER M
+	JOIN
+    	PROJECT_DETAIL PD
+	ON
+    	M.MEMBER_ID = PD.MEMBER_ID
+	WHERE 
+    	PROJECT_ID = #{project_Id}
+	</select>	
 <sql id="criteria">
     <where>
        <if test="searchField == 'id'"> 

@@ -67,7 +67,7 @@ button:hover {
 <!--style="display: none"  -->
 <div id="LoginForm">
 	아이디 : <input type="text" id="member_Id" placeholder="부여받은 사번을 입력하세요." value="33770928"><br>
-	혹은 72660710<br>
+	혹은 34922908<br>
 	비밀번호 : <input type="text" id="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="ffff"><br>
 	<button id="login_Button">로그인</button><br>
 </div>
@@ -91,16 +91,16 @@ $(document).ready(function() {
 			 	"member_Pw" : member_Pw_val
 			},
 			success : function(data) {
-				console.log("data : " + data);
+				/* console.log("data : " + data);
 				var m_Id = null;
 				var m_depart = null
 				for (var i = 0; i < data.length; i++) {
             		var m_data = data[i];
             		console.log("function(data) m_data.member_Id : " + m_data.member_Id);
             		m_depart = m_data.member_Department;
-        		}
+        		} */
 				location.href="/main";
-				$.ajax({
+				/* $.ajax({
 					type : 'GET',
 					url: '/main',
 					data: {
@@ -112,7 +112,7 @@ $(document).ready(function() {
 					error : function(request, status, error) { // 결과 에러 콜백함수        
 						alert("데이터 전송 실패");
 					}
-				});
+				}); */
 			},	
 			error : function(request, status, error) { // 결과 에러 콜백함수        
 				alert("아이디 혹은 비밀번호를 확인해주세요");

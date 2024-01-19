@@ -4,6 +4,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,31 +79,34 @@ public class MemberController {
 	public String memberList1(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		//System.out.println("GET)pageDto.cri.searchWord : " + pageDto.cri.getSearchWord());
-		//System.out.println("GET)pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
-		//String member_Id_SE = session.getAttribute("member_Id");
-		System.out.println("memberListGet)member_Id_SE : " + session.getAttribute("member_Id"));
 		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
 	
+	//NULL 체크 하는 법
+	//cri.getSearchWord().length() == 0
+	//cri.getSearchWord() == null
+	//cri.getSearchWord().trim().isEmpty()
+	//cri.getSearchWord().equals("")
 	@PostMapping("/memberList")
 	@ResponseBody
-	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {
-		System.out.println("POST) searchWord : " + cri.getSearchWord());
+	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+		//해야할거 : 메인 리스트 페이지에서 수정 버튼 눌렀을 때 다중 수정 가능하게 하기!
+		//+ 캘린더에 날짜 초과해서 입력 안되게 해야해..
+//		, @RequestParam("checkList") List<String> checkList
+		//System.out.println("checkList : " + checkList);
+//		if(checkList != null) {
+//			System.err.println("checkList가 비어있지 않아요.");
+//		}
+		System.err.println("^_^");
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
-		//System.out.println("memberListPost)member_Id_SE : " + session.getAttribute("member_Id"));
-		//검색어가 없을 때
-		//작동안함 : cri.getSearchWord().length() == 0
-		//cri.getSearchWord() == null
-		//cri.getSearchWord().trim().isEmpty()
-		//cri.getSearchWord().equals("")
-		System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
-		System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
+		//System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
+		//System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 			System.err.println("검색어 없는 조회");
+			
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri);
@@ -118,6 +122,7 @@ public class MemberController {
 		
 		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
 			System.err.println("검색어 있는 조회");
+			
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
@@ -131,6 +136,26 @@ public class MemberController {
 			return resultMap;
 		}
 		return resultMap;	
+	}
+	
+	@PostMapping("/memberListM")
+	@ResponseBody
+	public Map<String, Object> memberListM(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+		System.out.println("checkList : " + checkList);
+		//해야할거 : 메인 리스트 페이지에서 수정 버튼 눌렀을 때 다중 수정 가능하게 하기!
+		//+ 캘린더에 날짜 초과해서 입력 안되게 해야해..
+		Map<String, Object> resultMap = new HashMap<>();
+		if(checkList != null) {
+			System.err.println("checkList가 비어있지 않아요.");
+			List<String> memberListM = memberService.getmemberListM(checkList);
+			resultMap.put("memberList", memberListM);
+			
+			ModelAndView mav = new ModelAndView();
+			mav.setViewName("/member/memberModify");
+			mav.addObject("memberListM", memberListM);
+			return resultMap;	
+		}
+		return resultMap;
 	}
 	
 	//2. 등록(페이지 이동)
@@ -192,7 +217,7 @@ public class MemberController {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@GetMapping("/memberModify")
-	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo,  ProjectDto projectDto) { /* , @RequestParam int pageNo */
+	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo, ProjectDto projectDto) { /* , @RequestParam int pageNo */
 		//System.out.println("수정 화면 작동");
 		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
 		model.addAttribute("memberprojectList", memberprojectList);
@@ -208,7 +233,7 @@ public class MemberController {
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
 		//int member_endDate_ck = modifyDatas.getMember_endDate_ck();
 		//System.out.println("member_endDate_ck : " + member_endDate_ck);
-		System.err.println("modifyDatas.getMember_Department : " + modifyDatas.getMember_Department());
+		System.err.println("modifyDatas : " + modifyDatas);
 		//System.out.println("selectedProjectData.getProject_Id() : " + selectedProjectData.getProject_Id());
 		//System.out.println("selectedProjectData.getPullDate() : " + selectedProjectData.getPullDate());
 		//System.out.println("selectedProjectData.getPushDate() : " + selectedProjectData.getPushDate());
@@ -247,15 +272,19 @@ public class MemberController {
 	}
 	
 	//4. 삭제(회원 정보 삭제)
-	@GetMapping("/memberDelete")
-	public String memberDelete(@RequestParam int member_Id) {
-		int deleteCnt = memberService.deleteMember(member_Id);
+	@PostMapping("/memberDelete") //@RequestParam(value="parameter이름[]")List<String>
+	public String memberDelete(@RequestBody List<String> checkList) { //@RequestParam int member_Id, @RequestParam(value="checkList[]") MemberDto[] checkList  
+		for(String member_Id : checkList) {
+			System.out.println("삭제할 체크리스트 : " + checkList);
+			int deleteCnt = memberService.deleteMember(checkList);
 			
-		if(deleteCnt > 0) {
-			return "member/memberList";
-		}else {
-			return "";
-		}
+			if(deleteCnt > 0) {
+				return "member/memberList";
+			}else {
+				return "";
+			}
+	    }
+		return "";
 	}
 		
 	//5. 멤버 상세화면

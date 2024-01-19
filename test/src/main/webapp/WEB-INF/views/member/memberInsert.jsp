@@ -199,7 +199,8 @@ $(document).ready(function() {
     
     //전화번호 유효성 체크
     member_Tel.on('blur', function() {
-    	let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    	//let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    	let member_Tel_Check = /^01[016789]-\d{4}-\d{4}$/;
         console.log("member_Tel : " + member_Tel.val());
         // 전화번호 유효성 체크(비어있는지)
         if (member_Tel.val().length == 0) {

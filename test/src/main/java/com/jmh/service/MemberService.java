@@ -44,7 +44,7 @@ public interface MemberService {
 	public int memberModify(MemberDto modifyDatas);
 	
 	//4. 삭제(회원 정보 삭제)
-	public int deleteMember(int member_Id);
+	public int deleteMember(List<String> member_Id);
 
 	//public HashMap<String, Object> getmemberprojectList(int member_Id);
 	public List<ProjectDto> getmemberprojectList(int member_Id);
@@ -62,5 +62,7 @@ public interface MemberService {
 	public List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	//public void projectInmember(int project_Id);
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
+
+	public List<String> getmemberListM(List<String> checkList);
 
 }

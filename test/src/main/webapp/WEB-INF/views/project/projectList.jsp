@@ -88,7 +88,11 @@
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
     <label>시작일</label>
-	<input type="date" name="searchDate" ${pageDto.cri.searchDate == 'date' ? 'selected' : ''} id = "searchDate" > <!-- ${pageDto.cri.searchField == 'date' ? 'selected' : ''} -->
+	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" >
+	~
+	<label>종료일</label>
+	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" >
+	<button id="searchButton">조회</button>
 	<button id="searchButton">검색</button>
 </div>
 <table border="1" id="projectTable">
@@ -126,7 +130,7 @@ $("#projectTable tbody").empty();
 $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 //1. 검색 폼
 $("#searchButton").click(function(){
-	let searchDate = $("#searchDate").val();
+	//let searchDate = $("#searchDate").val();
 	//console.log("searchDate1 : " + searchDate);
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = $("#searchWord").val();
@@ -140,8 +144,8 @@ $("#searchButton").click(function(){
 			"searchField" :  searchField,
 		 	"searchWord" : searchWord,
 		 	"search_ck" : search_ck,
-		 	"pageNo" : pageNo,
-		 	"searchDate" : searchDate
+		 	"pageNo" : pageNo
+		 	/* "searchDate" : searchDate */
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수 
 			console.log("success");
@@ -169,8 +173,8 @@ $("#searchButton").click(function(){
        			var pagination = $("#pagination ul");
        			console.log("페이징번호 삭제");
        	        pagination.empty();
-				console.log("pageDto.startNo : " + pageDto.startNo);
-				console.log("pageDto.endNo : " + pageDto.endNo);
+				//console.log("pageDto.startNo : " + pageDto.startNo);
+				//console.log("pageDto.endNo : " + pageDto.endNo);
        	        
 				if (pageDto.prev) {
        	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");

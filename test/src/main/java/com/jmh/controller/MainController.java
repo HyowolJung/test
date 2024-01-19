@@ -31,10 +31,10 @@ public class MainController {
 	}
 	
 	@GetMapping("/main")
-	public String main(HttpSession session, Model model, String member_Department, MemberDto dto) {
-		session.setAttribute("member_Department", member_Department);
-		System.out.println("1)/main 도착했어요. GET MAPPING + member_Department : " + member_Department);
-		System.out.println("2)session.getAttribute(member_Department) : " + session.getAttribute("member_Department"));
+	public String main(HttpSession session, Model model) {
+		//session.setAttribute("member_Department", member_Department);
+		//System.out.println("1)/main 도착했어요. GET MAPPING + member_Department : " + member_Department);
+		//System.out.println("2)session.getAttribute(member_Department) : " + session.getAttribute("member_Department"));
 		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
 		return "/main";
 	}
@@ -55,10 +55,16 @@ public class MainController {
 		//System.out.println("member_Id : " + member_Id);
 		//System.out.println("member_Pw : " + member_Pw);
 		session.setAttribute("member_Id", dto.getMember_Id());
+		
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/common/WellCome");
 		mav.addObject("member_Id", session.getAttribute("member_Id"));
 		List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+		MemberDto loginCk_member_Department = loginCk.get(0);
+		String member_Department = loginCk_member_Department.getMember_Department();
+		//System.out.println("부서: " + department);
+		//System.out.println("member_Department : " + member_Department);
+		session.setAttribute("member_Department" , member_Department);
 		return loginCk;
 	}
 	

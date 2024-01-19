@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	//4. 삭제(회원 정보 삭제)
 	@Override
-	public int deleteMember(int member_Id) {
+	public int deleteMember(List<String> member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.deleteMember(member_Id);
 	}
@@ -137,6 +137,12 @@ public class MemberServiceImpl implements MemberService{
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw) {
 		// TODO Auto-generated method stub
 		return memberMapper.loginCk(member_Id, member_Pw);
+	}
+
+	@Override
+	public List<String> getmemberListM(List<String> checkList) {
+		// TODO Auto-generated method stub
+		return memberMapper.getmemberListM(checkList);
 	}
 
 //	@Override

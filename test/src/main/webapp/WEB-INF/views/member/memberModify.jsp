@@ -53,11 +53,11 @@
 	<thead>
 		<tr>
 			<th style="display: none">사번</th>
-			<th>이름</th>
+			<th style='width: 60px'>이름</th>
 			<th>성별</th>
 			<th>직급</th>
 			<th>부서</th>
-			<th>전화번호</th>
+			<th style='width: 90px'>전화번호</th>
 			<th>언어</th>
 			<th>데이터베이스</th>
 			<th>입사일</th>
@@ -65,6 +65,7 @@
 		</tr>
 	</thead>
 	<tbody>
+		<c:if test="${memberList != null}">
 		<c:forEach var="memberList" items="${memberList}">
 			<tr>
 				<td style="display: none"><input type="text" name="member_Id" id="member_Id" disabled="disabled" value ="${memberList.member_Id }"/></td>
@@ -111,7 +112,58 @@
 				<td><input type="date" name="member_endDate" id="member_endDate" value ="${memberList.member_endDate }"/></td>
 			</tr>
 			</c:forEach>
+			</c:if>
+			
+			<c:if test="${memberListM != null}">
+			<c:forEach var="memberList" items="${memberListM}">
+			<tr>
+				<td style="display: none"><input type="text" name="member_Id" id="member_Id" disabled="disabled" value ="${memberList.member_Id }"/></td>
+				<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }" style="width: 120px"/></td>
+				<td>
+					<select id="member_Sex">
+	  					<option value="D011" ${memberList.member_Sex == '남자' ? 'selected' : ''}>남자</option>
+	  					<option value="D012" ${memberList.member_Sex == '여자' ? 'selected' : ''}>여자</option>
+					</select>
+				</td>
+				<td>
+					<select id="member_Position">
+	  					<option value="D028" ${memberList.member_Position == '사원' ? 'selected' : ''}>사원</option>
+	  					<option value="D027" ${memberList.member_Position == '대리' ? 'selected' : ''}>대리</option>
+	  					<option value="D026" ${memberList.member_Position == '과장' ? 'selected' : ''}>과장</option>
+					</select>
+				</td>
+				<td>
+					<select id="member_Department">
+						<option value="A020" ${memberList.member_Department == '경영지원부' ? 'selected' : ''}>경영지원부</option>
+						<option value="A021" ${memberList.member_Department == 'IT부' ? 'selected' : ''}>IT부</option>
+						<option value="A022" ${memberList.member_Department == '인사부' ? 'selected' : ''}>인사부</option>
+						<option value="A023" ${memberList.member_Department == '마케팅부' ? 'selected' : ''}>마케팅부</option>
+					</select>
+				</td>
+				<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
+				<td>
+					<select id="member_Skill_Language">
+	  					<option value="S010" ${memberList.member_Skill_Language == 'JAVA' ? 'selected' : ''}>JAVA</option>
+	  					<option value="S011" ${memberList.member_Skill_Language == 'PYTHON' ? 'selected' : ''}>PYTHON</option>
+	  					<option value="S012" ${memberList.member_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
+	  					<option value="S013" ${memberList.member_Skill_Language == 'RUBY' ? 'selected' : ''}>RUBY</option>
+					</select>
+				</td>
+				<td>
+					<select id="member_Skill_DB">
+	  					<option value="S020" ${memberList.member_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
+	 		 			<option value="S021" ${memberList.member_Skill_DB == 'MSSQL' ? 'selected' : ''}>MSSQL</option>
+	  					<option value="S022" ${memberList.member_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
+	  					<option value="S023" ${memberList.member_Skill_DB == 'POSTGRESQL' ? 'selected' : ''}>POSTGRESQL</option>
+					</select>
+				</td>
+				<td><input type="date" name="member_startDate" id="member_startDate" value ="${memberList.member_startDate }"/></td>
+				<td><input type="date" name="member_endDate" id="member_endDate" value ="${memberList.member_endDate }"/></td>
+			</tr>
+			</c:forEach>
+			</c:if>
 		</tbody>
+		
 	</table>
 <button type="button" id="modifyButton">수정하기</button>
 <button type="button" id="back1" >뒤로 가기</button>

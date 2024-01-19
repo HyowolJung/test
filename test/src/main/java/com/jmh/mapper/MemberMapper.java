@@ -43,7 +43,7 @@ public interface MemberMapper {
 	int memberModify(MemberDto modifyDatas);
 	
 	//4. 삭제(회원 정보 삭제)
-	int deleteMember(int member_Id);
+	int deleteMember(List<String> member_Id);
 
 	//HashMap<String, Object> getmemberprojectList(int member_Id);
 	List<ProjectDto> getmemberprojectList(int member_Id);
@@ -63,6 +63,8 @@ public interface MemberMapper {
 	List<MemberDto> getFilterd_search_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 
 	List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
+
+	List<String> getmemberListM(List<String> checkList);
 	
 	
 }
