@@ -65,6 +65,10 @@ public interface MemberMapper {
 	List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
 
 	List<String> getmemberListM(List<String> checkList);
+
+	int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel);
+
+	int memberModify_M(List<MemberDto> modifyDatas);
 	
 	
 }

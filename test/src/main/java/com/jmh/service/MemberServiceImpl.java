@@ -145,6 +145,18 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getmemberListM(checkList);
 	}
 
+	@Override
+	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel) {
+		// TODO Auto-generated method stub
+		return memberMapper.member_Tel_ck_M(member_Id, member_Tel);
+	}
+
+	@Override
+	public int memberModify_M(List<MemberDto> modifyDatas) {
+		// TODO Auto-generated method stub
+		return memberMapper.memberModify_M(modifyDatas);
+	}
+
 //	@Override
 //	public void projectInmember(int project_Id) {
 //		return memberMapper.projectInmember(project_Id);

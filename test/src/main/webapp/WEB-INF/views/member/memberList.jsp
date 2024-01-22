@@ -285,20 +285,20 @@ $(document).ready(function() {
            			for (let i = 0; i < memberList.length; i++) {
 							
            				var select_member_Sex = "<select id='member_Sex'>";
-           				select_member_Sex += "<option value=''" + (memberList[i].member_Sex == '미정' ? 'selected' : '') + ">선택</option>";
+           				select_member_Sex += "<option value='null'" + (memberList[i].member_Sex == '미정' ? 'selected' : '') + ">선택</option>";
         				select_member_Sex += "<option value='D011'" + (memberList[i].member_Sex == '남자' ? 'selected' : '') + ">남자</option>";
         				select_member_Sex += "<option value='D012'" + (memberList[i].member_Sex == '여자' ? " selected" : "") + ">여자</option>";
         				select_member_Sex += "</select>";
         				
         				var select_member_Position = "<select id='member_Position'>";
-        				select_member_Position += "<option value=''" + (memberList[i].member_Position == '미정' ? " selected" : "") + ">선택</option>";
+        				select_member_Position += "<option value='null'" + (memberList[i].member_Position == '미정' ? " selected" : "") + ">선택</option>";
         				select_member_Position += "<option value='D028'" + (memberList[i].member_Position == '사원' ? " selected" : "") + ">사원</option>";
         				select_member_Position += "<option value='D027'" + (memberList[i].member_Position == '대리' ? " selected" : "") + ">대리</option>";
         				select_member_Position += "<option value='D026'" + (memberList[i].member_Position == '과장' ? " selected" : "") + ">과장</option>";
         				select_member_Position += "</select>";
         				
         				var select_member_Department = "<select id='member_Department'>";
-        				select_member_Department += "<option value=''" + (memberList[i].member_Department == '미정' ? 'selected' : '') + ">선택</option>";
+        				select_member_Department += "<option value='null'" + (memberList[i].member_Department == '미정' ? 'selected' : '') + ">선택</option>";
         				select_member_Department += "<option value='A020'" + (memberList[i].member_Department == '경영지원부' ? 'selected' : '') + ">경영지원부</option>";
         				select_member_Department += "<option value='A021'" + (memberList[i].member_Department == '인사부' ? 'selected' : '') + ">인사부</option>";
         				select_member_Department += "<option value='A022'" + (memberList[i].member_Department == 'IT부' ? 'selected' : '') + ">IT부</option>";
@@ -306,32 +306,33 @@ $(document).ready(function() {
         				select_member_Department += "</select>";
         				
         				var select_member_Skill_Language = "<select id='member_Skill_Language'>";
-        				select_member_Skill_Language += "<option value=''" + (memberList[i].member_Skill_Language == '미정' ? 'selected' : '') + ">선택</option>";
+        				select_member_Skill_Language += "<option value='null'" + (memberList[i].member_Skill_Language == '미정' ? 'selected' : '') + ">선택</option>";
         				select_member_Skill_Language += "<option value='S010'" + (memberList[i].member_Skill_Language == 'JAVA' ? 'selected' : '') + ">JAVA</option>";
         				select_member_Skill_Language += "<option value='S011'" + (memberList[i].member_Skill_Language == 'PYTHON' ? 'selected' : '') + ">PYTHON</option>";
         				select_member_Skill_Language += "<option value='S012'" + (memberList[i].member_Skill_Language == 'C++' ? 'selected' : '') + ">C++</option>";
         				select_member_Skill_Language += "<option value='S013'" + (memberList[i].member_Skill_Language == 'RUBY' ? 'selected' : '') + ">RUBY</option>";
         				select_member_Skill_Language += "</select>"; 
            				
+        				var select_member_Skill_DB = "<select id='member_Skill_DB'>";
+        				select_member_Skill_DB += "<option value='null'" + (memberList[i].member_Skill_DB == '미정' ? 'selected' : '') + ">선택</option>";
+        				select_member_Skill_DB += "<option value='S020'" + (memberList[i].member_Skill_DB == 'ORACLE' ? 'selected' : '') + ">ORACLE</option>";
+        				select_member_Skill_DB += "<option value='S021'" + (memberList[i].member_Skill_DB == 'MSSQL' ? 'selected' : '') + ">MSSQL</option>";
+        				select_member_Skill_DB += "<option value='S022'" + (memberList[i].member_Skill_DB == 'MYSQL++' ? 'selected' : '') + ">MYSQL</option>";
+        				select_member_Skill_DB += "<option value='S023'" + (memberList[i].member_Skill_DB == 'POSTGRESQL' ? 'selected' : '') + ">POSTGRESQL</option>";
+        				select_member_Skill_DB += "</select>"; 
+        				
            				let newRow = $("<tr>");
                     	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                    	//newRow.append("<td><input type='radio' class='radio' name='radio' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                    	//newRow.append("<td>" + memberList[i].member_No + "</td>");
                     	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-                    	//newRow.append("<td>" + memberList[i].member_Name + "</td>");
                     	newRow.append("<td><input type='text' style='width: 60px' value='" + memberList[i].member_Name + "'></td>");
                     	newRow.append("<td>" + select_member_Sex + "</td>");
                     	newRow.append("<td>" + select_member_Position + "</td>");
                     	newRow.append("<td>" + select_member_Department + "</td>");
-                    	//newRow.append("<td>" + memberList[i].member_Sex + "</td>");
-                    	//newRow.append("<td>" + memberList[i].member_Position + "</td>");
-                    	//newRow.append("<td>" + memberList[i].member_Tel + "</td>");
-                    	newRow.append("<td><input type='text' style='width: 90px' value='" + memberList[i].member_Tel + "'></td>");
-                    	//newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
+                    	newRow.append("<td><input type='text' id='member_Tel' style='width: 90px' value='" + memberList[i].member_Tel + "'></td>");
                     	newRow.append("<td>" + select_member_Skill_Language + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
-                    	newRow.append("<td><input type='date' value='" + memberList[i].member_startDate + "'></td>");
-                    	newRow.append("<td><input type='date' value='" + memberList[i].member_endDate + "'></td>");
+                    	newRow.append("<td>" + select_member_Skill_DB + "</td>");
+                    	newRow.append("<td><input type='date' id='member_startDate' value='" + memberList[i].member_startDate + "'></td>");
+                    	newRow.append("<td><input type='date' id='member_endDate' value='" + memberList[i].member_endDate + "'></td>");
                     	//newRow.append("<td>" + (memberList[i].member_endDate === null ? '미정' : memberList[i].member_endDate) + "</td>");
                     	
                     	$("#memberTable tbody").append(newRow);
@@ -352,10 +353,8 @@ $(document).ready(function() {
 	$("#mmodifyButton").click(function() {
 		let member_Tel = $("#member_Tel").val();//입력한 전화번호
 		let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-		//let member_Id = $("#member_Id").val();
 		let member_startDate = $("#member_startDate").val();
 		let member_endDate = $("#member_endDate").val();
-		
 		if(!member_endDate.length == 0){
 			if (member_endDate < member_startDate) {
 		        alert("퇴사날짜는 입사날짜보다 이전일 수 없습니다.");
@@ -375,31 +374,41 @@ $(document).ready(function() {
 			}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
 				if(member_endDate.length == 0){
 					console.log("퇴사일이 없어요.");
-					var member_Department = $("#member_Department").val();
-					let modifyDatas = {
-						member_Id : $("#member_Id").val()
-						,member_Name : $("#member_Name").val()
-						,member_Position : $("#member_Position").val()
-						,member_Department : $("#member_Department").val()
-						,member_Sex : $("#member_Sex").val()
-						,member_Tel : $("#member_Tel").val()
-						,member_Skill_DB : $("#member_Skill_DB").val()
-						,member_Skill_Language : $("#member_Skill_Language").val()
-						,member_startDate : $("#member_startDate").val()
-						,member_endDate : $("#member_endDate").val()
-					}	
+					var modifyDatas = [];
+					$('.checkbox:checked').each(function() {
+			    		// 현재 체크박스를 포함하는 행(tr)을 가져옵니다.
+			    		let row = $(this).closest('tr');
+
+			    		// 행에서 필요한 데이터를 추출합니다.
+			    		let data = {
+								member_Id: row.find('td:eq(1) a').text(), // 첫 번째 <td>의 <a> 태그 내용
+				        		member_Name: row.find('td:eq(2) input').val(), // 두 번째 <td>의 <input> 값
+				        		member_Sex: row.find('td:eq(3) select').val(), // 세 번째 <td>의 텍스트
+				        		member_Position: row.find('td:eq(4) select').val(), // ...
+				        		member_Department: row.find('td:eq(5) select').val(),
+				        		member_Tel: row.find('td:eq(6) input').val(),
+				        		member_Skill_Language: row.find('td:eq(7) select').val(),
+				        		member_Skill_DB: row.find('td:eq(8) select').val(),
+				        		member_startDate: row.find('td:eq(9) input').val(),
+				        		member_endDate: row.find('td:eq(10) input').val()
+			    		};
+						//alert("data : " + data);
+			    		// 추출한 데이터를 배열에 추가합니다.
+			    		modifyDatas.push(data);
+					});
+					//console.log("modifyDatas : " + modifyDatas);
 					
-					//console.log("member_Department : " , member_Department);	
 					$.ajax({
 						type : 'POST',
-						url: '/member/memberModify',
+						url: '/member/memberModifyM',
 						contentType : 'application/json; charset=utf-8',
 						data: JSON.stringify(modifyDatas),
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
+								location.href = "/member/memberList?pageNo=" + pageNo;
+								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 							}else if(result == false){
 								alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 							}				
@@ -411,30 +420,40 @@ $(document).ready(function() {
 				}else if(!member_endDate.length == 0){
 					console.log("퇴사일이 있어요.");
 					//let member_endDate_ck = 1;
-					let modifyDatas = {
-						member_Id : $("#member_Id").val()
-						,member_Name : $("#member_Name").val()
-						,member_Position : $("#member_Position").val()
-						,member_Department : $("#member_Department").val()
-						,member_Sex : $("#member_Sex").val()
-						,member_Tel : $("#member_Tel").val()
-						,member_Skill_DB : $("#member_Skill_DB").val()
-						,member_Skill_Language : $("#member_Skill_Language").val()
-						,member_startDate : $("#member_startDate").val()
-						,member_endDate : $("#member_endDate").val()
-						//,member_endDate_ck : member_endDate_ck
-					}	
-			
-					console.log("member_Department : " , member_Department);	
+					var modifyDatas = [];
+					$('.checkbox:checked').each(function() {
+			    		// 현재 체크박스를 포함하는 행(tr)을 가져옵니다.
+			    		let row = $(this).closest('tr');
+
+			    		// 행에서 필요한 데이터를 추출합니다.
+			    		let data = {
+								member_Id: row.find('td:eq(1) a').text(), // 첫 번째 <td>의 <a> 태그 내용
+				        		member_Name: row.find('td:eq(2) input').val(), // 두 번째 <td>의 <input> 값
+				        		member_Sex: row.find('td:eq(3) select').val(), // 세 번째 <td>의 텍스트
+				        		member_Position: row.find('td:eq(4) select').val(), // ...
+				        		member_Department: row.find('td:eq(5) select').val(),
+				        		member_Tel: row.find('td:eq(6) input').val(),
+				        		member_Skill_Language: row.find('td:eq(7) select').val(),
+				        		member_Skill_DB: row.find('td:eq(8) select').val(),
+				        		member_startDate: row.find('td:eq(9) input').val(),
+				        		member_endDate: row.find('td:eq(10) input').val()
+			    		};
+			    		//alert("data : " + data);
+			    		// 추출한 데이터를 배열에 추가합니다.
+			    		modifyDatas.push(data);
+			    		
+					});
+					//console.log("modifyDatas : " + modifyDatas);
 					$.ajax({
 						type : 'POST',
-						url: '/member/memberModify',
+						url: '/member/memberModifyM',
 						contentType : 'application/json; charset=utf-8',
 						data: JSON.stringify(modifyDatas),
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
+								location.href = "/member/memberList?pageNo=" + pageNo;
 								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 							}else if(result == false){
 								alert("수정하려는 번호는 현재 존재하는 번호입니다.");

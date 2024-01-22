@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.jmh.dto.Criteria;
@@ -14,7 +15,6 @@ import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
-@Service
 public interface MemberService {
 
 	//1. 조회(검색어 X)
@@ -64,5 +64,10 @@ public interface MemberService {
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw);
 
 	public List<String> getmemberListM(List<String> checkList);
+
+	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel);
+
+	@Transactional
+	public int memberModify_M(List<MemberDto> modifyDatas);
 
 }

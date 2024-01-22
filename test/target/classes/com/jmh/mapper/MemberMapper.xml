@@ -24,7 +24,7 @@ SELECT
 		MEMBER_NAME ,
 		NVL(
 		CASE
-			WHEN MEMBER_SEX = NULL THEN '미정'
+			WHEN MEMBER_SEX = 'NULL' THEN '미정'
 			WHEN MEMBER_SEX = 'D011' THEN '남자'
             WHEN MEMBER_SEX = 'D012' THEN '여자'
 		END, 
@@ -32,6 +32,7 @@ SELECT
 		AS MEMBER_SEX ,
 		NVL(
 		CASE
+			WHEN MEMBER_POSITION = 'NULL' THEN '미정'
 			WHEN MEMBER_POSITION = 'D028' THEN '사원'
 			WHEN MEMBER_POSITION = 'D027' THEN '대리'
 			WHEN MEMBER_POSITION = 'D026' THEN '과장'
@@ -45,6 +46,7 @@ SELECT
 		AS MEMBER_POSITION ,
 		NVL(
 		CASE
+			WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
 			WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
 			WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
 			WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
@@ -55,6 +57,7 @@ SELECT
         MEMBER_TEL ,
         NVL(
 		CASE
+			WHEN MEMBER_SKILL_LANGUAGE = 'NULL' THEN '미정'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
@@ -64,6 +67,7 @@ SELECT
 		AS MEMBER_SKILL_LANGUAGE ,
 		NVL(
 		CASE
+			WHEN MEMBER_SKILL_DB = 'NULL' THEN '미정'
 			WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
 			WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
 			WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
@@ -289,7 +293,7 @@ SELECT
 		MEMBER_NAME ,
 		NVL(
 		CASE
-			WHEN MEMBER_SEX = NULL THEN '미정'
+			WHEN MEMBER_SEX = 'NULL' THEN '미정'
 			WHEN MEMBER_SEX = 'D011' THEN '남자'
             WHEN MEMBER_SEX = 'D012' THEN '여자'
 		END, 
@@ -297,6 +301,7 @@ SELECT
 		AS MEMBER_SEX ,
 		NVL(
 		CASE
+			WHEN MEMBER_POSITION = 'NULL' THEN '미정'
 			WHEN MEMBER_POSITION = 'D028' THEN '사원'
 			WHEN MEMBER_POSITION = 'D027' THEN '대리'
 			WHEN MEMBER_POSITION = 'D026' THEN '과장'
@@ -310,6 +315,7 @@ SELECT
 		AS MEMBER_POSITION ,
 		NVL(
 		CASE
+			WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
 			WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
             WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
             WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
@@ -320,6 +326,7 @@ SELECT
         MEMBER_TEL ,
         NVL(
 		CASE
+			WHEN MEMBER_SKILL_LANGUAGE = 'NULL' THEN '미정'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
 			WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
@@ -329,6 +336,7 @@ SELECT
 		AS MEMBER_SKILL_LANGUAGE ,
 		NVL(
 		CASE
+			WHEN MEMBER_SKILL_DB = 'NULL' THEN '미정'
 			WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
 			WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
 			WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
@@ -379,26 +387,29 @@ SELECT MEMBER_ID ,
        MEMBER_NAME ,
        NVL(
        CASE
-              WHEN MEMBER_SEX = 'D011' THEN '남자'
-              WHEN MEMBER_SEX = 'D012' THEN '여자'
+			WHEN MEMBER_SEX = 'NULL' THEN '미정'
+            WHEN MEMBER_SEX = 'D011' THEN '남자'
+            WHEN MEMBER_SEX = 'D012' THEN '여자'
        END, 
        '미정')
        AS MEMBER_SEX ,
        NVL(
        CASE
-              WHEN MEMBER_POSITION = 'D028' THEN '사원'
-              WHEN MEMBER_POSITION = 'D027' THEN '대리'
-              WHEN MEMBER_POSITION = 'D026' THEN '과장'
-              WHEN MEMBER_POSITION = 'D025' THEN '차장'
-              WHEN MEMBER_POSITION = 'D024' THEN '부장'
-              WHEN MEMBER_POSITION = 'D023' THEN '이사'
-              WHEN MEMBER_POSITION = 'D022' THEN '상무'
-              WHEN MEMBER_POSITION = 'D021' THEN '사장'
+       		WHEN MEMBER_POSITION = 'NULL' THEN '미정'
+            WHEN MEMBER_POSITION = 'D028' THEN '사원'
+            WHEN MEMBER_POSITION = 'D027' THEN '대리'
+            WHEN MEMBER_POSITION = 'D026' THEN '과장'
+            WHEN MEMBER_POSITION = 'D025' THEN '차장'
+            WHEN MEMBER_POSITION = 'D024' THEN '부장'
+            WHEN MEMBER_POSITION = 'D023' THEN '이사'
+            WHEN MEMBER_POSITION = 'D022' THEN '상무'
+            WHEN MEMBER_POSITION = 'D021' THEN '사장'
        END, 
        '미정')
        AS MEMBER_POSITION ,
        NVL(
        CASE
+       		WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
 			WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
             WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
             WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
@@ -409,19 +420,20 @@ SELECT MEMBER_ID ,
        MEMBER_TEL ,
        NVL(
        CASE
-              WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-              WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-              WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-              WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+			WHEN MEMBER_SKILL_LANGUAGE = 'NULL' THEN '미정'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
        END, 
        '미정')
        AS MEMBER_SKILL_LANGUAGE ,
        NVL(
        CASE
-              WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-              WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-              WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-              WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+       		WHEN MEMBER_SKILL_DB = 'NULL' THEN '미정'
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
        END, 
        '미정')
        AS MEMBER_SKILL_DB ,
@@ -429,10 +441,11 @@ SELECT MEMBER_ID ,
        MEMBER_ENDDATE ,
        NVL(
        CASE
-              WHEN MEMBER_STATUS = 'S01' THEN '대기중'
-              WHEN MEMBER_STATUS = 'S02' THEN '파견중'
-              WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
-              WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
+       		
+            WHEN MEMBER_STATUS = 'S01' THEN '대기중'
+            WHEN MEMBER_STATUS = 'S02' THEN '파견중'
+            WHEN MEMBER_STATUS = 'S03' THEN '휴가중'
+            WHEN MEMBER_STATUS = 'S04' THEN '퇴사'
        END,
        '미정')
        AS MEMBER_STATUS
@@ -539,6 +552,7 @@ SELECT
 		MEMBER_NAME ,
 		NVL(
 		CASE
+				WHEN MEMBER_SEX = 'NULL' THEN '미정'
 				WHEN MEMBER_SEX = 'D011' THEN '남자'
             	WHEN MEMBER_SEX = 'D012' THEN '여자'
 		END, 
@@ -546,6 +560,7 @@ SELECT
 		AS MEMBER_SEX ,
 		NVL(
         CASE
+				WHEN MEMBER_POSITION = 'NULL' THEN '미정'
             	WHEN MEMBER_POSITION = 'D028' THEN '사원'
             	WHEN MEMBER_POSITION = 'D027' THEN '대리'
             	WHEN MEMBER_POSITION = 'D026' THEN '과장'
@@ -559,9 +574,10 @@ SELECT
 		AS MEMBER_POSITION ,
 		NVL(
 		CASE
-				WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
-            	WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
-            	WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+			WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
+			WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+            WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+            WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
             WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
 		END, 
 		'미정')
@@ -569,19 +585,21 @@ SELECT
 		MEMBER_TEL ,
 		NVL(
 		CASE
-            	WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-            	WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-            	WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
-            	WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+			WHEN MEMBER_SKILL_LANGUAGE = 'NULL' THEN '미정'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN MEMBER_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
 		END, 
 		'미정')
 		AS MEMBER_SKILL_LANGUAGE ,
         NVL(
         CASE
-            	WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
-            	WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
-            	WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
-            	WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+        	WHEN MEMBER_SKILL_DB = 'NULL' THEN '미정'
+            WHEN MEMBER_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN MEMBER_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
 		END, 
 		'미정')
 		AS MEMBER_SKILL_DB ,
@@ -595,7 +613,7 @@ WHERE
 </select>
 	
 <!-- 3. 수정(전화번호 중복체크) -->
-<select id="member_Tel_ck" resultType="integer"> <!-- parameterType="String"  -->
+<select id="member_Tel_ck" resultType="integer" parameterType="List"> <!-- parameterType="String"  -->
 SELECT
 		COUNT(*)
 FROM
@@ -641,7 +659,101 @@ WHERE
 			MEMBER_ID = #{member_Id}
 	</if>
 </update>
+
+<select id="member_Tel_ck_M" resultType="integer" parameterType="List"> <!-- parameterType="String"  -->
+SELECT
+		COUNT(*)
+FROM
+		MEMBER
+WHERE 
+		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
+</select>
+
+<!-- 3. 수정(다중 회원 정보 수정) -->
+<update id="memberModify_M" parameterType="list">
+	<!-- <foreach item="member" index="index" collection="list" open="" separator=";" close=""> 구글 및 챗 지피티 추천 -->
+   	<foreach item="member" index="index" collection='list' open="DECLARE BEGIN" separator=";" close="; END;"> 
+    		UPDATE MEMBER 
+            SET 
+            	MEMBER_NAME = #{member.member_Name}
+                MEMBER_SEX = #{member.member_Sex},
+                MEMBER_POSITION = #{member.member_Position},
+                MEMBER_DEPARTMENT = #{member.member_Department},
+                MEMBER_TEL = #{member.member_Tel},
+                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
+                MEMBER_SKILL_DB = #{member.member_Skill_DB},
+                MEMBER_STARTDATE = #{member.member_startDate},
+                MEMBER_ENDDATE = #{member.member_endDate}
+            WHERE 
+            	MEMBER_ID = #{member.member_Id}
+    </foreach>
+</update>
+<!-- <update id="memberModify_M" parameterType="list">
+    <foreach item="member" index="index" collection="list" open="" separator=";" close="">
+        <if test="member.member_endDate != null">
+            UPDATE MEMBER 
+            SET MEMBER_NAME = #{member.member_Name},
+                MEMBER_SEX = #{member.member_Sex},
+                MEMBER_POSITION = #{member.member_Position},
+                MEMBER_DEPARTMENT = #{member.member_Department},
+                MEMBER_TEL = #{member.member_Tel},
+                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
+                MEMBER_SKILL_DB = #{member.member_Skill_DB},
+                MEMBER_STARTDATE = #{member.member_startDate},
+                MEMBER_ENDDATE = #{member.member_endDate}
+            WHERE MEMBER_ID = #{member.member_Id}
+        </if>
+        <if test="member.member_endDate == null">
+            UPDATE MEMBER 
+            SET MEMBER_NAME = #{member.member_Name},
+                MEMBER_SEX = #{member.member_Sex},
+                MEMBER_POSITION = #{member.member_Position},
+                MEMBER_DEPARTMENT = #{member.member_Department},
+                MEMBER_TEL = #{member.member_Tel},
+                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
+                MEMBER_SKILL_DB = #{member.member_Skill_DB},
+                MEMBER_STARTDATE = #{member.member_startDate},
+                MEMBER_ENDDATE = NULL
+            WHERE MEMBER_ID = #{member.member_Id}
+        </if>
+    </foreach>
+</update> -->
+<!-- <update id="memberModify_M" parameterType="list" >
+	<if test="member_endDate != null">
+	UPDATE 
+			MEMBER 
+	SET 
+			MEMBER_NAME = #{member_Name}
+			,MEMBER_SEX = #{member_Sex}
+			,MEMBER_POSITION = #{member_Position}
+			,MEMBER_DEPARTMENT = #{member_Department}
+			,MEMBER_TEL = #{member_Tel} 
+			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
+			,MEMBER_SKILL_DB = #{member_Skill_DB} 
+			,MEMBER_STARTDATE = #{member_startDate}
+			,MEMBER_ENDDATE = #{member_endDate}
+	WHERE 
+			MEMBER_ID = #{member_Id}
+	</if>
 	
+	<if test="member_endDate == null">
+	UPDATE 
+			MEMBER 
+	SET 
+			MEMBER_NAME = #{member_Name}
+			,MEMBER_SEX = #{member_Sex}
+			,MEMBER_POSITION = #{member_Position}
+			,MEMBER_DEPARTMENT = #{member_Department}
+			,MEMBER_TEL = #{member_Tel} 
+			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
+			,MEMBER_SKILL_DB = #{member_Skill_DB} 
+			,MEMBER_STARTDATE = #{member_startDate}
+	WHERE 
+			MEMBER_ID = #{member_Id}
+	</if>
+</update> -->
+
+
 <!-- 4. 삭제(회원 정보 삭제) -->
 <delete id="deleteMember" parameterType="list" >
 /*deleteMember*/
