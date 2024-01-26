@@ -1,5 +1,6 @@
 package com.jmh.mapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public interface MemberMapper {
 
 	Object projectInmember(int project_Id);
 
-	int projectDetailInsert(ProjectDetailDto selectedRowData);
+	
 
 	int memberModify2(ProjectDetailDto selectedProjectData);
 
@@ -66,9 +67,13 @@ public interface MemberMapper {
 
 	List<String> getmemberListM(List<String> checkList);
 
-	int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel);
+	ArrayList<MemberDto> member_Tel_ck_M(List<MemberDto> modifyList);
 
-	int memberModify_M(List<MemberDto> modifyDatas);
+	int memberModify_M(Map<String, Object> resultMap);
+
+	ArrayList<String> deleteMemberM_ck(List<String> checkList);
 	
 	
+	//팝업촹 관련
+	int projectDetailInsert(List<ProjectDetailDto> selectedRowData);
 }

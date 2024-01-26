@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public interface MemberService {
 
 	public int getmemberId(int member_Id);
 
-	public int projectDetailInsert(ProjectDetailDto selectedRowData);
+	
 
 	public int memberModify2(ProjectDetailDto selectedProjectData);
 
@@ -65,9 +66,18 @@ public interface MemberService {
 
 	public List<String> getmemberListM(List<String> checkList);
 
-	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel);
+	//public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel);
 
 	@Transactional
-	public int memberModify_M(List<MemberDto> modifyDatas);
+	public int memberModify_M(Map<String, Object> resultMap);
 
+	public ArrayList<String> deleteMemberM_ck(List<String> checkList);
+
+	//public int member_Tel_ck_m(@Param("member_Tel")String member_Tel, @Param("member_Id")int member_Id);
+	public ArrayList<MemberDto> member_Tel_ck_m(List<MemberDto> modifyList);
+
+	
+	
+	//팝업창 관련
+	public int projectDetailInsert(List<ProjectDetailDto> selectedRowData);
 }

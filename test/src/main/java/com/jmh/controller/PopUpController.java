@@ -104,30 +104,36 @@ public class PopUpController {
 	}
 	
 	@PostMapping("/projectDetailInsert")
-	public String projectDetailInsert(@RequestBody ProjectDetailDto selectedRowData) {
-		System.out.println("selectedRowData : " + selectedRowData.getCheck());
-		
-		if(selectedRowData.getCheck() == 2) {
-			System.out.println("m 진입");
-			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-			int insertCnt = memberService.projectDetailInsert(selectedRowData);
-			
-			if(insertCnt > 0) {
-				System.out.println("등록성공");
-				return "popup/popMember";
-			}else {
-				System.out.println("실패");
-				return "";
-			}
+	public String projectDetailInsert(@RequestBody List<ProjectDetailDto> selectedRowData) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("selectedRowData", selectedRowData);
+		System.out.println("map : " + map);
+		int check = 0;
+		for(ProjectDetailDto data : selectedRowData) {
+			check = data.getCheck();
 		}
 		
-		if(selectedRowData.getCheck() == 1) {
+//		if(selectedRowData.getCheck() == 2) {
+//			System.out.println("m 진입");
+//			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+//			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+//			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+//			int insertCnt = memberService.projectDetailInsert(selectedRowData);
+//			
+//			if(insertCnt > 0) {
+//				System.out.println("등록성공");
+//				return "popup/popMember";
+//			}else {
+//				System.out.println("실패");
+//				return "";
+//			}
+//		}
+		
+		if(check == 1) {
 			System.out.println("p 진입");
-			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+			//System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+			//System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+			//System.out.println("selectedRowData : " + selectedRowData.getPullDate());
 	        int insertCnt = memberService.projectDetailInsert(selectedRowData);
 	        if(insertCnt > 0) {
 				System.out.println("등록성공");

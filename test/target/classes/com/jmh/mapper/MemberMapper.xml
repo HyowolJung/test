@@ -12,13 +12,7 @@
     </RESULTMAP> -->
     
 <select id="getmemberListM" resultType="com.jmh.dto.MemberDto" parameterType="list">
-<!-- SELECT * FROM MEMBER WHERE MEMBER_ID IN
-    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-        #{item}
-    </foreach> -->
-
-
-/*getmemberList*/
+/*getmemberListM*/
 SELECT 
 		MEMBER_ID ,
 		MEMBER_NAME ,
@@ -376,6 +370,7 @@ FROM
 			FROM     
 					MEMBER 
 		)
+	
 WHERE 
 		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
@@ -660,100 +655,98 @@ WHERE
 	</if>
 </update>
 
-<select id="member_Tel_ck_M" resultType="integer" parameterType="List"> <!-- parameterType="String"  -->
+<!-- <select id="member_Tel_ck_M" resultType="integer" parameterType="List"> parameterType="String" 
 SELECT
 		COUNT(*)
 FROM
 		MEMBER
 WHERE 
 		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
-</select>
+</select> -->
 
 <!-- 3. 수정(다중 회원 정보 수정) -->
-<update id="memberModify_M" parameterType="list">
-	<!-- <foreach item="member" index="index" collection="list" open="" separator=";" close=""> 구글 및 챗 지피티 추천 -->
-   	<foreach item="member" index="index" collection='list' open="DECLARE BEGIN" separator=";" close="; END;"> 
-    		UPDATE MEMBER 
-            SET 
-            	MEMBER_NAME = #{member.member_Name}
-                MEMBER_SEX = #{member.member_Sex},
-                MEMBER_POSITION = #{member.member_Position},
-                MEMBER_DEPARTMENT = #{member.member_Department},
-                MEMBER_TEL = #{member.member_Tel},
-                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
-                MEMBER_SKILL_DB = #{member.member_Skill_DB},
-                MEMBER_STARTDATE = #{member.member_startDate},
-                MEMBER_ENDDATE = #{member.member_endDate}
-            WHERE 
-            	MEMBER_ID = #{member.member_Id}
+<update id="memberModify_M" parameterType="java.util.Map">
+    <!-- resultMap에서 "modifyDatas" 키를 사용하여 데이터 추출 -->
+    <foreach item="member" index="index" collection="modifyDatas" open="DECLARE BEGIN" separator=";" close="; END;">
+        UPDATE MEMBER
+        SET
+            MEMBER_NAME = #{member.member_Name},
+            MEMBER_SEX = #{member.member_Sex},
+            MEMBER_POSITION = #{member.member_Position},
+            MEMBER_DEPARTMENT = #{member.member_Department},
+            MEMBER_TEL = #{member.member_Tel},
+            MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
+            MEMBER_SKILL_DB = #{member.member_Skill_DB},
+            MEMBER_STARTDATE = #{member.member_startDate},
+            MEMBER_ENDDATE = #{member.member_endDate}
+        WHERE
+            MEMBER_ID = #{member.member_Id}
     </foreach>
 </update>
-<!-- <update id="memberModify_M" parameterType="list">
-    <foreach item="member" index="index" collection="list" open="" separator=";" close="">
-        <if test="member.member_endDate != null">
-            UPDATE MEMBER 
-            SET MEMBER_NAME = #{member.member_Name},
-                MEMBER_SEX = #{member.member_Sex},
-                MEMBER_POSITION = #{member.member_Position},
-                MEMBER_DEPARTMENT = #{member.member_Department},
-                MEMBER_TEL = #{member.member_Tel},
-                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
-                MEMBER_SKILL_DB = #{member.member_Skill_DB},
-                MEMBER_STARTDATE = #{member.member_startDate},
-                MEMBER_ENDDATE = #{member.member_endDate}
-            WHERE MEMBER_ID = #{member.member_Id}
-        </if>
-        <if test="member.member_endDate == null">
-            UPDATE MEMBER 
-            SET MEMBER_NAME = #{member.member_Name},
-                MEMBER_SEX = #{member.member_Sex},
-                MEMBER_POSITION = #{member.member_Position},
-                MEMBER_DEPARTMENT = #{member.member_Department},
-                MEMBER_TEL = #{member.member_Tel},
-                MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
-                MEMBER_SKILL_DB = #{member.member_Skill_DB},
-                MEMBER_STARTDATE = #{member.member_startDate},
-                MEMBER_ENDDATE = NULL
-            WHERE MEMBER_ID = #{member.member_Id}
-        </if>
+
+<!-- 4. 삭제(삭제 체크) -->
+<!-- <select id="deleteMemberM_ck" resultType="boolean" parameterType="list">parameterType="String"
+/* deleteMemberM_ck */
+<foreach item="member_Id" collection="list" open="(" separator="," close=")">
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER M
+JOIN
+        PROJECT_DETAIL P
+ON 
+        M.MEMBER_ID = P.MEMBER_ID
+WHERE
+        P.MEMBER_ID = #{list[member_Id]} 
+</foreach>
+</select> -->
+<!-- <select id="deleteMemberM_ck" resultType="Integer" parameterType="java.util.List">
+    <foreach collection="list" item="member_Id" index="index" open="(" separator="," close=")"> 
+        SELECT 
+        		COUNT(*)
+        FROM 
+        		MEMBER M
+        JOIN
+        		PROJECT_DETAIL P
+        ON 
+        		M.MEMBER_ID = P.MEMBER_ID
+        WHERE
+        		P.MEMBER_ID = #{member_Id} 
     </foreach>
-</update> -->
-<!-- <update id="memberModify_M" parameterType="list" >
-	<if test="member_endDate != null">
-	UPDATE 
-			MEMBER 
-	SET 
-			MEMBER_NAME = #{member_Name}
-			,MEMBER_SEX = #{member_Sex}
-			,MEMBER_POSITION = #{member_Position}
-			,MEMBER_DEPARTMENT = #{member_Department}
-			,MEMBER_TEL = #{member_Tel} 
-			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
-			,MEMBER_SKILL_DB = #{member_Skill_DB} 
-			,MEMBER_STARTDATE = #{member_startDate}
-			,MEMBER_ENDDATE = #{member_endDate}
-	WHERE 
-			MEMBER_ID = #{member_Id}
-	</if>
-	
-	<if test="member_endDate == null">
-	UPDATE 
-			MEMBER 
-	SET 
-			MEMBER_NAME = #{member_Name}
-			,MEMBER_SEX = #{member_Sex}
-			,MEMBER_POSITION = #{member_Position}
-			,MEMBER_DEPARTMENT = #{member_Department}
-			,MEMBER_TEL = #{member_Tel} 
-			,MEMBER_SKILL_LANGUAGE = #{member_Skill_Language} 
-			,MEMBER_SKILL_DB = #{member_Skill_DB} 
-			,MEMBER_STARTDATE = #{member_startDate}
-	WHERE 
-			MEMBER_ID = #{member_Id}
-	</if>
-</update> -->
+</select> -->
+<!-- <select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
+		SELECT
+				COUNT(*)
+		FROM
+				MEMBER
+		WHERE 
+				MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
+</select> -->
+<select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
+    <foreach item="member" index="index" collection="modifyList" open="(" separator="," close=")">
+    SELECT 
+    		COUNT(*)
+    FROM 
+    		MEMBER
+    WHERE 
+    		MEMBER_TEL IN #{member.member_Tel}
+    </foreach>
+</select>
 
-
+<select id="deleteMemberM_ck" resultType="String" parameterType="java.util.List">
+    <foreach collection="list" item="member_Id" index="index" separator=" UNION ALL "> 
+        SELECT 
+        		COUNT(*)
+        FROM 
+        		MEMBER M
+        JOIN
+        		PROJECT_DETAIL P
+        ON 
+        		M.MEMBER_ID = P.MEMBER_ID
+        WHERE
+        		P.MEMBER_ID = #{member_Id} 
+    </foreach>
+</select> 
 <!-- 4. 삭제(회원 정보 삭제) -->
 <delete id="deleteMember" parameterType="list" >
 /*deleteMember*/
@@ -845,28 +838,7 @@ WHERE
     		)
 	</insert>
 
-	<insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
-		INSERT 
-		INTO 
-		PROJECT_DETAIL
-		(
-        	MEMBER_ID
-            ,MEMBER_NAME
-            ,PROJECT_ID
-            ,PROJECT_NAME
-            ,PUSHDATE
-            ,PULLDATE
-         )        
-		 VALUES
-    		(
-        		#{member_Id},
-        		#{member_Name},
-        		#{project_Id},
-        		#{project_Name},
-        		#{pushDate},
-        		#{pullDate}
-    		)
-	</insert>
+	
 	        		<!-- <if test="pullDate != null">
             		#{pullDate}
         		</if>
@@ -891,6 +863,102 @@ WHERE
 		PROJECT_ID = #{project_Id}
 	
 </update>
+
+
+<!-- 팝업창 관련 -->
+<!-- <insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
+		INSERT 
+		INTO 
+		PROJECT_DETAIL
+		(
+        	MEMBER_ID
+            ,MEMBER_NAME
+            ,PROJECT_ID
+            ,PROJECT_NAME
+            ,PUSHDATE
+            ,PULLDATE
+         )        
+		 VALUES
+    		(
+        		#{member_Id},
+        		#{member_Name},
+        		#{project_Id},
+        		#{project_Name},
+        		#{pushDate},
+        		#{pullDate}
+    		)
+</insert> -->
+<!-- <insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
+INSERT 
+INTO 
+PROJECT_DETAIL
+	(
+      	MEMBER_ID
+          ,MEMBER_NAME
+          ,PROJECT_ID
+          ,PROJECT_NAME
+          ,PUSHDATE
+          ,PULLDATE
+	)        
+	VALUES
+	(
+   		#{member_Id},
+   		#{member_Name},
+   		#{project_Id},
+  		#{project_Name},
+  		#{pushDate},
+   		#{pullDate}
+	)
+</insert> -->
+<insert id="projectDetailInsert" parameterType="list">
+    INSERT INTO PROJECT_DETAIL (
+        MEMBER_ID,
+        MEMBER_NAME,
+        PROJECT_ID,
+        PROJECT_NAME,
+        PUSHDATE,
+        PULLDATE
+    )
+    VALUES
+   <!--  <foreach collection="list" item="item" separator=",">
+        (
+            #{item.member_Id},
+            #{item.member_Name},
+            #{item.project_Id},
+            #{item.project_Name},
+            NVL(#{item.pushDate, jdbcType=DATE}, ''), 
+            NVL(#{item.pullDate, jdbcType=DATE}, '') 
+        )
+        
+    </foreach> -->
+    <foreach collection="list" item="item" separator=",">
+        (
+            #{item.member_Id},
+            #{item.member_Name},
+            #{item.project_Id},
+            #{item.project_Name},
+            <choose>
+                <when test="item.pushDate != null">
+                    #{item.pushDate, jdbcType=DATE}
+                </when>
+                <otherwise>
+                    '' <!-- 빈 문자열을 대체값으로 사용 -->
+                </otherwise>
+            </choose>,
+            <choose>
+                <when test="item.pullDate != null">
+                    #{item.pullDate, jdbcType=DATE}
+                </when>
+                <otherwise>
+                    '' <!-- 빈 문자열을 대체값으로 사용 -->
+                </otherwise>
+            </choose>
+        )
+    </foreach>
+    
+</insert>
+
+
 	
 <sql id="criteria">
     <where>

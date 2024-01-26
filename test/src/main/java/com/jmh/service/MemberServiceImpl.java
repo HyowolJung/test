@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,12 +105,6 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int projectDetailInsert(ProjectDetailDto selectedRowData) {
-		// TODO Auto-generated method stub
-		return memberMapper.projectDetailInsert(selectedRowData);
-	}
-
-	@Override
 	public int memberModify2(ProjectDetailDto selectedProjectData) {
 		// TODO Auto-generated method stub
 		return memberMapper.memberModify2(selectedProjectData);
@@ -145,25 +140,43 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getmemberListM(checkList);
 	}
 
+//	@Override
+//	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.member_Tel_ck_M(member_Id, member_Tel);
+//	}
+
 	@Override
-	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel) {
+	public int memberModify_M(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return memberMapper.member_Tel_ck_M(member_Id, member_Tel);
+		return memberMapper.memberModify_M(resultMap);
 	}
 
 	@Override
-	public int memberModify_M(List<MemberDto> modifyDatas) {
+	public ArrayList<String> deleteMemberM_ck(List<String> checkList) {
 		// TODO Auto-generated method stub
-		return memberMapper.memberModify_M(modifyDatas);
+		return memberMapper.deleteMemberM_ck(checkList);
 	}
 
+	@Override
+	public ArrayList<MemberDto> member_Tel_ck_m(List<MemberDto> modifyList) {
+		// TODO Auto-generated method stub
+		return memberMapper.member_Tel_ck_M(modifyList);
+	}
+	
 //	@Override
 //	public void projectInmember(int project_Id) {
 //		return memberMapper.projectInmember(project_Id);
 //		
 //	}
 	
-	
+	//팝업창 관련
+	@Override
+	public int projectDetailInsert(List<ProjectDetailDto> selectedRowData) {
+		// TODO Auto-generated method stub
+		return memberMapper.projectDetailInsert(selectedRowData);
+	}
+
 
 	
 

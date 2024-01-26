@@ -76,7 +76,7 @@
 
 	<label>부서</label>
 	<select id="member_Department">
-		<option value="S000" selected="selected">선택</option>
+		<option value="" selected="selected">선택</option>
 		<option value="A020">경영지원부</option>
 		<option value="A021">인사부</option>
 		<option value="A022">IT부</option>
@@ -85,7 +85,7 @@
 	
 	<label>직급</label>
 	<select id="member_Position">
-		<option value="S000" selected="selected">선택</option>
+		<option value="" selected="selected">선택</option>
 		<option value="D028" >사원</option>
 		<option value="D027">대리</option>
 		<option value="D026">과장</option>
@@ -93,13 +93,13 @@
 	
 	<label>성별</label>
 	<select id="member_Gender">
-		<option value="S000" selected="selected">선택</option>
+		<option value="" selected="selected">선택</option>
 		<option value="D011" >남자</option>
 		<option value="D012">여자</option>
 	</select><br><br>
 	<label>언어</label>
 	<select id="member_Skill_Language">
-		<option value="S000" selected="selected">선택</option>
+		<option value="" selected="selected">선택</option>
 		<option value="S010">JAVA</option>
 		<option value="S011">PYTHON</option>
 		<option value="S012">C++</option>
@@ -108,7 +108,7 @@
 	
 	<label>데이터베이스</label>
 	<select id="member_Skill_DB">
-		<option value="S000" selected="selected">선택</option>
+		<option value="" selected="selected">선택</option>
 		<option value="S020">ORACLE</option>
 		<option value="S021">MSSQL</option>
 		<option value="S022">MYSQL</option>

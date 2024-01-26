@@ -94,8 +94,6 @@ public class MemberController {
 	@PostMapping("/memberList")
 	@ResponseBody
 	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
-		//해야할거 : 메인 리스트 페이지에서 수정 버튼 눌렀을 때 다중 수정 가능하게 하기!
-		//+ 캘린더에 날짜 초과해서 입력 안되게 해야해..
 //		, @RequestParam("checkList") List<String> checkList
 		//System.out.println("checkList : " + checkList);
 //		if(checkList != null) {
@@ -230,13 +228,11 @@ public class MemberController {
 	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
 		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
 		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
-		//int member_endDate_ck = modifyDatas.getMember_endDate_ck();
-		//System.out.println("member_endDate_ck : " + member_endDate_ck);
 		System.err.println("modifyDatas : " + modifyDatas);
 		
 		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
 		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
-			//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+		//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
 		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
 		boolean result = false;
 		
@@ -268,22 +264,48 @@ public class MemberController {
 	
 	@PostMapping("/memberModifyM") 
 	public ResponseEntity<?> memberModifyM(@RequestBody List<MemberDto> modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
-		boolean result = false;
+		Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("modifyDatas", modifyDatas);
+        
+        boolean result = false;
 		System.out.println("modifyDatas : " + modifyDatas);
-		int modifyCnt = memberService.memberModify_M(modifyDatas);
+		int modifyCnt = memberService.memberModify_M(resultMap);
 		System.out.println("modifyCnt : " + modifyCnt);
-		if(modifyCnt > 0) {
-			System.out.println("수정 성공");
-			result = true;
-		}else if(modifyCnt < 0 ) {
-			System.out.println("수정 실패");
-			result = false;
+		if (modifyCnt >= 0) {
+		    System.out.println("수정 성공");
+		    result = true;
+		} else {
+		    System.out.println("수정 실패");
+		    result = false;
 		}
-		
-		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
+	
+	//4. 삭제(다중 회원 정보 삭제)
+	@PostMapping("/memberDeleteM") //@RequestParam(value="parameter이름[]")List<String>
+	public String memberDeleteM(@RequestBody List<String> checkList) { //@RequestParam int member_Id, @RequestParam(value="checkList[]") MemberDto[] checkList  
+		System.out.println("checkList : " + checkList);
+		ArrayList<String> deleteMemberM_ck = new ArrayList<String>();
+		deleteMemberM_ck = memberService.deleteMemberM_ck(checkList);
+		System.out.println("deleteMemberM_ck : " + deleteMemberM_ck);
+		
+		boolean allZeros = deleteMemberM_ck.stream().allMatch(value -> Integer.parseInt(value) == 0);
+		if (allZeros) {
+			// 모두 0인 경우
+			System.out.println("모든 값이 0입니다.");
+			int deleteCnt = memberService.deleteMember(checkList);
+			if(deleteCnt > 0) {
+				return "member/memberList";
+			}else {
+				return "";
+			}
+		} else {
+			// 0이 아닌게 하나라도 있다.(=투입이력이 있다)
+			System.out.println("0이 아닌 값이 존재합니다.");
+		}
+		return "";
+	}
 	
 	//4. 삭제(회원 정보 삭제)
 	@PostMapping("/memberDelete") //@RequestParam(value="parameter이름[]")List<String>
@@ -291,13 +313,13 @@ public class MemberController {
 		for(String member_Id : checkList) {
 			System.out.println("삭제할 체크리스트 : " + checkList);
 			int deleteCnt = memberService.deleteMember(checkList);
-			
+				
 			if(deleteCnt > 0) {
 				return "member/memberList";
 			}else {
 				return "";
 			}
-	    }
+		}
 		return "";
 	}
 		
@@ -330,79 +352,7 @@ public class MemberController {
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	//List<Integer> member_Ids = new ArrayList<>();
-			//List<String> member_Tels = new ArrayList<>();
-//			List<String> memberInfoList = new ArrayList<>();
-//			for (MemberDto member : modifyDatas) {
-//		        int member_Id = member.getMember_Id();
-//		        String member_Tel = member.getMember_Tel();
-	//
-//		        String memberInfo = member_Id + ":" + member_Tel; // 또는 원하는 형식으로 결합
-//		        System.out.println("memberInfo : " + memberInfo);
-//		        memberInfoList.add(memberInfo);
-//		        //memberInfoList.add(member_Id);
-//		        //memberInfoList.add(member_Tel);
-//			}
-//			for (String memberInfo : memberInfoList) {
-//			    String[] parts = memberInfo.split(":");
-//			    int member_Id = Integer.parseInt(parts[0]);
-//			    String member_Tel = parts[1];
-	//
-//			    // 이제 member_Id와 member_Tel을 사용하여 쿼리를 실행합니다.
-//			    //int count = memberService.member_Tel_ck_M(member_Id, member_Tel);
-//			    int member_Tel_ck = memberService.member_Tel_ck_M(member_Id, member_Tel);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
-//				System.out.println("member_Tel_ck : " + member_Tel_ck);
-//			}
-			
-			
-//			for (MemberDto member : modifyDatas) {
-//		        // 각 MemberDto 객체에서 필요한 정보를 꺼냅니다.
-//				int member_Id = member.getMember_Id();
-//		        //String memberName = member.getMember_Name();
-//		        //String member_Sex = member.getMember_Sex();
-//		        //String member_Position = member.getMember_Position();
-//				//String member_Department = member.getMember_Department();
-//		        //String member_Skill_Language = member.getMember_Skill_Language();
-//		        //String member_Skill_DB = member.getMember_Skill_DB();
-//		        String member_Tel = member.getMember_Tel();
-	//
-//		        member_Tels.add(member_Id);
-//		        member_Tels.add(member_Tel);
-//		    }
-			//System.out.println("member_Tels : " + member_Tels);
-			//String member_Tel = modifyDatas.get);	//jsp 에서 보내온 전화번호
-			//int member_endDate_ck = modifyDatas.getMember_endDate_ck();
-			//System.out.println("member_endDate_ck : " + member_endDate_ck);
-			//System.err.println("modifyDatas : " + modifyDatas);
-			
-			//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
-			//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
-				//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
-			
-			
-//			
-//			System.out.println("member_Tel_ck : " + member_Tel_ck);
-//			if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
-//				System.out.println("내 번호가 맞아");
-//				int modifyCnt = memberService.memberModify_M(modifyDatas);
-//				if(modifyCnt > 0) {
-//					System.out.println("수정 성공1");
-//					result = true;
-//				}else if(modifyCnt < 0 ) {
-//					System.out.println("수정 실패1");
-//					result = false;
-//				}
-//			}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
-//				System.out.println("내 번호가 아니야");
-//				int modifyCnt = memberService.memberModify_M(modifyDatas);
-//				if(modifyCnt > 0) {
-//					System.out.println("수정 성공2");
-//					result = true;
-//				}else if(modifyCnt < 0) {
-//					System.out.println("수정 실패2");
-//					result = false;
-//				}
-//			}
+	
 	@PostMapping("/memberDelete2")
 	public ResponseEntity<Boolean> memberDelete2(@RequestBody ProjectDetailDto selectedProjectData) {
 		boolean result = false;
@@ -422,8 +372,4 @@ public class MemberController {
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
-	
-	
-	
-	
 }

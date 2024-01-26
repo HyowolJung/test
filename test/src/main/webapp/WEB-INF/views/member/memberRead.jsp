@@ -68,8 +68,8 @@ table {
 			<tr>
 				<td id="td_Id">${memberList.member_Id }</td>
 				<td>${memberList.member_Name }</td>
-				<td>${memberList.member_Position}</td>
 				<td>${memberList.member_Sex}</td>
+				<td>${memberList.member_Position}</td>
 				<td>${memberList.member_Tel }</td>
 				<td>${memberList.member_Skill_Language}</td>
 				<td>${memberList.member_Skill_DB}</td>

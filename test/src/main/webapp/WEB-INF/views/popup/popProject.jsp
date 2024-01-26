@@ -83,15 +83,6 @@
 <div>
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
 	프로젝트명 : <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
-	<%-- <select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
-		<option selected>고객사</option>
-		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D062'}"/>>엘지</option>
-		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D065'}"/>>아마존</option>
-		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D061'}"/>>삼성</option>
-		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D063'}"/>>애플</option>
-		<option value="customer" <c:if test = "${pageDto.cri.searchField == 'D064'}"/>>구글</option>
-	</select> --%>
-	
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 		<option selected>고객사</option>
     	<option value="D062" ${pageDto.cri.searchField == 'D062' ? 'selected' : ''}>엘지</option>
@@ -101,22 +92,22 @@
 		<option value="D064" ${pageDto.cri.searchField == 'D064' ? 'selected' : ''}>구글</option>
 	</select>
    	<label>시작일</label>
-   	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" >
+   	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" onblur="validateDate1()">
 	~
 	<label>종료일</label>
-	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" >
+	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()">
 	<button id="searchButton">검색</button>
 	<button id="insert">추가</button>	
 </div>
 
-<input type="text" id="result_member_Id" readonly /><!-- style="display: none" -->
-<input type="text" id="result_member_Name" readonly /><!-- style="display: none" -->
+<input type="text" id="result_member_Id" readonly  style="display: none" /><!-- style="display: none" -->
+<input type="text" id="result_member_Name" readonly style="display: none" /><!-- style="display: none" -->
 
 <table border="1" id="projectTable">
 	<thead>
 		<tr>
 			<th>ㅁ</th>
-			<th style="display: none">번호</th>
+			<!-- <th style="display: none">번호</th> -->
 			<th style="display: none">아이디</th>
 			<th>이름</th>
 			<th>고객사</th>
@@ -161,12 +152,20 @@ $("#result_member_Name").val(member_Name);
 $("#searchButton").click(function(){
 	let searchField = null	
 	//let searchDate = $("#searchDate").val();
+	/* if(search_startDate != null ||search_endDate != null){
+		alert("둘다 NULL이 아니다.")		
+		if(search_startDate < search_endDate){
+			alert("퇴사일이 입사일보다 빠를 수는 없어요.");
+			return;
+		}
+	} */
+	
 	searchField = document.getElementById("searchField").value;
 	
 	if(searchField == '고객사'){
 		searchField = null;
 	}
-	alert("searchField : " + searchField);
+	//alert("searchField : " + searchField);
 	let searchWord = $("#searchWord").val();
 	let search_startDate = $("#search_startDate").val();
 	let search_endDate = $("#search_endDate").val();
@@ -187,12 +186,12 @@ $("#searchButton").click(function(){
 			var projectList = resultMap.projectList;
 			var pageDto = resultMap.pageDto;
 			$("#projectTable tbody").empty();
-			//console.log("프로젝트 테이블 재 가동")
+			alert("조회를 성공했어요.");
 			if (projectList && projectList.length > 0) {
        			for (let i = 0; i < projectList.length; i++) {
                 	var newRow = $("<tr>");
-                	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
-                	newRow.append("<td hidden>" + projectList[i].project_No + "</td>");
+                	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
+                	//newRow.append("<td hidden>" + projectList[i].project_No + "</td>");
                 	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Name + "</td>");
                 	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
@@ -221,7 +220,8 @@ $("#searchButton").click(function(){
        	        }
        	     	
        		}else{
-       			console.log("projectList 가 NULL 이에요.")
+       			alert("조회는 성공했는데, 결과값이 없는거 같아요.");       			
+       			//console.log("projectList 가 NULL 이에요.")
        			$("#projectTable tbody").empty();
        		    $("#projectTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
        		}
@@ -233,7 +233,7 @@ $("#searchButton").click(function(){
 });	//$("#searchButton").click(function(){ EndPoint
 
 var selectedRadio;
-$(document).on("change", ".radiobox", function() {
+$(document).on("change", ".checkbox", function() {
     selectedRadio = $(this);
 });
 
@@ -241,19 +241,67 @@ $("#insert").click(function() {
     // 선택된 라디오 버튼이 있는지 확인
     if (selectedRadio) {
         var selectedRow = selectedRadio.closest("tr");
-		let check = 1;
-        let selectedRowData = {
-	       	member_Id : $("#result_member_Id").val()
-	       	,member_Name : $("#result_member_Name").val()
-	       	,project_No : selectedRow.find("td:nth-child(2)").text()
-			,project_Id : selectedRow.find("td:nth-child(3)").text()
-			,project_Name : selectedRow.find("td:nth-child(4)").text()
-			,pushDate : selectedRow.find("td:nth-child(8) input[name='pushdate']").val()
-			,pullDate : selectedRow.find("td:nth-child(9) input[name='pulldate']").val()
-			,check : check
+        var pushDate = selectedRow.find("td:nth-child(7) input[name='pushdate']").val();
+        var pulldate = selectedRow.find("td:nth-child(8) input[name='pulldate']").val();
+        var project_startDate = selectedRow.find("td:nth-child(5)").text();
+		var project_endDate = selectedRow.find("td:nth-child(6)").text();
+		var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+		
+		//alert("pushDate : " + pushDate + "pulldate : " + pulldate + "project_startDate : " + project_startDate + "project_endDate : " + project_endDate);
+        if(pushDate && project_startDate && project_startDate > pushDate ){
+        	alert("투입일은 프로젝트 시작일보다 빠를 수 없어요.");
+        	return;
         }
+		
+        if(pulldate){
+        	if(pushDate > pulldate){
+        		alert("철수일은 투입일보다 빠를 수 없어요.");
+        		return;
+        	}
+        	if(project_startDate > pulldate){
+				alert("철수일은 시작일보다 빠를 수 없어요.");
+				return;
+        	}
+        }
+        
+        if(project_endDate){
+        	if(project_endDate < pulldate){
+				alert("철수일은 종료일보다 빠를 수 없어요.");
+				return;
+        	}
+        	if(project_endDate < pushDate){
+				alert("투입일은 종료일보다 빠를 수 없어요.");
+				return;
+        	}
+        }
+        
+        
+        /* if (search_startDate && search_endDate && search_startDate > search_endDate) {
+		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
+		    return;
+		} */
+        
+		let check = 1;
+		var selectedRowData = [];
+		$('.checkbox:checked').each(function() {
+			let row = $(this).closest('tr');	
+        	let data = {
+	       		member_Id : $("#result_member_Id").val()
+	       		,member_Name : $("#result_member_Name").val()
+	       		//,project_No : selectedRow.find("td:nth-child(2)").text()
+				,project_Id : selectedRow.find("td:nth-child(2)").text()
+				,project_Name : selectedRow.find("td:nth-child(3)").text()
+				,pushDate : selectedRow.find("td:nth-child(7) input[name='pushdate']").val()
+				,pullDate : selectedRow.find("td:nth-child(8) input[name='pulldate']").val()
+				,check : check
+        	}
+        	selectedRowData.push(data);
+        	
+		});
+        alert("selectedRowData : " + selectedRowData);
         //console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
         //console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
+        //return;
         $.ajax({
 			type : 'POST',
 			url: '/popup/projectDetailInsert',
@@ -271,11 +319,98 @@ $("#insert").click(function() {
 		}); //ajax EndPoint
     } else {
         // 선택된 라디오 버튼이 없는 경우, 알림 표시
-        alert("라디오 버튼을 선택하세요.");
+        alert("추가하고자 하는 프로젝트의 체크박스를ㄴ 선택하세요.");
     }
 });	//$("#insert").click(function() {
 	
 });	//$(document).ready(function() {
+function validateDate1() {
+	var search_startDate = document.getElementById("search_startDate").value;
+	
+    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
+    var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    var startDateInput = document.getElementById("search_startDate");
+		
+    if (search_startDate && !search_startDate.match(dateFormat)) {
+        alert("다시 한번 확인해주세요.");
+        startDateInput.value = "";
+        return;
+    }
+    
+    var inputDate = search_startDate.split("-");
+    var year = parseInt(inputDate[0]);
+    var month = parseInt(inputDate[1]);
+    var day = parseInt(inputDate[2]);
+    
+ 	// 년도에 대한 최소 및 최대 제한
+    if (year < 2000 || year > 2099) {
+        alert("년도는 2000부터 2099까지만 가능해요.");
+        startDateInput.value = "";
+        return;
+    }
+    
+    // 유효한 월과 일인지 확인
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+        alert("유효하지 않아요.");
+        startDateInput.value = "";
+        return;
+    }
+
+    // 해당 월의 마지막 일자 확인
+    var date = new Date(year, month - 1, day);
+    if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
+    	startDateInput.value = "";    	
+        alert("유효하지 않아요.");
+    } else {
+        //alert("제대로 입력했어요. 잘했어요.");
+        console.log("제대로 입력했어요. 잘했어요.");
+    }
+}
+
+function validateDate2() {
+	var search_endDate = document.getElementById("search_endDate").value;	
+	
+    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
+    var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    var endDateInput = document.getElementById("search_endDate");
+	
+    if (search_endDate && !search_endDate.match(dateFormat)) {
+        alert("다시 한번 확인해주세요.");
+        endDateInput.value = "";
+        return;
+    }
+    
+    //alert("search_endDate : " + search_endDate);
+    var inputDate = search_endDate.split("-");
+    var year = parseInt(inputDate[0]);
+    var month = parseInt(inputDate[1]);
+    var day = parseInt(inputDate[2]);
+    
+ 	// 년도에 대한 최소 및 최대 제한
+    if (year < 2000 || year > 2099) {
+        alert("년도는 2000부터 2099까지만 가능해요.");
+        endDateInput.value = "";
+        return;
+    }
+    
+    // 유효한 월과 일인지 확인
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+        alert("유효하지 않아요.");
+        endDateInput.value = "";
+        return;
+    }
+
+    // 해당 월의 마지막 일자 확인
+    var date = new Date(year, month - 1, day);
+    if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
+        alert("유효하지 않아요.");
+        endDateInput.value = "";
+    } else {
+        //alert("제대로 입력했어요. 잘했어요.");
+        console.log("제대로 입력했어요. 잘했어요.");
+    }
+    
+}
 	
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 

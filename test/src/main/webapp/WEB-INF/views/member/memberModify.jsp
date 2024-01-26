@@ -72,12 +72,14 @@
 				<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }" style="width: 120px"/></td>
 				<td>
 					<select id="member_Sex">
+						<option value="" ${memberList.member_Sex == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="D011" ${memberList.member_Sex == '남자' ? 'selected' : ''}>남자</option>
 	  					<option value="D012" ${memberList.member_Sex == '여자' ? 'selected' : ''}>여자</option>
 					</select>
 				</td>
 				<td>
 					<select id="member_Position">
+						<option value="" ${memberList.member_Position == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="D028" ${memberList.member_Position == '사원' ? 'selected' : ''}>사원</option>
 	  					<option value="D027" ${memberList.member_Position == '대리' ? 'selected' : ''}>대리</option>
 	  					<option value="D026" ${memberList.member_Position == '과장' ? 'selected' : ''}>과장</option>
@@ -85,6 +87,7 @@
 				</td>
 				<td>
 					<select id="member_Department">
+						<option value="" ${memberList.member_Department == '미정' ? 'selected' : ''}>선택</option>
 						<option value="A020" ${memberList.member_Department == '경영지원부' ? 'selected' : ''}>경영지원부</option>
 						<option value="A021" ${memberList.member_Department == 'IT부' ? 'selected' : ''}>IT부</option>
 						<option value="A022" ${memberList.member_Department == '인사부' ? 'selected' : ''}>인사부</option>
@@ -94,6 +97,7 @@
 				<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
 				<td>
 					<select id="member_Skill_Language">
+						<option value="" ${memberList.member_Skill_Language == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="S010" ${memberList.member_Skill_Language == 'JAVA' ? 'selected' : ''}>JAVA</option>
 	  					<option value="S011" ${memberList.member_Skill_Language == 'PYTHON' ? 'selected' : ''}>PYTHON</option>
 	  					<option value="S012" ${memberList.member_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
@@ -102,6 +106,7 @@
 				</td>
 				<td>
 					<select id="member_Skill_DB">
+						<option value="" ${memberList.member_Skill_DB == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="S020" ${memberList.member_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
 	 		 			<option value="S021" ${memberList.member_Skill_DB == 'MSSQL' ? 'selected' : ''}>MSSQL</option>
 	  					<option value="S022" ${memberList.member_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
@@ -121,12 +126,14 @@
 				<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }" style="width: 120px"/></td>
 				<td>
 					<select id="member_Sex">
+						<option value="" ${memberList.member_Sex == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="D011" ${memberList.member_Sex == '남자' ? 'selected' : ''}>남자</option>
 	  					<option value="D012" ${memberList.member_Sex == '여자' ? 'selected' : ''}>여자</option>
 					</select>
 				</td>
 				<td>
 					<select id="member_Position">
+						<option value="" ${memberList.member_Position == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="D028" ${memberList.member_Position == '사원' ? 'selected' : ''}>사원</option>
 	  					<option value="D027" ${memberList.member_Position == '대리' ? 'selected' : ''}>대리</option>
 	  					<option value="D026" ${memberList.member_Position == '과장' ? 'selected' : ''}>과장</option>
@@ -134,6 +141,7 @@
 				</td>
 				<td>
 					<select id="member_Department">
+						<option value="" ${memberList.member_Department == '미정' ? 'selected' : ''}>선택</option>
 						<option value="A020" ${memberList.member_Department == '경영지원부' ? 'selected' : ''}>경영지원부</option>
 						<option value="A021" ${memberList.member_Department == 'IT부' ? 'selected' : ''}>IT부</option>
 						<option value="A022" ${memberList.member_Department == '인사부' ? 'selected' : ''}>인사부</option>
@@ -143,6 +151,7 @@
 				<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
 				<td>
 					<select id="member_Skill_Language">
+						<option value="" ${memberList.member_Skill_Language == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="S010" ${memberList.member_Skill_Language == 'JAVA' ? 'selected' : ''}>JAVA</option>
 	  					<option value="S011" ${memberList.member_Skill_Language == 'PYTHON' ? 'selected' : ''}>PYTHON</option>
 	  					<option value="S012" ${memberList.member_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
@@ -151,6 +160,7 @@
 				</td>
 				<td>
 					<select id="member_Skill_DB">
+						<option value="" ${memberList.member_Skill_DB == '미정' ? 'selected' : ''}>선택</option>
 	  					<option value="S020" ${memberList.member_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
 	 		 			<option value="S021" ${memberList.member_Skill_DB == 'MSSQL' ? 'selected' : ''}>MSSQL</option>
 	  					<option value="S022" ${memberList.member_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
