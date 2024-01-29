@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,20 +53,30 @@ public class MainController {
 	@PostMapping("/login")
 	@ResponseBody
 	public List<MemberDto> memberLogin(int member_Id, String member_Pw, HttpSession session, MemberDto dto, Model model) {
-		//System.out.println("member_Id : " + member_Id);
-		//System.out.println("member_Pw : " + member_Pw);
 		session.setAttribute("member_Id", dto.getMember_Id());
 		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/common/WellCome");
-		mav.addObject("member_Id", session.getAttribute("member_Id"));
-		List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
-		MemberDto loginCk_member_Department = loginCk.get(0);
-		String member_Department = loginCk_member_Department.getMember_Department();
-		//System.out.println("부서: " + department);
-		//System.out.println("member_Department : " + member_Department);
-		session.setAttribute("member_Department" , member_Department);
-		return loginCk;
+		boolean isValid = false;
+		String member_Pw_ck = memberService.getmember_Pw(member_Id);
+		if(member_Pw_ck != null) {
+			System.err.println("member_Pw_ck : " + member_Pw_ck);
+			isValid = BCrypt.checkpw(member_Pw, member_Pw_ck);
+			System.err.println("isValid : " + isValid);
+			if(isValid = true) {
+				//dto = member_Pw;
+				ModelAndView mav = new ModelAndView();
+				mav.setViewName("/common/WellCome");
+				mav.addObject("member_Id", session.getAttribute("member_Id"));
+				List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+				MemberDto loginCk_member_Department = loginCk.get(0);
+				String member_Department = loginCk_member_Department.getMember_Department();
+				session.setAttribute("member_Department" , member_Department);
+				return loginCk;
+			}
+			if(isValid = false) {
+				return null;
+			}
+		}
+		return null;
 	}
 	
 	@GetMapping("/logout")

@@ -115,8 +115,8 @@
 			<!-- <th>데이터베이스</th> -->
 			<th>시작일</th>
 			<th>종료일</th>
-			<th>투입일</th>
-			<th>철수일</th>
+			<!-- <th>투입일</th>
+			<th>철수일</th> -->
 		</tr>
 	</thead>
 	<tbody>
@@ -191,16 +191,13 @@ $("#searchButton").click(function(){
        			for (let i = 0; i < projectList.length; i++) {
                 	var newRow = $("<tr>");
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
-                	//newRow.append("<td hidden>" + projectList[i].project_No + "</td>");
                 	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Name + "</td>");
                 	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
-                	//newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
-                	//newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
                 	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>");
-                	newRow.append("<td><input type='date' name='pushdate')></td>");
-                	newRow.append("<td><input type='date' name='pulldate')></td>");
+                	//newRow.append("<td><input type='date' name='pushdate' value='" + projectList[i].pushDate + "')></td>");
+                	//newRow.append("<td><input type='date' name='pulldate' value='" + projectList[i].pullDate + "')></td>");
                 	$("#projectTable tbody").append(newRow);
             	}
        			
@@ -232,96 +229,63 @@ $("#searchButton").click(function(){
 	});	//ajax EndPoint
 });	//$("#searchButton").click(function(){ EndPoint
 
-var selectedRadio;
+$('#insert').click(function() {
+    // 모든 선택된 체크박스의 데이터를 저장할 배열
+    var selectedRowData = [];
+
+    // 모든 선택된 체크박스를 순회
+    $('.checkbox:checked').each(function() {
+        var row = $(this).closest('tr');
+
+        // 행의 각 셀에서 데이터 추출
+        var member_Id = $("#result_member_Id").val();
+        var member_Name = $("#result_member_Name").val();
+        var project_Id = row.find("td:nth-child(2)").text();
+        var project_Name = row.find("td:nth-child(3)").text();
+        var check = 1;
+        // 선택된 행의 데이터를 객체에 저장
+       var selectedData = {
+    		member_Id : member_Id,
+    		member_Name : member_Name,
+    		project_Id : project_Id,
+    		project_Name : project_Name,
+            check : check,
+            // pushDate: pushDate, // 필요한 경우 주석 해제하여 사용
+            // pullDate: pullDate // 필요한 경우 주석 해제하여 사용
+        };
+        selectedRowData.push(selectedData);
+    });
+
+    $.ajax({
+		type : 'POST',
+		url: '/popup/projectDetailInsert',
+		//data: selectedRowData,
+		contentType: 'application/json; charset=utf-8',
+		data: JSON.stringify(selectedRowData),
+		success : function(result) { // 결과 성공 콜백함수        
+			console.log("추가 성공");
+			//alert("추가 성공");
+			window.location.reload();
+			//location.href = "/popup/projectInmember?pageNo=1";
+		}, 
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("등록 실패");
+		}
+	}); //ajax EndPoint
+});	
+	
+/* var selectedRadio;
 $(document).on("change", ".checkbox", function() {
     selectedRadio = $(this);
-});
+}); */
 
-$("#insert").click(function() {
-    // 선택된 라디오 버튼이 있는지 확인
-    if (selectedRadio) {
-        var selectedRow = selectedRadio.closest("tr");
-        var pushDate = selectedRow.find("td:nth-child(7) input[name='pushdate']").val();
-        var pulldate = selectedRow.find("td:nth-child(8) input[name='pulldate']").val();
-        var project_startDate = selectedRow.find("td:nth-child(5)").text();
-		var project_endDate = selectedRow.find("td:nth-child(6)").text();
-		var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
-		
-		//alert("pushDate : " + pushDate + "pulldate : " + pulldate + "project_startDate : " + project_startDate + "project_endDate : " + project_endDate);
-        if(pushDate && project_startDate && project_startDate > pushDate ){
-        	alert("투입일은 프로젝트 시작일보다 빠를 수 없어요.");
-        	return;
-        }
-		
-        if(pulldate){
-        	if(pushDate > pulldate){
-        		alert("철수일은 투입일보다 빠를 수 없어요.");
-        		return;
-        	}
-        	if(project_startDate > pulldate){
-				alert("철수일은 시작일보다 빠를 수 없어요.");
-				return;
-        	}
-        }
-        
-        if(project_endDate){
-        	if(project_endDate < pulldate){
-				alert("철수일은 종료일보다 빠를 수 없어요.");
-				return;
-        	}
-        	if(project_endDate < pushDate){
-				alert("투입일은 종료일보다 빠를 수 없어요.");
-				return;
-        	}
-        }
-        
-        
-        /* if (search_startDate && search_endDate && search_startDate > search_endDate) {
-		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
-		    return;
-		} */
-        
-		let check = 1;
-		var selectedRowData = [];
-		$('.checkbox:checked').each(function() {
-			let row = $(this).closest('tr');	
-        	let data = {
-	       		member_Id : $("#result_member_Id").val()
-	       		,member_Name : $("#result_member_Name").val()
-	       		//,project_No : selectedRow.find("td:nth-child(2)").text()
-				,project_Id : selectedRow.find("td:nth-child(2)").text()
-				,project_Name : selectedRow.find("td:nth-child(3)").text()
-				,pushDate : selectedRow.find("td:nth-child(7) input[name='pushdate']").val()
-				,pullDate : selectedRow.find("td:nth-child(8) input[name='pulldate']").val()
-				,check : check
-        	}
-        	selectedRowData.push(data);
-        	
-		});
-        alert("selectedRowData : " + selectedRowData);
-        //console.log("pushDate : " + selectedRow.find("td:nth-child(8) input[name='pushdate']").val());
-        //console.log("pullDate : " + selectedRow.find("td:nth-child(9) input[name='pulldate']").val());
-        //return;
-        $.ajax({
-			type : 'POST',
-			url: '/popup/projectDetailInsert',
-			//data: selectedRowData,
-			contentType: 'application/json; charset=utf-8',
-			data: JSON.stringify(selectedRowData),
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("추가 성공");
-				window.location.reload();
-				//location.href = "/popup/projectInmember?pageNo=1";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("등록 실패");
-			}
-		}); //ajax EndPoint
-    } else {
-        // 선택된 라디오 버튼이 없는 경우, 알림 표시
-        alert("추가하고자 하는 프로젝트의 체크박스를ㄴ 선택하세요.");
-    }
-});	//$("#insert").click(function() {
+/* $("#insert").click(function() {
+	alert("클릭");
+	
+	
+	
+	
+}); */
 	
 });	//$(document).ready(function() {
 function validateDate1() {

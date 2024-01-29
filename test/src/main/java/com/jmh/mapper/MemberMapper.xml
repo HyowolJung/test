@@ -502,7 +502,11 @@ FROM
 WHERE 
 		MEMBER_TEL = #{member_Tel}
 </select>
-		
+
+<!-- 로그인할때 암호화된 비밀번호 가져오기(입력한 비밀번호랑 비교할 수 있도록) -->		
+<select id="getmember_Pw" resultType="String">
+	SELECT MEMBER_PW FROM MEMBER WHERE MEMBER_ID = #{member_Id}
+</select>		
 		
 <!-- 2. 등록(회원 등록) -->
 <insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
@@ -512,6 +516,7 @@ INTO
 		MEMBER
 				(
 					MEMBER_ID,
+					MEMBER_PW,
 		  			MEMBER_NAME,
 		  			MEMBER_SEX,
 		  			MEMBER_POSITION,
@@ -529,6 +534,7 @@ VALUES
 		  		FROM 
 		  				MEMBER
 		  	)	
+		  		,#{member_Pw}
 		  		,#{member_Name}
 		  		,#{member_Sex}
 		  		,#{member_Position}
@@ -684,44 +690,6 @@ WHERE
     </foreach>
 </update>
 
-<!-- 4. 삭제(삭제 체크) -->
-<!-- <select id="deleteMemberM_ck" resultType="boolean" parameterType="list">parameterType="String"
-/* deleteMemberM_ck */
-<foreach item="member_Id" collection="list" open="(" separator="," close=")">
-SELECT 
-		COUNT(*)
-FROM 
-		MEMBER M
-JOIN
-        PROJECT_DETAIL P
-ON 
-        M.MEMBER_ID = P.MEMBER_ID
-WHERE
-        P.MEMBER_ID = #{list[member_Id]} 
-</foreach>
-</select> -->
-<!-- <select id="deleteMemberM_ck" resultType="Integer" parameterType="java.util.List">
-    <foreach collection="list" item="member_Id" index="index" open="(" separator="," close=")"> 
-        SELECT 
-        		COUNT(*)
-        FROM 
-        		MEMBER M
-        JOIN
-        		PROJECT_DETAIL P
-        ON 
-        		M.MEMBER_ID = P.MEMBER_ID
-        WHERE
-        		P.MEMBER_ID = #{member_Id} 
-    </foreach>
-</select> -->
-<!-- <select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
-		SELECT
-				COUNT(*)
-		FROM
-				MEMBER
-		WHERE 
-				MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
-</select> -->
 <select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
     <foreach item="member" index="index" collection="modifyList" open="(" separator="," close=")">
     SELECT 
@@ -780,34 +748,30 @@ ON
 WHERE
        	PD.MEMBER_ID = #{member_Id}
 </select>
-
-	<delete id="memberDelete2" parameterType="int">
+<delete id="memberDelete2" parameterType="map">
+    DELETE FROM PROJECT_DETAIL
+    WHERE (MEMBER_ID, PROJECT_ID) IN
+    <foreach item="item" collection="selectedProjectData" open="(" separator="," close=")">
+        (#{item.member_Id}, #{item.project_Id})
+    </foreach>
+</delete>
+	<!-- 
+		index="index" 
+	<delete id="memberDelete2" parameterType="list">
+		
 		DELETE 
 		FROM 
 			PROJECT_DETAIL
-		WHERE 
+		WHERE
+		<foreach item="member_Id" collection="list" open="(" separator="," close=")">
+		 
 			MEMBER_ID = #{member_Id}
+		</foreach>
 		AND
+		<foreach item="project_Id" collection="list" open="(" separator="," close=")">
 			PROJECT_ID = #{project_Id}
-	</delete>
-	<!-- 
-	SELECT 
-    	M.MEMBER_ID
-    	,PD.PROJECT_ID
-    	,PD.PROJECT_NAME
-    	,PD.PUSHDATE
-    	,PD.PULLDATE
-	FROM 
-    	MEMBER M
-	JOIN
-    	PROJECT_DETAIL PD
-	ON
-    	M.MEMBER_ID = PD.MEMBER_ID
-	WHERE 
-    	PD.MEMBER_ID = #{member_Id}
-	
-	 -->
-	
+		</foreach>
+	</delete> -->
 	
 	<select id="getmemberId" resultType="com.jmh.dto.MemberDto">
 		SELECT MEMBER_ID FROM MEMBER WHERE MEMBER_ID=#{member_Id}
@@ -851,114 +815,29 @@ WHERE
 
 	 -->
 
-<update id="memberModify2" parameterType="com.jmh.dto.ProjectDetailDto">
+<update id="memberModify2" parameterType="java.util.Map">
+	<foreach item="member" index="index" collection="selectedProjectData" open="DECLARE BEGIN" separator=";" close="; END;">
+	
 	UPDATE 
    		PROJECT_DETAIL
    	SET
-		PUSHDATE = #{pushDate},
-		PULLDATE = #{pullDate}
+		PUSHDATE = #{member.pushDate},
+		PULLDATE = #{member.pullDate}
 	WHERE 
-		MEMBER_ID = #{member_Id}
+		MEMBER_ID = #{member.member_Id}
 	AND
-		PROJECT_ID = #{project_Id}
+		PROJECT_ID = #{member.project_Id}
 	
+	</foreach>
 </update>
-
-
-<!-- 팝업창 관련 -->
-<!-- <insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
-		INSERT 
-		INTO 
-		PROJECT_DETAIL
-		(
-        	MEMBER_ID
-            ,MEMBER_NAME
-            ,PROJECT_ID
-            ,PROJECT_NAME
-            ,PUSHDATE
-            ,PULLDATE
-         )        
-		 VALUES
-    		(
-        		#{member_Id},
-        		#{member_Name},
-        		#{project_Id},
-        		#{project_Name},
-        		#{pushDate},
-        		#{pullDate}
-    		)
-</insert> -->
-<!-- <insert id = "projectDetailInsert" parameterType="com.jmh.dto.ProjectDetailDto">
-INSERT 
-INTO 
-PROJECT_DETAIL
-	(
-      	MEMBER_ID
-          ,MEMBER_NAME
-          ,PROJECT_ID
-          ,PROJECT_NAME
-          ,PUSHDATE
-          ,PULLDATE
-	)        
-	VALUES
-	(
-   		#{member_Id},
-   		#{member_Name},
-   		#{project_Id},
-  		#{project_Name},
-  		#{pushDate},
-   		#{pullDate}
-	)
-</insert> -->
-<insert id="projectDetailInsert" parameterType="list">
-    INSERT INTO PROJECT_DETAIL (
-        MEMBER_ID,
-        MEMBER_NAME,
-        PROJECT_ID,
-        PROJECT_NAME,
-        PUSHDATE,
-        PULLDATE
-    )
-    VALUES
-   <!--  <foreach collection="list" item="item" separator=",">
-        (
-            #{item.member_Id},
-            #{item.member_Name},
-            #{item.project_Id},
-            #{item.project_Name},
-            NVL(#{item.pushDate, jdbcType=DATE}, ''), 
-            NVL(#{item.pullDate, jdbcType=DATE}, '') 
-        )
-        
-    </foreach> -->
-    <foreach collection="list" item="item" separator=",">
-        (
-            #{item.member_Id},
-            #{item.member_Name},
-            #{item.project_Id},
-            #{item.project_Name},
-            <choose>
-                <when test="item.pushDate != null">
-                    #{item.pushDate, jdbcType=DATE}
-                </when>
-                <otherwise>
-                    '' <!-- 빈 문자열을 대체값으로 사용 -->
-                </otherwise>
-            </choose>,
-            <choose>
-                <when test="item.pullDate != null">
-                    #{item.pullDate, jdbcType=DATE}
-                </when>
-                <otherwise>
-                    '' <!-- 빈 문자열을 대체값으로 사용 -->
-                </otherwise>
-            </choose>
-        )
+<update id="projectDetailInsert" parameterType="java.util.Map">
+    INSERT ALL
+    <foreach item="item" index="index" collection="selectedRowData" separator=" ">
+        INTO PROJECT_DETAIL (MEMBER_ID, MEMBER_NAME, PROJECT_ID, PROJECT_NAME)
+        VALUES (#{item.member_Id}, #{item.member_Name}, #{item.project_Id}, #{item.project_Name})
     </foreach>
-    
-</insert>
-
-
+    SELECT * FROM DUAL
+</update>
 	
 <sql id="criteria">
     <where>

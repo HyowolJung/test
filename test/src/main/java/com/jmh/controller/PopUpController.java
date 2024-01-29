@@ -57,13 +57,14 @@ public class PopUpController {
 	public Map<String, Object> popProject(Model model, Criteria cri, int member_Id) {
 		System.out.println("cri.getSearchField() : " + cri.getSearchField());
 		System.out.println("cri.getSearchWord() : " + cri.getSearchWord());
+		System.out.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
+		System.out.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
 		System.out.println("pop)member_Id : " + member_Id);
+		
 		Map<String, Object> resultMap = new HashMap<>();
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		System.err.println("popProject 분기점 도착");
-		//System.out.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
-		//System.out.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
-		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null && cri.getSearchField() == null) {	
+		if(cri.getSearchWord().equals("") && cri.getSearchField().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
@@ -105,36 +106,20 @@ public class PopUpController {
 	
 	@PostMapping("/projectDetailInsert")
 	public String projectDetailInsert(@RequestBody List<ProjectDetailDto> selectedRowData) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("selectedRowData", selectedRowData);
-		System.out.println("map : " + map);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("selectedRowData", selectedRowData);
+		System.out.println("resultMap : " + resultMap);
 		int check = 0;
 		for(ProjectDetailDto data : selectedRowData) {
 			check = data.getCheck();
 		}
-		
-//		if(selectedRowData.getCheck() == 2) {
-//			System.out.println("m 진입");
-//			System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-//			System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-//			System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-//			int insertCnt = memberService.projectDetailInsert(selectedRowData);
-//			
-//			if(insertCnt > 0) {
-//				System.out.println("등록성공");
-//				return "popup/popMember";
-//			}else {
-//				System.out.println("실패");
-//				return "";
-//			}
-//		}
 		
 		if(check == 1) {
 			System.out.println("p 진입");
 			//System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
 			//System.out.println("selectedRowData : " + selectedRowData.getPushDate());
 			//System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-	        int insertCnt = memberService.projectDetailInsert(selectedRowData);
+	        int insertCnt = memberService.projectDetailInsert(resultMap);
 	        if(insertCnt > 0) {
 				System.out.println("등록성공");
 				return "popup/popProject";
@@ -145,6 +130,22 @@ public class PopUpController {
 		}
 		return "";
 	}
+	
+//	if(selectedRowData.getCheck() == 2) {
+//	System.out.println("m 진입");
+//	System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
+//	System.out.println("selectedRowData : " + selectedRowData.getPushDate());
+//	System.out.println("selectedRowData : " + selectedRowData.getPullDate());
+//	int insertCnt = memberService.projectDetailInsert(selectedRowData);
+//	
+//	if(insertCnt > 0) {
+//		System.out.println("등록성공");
+//		return "popup/popMember";
+//	}else {
+//		System.out.println("실패");
+//		return "";
+//	}
+//}
 	
 	@GetMapping("/popMember")
 	public String popMember(Model model, Criteria cri,

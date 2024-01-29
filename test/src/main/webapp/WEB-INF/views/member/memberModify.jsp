@@ -202,7 +202,7 @@
     <c:otherwise>
       <c:forEach var="memberproject" items="${memberprojectList}">
         <tr>
-          <td><input type="radio"></td>
+          <td><input type="checkbox"></td>
           <td style="display: none">${memberproject.project_Id}</td>
           <td>${memberproject.project_Name}</td>
           <td><input type="date" value="${memberproject.pushDate}"></td>
@@ -359,33 +359,59 @@ $("#modifyButton").click(function() {
 		
 	});//$("#insert").click(function() { EndPoint
 
-	var radioClicked = false; // 라디오 버튼 클릭 상태 추적 변수
-	var selectedProjectData = {};
+	var checkClicked = false; // 라디오 버튼 클릭 상태 추적 변수
+	
+	/* var selectedProjectData = [];
     // 라디오 버튼 클릭 이벤트 핸들러
-    $("#mem_pro_List tbody").on("click", "input[type='radio']", function() {
-        radioClicked = true; // 라디오 버튼이 클릭되었다고 표시
-        console.log("선택되었다.");
-        var tr = $(this).closest("tr");
+    $("#mem_pro_List tbody input[type='checkbox']:checked").each(function() {
+		console.log("선택되었다.");
+        	
+		var tr = $(this).closest("tr");
 
-        // 행의 데이터 추출
-        var member_Id = $("#member_Id").val();
-        var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
-       // var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
-        var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
-        var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
+        	// 행의 데이터 추출
+        	var member_Id = $("#member_Id").val();
+        	var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
+        	// var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
+        	var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
+        	var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
         
-        console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
+        	console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
         
-        selectedProjectData = {
-    		member_Id : $("#member_Id").val(),        		
-            project_Id: tr.find("td:nth-child(2)").text().trim(),
-            //projectName: tr.find("td:nth-child(3)").text().trim(),
-            pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
-            pullDate: tr.find("td:nth-child(5) input[type='date']").val()
-        };
-    });
+        	data = {
+    			member_Id : $("#member_Id").val(),        		
+            	project_Id: tr.find("td:nth-child(2)").text().trim(),
+            	//projectName: tr.find("td:nth-child(3)").text().trim(),
+            	pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
+            	pullDate: tr.find("td:nth-child(5) input[type='date']").val()
+        	};
+        	
+        	selectedProjectData.push(data);
+    }); */
     
     $("#removeButton2").click(function() {
+    	var selectedProjectData = [];
+        // 라디오 버튼 클릭 이벤트 핸들러
+        $("#mem_pro_List tbody input[type='checkbox']:checked").each(function() {
+    		console.log("선택되었다.");
+            	
+    		var tr = $(this).closest("tr");
+
+            	// 행의 데이터 추출
+            	var member_Id = $("#member_Id").val();
+            	var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
+            
+            	console.log("선택된 프로젝트: " + project_Id, member_Id);
+            
+            	data = {
+        			member_Id : $("#member_Id").val(),        		
+                	project_Id: tr.find("td:nth-child(2)").text().trim()
+                	//projectName: tr.find("td:nth-child(3)").text().trim(),
+                	//pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
+                	//pullDate: tr.find("td:nth-child(5) input[type='date']").val()
+            	};
+            	
+            	selectedProjectData.push(data);
+        });    	
     	$.ajax({
 			type : 'POST',
 			url: '/member/memberDelete2',
@@ -405,10 +431,60 @@ $("#modifyButton").click(function() {
     });
     
     $("#modifyButton2").click(function() {
-        if (!radioClicked) { // 라디오 버튼이 클릭되지 않았다면
+    	var selectedProjectData = [];    	
+    	 $("#mem_pro_List tbody input[type='checkbox']:checked").each(function() {
+			console.log("선택되었다.");
+    			
+    		var tr = $(this).closest("tr");
+    	        // 행의 데이터 추출
+   	        var member_Id = $("#member_Id").val();
+   	        var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
+   	        // var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
+   	        var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
+   	        var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
+   	        console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
+   	        data = {
+   	    		member_Id : $("#member_Id").val(),        		
+   	           	project_Id: tr.find("td:nth-child(2)").text().trim(),
+   	           	//projectName: tr.find("td:nth-child(3)").text().trim(),
+   	           	pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
+   	           	pullDate: tr.find("td:nth-child(5) input[type='date']").val()
+   	        };
+   	        
+   	        selectedProjectData.push(data);
+   	    });    	
+    	
+        console.log("여기서부터 해야함 : " + selectedProjectData);
+        $.ajax({
+    			type : 'POST',
+    			url: '/member/memberModify2',
+    			contentType : 'application/json; charset=utf-8',
+				data: JSON.stringify(selectedProjectData),
+    			success: function(result) {
+					if(result = true){
+						alert("수정 성공ㅇ");
+						window.location.reload();
+					}
+					if(result = false){
+						alert("수정 실패");
+					}
+    		        
+    		    }
+            });	//ajax EndPoint
+    }); //$("#modifyButton2").click(function() EndPoint
+});
+	</script>
+	
+	
+<!-- 
+if (!checkClicked) { // 라디오 버튼이 클릭되지 않았다면
             alert("수정할 데이터를 체크해주세욧");
         } else { // 라디오 버튼이 클릭되었다면
-        	
+        	/* $('.checkbox:checked').each(function() {
+        		let row = $(this).closest('tr');
+        		 var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
+                 var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
+        	}; */
         	/* var tr = $(this).closest("tr");
 
             // 행의 데이터 추출
@@ -427,27 +503,7 @@ $("#modifyButton").click(function() {
                 pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
                 pullDate: tr.find("td:nth-child(5) input[type='date']").val()
             }; */
-            
-            console.log("여기서부터 해야함 : " + selectedProjectData);
-            $.ajax({
-    			type : 'POST',
-    			url: '/member/memberModify2',
-    			contentType : 'application/json; charset=utf-8',
-				data: JSON.stringify(selectedProjectData),
-    			success: function(result) {
-					if(result = true){
-						alert("수정 성공ㅇ");
-						window.location.reload();
-					}
-					if(result = false){
-						alert("수정 실패");
-					}
-    		        
-    		    }
-            });	//ajax EndPoint
-        }//else EndPoint
-    }); //$("#modifyButton2").click(function() EndPoint
-});
-	</script>
+}//else EndPoint
+ -->	
 </body>
 </html>

@@ -335,12 +335,15 @@ public class MemberController {
 	}
 	
 	@PostMapping("/memberModify2")
-	public ResponseEntity<Boolean> memberModify2(@RequestBody ProjectDetailDto selectedProjectData) {
+	public ResponseEntity<Boolean> memberModify2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
+		System.out.println("selectedProjectData : " + selectedProjectData);
+		Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("selectedProjectData", selectedProjectData);
 		boolean result = false;
-		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
-		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
+		//System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
+		//System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
 		
-		int modifyCnt = memberService.memberModify2(selectedProjectData);
+		int modifyCnt = memberService.memberModify2(resultMap);
 		
 		if(modifyCnt > 0) {
 			System.out.println("수정성공");
@@ -354,13 +357,16 @@ public class MemberController {
 	}
 	
 	@PostMapping("/memberDelete2")
-	public ResponseEntity<Boolean> memberDelete2(@RequestBody ProjectDetailDto selectedProjectData) {
+	public ResponseEntity<Boolean> memberDelete2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
+		Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("selectedProjectData", selectedProjectData);
+		//System.out.println("selectedProjectData : " + selectedProjectData);
 		boolean result = false;
-		System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
-		System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
-		System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
+		//System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
+		//System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
+		//System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
 		
-		int deleteCnt = memberService.memberDelete2(selectedProjectData);
+		int deleteCnt = memberService.memberDelete2(resultMap);
 		
 		if(deleteCnt > 0) {
 			System.out.println("수정성공");

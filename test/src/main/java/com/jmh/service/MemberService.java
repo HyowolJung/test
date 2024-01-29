@@ -52,11 +52,9 @@ public interface MemberService {
 
 	public int getmemberId(int member_Id);
 
-	
+	public int memberModify2(Map<String, Object> resultMap);
 
-	public int memberModify2(ProjectDetailDto selectedProjectData);
-
-	public int memberDelete2(ProjectDetailDto selectedProjectData);
+	public int memberDelete2(Map<String, Object> resultMap);
 
 	public List<MemberDto> getFilterd_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	
@@ -79,5 +77,7 @@ public interface MemberService {
 	
 	
 	//팝업창 관련
-	public int projectDetailInsert(List<ProjectDetailDto> selectedRowData);
+	public int projectDetailInsert(Map<String, Object> resultMap);
+
+	public String getmember_Pw(int member_Id);
 }

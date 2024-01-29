@@ -55,9 +55,9 @@ public interface MemberMapper {
 
 	
 
-	int memberModify2(ProjectDetailDto selectedProjectData);
+	int memberModify2(Map<String, Object> resultMap);
 
-	int memberDelete2(ProjectDetailDto selectedProjectData);
+	int memberDelete2(Map<String, Object> resultMap);
 
 	List<MemberDto> getFilterd_mem_List(@Param("cri") Criteria cri, @Param("project_Id") int project_Id);
 	
@@ -74,6 +74,8 @@ public interface MemberMapper {
 	ArrayList<String> deleteMemberM_ck(List<String> checkList);
 	
 	
-	//팝업촹 관련
-	int projectDetailInsert(List<ProjectDetailDto> selectedRowData);
+	//팝업창 관련
+	int projectDetailInsert(Map<String, Object> resultMap);
+
+	String getmember_Pw(int member_Id);
 }

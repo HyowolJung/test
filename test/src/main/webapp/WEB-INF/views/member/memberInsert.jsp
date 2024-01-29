@@ -57,6 +57,10 @@
 	<input type="text" id="member_Id"/><br>
 	<div id="result_Id"></div>
 	
+	<label style="color: red">비밀번호</label>
+	<input type="text" id="member_Pw"/><br>
+	<div id="result_Pw"></div>
+	
 	<label style="color: red">이름</label>
 	<input type="text" id="member_Name" value="안녕"/><br>
 	<div id="result_Name"></div>
@@ -165,6 +169,9 @@ $(document).ready(function() {
 	    } 
 	}); //member_Tel.on('blur', function EndPoint
 	
+	let result_Pw = $("result_Pw");			
+	let member_Pw = $("member_Pw");		
+			
 	//2. 이름 체크
 	let insert = document.getElementById("insert");
 	let member_Name = $("#member_Name");	//입력받은 이름
@@ -259,7 +266,8 @@ $(document).ready(function() {
 			
 			if(!member_Tel.val().length == 0 || !member_Id.val().length == 0 || !member_startDate.val().length == 0 || !member_Name.val().length == 0){
 				let insertDatas = {
-					member_Id : $("#member_Id").val()	
+					member_Id : $("#member_Id").val()
+					,member_Pw : $("#member_Pw").val()
 					,member_Name : $("#member_Name").val()
 					,member_Position : $("#member_Position").val()
 					,member_Department : $("#member_Department").val()

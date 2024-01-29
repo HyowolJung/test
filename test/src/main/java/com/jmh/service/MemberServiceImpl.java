@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
@@ -61,6 +63,11 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int insertMember(MemberDto insertDatas) {
 		// TODO Auto-generated method stub
+		String pwd = insertDatas.getMember_Pw();
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String encodedPwd = encoder.encode(pwd);
+		
+		insertDatas.setMember_Pw(encodedPwd);
 		return memberMapper.insertMember(insertDatas);
 	}
 	
@@ -105,15 +112,15 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int memberModify2(ProjectDetailDto selectedProjectData) {
+	public int memberModify2(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return memberMapper.memberModify2(selectedProjectData);
+		return memberMapper.memberModify2(resultMap);
 	}
 
 	@Override
-	public int memberDelete2(ProjectDetailDto selectedProjectData) {
+	public int memberDelete2(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return memberMapper.memberDelete2(selectedProjectData);
+		return memberMapper.memberDelete2(resultMap);
 	}
 
 	@Override
@@ -131,7 +138,9 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw) {
 		// TODO Auto-generated method stub
+		
 		return memberMapper.loginCk(member_Id, member_Pw);
+		//return null;
 	}
 
 	@Override
@@ -172,9 +181,15 @@ public class MemberServiceImpl implements MemberService{
 	
 	//팝업창 관련
 	@Override
-	public int projectDetailInsert(List<ProjectDetailDto> selectedRowData) {
+	public int projectDetailInsert(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return memberMapper.projectDetailInsert(selectedRowData);
+		return memberMapper.projectDetailInsert(resultMap);
+	}
+
+	@Override
+	public String getmember_Pw(int member_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.getmember_Pw(member_Id);
 	}
 
 
