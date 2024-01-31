@@ -1,78 +1,52 @@
 package com.jmh.controller;
 
-import java.lang.ProcessBuilder.Redirect;
-import java.sql.Date;
-import java.time.LocalDate;
+//import java.lang.ProcessBuilder.Redirect;
+//import java.sql.Date;
+//import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
+//import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.javassist.expr.NewArray;
+//import org.apache.ibatis.annotations.Param;
+//import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+//import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+//import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
+//import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+//import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
-import com.jmh.mapper.MemberMapper;
+//import com.jmh.mapper.MemberMapper;
 import com.jmh.service.MemberService;
 
-//ResoponseBody , RequestBody 
 //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
-//RequestParam, param, pathVaraiable
-//엑셀 깔자
-//★유효성 검사 구현에 집중★
-//1. sql 쿼리문 줄 조정 + 대문자로
-//2. 다양하게
-//3. 타일즈?
-//권한번호(관리자, 사원)에 따라 보여줘야 하는 사이드바에 있는 메뉴(바디)가 다를때, 
-//1. 세션에 저장해서 동적쿼리(권한아이디=#{01})를 이용하거나, 
-//2. jsp 페이지에 jstl(c:if when)을 이용하지말고 
-//다른 방법을 찾아 구현해보세요.
+
 @Controller
 @RequestMapping("/member")
 public class MemberController {
-	//변수
-	//						선언위치		선언타입					특징
-	//지역(Local)변수			메서드 안
-	//전역(Global)변수			메서드 밖
-	//기본(Primitive)변수					Int, String, Boolean	리터럴(Literal)이 저장됨(stack에 실제값이 저장됨)	, 
-	//참조형(Reference)변수				new						주소값이 저장됨(heap에 실제값이, stack에 주소값이 저장됨) , null
-	
-	//기본형(primitive) 변수
-	//int number = 1;
-		
-	//참조형(reference) 변수
-	//BoardVO vo = new BoardVO();
-	//vo.setB_NO(1);
-	//int bno = vo.getB_NO();
-	//System.out.println("bno : " + bno);
-	
 	@Autowired	//의존성 주입
 	private MemberService memberService;
 	
@@ -86,23 +60,12 @@ public class MemberController {
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
 	
-	//NULL 체크 하는 법
-	//cri.getSearchWord().length() == 0
-	//cri.getSearchWord() == null
-	//cri.getSearchWord().trim().isEmpty()
-	//cri.getSearchWord().equals("")
+	//1. 조회(사원 정보)
 	@PostMapping("/memberList")
 	@ResponseBody
 	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
-//		, @RequestParam("checkList") List<String> checkList
-		//System.out.println("checkList : " + checkList);
-//		if(checkList != null) {
-//			System.err.println("checkList가 비어있지 않아요.");
-//		}
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
-		//System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
-		//System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 			System.err.println("검색어 없는 조회");
 			
@@ -137,24 +100,6 @@ public class MemberController {
 		return resultMap;	
 	}
 	
-	@PostMapping("/memberListM")
-	@ResponseBody
-	public Map<String, Object> memberListM(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
-		System.out.println("checkList : " + checkList);
-		Map<String, Object> resultMap = new HashMap<>();
-		if(checkList != null) {
-			System.err.println("checkList가 비어있지 않아요.");
-			List<String> memberListM = memberService.getmemberListM(checkList);
-			resultMap.put("memberList", memberListM);
-			
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName("/member/memberModify");
-			mav.addObject("memberListM", memberListM);
-			return resultMap;	
-		}
-		return resultMap;
-	}
-	
 	//2. 등록(페이지 이동)
 	@GetMapping("/memberInsert")
 	public String memberInsert() {
@@ -181,7 +126,6 @@ public class MemberController {
 			}
 		}
 		
-		//if(!member_Tel.trim().isEmpty()) {
 		if(member_Tel != null) {
 			if(memberService.checkTel(member_Tel)) {
 				System.out.println("memberService.checkTel1(member_Tel : " + memberService.checkTel(member_Tel));
@@ -199,8 +143,6 @@ public class MemberController {
 	//2. 등록(회원 등록)
 	@PostMapping("/memberInsert")
 	public String insertMember(@RequestBody MemberDto insertDatas) {
-		//System.err.println("insertDatas.getMember_Department : " + insertDatas.getMember_Department());
-		//System.err.println("insertDatas.getMember_startDate : " + insertDatas.getMember_startDate());
 		
 		int insertCnt = memberService.insertMember(insertDatas);
 		if(insertCnt > 0) {
@@ -222,6 +164,29 @@ public class MemberController {
 		model.addAttribute("pageNo" , pageNo);
 		return "member/memberModify";
 	}
+	
+	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
+	@PostMapping("/memberListM")
+	@ResponseBody
+	public Map<String, Object> memberListM(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+		System.out.println("checkList : " + checkList);
+		Map<String, Object> resultMap = new HashMap<>();
+		if(checkList != null) {
+			System.err.println("checkList가 비어있지 않아요.");
+			List<String> memberListM = memberService.getmemberListM(checkList);
+			resultMap.put("memberList", memberListM);
+			
+			ModelAndView mav = new ModelAndView();
+			mav.setViewName("/member/memberModify");
+			mav.addObject("memberListM", memberListM);
+			return resultMap;	
+		}
+		return resultMap;
+	}
+	
+	
+	
+	
 	
 	//3. 수정(회원 정보 수정)
 	@PostMapping("/memberModify")
@@ -262,6 +227,7 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
+	//2-2. 다중 수정(#m_modifyButton)버튼 클릭했을 때
 	@PostMapping("/memberModifyM") 
 	public ResponseEntity<?> memberModifyM(@RequestBody List<MemberDto> modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
 		Map<String, Object> resultMap = new HashMap<>();
@@ -340,9 +306,6 @@ public class MemberController {
 		Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("selectedProjectData", selectedProjectData);
 		boolean result = false;
-		//System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
-		//System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
-		
 		int modifyCnt = memberService.memberModify2(resultMap);
 		
 		if(modifyCnt > 0) {
@@ -362,10 +325,6 @@ public class MemberController {
         resultMap.put("selectedProjectData", selectedProjectData);
 		//System.out.println("selectedProjectData : " + selectedProjectData);
 		boolean result = false;
-		//System.out.println("selectedProjectData : " + selectedProjectData.getProject_Id());
-		//System.out.println("selectedProjectData : " + selectedProjectData.getPullDate());
-		//System.out.println("selectedProjectData : " + selectedProjectData.getPushDate());
-		
 		int deleteCnt = memberService.memberDelete2(resultMap);
 		
 		if(deleteCnt > 0) {

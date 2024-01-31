@@ -99,8 +99,8 @@
 	<thead>
 		<tr>
 			<th>ㅁ</th>
-			<th>번호</th>
-			<th style="display: none">아이디</th>
+			<!-- <th>번호</th> -->
+			<th>프번</th>
 			<th>이름</th>
 			<th>고객사</th>
 			<th>언어</th>
@@ -156,16 +156,13 @@ $("#searchButton").click(function(){
 			if (projectList && projectList.length > 0) {
        			for (let i = 0; i < projectList.length; i++) {
                 	let newRow = $("<tr>");
-                	newRow.append("<td><input type='radio' class='radiobox' name='radiobox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
-                	newRow.append("<td>" + projectList[i].project_No + "</td>");
-                	/* newRow.append("<td>" + projectList[i].project_Id + "</td>"); */
-                	newRow.append("<td hidden>" + projectList[i].project_Id + "</a></td>");
+                	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
+                	newRow.append("<td>" + projectList[i].project_Id + "</a></td>");
                 	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Name + "</td>");
                 	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
-                	//newRow.append("<td>" + projectList[i].project_endDate + "</td>");
                 	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>");
                 	$("#projectTable tbody").append(newRow);
             	}
@@ -202,51 +199,99 @@ $("#searchButton").click(function(){
 	});	//ajax EndPoint
 });		//$("#searchButton").click(function(){ EndPoint
 	
-$(document).on('click', '.radiobox', function() {
-	//console.log("체크박스");
-	let project_Id = $(this).data("id");
-	console.log("아이디: " + project_Id);
+//★★★★★★★★★데이터 수집 공통
+/* var checkList = [];
+$('.checkbox:checked').each(function() {
+	let row = $(this).closest('tr');
+	let member_Idqq = row.find('td:eq(1)').text();
+	console.log("member_Idqq : " + member_Idqq);
+}); */
+//console.log("checkList : " + checkList);	
+	/* let data = {
+		row.find()			
+	} */
 	
-	$("#deleteButton").click(function() {
-		$.ajax({
-			type : 'get',
-			url: '/project/projectDelete',
-			data: {
-				 "project_Id" : project_Id
-			},
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("삭제 성공");
-				location.href = "/project/projectList?pageNo=1";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("삭제 실패");
-			}
-		}); //ajax EndPoint
-	});	//#deleteButton EndPoint
+	
+	/* newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
+	newRow.append("<td>" + projectList[i].project_Id + "</a></td>");
+	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Name + "</td>");
+	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
+	newRow.append("<td>" + projectList[i].project_Skill_Language + "</td>");
+	newRow.append("<td>" + projectList[i].project_Skill_DB + "</td>");
+	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
+	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>"); */
 
-	$("#modifyButton").click(function() {
-		//console.log("수정 버튼 작동");
-		var pageNo = $("#pageNo").val();
-		//console.log("ddd");
-		//console.log("project_Id : " + project_Id);
-		$.ajax({
-			type : 'get',
-			url: '/project/projectModify',
-			data: {
-				 "project_Id" : project_Id,
-				 "pageNo" : pageNo
-			},
-			success : function(result) { // 결과 성공 콜백함수        
-				location.href = "/project/projectModify?project_Id=" + project_Id + "&pageNo=" + pageNo;						
-			},    
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				//console.log(error);
-				//console.log("전송 실패")
-			}
-		});	//ajax EndPoint
-	});	//#modifyButton EndPoint
-});//$(document).on('click', '.radiobox', function() { EndPoint
+	var checkList = [];
+	/* $('.checkbox:checked').each(function() {
+		let row = $(this).closest('tr');
+		let member_Idqq = row.find('td:eq(1)').text();
+		//console.log("member_Idqq : " + member_Idqq);
+		checkList.push(member_Idqq);
+		console.log("checkList : " + checkList);
+	}); */
+	$(document).on('click', '.checkbox', function() {
+		// 클릭된 체크박스가 속한 행(<tr>)을 찾습니다.
+		var $row = $(this).closest('tr');
 
+        // 해당 행에서 필요한 데이터를 수집합니다.
+        var memberData = {
+            //member_Id: $row.find("td a").text(), // member_Id는 링크 텍스트로부터 가져옵니다.
+           	project_Id: $row.find("td:nth-child(2)").text(),
+            //member_Sex: $row.find("td:nth-child(4)").text(),
+            //member_Position: $row.find("td:nth-child(5)").text(),
+            //member_Department: $row.find("td:nth-child(6)").text(),
+            //member_Tel: $row.find("td:nth-child(7)").text(),
+            //member_Skill_Language: $row.find("td:nth-child(8)").text(),
+            //member_Skill_DB: $row.find("td:nth-child(9)").text(),
+            //member_startDate: $row.find("td:nth-child(10)").text(),
+            //member_endDate: $row.find("td:nth-child(11)").text() // '미정' 포함
+        };
+		
+        checkList.push(memberData)
+        // 수집된 데이터를 콘솔에 출력합니다. 실제 사용 시에는 이 데이터를 다른 방식으로 사용할 수 있습니다.
+        console.log("checkList : " + checkList);
+	});
+	
+			
+$("#deleteButton").click(function() {
+	alert("checkList : " + checkList);
+	$.ajax({
+		type : 'POST',
+		url: '/project/deleteProject',
+		data: JSON.stringify(checkList),
+		success : function(result) { // 결과 성공 콜백함수        
+			alert("삭제 성공");
+			location.href = "/project/projectList?pageNo=1";
+		}, 
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("삭제 실패");
+		}
+	}); //ajax EndPoint
+});	//#deleteButton EndPoint	
+	
+/* $("#modifyButton").click(function() {
+//console.log("수정 버튼 작동");
+var pageNo = $("#pageNo").val();
+//console.log("ddd");
+//console.log("project_Id : " + project_Id);
+$.ajax({
+	type : 'get',
+	url: '/project/projectModify',
+	data: {
+		 "project_Id" : project_Id,
+		 "pageNo" : pageNo
+	},
+	success : function(result) { // 결과 성공 콜백함수        
+		location.href = "/project/projectModify?project_Id=" + project_Id + "&pageNo=" + pageNo;						
+	},    
+	error : function(request, status, error) { // 결과 에러 콜백함수        
+		//console.log(error);
+		//console.log("전송 실패")
+	}
+});	//ajax EndPoint
+});	//#modifyButton EndPoint
+});//$(document).on('click', '.radiobox', function() { EndPoint */	
+	
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = document.getElementById("searchWord").value;

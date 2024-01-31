@@ -136,10 +136,10 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw") String member_Pw) {
+	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck) {
 		// TODO Auto-generated method stub
 		
-		return memberMapper.loginCk(member_Id, member_Pw);
+		return memberMapper.loginCk(member_Id, member_Pw_ck);
 		//return null;
 	}
 
@@ -148,12 +148,6 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.getmemberListM(checkList);
 	}
-
-//	@Override
-//	public int member_Tel_ck_M(@Param("member_Id")int member_Id, @Param("member_Tel")String member_Tel) {
-//		// TODO Auto-generated method stub
-//		return memberMapper.member_Tel_ck_M(member_Id, member_Tel);
-//	}
 
 	@Override
 	public int memberModify_M(Map<String, Object> resultMap) {
@@ -172,12 +166,6 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.member_Tel_ck_M(modifyList);
 	}
-	
-//	@Override
-//	public void projectInmember(int project_Id) {
-//		return memberMapper.projectInmember(project_Id);
-//		
-//	}
 	
 	//팝업창 관련
 	@Override

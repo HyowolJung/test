@@ -66,9 +66,9 @@ button:hover {
 <br><br>
 <!--style="display: none"  -->
 <div id="LoginForm">
-	아이디 : <input type="text" id="member_Id" placeholder="부여받은 사번을 입력하세요." value="33770928"><br>
-	혹은 34922908<br>
-	비밀번호 : <input type="text" id="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="ffff"><br>
+	아이디 : <input type="text" id="member_Id" placeholder="부여받은 사번을 입력하세요." value="96377262"><br>
+	혹은 96377261<br>
+	비밀번호 : <input type="text" id="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="12345"><br>
 	<button id="login_Button">로그인</button><br>
 </div>
 </body>
@@ -91,6 +91,20 @@ $(document).ready(function() {
 			 	"member_Pw" : member_Pw_val
 			},
 			success : function(data) {
+				/* alert("data : " + data);				
+				if(data == null){
+					alert("로그인 실패1");
+					return;
+				}
+				if(data = ""){
+					alert("로그인 실패2");
+				} */
+				if(data.length == 0){
+					alert("로그인 실패");
+					return;
+				}
+				location.href="/main";
+				
 				/* console.log("data : " + data);
 				var m_Id = null;
 				var m_depart = null
@@ -99,7 +113,7 @@ $(document).ready(function() {
             		console.log("function(data) m_data.member_Id : " + m_data.member_Id);
             		m_depart = m_data.member_Department;
         		} */
-				location.href="/main";
+				
 				/* $.ajax({
 					type : 'GET',
 					url: '/main',
@@ -115,7 +129,7 @@ $(document).ready(function() {
 				}); */
 			},	
 			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("아이디 혹은 비밀번호를 확인해주세요");
+				alert("로그인 실패");
 			}
 		});
 	});	//$("#login_Button").click(function(){

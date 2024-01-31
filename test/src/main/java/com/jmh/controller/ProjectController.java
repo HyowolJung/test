@@ -194,6 +194,17 @@ public class ProjectController {
 		}
 	}
 	
+	//#4. 삭제(단건&다중 회원정보 삭제) //사람은 remove, 
+	@PostMapping("deleteProject")
+	public ResponseEntity<Boolean> deleteProject(@RequestBody List<ProjectDto> checkList){
+		System.out.println("checkList : " + checkList);
+		
+		return null;
+	}
+	
+	
+	
+	
 	@GetMapping("/projectRead")
 	public String projectRead(Model model, @RequestParam int project_Id, Criteria cri, @RequestParam int pageNo) {
 		//List<Map<String, Object>> projectmemberList = new ArrayList<Map<String, Object>>();

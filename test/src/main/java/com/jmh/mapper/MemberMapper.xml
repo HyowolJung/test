@@ -122,7 +122,7 @@ ORDER BY
   FROM 
   		MEMBER
   WHERE 
-  		MEMBER_ID=#{member_Id} AND MEMBER_PW=#{member_Pw}
+  		MEMBER_ID=#{member_Id} AND MEMBER_PW=#{member_Pw_ck}
 </select>
 	
 	
@@ -690,6 +690,24 @@ WHERE
     </foreach>
 </update>
 
+<update id="memberModify2" parameterType="java.util.Map">
+	<foreach item="member" index="index" collection="selectedProjectData" open="DECLARE BEGIN" separator=";" close="; END;">
+	
+	UPDATE 
+   		PROJECT_DETAIL
+   	SET
+		PUSHDATE = #{member.pushDate},
+		PULLDATE = #{member.pullDate}
+	WHERE 
+		MEMBER_ID = #{member.member_Id}
+	AND
+		PROJECT_ID = #{member.project_Id}
+	
+	</foreach>
+</update>
+
+
+
 <select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
     <foreach item="member" index="index" collection="modifyList" open="(" separator="," close=")">
     SELECT 
@@ -815,21 +833,7 @@ WHERE
 
 	 -->
 
-<update id="memberModify2" parameterType="java.util.Map">
-	<foreach item="member" index="index" collection="selectedProjectData" open="DECLARE BEGIN" separator=";" close="; END;">
-	
-	UPDATE 
-   		PROJECT_DETAIL
-   	SET
-		PUSHDATE = #{member.pushDate},
-		PULLDATE = #{member.pullDate}
-	WHERE 
-		MEMBER_ID = #{member.member_Id}
-	AND
-		PROJECT_ID = #{member.project_Id}
-	
-	</foreach>
-</update>
+
 <update id="projectDetailInsert" parameterType="java.util.Map">
     INSERT ALL
     <foreach item="item" index="index" collection="selectedRowData" separator=" ">

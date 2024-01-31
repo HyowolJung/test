@@ -53,9 +53,74 @@
 
 --꼭 생각해봐야 하는 거	
 1. RESTFUL 게시판을 구현해보기. (GET, POST, PUT, PATCH, DELETE 등)
-
-
-
-
---비축벌레가 가져온 거
 1. history.replaceState({}, null, location.pathname);
+
+
+//변수
+	//						선언위치		선언타입					특징
+	//지역(Local)변수			메서드 안
+	//전역(Global)변수			메서드 밖
+	//기본(Primitive)변수					Int, String, Boolean	리터럴(Literal)이 저장됨(stack에 실제값이 저장됨)	, 
+	//참조형(Reference)변수				new						주소값이 저장됨(heap에 실제값이, stack에 주소값이 저장됨) , null
+	
+	//기본형(primitive) 변수
+	//int number = 1;
+		
+	//참조형(reference) 변수
+	//BoardVO vo = new BoardVO();
+	//vo.setB_NO(1);
+	//int bno = vo.getB_NO();
+	//System.out.println("bno : " + bno);
+	
+	//NULL 체크 하는 법
+	//cri.getSearchWord().length() == 0
+	//cri.getSearchWord() == null
+	//cri.getSearchWord().trim().isEmpty()
+	//cri.getSearchWord().equals("")
+
+//RequestParam, param, pathVaraiable
+//엑셀 깔자
+//★유효성 검사 구현에 집중★
+//1. sql 쿼리문 줄 조정 + 대문자로
+//2. 다양하게
+//3. 타일즈?
+//권한번호(관리자, 사원)에 따라 보여줘야 하는 사이드바에 있는 메뉴(바디)가 다를때, 
+//1. 세션에 저장해서 동적쿼리(권한아이디=#{01})를 이용하거나, 
+//2. jsp 페이지에 jstl(c:if when)을 이용하지말고 
+//다른 방법을 찾아 구현해보세요.
+
+//ResoponseBody , RequestBody 
+
+	//let searchWord = $("#searchWord").val();
+	//<input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+	//이렇게 하면 검색어를 입력하지 않았어도 최초 브라우저가 로딩되면 당연히 공백같은 값들이 들어가지..
+	//우리는 입력된 값을 원하는 거지 value 값을 원하는게 아니잖아?
+	//그러니까 .value 혹은 .val() 를 하는게 아니라 innerText 같은걸 써야지...
+
+
+//1. 조회(페이징 정보)   
+public int getTotalCnt(Criteria cri);
+-> public int getTotalPageCnt(Criteria criteria);
+   
+//2. 등록(아이디 체크)
+public boolean checkId(int member_Id);
+-> public boolean isValidId(int id);
+public boolean checkTel(String member_Tel);
+-> public boolean isValidTelephonNumber(String telephonNumber);
+   
+//2. 등록(회원 등록)
+public int insertMember(MemberDto insertDatas);
+--> public int registerUser(MemberDto member);
+
+
+Remove - 제거
+
+Delete - 완전제거
+
+이해를 돕기 위해서 그누보드 회원관리를 예를 들면
+회원을 삭제한다고 하더라고 아이디는 다른사람의 제사용을 막기위해 디비에 남아 있습니다..
+이런경우는 Remove가 되겠습니다.
+
+게시글의 경우 한번 삭제 하면 복구할 방법이 없습니다..이런경우는 Delete입니다..
+
+확실히 이해가 가시죠^^

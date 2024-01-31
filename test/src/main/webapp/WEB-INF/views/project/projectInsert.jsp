@@ -49,40 +49,43 @@
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
 <div>
-	<label>아이디</label>
+	<label style="color: red">아이디</label>
 	<input type="text" id="project_Id"/><br>
 	<div id="result_Id"></div><br>
 	
-	<label>이름</label>
+	<label style="color: red">이름</label>
 	<input type="text" id="project_Name" value="안녕"/><br>
 	<div id="result_Name"></div><br>
 	
 	<label>고객사</label>
 	<select id="custom_company_id">
-		  <option value="D061" selected="selected">삼성</option>
-		  <option value="D062">엘지</option>
-		  <option value="D063">애플</option>
-		  <option value="D064">구글</option>
-		  <option value="D065">아마존</option>
+		<option value="" selected="selected">선택</option>
+		<option value="D061" >삼성</option>
+		<option value="D062">엘지</option>
+		<option value="D063">애플</option>
+		<option value="D064">구글</option>
+		<option value="D065">아마존</option>
 	</select><br>
 	
 	<label>언어</label>
 	<select id="project_Skill_Language">
-		  <option value="S010" selected="selected">JAVA</option>
-		  <option value="S011">PYTHON</option>
-		  <option value="S012">C++</option>
-		  <option value="S013">RUBY</option>
+		<option value="" selected="selected">선택</option>
+		<option value="S010" >JAVA</option>
+		<option value="S011">PYTHON</option>
+		<option value="S012">C++</option>
+		<option value="S013">RUBY</option>
 	</select><br>
 	
 	<label>데이터베이스</label>
 	<select id="project_Skill_DB">
-		  <option value="S020" selected="selected">ORACLE</option>
-		  <option value="S021">MSSQL</option>
-		  <option value="S022">MYSQL</option>
-		  <option value="S023">POSTGRESQL</option>
+		<option value="" selected="selected">선택</option>
+		<option value="S020">ORACLE</option>
+		<option value="S021">MSSQL</option>
+		<option value="S022">MYSQL</option>
+		<option value="S023">POSTGRESQL</option>
 	</select><br>
 	
-	<label>시작(예정)일</label>
+	<label style="color: red">시작(예정)일</label>
 	<input type="date" id="project_startDate" name="project_startDate"/><br>
 	<div id="result_Date"></div><br>
 	

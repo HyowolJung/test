@@ -124,7 +124,7 @@
 <button type="button" value="delete" id="deleteButton">삭제</button>
 <button type="button" value="modify" id="modifyButton">수정</button>
 <button id="insertButton" onclick="insertMember();">등록</button>
-<button type="button" value="modify" id="mmodifyButton">수정</button>
+<button type="button" value="modify" id="m_modifyButton">수정</button>
 <button type="button" value="back" id="backButton">뒤로가기</button>
 <div id="pagination">
 	<ul class="pagination" style= "list-style: none;">
@@ -135,24 +135,14 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#mmodifyButton").hide();
-	$("#backButton").hide();
+	//0. 페이지 기본 이벤트
 	let member_Id = $("#member_Id_SE").val();
-	//let searchWord = $("#searchWord").val();
-	//<input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
-	//이렇게 하면 검색어를 입력하지 않았어도 최초 브라우저가 로딩되면 당연히 공백같은 값들이 들어가지..
-	//우리는 입력된 값을 원하는 거지 value 값을 원하는게 아니잖아?
-	//그러니까 .value 혹은 .val() 를 하는게 아니라 innerText 같은걸 써야지...
-	
+	$("#m_modifyButton").hide();
+	$("#backButton").hide();
 	$("#memberTable tbody").empty();
 	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-    
-	$("#memberTable").on("click", ".member-id", function () {
-		var member_Id = $(this).data("memberid");
-		window.location.href = "/member/memberRead?member_Id=" + member_Id;
-	});
-    
-	//1. 검색 폼
+	
+	//1. 조회(#searchButton)버튼 클릭 했을 때
 	$("#searchButton").click(function(){
 		let search_startDate = $("#search_startDate").val();
 		let search_endDate = $("#search_endDate").val();
@@ -226,64 +216,16 @@ $(document).ready(function() {
 		}); //$.ajax EndPoint
 	});//$("#searchButton").click EndPoint
 	
-	/* var checkList1 = [];
-    $(document).on('click', '.checkbox', function() {
-        $('.checkbox:checked').each(function() {
-			console.log("fffffffffff");        	
-        	//var member_Id = $(this).val();
-        	var row = $(this).closest('tr');
-        	var member_Id = $(this).val();
-        	var member_Name = row.find('td:nth-child(3)').val(); // 멤버 이름 가져오기
-        	var member_Sex = row.find('td:nth-child(4)').val(); // 멤버 성별 가져오기
-        	var member_Position = row.find('td:nth-child(5)').val(); // 멤버 직급 가져오기
-        	var member_Department = row.find('td:nth-child(6)').val(); // 멤버 부서 가져오기
-        	var member_Tel = row.find('td:nth-child(7)').val(); // 멤버 전화번호 가져오기
-        	var member_Skill_Language = row.find('td:nth-child(8)').val(); // 멤버 언어 스킬 가져오기
-        	var member_Skill_DB = row.find('td:nth-child(9)').val(); // 멤버 데이터베이스 스킬 가져오기
-        	var member_startDate = row.find('td:nth-child(10)').val(); // 멤버 입사일 가져오기
-        	var member_endDate = row.find('td:nth-child(11)').val(); // 멤버 퇴사일 가져오기
-        	
-        	var memberInfo = {
-        			member_Id: member_Id,
-        			member_Name: member_Name,
-        			member_Sex: member_Sex,
-        			member_Position: member_Position,
-        			member_Department: member_Department,
-        			member_Tel: member_Tel,
-        			member_Skill_Language: member_Skill_Language,
-        			member_Skill_DB: member_Skill_DB,
-        			member_startDate: member_startDate,
-        			member_endDate: member_endDate,
-            };
-            checkList1.push(memberInfo);
-        });
-        //console.log("선택된 값들!! : " + checkList);    	
-	});//$(document).on('click', '.checkbox', function() { */
-    $("#deleteButton").click(function() {
-    	var checkList = [];
-		$('.checkbox:checked').each(function() {
-			checkList.push($(this).val());
-		});
-		$.ajax({
-			type : 'POST',
-			url: '/member/memberDeleteM',
-			contentType: 'application/json',
-			data: JSON.stringify(checkList),
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("삭제를 성공했어요.");
-				location.href = "/member/memberList?pageNo=1";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("투입 이력이 있는 회원은 삭제할 수 없어요.");
-			}
-		}); //ajax EndPoint
-	});	//#deleteButton EndPoint
+	$("#memberTable").on("click", ".member-id", function () {
+		var member_Id = $(this).data("memberid");
+		window.location.href = "/member/memberRead?member_Id=" + member_Id;
+	});
 	
+	//2. 수정(#modifyButton)버튼 클릭했을 때
 	$("#modifyButton").click(function() {
 		var checkList = [];
 		$('.checkbox:checked').each(function() {
 			checkList.push($(this).val());
-			//checkList.push({ member_Id: $(this).val() });
 		});
 		//console.log("checkList에 담겨 있는 값은 : " + checkList);
 		$.ajax({
@@ -296,7 +238,7 @@ $(document).ready(function() {
 				$("#deleteButton").hide();
 				$("#modifyButton").hide();
 				$("#insertButton").hide();
-				$("#mmodifyButton").show();
+				$("#m_modifyButton").show();
 				$("#backButton").show();
 				
 				var memberList = resultMap.memberList;
@@ -371,9 +313,11 @@ $(document).ready(function() {
 				//console.log("전송 실패")
 			}
 		});	//ajax EndPoint */
-	}); //#modifyButton EndPoint	
+	}); //#modifyButton EndPoint
 	
-	$("#mmodifyButton").click(function() {
+
+	//2-2. 다중 수정(#m_modifyButton)버튼 클릭했을 때
+	$("#m_modifyButton").click(function() {
 		let member_Tel = $("#member_Tel").val();//입력한 전화번호
 		let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
 		let member_startDate = $("#member_startDate").val();
@@ -494,6 +438,28 @@ $(document).ready(function() {
 			}// elseIf EndPoint
 		}// elseIf EndPoint
 	});//$("#modifyButton").click(function() {
+		
+    //3. 삭제(#deleteButton)버튼 클릭했을 때(+ 다중)
+    $("#deleteButton").click(function() {
+    	var checkList = [];
+		$('.checkbox:checked').each(function() {
+			checkList.push($(this).val());
+		});
+		$.ajax({
+			type : 'POST',
+			url: '/member/memberDeleteM',
+			contentType: 'application/json',
+			data: JSON.stringify(checkList),
+			success : function(result) { // 결과 성공 콜백함수        
+				alert("삭제를 성공했어요.");
+				location.href = "/member/memberList?pageNo=1";
+			}, 
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("투입 이력이 있는 회원은 삭제할 수 없어요.");
+			}
+		}); //ajax EndPoint
+	});	//#deleteButton EndPoint
+	
 	
 	$("#resetButton").click(function() {
 		var selectElement = document.getElementById("searchField");
@@ -515,43 +481,43 @@ $(document).ready(function() {
 	});
 	
 });//document EndPoint
-/* function validateDate() {
-	var input = document.getElementById("search_startDate").value;
 
-    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
-    var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+//체크데이터 수집 공통 모듈(미완성)
+/* var checkList1 = [];
+$(document).on('click', '.checkbox', function() {
+    $('.checkbox:checked').each(function() {
+		console.log("fffffffffff");        	
+    	//var member_Id = $(this).val();
+    	var row = $(this).closest('tr');
+    	var member_Id = $(this).val();
+    	var member_Name = row.find('td:nth-child(3)').val(); // 멤버 이름 가져오기
+    	var member_Sex = row.find('td:nth-child(4)').val(); // 멤버 성별 가져오기
+    	var member_Position = row.find('td:nth-child(5)').val(); // 멤버 직급 가져오기
+    	var member_Department = row.find('td:nth-child(6)').val(); // 멤버 부서 가져오기
+    	var member_Tel = row.find('td:nth-child(7)').val(); // 멤버 전화번호 가져오기
+    	var member_Skill_Language = row.find('td:nth-child(8)').val(); // 멤버 언어 스킬 가져오기
+    	var member_Skill_DB = row.find('td:nth-child(9)').val(); // 멤버 데이터베이스 스킬 가져오기
+    	var member_startDate = row.find('td:nth-child(10)').val(); // 멤버 입사일 가져오기
+    	var member_endDate = row.find('td:nth-child(11)').val(); // 멤버 퇴사일 가져오기
+    	
+    	var memberInfo = {
+    			member_Id: member_Id,
+    			member_Name: member_Name,
+    			member_Sex: member_Sex,
+    			member_Position: member_Position,
+    			member_Department: member_Department,
+    			member_Tel: member_Tel,
+    			member_Skill_Language: member_Skill_Language,
+    			member_Skill_DB: member_Skill_DB,
+    			member_startDate: member_startDate,
+    			member_endDate: member_endDate,
+        };
+        checkList1.push(memberInfo);
+    });
+    //console.log("선택된 값들!! : " + checkList);    	
+});//$(document).on('click', '.checkbox', function() { */
 
-    if (!input.match(dateFormat)) {
-        alert("다시 한번 확인해주세요.");
-        return;
-    }
 
-    var inputDate = input.split("-");
-    var year = parseInt(inputDate[0]);
-    var month = parseInt(inputDate[1]);
-    var day = parseInt(inputDate[2]);
-
- 	// 년도에 대한 최소 및 최대 제한
-    if (year < 2000 || year > 2099) {
-        alert("년도는 2000부터 2099까지만 가능해요.");
-        return;
-    }
-    
-    // 유효한 월과 일인지 확인
-    if (month < 1 || month > 12 || day < 1 || day > 31) {
-        alert("유효하지 않아요.");
-        return;
-    }
-
-    // 해당 월의 마지막 일자 확인
-    var date = new Date(year, month - 1, day);
-    if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
-        alert("유효하지 않아요.");
-    } else {
-        //alert("제대로 입력했어요. 잘했어요.");
-        console.log("제대로 입력했어요. 잘했어요.");
-    }
-} */
 function validateDate1() {
 	var search_startDate = document.getElementById("search_startDate").value;
 	
@@ -650,6 +616,7 @@ function validateDate2() {
     }
     
 }
+
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = document.getElementById("searchWord").value;

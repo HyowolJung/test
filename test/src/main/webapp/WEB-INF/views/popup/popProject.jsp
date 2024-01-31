@@ -263,10 +263,14 @@ $('#insert').click(function() {
 		contentType: 'application/json; charset=utf-8',
 		data: JSON.stringify(selectedRowData),
 		success : function(result) { // 결과 성공 콜백함수        
-			console.log("추가 성공");
-			//alert("추가 성공");
-			window.location.reload();
+			//console.log("추가 성공");
+			alert("추가 성공");
+			//window.location.reload();
 			//location.href = "/popup/projectInmember?pageNo=1";
+			if (window.opener) {
+            	window.opener.location.reload(); // 부모 창 새로고침
+        	}
+        	window.close(); // 성공 메시지 후 b.jsp 팝업 창 닫기
 		}, 
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("등록 실패");

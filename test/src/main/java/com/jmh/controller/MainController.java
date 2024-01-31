@@ -56,25 +56,35 @@ public class MainController {
 		session.setAttribute("member_Id", dto.getMember_Id());
 		
 		boolean isValid = false;
+		List<MemberDto> loginCk = null;
 		String member_Pw_ck = memberService.getmember_Pw(member_Id);
+		System.err.println("member_Pw : " + member_Pw);
+		System.err.println("member_Pw_ck : " + member_Pw_ck);
 		if(member_Pw_ck != null) {
 			System.err.println("member_Pw_ck : " + member_Pw_ck);
 			isValid = BCrypt.checkpw(member_Pw, member_Pw_ck);
 			System.err.println("isValid : " + isValid);
-			if(isValid = true) {
-				//dto = member_Pw;
+			
+			if(isValid == true) {
+				System.err.println("isValid TRUE 진입");
 				ModelAndView mav = new ModelAndView();
 				mav.setViewName("/common/WellCome");
 				mav.addObject("member_Id", session.getAttribute("member_Id"));
-				List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+				
+				loginCk = memberService.loginCk(member_Id, member_Pw_ck);
 				MemberDto loginCk_member_Department = loginCk.get(0);
 				String member_Department = loginCk_member_Department.getMember_Department();
 				session.setAttribute("member_Department" , member_Department);
+				
+				System.err.println("loginCk 일치합니다. : " + loginCk);
+				return loginCk; 
+			}
+			
+			if(isValid == false) {
+				System.out.println("loginCk 비밀번호 불일치 : " + loginCk);
 				return loginCk;
 			}
-			if(isValid = false) {
-				return null;
-			}
+			
 		}
 		return null;
 	}

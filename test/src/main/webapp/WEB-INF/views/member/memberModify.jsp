@@ -436,7 +436,7 @@ $("#modifyButton").click(function() {
 			console.log("선택되었다.");
     			
     		var tr = $(this).closest("tr");
-    	        // 행의 데이터 추출
+    	    // 행의 데이터 추출
    	        var member_Id = $("#member_Id").val();
    	        var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
    	        // var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
