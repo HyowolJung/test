@@ -33,10 +33,8 @@ public class MainController {
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model) {
-		//session.setAttribute("member_Department", member_Department);
-		//System.out.println("1)/main 도착했어요. GET MAPPING + member_Department : " + member_Department);
-		//System.out.println("2)session.getAttribute(member_Department) : " + session.getAttribute("member_Department"));
-		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
+		//model.addAttribute("member_Department" , session.getAttribute("member_Department"));
+		model.addAttribute("member_Department" , "인사부");
 		return "/main";
 	}
 	
@@ -55,8 +53,11 @@ public class MainController {
 	public List<MemberDto> memberLogin(int member_Id, String member_Pw, HttpSession session, MemberDto dto, Model model) {
 		session.setAttribute("member_Id", dto.getMember_Id());
 		
+		//List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+		//return loginCk;
 		boolean isValid = false;
 		List<MemberDto> loginCk = null;
+		
 		String member_Pw_ck = memberService.getmember_Pw(member_Id);
 		System.err.println("member_Pw : " + member_Pw);
 		System.err.println("member_Pw_ck : " + member_Pw_ck);

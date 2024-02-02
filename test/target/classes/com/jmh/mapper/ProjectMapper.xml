@@ -5,8 +5,7 @@
 <!-- 1. 조회(검색어 X) -->
 <select id="getProjectList" resultType="com.jmh.dto.ProjectDto">
 SELECT
-	PROJECT_NO ,
-	  PROJECT_ID ,
+	 PROJECT_ID ,
 	  NVL(
 	  CASE
            WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
@@ -42,15 +41,14 @@ SELECT
 FROM 
 (
 	SELECT
-		PROJECT_NO
-	   	,PROJECT_ID
+		PROJECT_ID
 		,CUSTOM_COMPANY_ID
 		,PROJECT_NAME
 		,PROJECT_SKILL_LANGUAGE
 		,PROJECT_SKILL_DB
   		,PROJECT_STARTDATE
   		,PROJECT_ENDDATE
-      	,ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW
+      	,ROW_NUMBER() OVER(ORDER BY PROJECT_ID DESC) AS NUMROW
       	,COUNT(*) OVER() AS TOTAL_CNT
 	FROM
 		PROJECT
@@ -62,7 +60,6 @@ WHERE
 <!-- 1. 조회(검색어 O) -->
 <select id="searchProjectList" resultType="com.jmh.dto.ProjectDto"><!-- parameterType="com.jmh.vo.memberVO" -->
 SELECT
-		PROJECT_NO ,
 	  	PROJECT_ID ,
 	  	NVL(
 	  	CASE
@@ -84,6 +81,7 @@ SELECT
          END,
          '미정')
          AS PROJECT_SKILL_LANGUAGE ,
+         NVL(
          CASE
            	WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
            	WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
@@ -98,7 +96,6 @@ SELECT
 	FROM 
 	(
 	   SELECT
-	   			PROJECT_NO ,
 	      		PROJECT_ID ,
 	  			CUSTOM_COMPANY_ID ,
 	  			PROJECT_NAME ,
@@ -106,7 +103,7 @@ SELECT
 	  			PROJECT_SKILL_DB ,
 	  			PROJECT_STARTDATE ,
 	  			PROJECT_ENDDATE ,
-	      		ROW_NUMBER() OVER(ORDER BY PROJECT_NO DESC) AS NUMROW ,
+	      		ROW_NUMBER() OVER(ORDER BY PROJECT_ID DESC) AS NUMROW ,
 	      		COUNT(*) OVER() AS TOTAL_CNT
 		FROM
 				PROJECT
@@ -154,69 +151,101 @@ SELECT
 			PROJECT_NAME = #{project_Name}
 	</select>
 		
-	<!-- 2. 등록(회원 등록) -->
-	<insert id="insertProject" parameterType="com.jmh.dto.ProjectDto">
-		INSERT 
-		INTO 
-			PROJECT
-			(
-				PROJECT_NO
-				,PROJECT_ID
-		  		,PROJECT_NAME
-		  		,CUSTOM_COMPANY_ID
-		  		,PROJECT_SKILL_LANGUAGE
-		  		,project_Skill_DB
-		  		,PROJECT_STARTDATE
-		  	) 
-		VALUES 
-		(
-			(
-				SELECT 
-		  			TO_NUMBER(NVL(MAX(PROJECT_NO), 0))+ 1 
-		  		FROM 
-		  			PROJECT
-		  	)	
-		  		,#{project_Id}
-		  		,#{project_Name}
-		  		,#{custom_company_id}
-		  		,#{project_Skill_Language}
-		  		,#{project_Skill_DB}
-		  		,#{project_startDate}
-		 )
-	</insert>
+<!-- 2. 등록(회원 등록) -->
+<insert id="insertProject" parameterType="com.jmh.dto.ProjectDto">
+INSERT 
+INTO 
+    PROJECT
+    (
+        PROJECT_ID
+        ,PROJECT_NAME
+        ,CUSTOM_COMPANY_ID
+        ,PROJECT_SKILL_LANGUAGE
+        ,PROJECT_SKILL_DB
+        ,PROJECT_STARTDATE
+    ) 
+VALUES 
+(
+    #{project_Id} 
+    ,#{project_Name}
+    ,#{custom_company_id}
+    ,#{project_Skill_Language}
+    ,#{project_Skill_DB}
+    ,#{project_startDate}
+)
+<!-- INSERT 
+INTO 
+	PROJECT
+	(
+		PROJECT_ID
+  		,PROJECT_NAME
+  		,CUSTOM_COMPANY_ID
+  		,PROJECT_SKILL_LANGUAGE
+  		,project_Skill_DB
+  		,PROJECT_STARTDATE
+  	) 
+VALUES 
+(
+	(
+		SELECT 
+  			TO_NUMBER(NVL(MAX(PROJECT_ID), 0))+ 1 
+  		FROM 
+  			PROJECT
+	)	
+ 		,#{project_Name}
+  		,#{custom_company_id}
+  		,#{project_Skill_Language}
+  		,#{project_Skill_DB}
+  		,#{project_startDate}
+) -->
 
-	<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
-	<select id="getModifyList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
+</insert>
+
+<!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
+<select id="getModifyList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
 	SELECT
-		PROJECT_NO 
-	  ,PROJECT_ID
-	  ,CASE
+	  PROJECT_ID 
+	  ,NVL(
+	  CASE
            WHEN CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
            WHEN CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
            WHEN CUSTOM_COMPANY_ID = 'D063' THEN '애플'
            WHEN CUSTOM_COMPANY_ID = 'D064' THEN '구글'
            WHEN CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
-         END AS CUSTOM_COMPANY_ID
+      END,
+      '미정')
+      AS CUSTOM_COMPANY_ID
+	  
 	  ,PROJECT_NAME
-	  ,CASE
+	  
+	  ,NVL(
+	  CASE
            WHEN PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
            WHEN PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
            WHEN PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
            WHEN PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-         END AS PROJECT_SKILL_LANGUAGE
-         ,CASE
+      END,
+      '미정')
+      AS PROJECT_SKILL_LANGUAGE
+         
+      ,NVL(
+         CASE
            WHEN PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
            WHEN PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
            WHEN PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
            WHEN PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-         END AS PROJECT_SKILL_DB
+         END,
+         '미정')
+       AS PROJECT_SKILL_DB
+	  
 	  ,PROJECT_STARTDATE
+	  
 	  ,PROJECT_ENDDATE
 	FROM 
 		PROJECT
 	WHERE 
 		PROJECT_ID = #{project_Id}
-	</select>
+</select>
 	
 	<!-- 3. 수정(회원 정보 수정) -->
 	<update id="projectModify" parameterType="com.jmh.dto.ProjectDto">
@@ -249,13 +278,13 @@ SELECT
 	</update>
 
 	<!-- 4. 삭제(회원 정보 삭제) -->
-	<delete id="deleteProject" parameterType="integer" >
+	<!-- <delete id="deleteProject" parameterType="integer" >
 		DELETE 
 		FROM 
 			PROJECT
 		WHERE 
 			PROJECT_ID = #{project_Id}
-	</delete>
+	</delete> -->
 	
 	<select id="getProjectId" resultType="com.jmh.dto.ProjectDto">
 		SELECT 
@@ -268,7 +297,6 @@ SELECT
 	
 	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
 	SELECT 
-    		P.PROJECT_NO,
     		P.PROJECT_ID,
     CASE
         	WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
@@ -291,7 +319,7 @@ SELECT
         	WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
     END AS PROJECT_SKILL_DB,
     		P.PROJECT_STARTDATE,
-   	NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
+   			P.PROJECT_ENDDATE
    				
 	FROM 
     		PROJECT P
@@ -309,7 +337,6 @@ SELECT
 	
 	<select id="getFilterd_search_pro_List" resultType="com.jmh.dto.ProjectDto">
 	SELECT 
-    P.PROJECT_NO,
     P.PROJECT_ID,
     CASE
         WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
@@ -332,7 +359,7 @@ SELECT
         WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
     END AS PROJECT_SKILL_DB,
     P.PROJECT_STARTDATE,
-   	NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE
+   	P.PROJECT_ENDDATE
 	FROM 
     	PROJECT P
 	WHERE NOT EXISTS (
@@ -347,18 +374,20 @@ SELECT
 	 <include refid="criteria2"/>
 	</select>
 	
-	<update id="projectModify2" parameterType="com.jmh.dto.ProjectDetailDto">
+<update id="projectModify2" parameterType="java.util.Map">
+	<foreach item="member" index="index" collection="selectedMemberData" open="DECLARE BEGIN" separator=";" close="; END;">
 	UPDATE 
    		PROJECT_DETAIL
    	SET
-		PUSHDATE = #{pushDate},
-		PULLDATE = #{pullDate}
+		PUSHDATE = #{member.pushDate},
+		PULLDATE = #{member.pullDate}
 	WHERE 
-		MEMBER_ID = #{member_Id}
+		MEMBER_ID = #{member.member_Id}
 	AND
-		PROJECT_ID = #{project_Id}
-	
+		PROJECT_ID = #{member.project_Id}
+	</foreach>
 </update>
+
 <delete id="projectDelete2" parameterType="int">
 		DELETE 
 		FROM 
@@ -369,7 +398,7 @@ SELECT
 			PROJECT_ID = #{project_Id}
 	</delete>
 
-	<select id="getprojectmemberList" resultType="map" parameterType="int">
+<select id="getprojectmemberList" resultType="map" parameterType="int">
 	SELECT 
 		M.MEMBER_ID
 		  ,M.MEMBER_NAME
@@ -406,7 +435,60 @@ SELECT
     	M.MEMBER_ID = PD.MEMBER_ID
 	WHERE 
     	PROJECT_ID = #{project_Id}
-	</select>	
+</select>	
+
+
+<delete id="deleteProject" parameterType="list" >
+/*deleteMember*/
+DELETE 
+FROM
+		PROJECT
+WHERE 
+		PROJECT_ID 
+IN
+<foreach item="project_Id" collection="list" open="(" separator="," close=")">
+	#{project_Id}
+</foreach>
+</delete>
+
+<select id="deleteProjectCheck" resultType="String" parameterType="java.util.List">
+    <foreach collection="list" item="project_Id" index="index" separator=" UNION ALL "> 
+        SELECT 
+        		COUNT(*)
+        FROM 
+        		PROJECT P
+        JOIN
+        		PROJECT_DETAIL PD
+        ON 
+        		P.PROJECT_ID = PD.PROJECT_ID
+        WHERE
+        		PD.PROJECT_ID = #{project_Id} 
+    </foreach>
+</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 <sql id="criteria">
     <where>
        <if test="searchField == 'id'"> 

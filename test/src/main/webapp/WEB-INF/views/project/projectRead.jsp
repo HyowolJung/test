@@ -64,11 +64,13 @@ table {
 			<tr>
 				<td id="td_Id">${projectList.project_Id }</td>
 				<td>${projectList.project_Name }</td>
-				<td>${projectList.custom_company_id }</td>
-				<td>${projectList.project_Skill_Language}</td>
-				<td>${projectList.project_Skill_DB} </td>
-				<td>${projectList.project_startDate }</td>
-				<td>${projectList.project_endDate}</td>
+				<td>${projectList.custom_company_id == null ? '미정' : projectList.custom_company_id}</td>
+				<td>${projectList.project_Skill_Language == null ? '미정' : projectList.project_Skill_Language}</td>
+				<td>${projectList.project_Skill_DB == null ? '미정' : projectList.project_Skill_DB} </td>
+				<%-- <td>${projectList.project_startDate }</td> --%>
+				<td>${projectList.project_startDate == null ? '미정' : projectList.project_startDate}</td>
+				<td>${projectList.project_endDate == null ? '미정' : projectList.project_endDate}</td>
+				<%-- <td>${memberprojectList.pushDate == null ? '미정' : memberprojectList.pushDate}</td> --%>
 			</tr>
 		</c:forEach>
 	</tbody>
@@ -92,19 +94,30 @@ table {
 	</tr>
 </thead>
 <tbody>
-	<c:forEach var="projectmember" items="${projectmemberList}">
-    <tr>
-        <td>${projectmember['MEMBER_ID']}</td>
-        <td>${projectmember['MEMBER_NAME']}</td>
-        <td>${projectmember['MEMBER_POSITION']}</td>
-        <td>${projectmember['MEMBER_TEL']}</td>
-        <td>${projectmember['MEMBER_SKILL_LANGUAGE']}</td>
-        <td>${projectmember['MEMBER_SKILL_DB']}</td>
-        <td><fmt:formatDate value="${projectmember['PUSHDATE']}" pattern="yyyy-MM-dd" /></td>
-        <td><fmt:formatDate value="${projectmember['PULLDATE']}" pattern="yyyy-MM-dd" /></td>
-        <!-- 기타 필요한 데이터 필드 -->
-    </tr>
-</c:forEach>
+	<c:choose>
+    <c:when test="${empty projectmemberList}">
+      <tr>
+        <td colspan="8" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
+      </tr>
+    </c:when>
+    <c:otherwise>
+      <c:forEach var="projectmember" items="${projectmemberList}">
+      	<tr>
+        	<td>${projectmember['MEMBER_ID']}</td>
+        	<td>${projectmember['MEMBER_NAME']}</td>
+        	<td>${projectmember['MEMBER_POSITION'] == null ? '미정' : projectmember['MEMBER_POSITION']}</td>
+        	<td>${projectmember['MEMBER_TEL']}</td>
+        	<td>${projectmember['MEMBER_SKILL_LANGUAGE'] == null ? '미정' : projectmember['MEMBER_SKILL_LANGUAGE']}</td>
+        	<td>${projectmember['MEMBER_SKILL_DB'] == null ? '미정' : projectmember['MEMBER_SKILL_DB']}</td>
+        	<%-- <td><fmt:formatDate value="${projectmember['PUSHDATE']}" pattern="yyyy-MM-dd" /></td>
+        	<td><fmt:formatDate value="${projectmember['PULLDATE']}" pattern="yyyy-MM-dd" /></td> --%>
+        	<td>${projectmember['PUSHDATE'] == null ? '미정' : projectmember['PUSHDATE']}</td>
+        	<td>${projectmember['PULLDATE'] == null ? '미정' : projectmember['PULLDATE']}</td>
+        	<!-- 기타 필요한 데이터 필드 -->
+    	</tr>
+      </c:forEach>
+    </c:otherwise>
+  </c:choose>
 </tbody>
 </table>
 </div>

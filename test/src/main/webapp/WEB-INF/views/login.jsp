@@ -66,9 +66,9 @@ button:hover {
 <br><br>
 <!--style="display: none"  -->
 <div id="LoginForm">
-	아이디 : <input type="text" id="member_Id" placeholder="부여받은 사번을 입력하세요." value="96377262"><br>
-	혹은 96377261<br>
-	비밀번호 : <input type="text" id="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="12345"><br>
+	아이디 : <input type="text" id="member_Id" placeholder="부여받은 사번을 입력하세요." value="11111111"><br>
+	혹은 99999999<br>
+	비밀번호 : <input type="text" id="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="1234"><br>
 	<button id="login_Button">로그인</button><br>
 </div>
 </body>

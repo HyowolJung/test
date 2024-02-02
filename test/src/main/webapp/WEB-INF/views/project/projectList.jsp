@@ -221,7 +221,7 @@ $('.checkbox:checked').each(function() {
 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
 	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>"); */
 
-	var checkList = [];
+	
 	/* $('.checkbox:checked').each(function() {
 		let row = $(this).closest('tr');
 		let member_Idqq = row.find('td:eq(1)').text();
@@ -229,7 +229,7 @@ $('.checkbox:checked').each(function() {
 		checkList.push(member_Idqq);
 		console.log("checkList : " + checkList);
 	}); */
-	$(document).on('click', '.checkbox', function() {
+	/* $(document).on('click', '.checkbox', function() {
 		// 클릭된 체크박스가 속한 행(<tr>)을 찾습니다.
 		var $row = $(this).closest('tr');
 
@@ -250,21 +250,31 @@ $('.checkbox:checked').each(function() {
         checkList.push(memberData)
         // 수집된 데이터를 콘솔에 출력합니다. 실제 사용 시에는 이 데이터를 다른 방식으로 사용할 수 있습니다.
         console.log("checkList : " + checkList);
-	});
+	}); */
 	
 			
 $("#deleteButton").click(function() {
-	alert("checkList : " + checkList);
+	var checkList = [];
+	$('.checkbox:checked').each(function() {
+		checkList.push($(this).val());
+	});
+	
+	//alert("checkList : " + checkList);
 	$.ajax({
 		type : 'POST',
 		url: '/project/deleteProject',
+		contentType: 'application/json',
 		data: JSON.stringify(checkList),
 		success : function(result) { // 결과 성공 콜백함수        
-			alert("삭제 성공");
-			location.href = "/project/projectList?pageNo=1";
+			if(result != null) {
+				alert("삭제 성공");
+				location.href = "/project/projectList?pageNo=1";
+			} else {
+				alert("삭제 실패")
+			}
 		}, 
 		error : function(request, status, error) { // 결과 에러 콜백함수        
-			alert("삭제 실패");
+			alert("투입된 회원이 있는 프로젝트는 삭제할 수 없어요.");
 		}
 	}); //ajax EndPoint
 });	//#deleteButton EndPoint	

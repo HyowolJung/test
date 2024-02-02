@@ -52,7 +52,7 @@ public class MemberController {
 	
 	//1. 조회(페이징 정보)
 	@GetMapping("/memberList")	//parameter 와 argument의 차이
-	public String memberList1(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
+	public String memberList(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
@@ -63,7 +63,7 @@ public class MemberController {
 	//1. 조회(사원 정보)
 	@PostMapping("/memberList")
 	@ResponseBody
-	public Map<String, Object> memberList2(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
@@ -103,7 +103,6 @@ public class MemberController {
 	//2. 등록(페이지 이동)
 	@GetMapping("/memberInsert")
 	public String memberInsert() {
-				
 		return "member/memberInsert";
 	}
 	
@@ -183,10 +182,6 @@ public class MemberController {
 		}
 		return resultMap;
 	}
-	
-	
-	
-	
 	
 	//3. 수정(회원 정보 수정)
 	@PostMapping("/memberModify")

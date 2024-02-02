@@ -58,7 +58,7 @@
 	<div id="result_Id"></div>
 	
 	<label style="color: red">비밀번호</label>
-	<input type="text" id="member_Pw"/><br>
+	<input type="text" id="member_Pw" value="1234"/><br>
 	<div id="result_Pw"></div>
 	
 	<label style="color: red">이름</label>
@@ -129,10 +129,24 @@
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-	
+	let member_Id = $("#member_Id");
+	const randomNumber = Math.floor(Math.random() * 99999999) + 1;
+    // 숫자를 8자리 문자열로 포맷, 필요한 경우 앞에 0을 추가
+    const formattedNumber = randomNumber.toString().padStart(8, '0');
+    member_Id.val(formattedNumber);
+    
+    const randomNumber2 = "010" + Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
+    // replace 함수와 정규 표현식을 사용하여 형식 변환
+    const formattedNumber2 = randomNumber2.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    // 변환된 번호를 alert으로 출력
+    //alert(formattedNumber);
+    //변환된 번호를 alert으로 출력
+    //alert(formattedNumber2);
+    $("#member_Tel").val(formattedNumber2);
+    
 	//1. 아이디 체크
 	let result_Id = $("#result_Id"); // 결과를 출력할 공간
-    let member_Id = $("#member_Id"); // 아이디 입력창
+    member_Id = $("#member_Id"); // 아이디 입력창
 	member_Id.on('blur', function() {
 		let member_Id_Check = /^\d{8}$/;
 	    //console.log("member_Tel : " + member_Tel.val());

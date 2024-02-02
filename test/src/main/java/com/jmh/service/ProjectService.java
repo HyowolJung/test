@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +37,27 @@ public interface ProjectService {
 	public int projectModify(ProjectDto modifyDatas);
 
 	//4. 삭제(프로젝트 삭제)
-	public int deleteProject(int project_Id);
+	//public int deleteProject(int project_Id);
 
 	//
-	public List<Map<String, Object>> getprojectmemberList(int project_Id);
+	public List<MemberDto> getprojectmemberList(int project_Id);
 
 	public List<ProjectDto> getFilterd_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
 	public List<ProjectDto> getFilterd_search_pro_List(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
-	public int projectModify2(ProjectDetailDto selectedMemberData);
+	public int projectModify2(Map<String, Object> resultMap);
 
 	public int projectDelete2(ProjectDetailDto selectedMemberData);
+	
+	
+	
+	
+	
+	
+	public int deleteProject(List<String> checkList);
+
+	public ArrayList<String> deleteProjectCheck(List<String> checkList);
 
 	
 	//public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);

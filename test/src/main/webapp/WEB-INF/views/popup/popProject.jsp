@@ -193,9 +193,10 @@ $("#searchButton").click(function(){
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
                 	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Name + "</td>");
-                	newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
+                	//newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
+                	newRow.append("<td>" + (projectList[i].custom_company_id === null ? '미정' : projectList[i].custom_company_id) + "</td>");
                 	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
-                	newRow.append("<td>" + (projectList[i].project_endDate === '1900-01-01' ? '미정' : projectList[i].project_endDate) + "</td>");
+                	newRow.append("<td>" + (projectList[i].project_endDate === null ? '미정' : projectList[i].project_endDate) + "</td>");
                 	//newRow.append("<td><input type='date' name='pushdate' value='" + projectList[i].pushDate + "')></td>");
                 	//newRow.append("<td><input type='date' name='pulldate' value='" + projectList[i].pullDate + "')></td>");
                 	$("#projectTable tbody").append(newRow);

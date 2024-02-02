@@ -13,7 +13,7 @@
     
 <select id="getmemberListM" resultType="com.jmh.dto.MemberDto" parameterType="list">
 /*getmemberListM*/
-SELECT 
+SELECT
 		MEMBER_ID ,
 		MEMBER_NAME ,
 		NVL(
@@ -129,8 +129,7 @@ ORDER BY
 	 <select id="getFilterd_search_mem_List" resultType="com.jmh.dto.MemberDto">
 	 /* getFilterd_search_mem_List */
 		SELECT
-		 MEMBER_NO  
-		  ,MEMBER_ID
+		  MEMBER_ID
 		  ,MEMBER_NAME 
 		  ,CASE
             WHEN MEMBER_SEX = 'D011' THEN '남자'
@@ -178,9 +177,7 @@ ORDER BY
 		FROM 
 		(
 			SELECT
-		   		MEMBER_NO
-		      	,MEMBER_ID
-		  		,MEMBER_NAME
+		  		MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
 		  		,MEMBER_DEPARTMENT
@@ -189,7 +186,7 @@ ORDER BY
 		  		,MEMBER_SKILL_DB
 		  		,MEMBER_STARTDATE
 		  		,MEMBER_STATUS
-		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				MEMBER
@@ -201,8 +198,7 @@ ORDER BY
 	<select id="getFilterd_mem_List" resultType="com.jmh.dto.MemberDto">
 	/*getFilterd_mem_List*/
 		SELECT
-		 MEMBER_NO  
-		  ,MEMBER_ID
+		  MEMBER_ID
 		  ,MEMBER_NAME 
 		  ,CASE
             WHEN MEMBER_SEX = 'D011' THEN '남자'
@@ -249,8 +245,7 @@ ORDER BY
 		FROM
 		(
 			SELECT
-		   		MEMBER_NO
-		      	,MEMBER_ID
+		      	MEMBER_ID
 		  		,MEMBER_NAME
 		  		,MEMBER_SEX
 		  		,MEMBER_POSITION
@@ -260,7 +255,7 @@ ORDER BY
 		  		,MEMBER_SKILL_DB
 		  		,MEMBER_STARTDATE
 		  		,MEMBER_STATUS
-		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_NO DESC) AS NUMROW
+		      	,ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW
 		      	,COUNT(*) OVER() AS TOTAL_CNT
 			FROM
 				MEMBER
@@ -528,21 +523,16 @@ INTO
 		  		) 
 VALUES 
 		(
-			(
-				SELECT 
-		  				TO_NUMBER(NVL(MAX(MEMBER_ID), 00000000))+ 1 
-		  		FROM 
-		  				MEMBER
-		  	)	
-		  		,#{member_Pw}
-		  		,#{member_Name}
-		  		,#{member_Sex}
-		  		,#{member_Position}
-		  		,#{member_Department}
-		  		,#{member_Tel}
-		  		,#{member_Skill_Language}
-		  		,#{member_Skill_DB}
-		  		,#{member_startDate}
+		  		#{member_Id},
+    			#{member_Pw},
+    			#{member_Name},
+    			#{member_Sex},
+    			#{member_Position},
+    			#{member_Department},
+    			#{member_Tel},
+    			#{member_Skill_Language},
+    			#{member_Skill_DB},
+    			#{member_startDate}
 		 )
 </insert>
 	
@@ -747,7 +737,7 @@ IN
 </foreach>
 </delete>
 	
-<select id="getmemberprojectList" resultType="com.jmh.dto.ProjectDto" parameterType="integer">
+<select id="getmemberprojectList" resultType="map" parameterType="int">
 SELECT
    		P.PROJECT_ID,
    		P.PROJECT_NAME,

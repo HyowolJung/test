@@ -113,8 +113,8 @@ table {
 				<!-- <td><input type="radio"></td> -->
 				<td style="display: none">${memberprojectList.project_Id }</td>
 				<td>${memberprojectList.project_Name }</td>
-				<td>${memberprojectList.pushDate}</td>
-				<td>${memberprojectList.pullDate} </td>
+				<td>${memberprojectList.pushDate == null ? '미정' : memberprojectList.pushDate}</td>
+				<td>${memberprojectList.pullDate == null ? '미정' : memberprojectList.pullDate} </td>
 			</tr>
 		</c:forEach>
 	</c:otherwise>

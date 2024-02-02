@@ -128,24 +128,21 @@ public class PopUpController {
 				return "";
 			}
 		}
+		
+		if(check == 2) {
+			System.err.println("check가 2 입니다.");
+			int insertCnt = memberService.projectDetailInsert(resultMap);
+			
+			if(insertCnt > 0) {
+				System.out.println("등록성공");
+				return "popup/popMember";
+			}else {
+				System.out.println("실패");
+				return "";
+			}
+		}
 		return "";
 	}
-	
-//	if(selectedRowData.getCheck() == 2) {
-//	System.out.println("m 진입");
-//	System.out.println("selectedRowData : " + selectedRowData.getProject_Name());
-//	System.out.println("selectedRowData : " + selectedRowData.getPushDate());
-//	System.out.println("selectedRowData : " + selectedRowData.getPullDate());
-//	int insertCnt = memberService.projectDetailInsert(selectedRowData);
-//	
-//	if(insertCnt > 0) {
-//		System.out.println("등록성공");
-//		return "popup/popMember";
-//	}else {
-//		System.out.println("실패");
-//		return "";
-//	}
-//}
 	
 	@GetMapping("/popMember")
 	public String popMember(Model model, Criteria cri,
@@ -184,14 +181,15 @@ public class PopUpController {
 //		}
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() != null && cri.getSearch_endDate() != null) {	
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			List<MemberDto> getFilterd_mem_List = memberService.getFilterd_mem_List(cri, project_Id);
+			System.out.println("getFilterd_mem_List : " + getFilterd_mem_List);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", getFilterd_mem_List);
-			System.err.println("popMemberpopMemberpopMember");
+			//System.err.println("popMemberpopMemberpopMember");
 			return resultMap;
 		}
 		

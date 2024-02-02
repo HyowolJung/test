@@ -454,7 +454,7 @@ $("#modifyButton").click(function() {
    	        selectedProjectData.push(data);
    	    });    	
     	
-        console.log("여기서부터 해야함 : " + selectedProjectData);
+        //console.log("여기서부터 해야함 : " + selectedProjectData);
         $.ajax({
     			type : 'POST',
     			url: '/member/memberModify2',

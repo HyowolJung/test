@@ -1,5 +1,6 @@
 package com.jmh.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -66,14 +67,14 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.projectModify(modifyDatas);
 	}
 
-	@Override
-	public int deleteProject(int project_Id) {
-		// TODO Auto-generated method stub
-		return projectMapper.deleteProject(project_Id);
-	}
+//	@Override
+//	public int deleteProject(int project_Id) {
+//		// TODO Auto-generated method stub
+//		return projectMapper.deleteProject(project_Id);
+//	}
 
 	@Override
-	public List<Map<String, Object>> getprojectmemberList(int project_Id) {
+	public List<MemberDto> getprojectmemberList(int project_Id) {
 		// TODO Auto-generated method stub
 		return projectMapper.getprojectmemberList(project_Id);
 	}
@@ -91,15 +92,27 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Override
-	public int projectModify2(ProjectDetailDto selectedMemberData) {
+	public int projectModify2(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return projectMapper.projectModify2(selectedMemberData);
+		return projectMapper.projectModify2(resultMap);
 	}
 
 	@Override
 	public int projectDelete2(ProjectDetailDto selectedMemberData) {
 		// TODO Auto-generated method stub
 		return projectMapper.projectDelete2(selectedMemberData);
+	}
+
+	@Override
+	public int deleteProject(List<String> checkList) {
+		// TODO Auto-generated method stub
+		return projectMapper.deleteProject(checkList);
+	}
+
+	@Override
+	public ArrayList<String> deleteProjectCheck(List<String> checkList) {
+		// TODO Auto-generated method stub
+		return projectMapper.deleteProjectCheck(checkList);
 	}
 
 //	@Override
