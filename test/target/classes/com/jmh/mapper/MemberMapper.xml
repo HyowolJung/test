@@ -738,11 +738,12 @@ IN
 </delete>
 	
 <select id="getmemberprojectList" resultType="map" parameterType="int">
+/*getmemberprojectList*/
 SELECT
    		P.PROJECT_ID,
    		P.PROJECT_NAME,
-   		PD.PUSHDATE,
-   		PD.PULLDATE
+   		TO_CHAR(PUSHDATE, 'YYYY-MM-DD') AS PUSHDATE,
+   		TO_CHAR(PULLDATE, 'YYYY-MM-DD') AS PULLDATE
 FROM 
 		PROJECT P
 JOIN

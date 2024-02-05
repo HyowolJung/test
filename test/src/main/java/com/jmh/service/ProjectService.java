@@ -48,7 +48,7 @@ public interface ProjectService {
 
 	public int projectModify2(Map<String, Object> resultMap);
 
-	public int projectDelete2(ProjectDetailDto selectedMemberData);
+	public int projectDelete2(Map<String, Object> resultMap);
 	
 	
 	

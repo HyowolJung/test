@@ -27,14 +27,14 @@ public class MainController {
 	
 	@GetMapping("/WellCome")
 	public String wellCome(HttpSession session, Model model) {
-		//model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
+		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
 		return "/common/WellCome";
 	}
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model) {
-		//model.addAttribute("member_Department" , session.getAttribute("member_Department"));
-		model.addAttribute("member_Department" , "인사부");
+		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
+		//model.addAttribute("member_Department" , "인사부");
 		return "/main";
 	}
 	
@@ -91,7 +91,7 @@ public class MainController {
 	}
 	
 	@GetMapping("/logout")
-	public String memberLogout( HttpServletRequest request) {
+	public String memberLogout(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		System.out.println("logout)session : " + session);

@@ -158,6 +158,7 @@ public class MemberController {
 	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo, ProjectDto projectDto) { /* , @RequestParam int pageNo */
 		//System.out.println("수정 화면 작동");
 		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("memberprojectList : " + memberprojectList);
 		model.addAttribute("memberprojectList", memberprojectList);
 		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
 		model.addAttribute("pageNo" , pageNo);
@@ -286,13 +287,14 @@ public class MemberController {
 		
 	//5. 멤버 상세화면
 	@GetMapping("/memberRead")
-	public List<ProjectDto> memberRead(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
-		List<ProjectDto> member_projectList = memberService.getmemberprojectList(member_Id);
+	public String memberRead(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
+		List<ProjectDto> projectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("projectList : " + projectList);
 		System.out.println("pageNo : " + pageNo);
-		model.addAttribute("pageNo", pageNo);
-		model.addAttribute("memberprojectList" , member_projectList);
-		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
-		return member_projectList;
+		model.addAttribute("pageNo" , pageNo);
+		model.addAttribute("projectList" , projectList);
+		model.addAttribute("memberList" , memberService.getModifyList(member_Id));
+		return "member/memberRead";
 	}
 	
 	@PostMapping("/memberModify2")
@@ -323,10 +325,10 @@ public class MemberController {
 		int deleteCnt = memberService.memberDelete2(resultMap);
 		
 		if(deleteCnt > 0) {
-			System.out.println("수정성공");
+			System.out.println("삭제성공");
 			result = true;
 		}else if(deleteCnt < 0) {
-			System.out.println("수정실패");
+			System.out.println("삭제실패");
 			result = false;
 		}
 		

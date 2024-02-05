@@ -7,41 +7,6 @@
 <head>
 <meta charset="UTF-8">
 <title>프로젝트 수정</title>
-<!-- <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    table, th, td {
-        border: 1px solid #ddd;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-	
-	button {
-        padding: 10px;
-        cursor: pointer;
-        margin-bottom: 10px;
-    }
-	
-    input[type="radio"] {
-        margin-left: 5px;
-    }
-    
-    .centered {
-        text-align: center;
-    }
-</style> -->
 <style>
     table {
         border-collapse: collapse;
@@ -165,15 +130,8 @@
       		<td><input type="checkbox"> </td>
         	<td>${projectmember['MEMBER_ID']}</td>
         	<td>${projectmember['MEMBER_NAME']}</td>
-        	<%-- <td>${projectmember['MEMBER_POSITION'] == null ? '미정' : projectmember['MEMBER_POSITION']}</td>
-        	<td>${projectmember['MEMBER_TEL']}</td>
-        	<td>${projectmember['MEMBER_SKILL_LANGUAGE'] == null ? '미정' : projectmember['MEMBER_SKILL_LANGUAGE']}</td>
-        	<td>${projectmember['MEMBER_SKILL_DB'] == null ? '미정' : projectmember['MEMBER_SKILL_DB']}</td> --%>
-        	<%-- <td><fmt:formatDate value="${projectmember['PUSHDATE']}" pattern="yyyy-MM-dd" /></td>
-        	<td><fmt:formatDate value="${projectmember['PULLDATE']}" pattern="yyyy-MM-dd" /></td> --%>
-        	
-			<td><input type="date" value="${projectmember['PUSHDATE']}"></td>
-          	<td><input type="date" value="${projectmember['PULLDATE']}"></td>	
+			<td><input type="date"  id ="PUSHDATE" value="${projectmember['PUSHDATE']}"></td>
+          	<td><input type="date"  id="PULLDATE" value="${projectmember['PULLDATE']}"></td>	
     	</tr>
       </c:forEach>
     </c:otherwise>
@@ -310,10 +268,10 @@
 		
 		$("#modifyButton2").click(function() {
 			var selectedMemberData = [];    	
-	    	 $("#pro_mem_List tbody input[type='checkbox']:checked").each(function() {
+			$("#pro_mem_List tbody input[type='checkbox']:checked").each(function() {
 				console.log("선택되었다.");
-	    			
-	    		var tr = $(this).closest("tr");
+
+				var tr = $(this).closest("tr");
 	    	    // 행의 데이터 추출
 				var project_Id = $("#project_Id").val();
 	    	    var member_Id = tr.find("td:nth-child(2)").text().trim(); 
@@ -321,12 +279,78 @@
 	   	        // var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
 	   	        var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
 	   	        var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
-	   	        console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
+	   	        //console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
+	   	        
+	   	     	var project_startDate = $("#project_startDate").val();
+				var project_endDate = $("#project_endDate").val();
+	   	        alert("project_startDate : " + project_startDate);
+	   	        alert("project_endDate : " + project_endDate);
+	   	     	
+	   	        if(!pullDate.length == 0){
+	   				if (pullDate < pushDate) {
+	   		        	alert("철수일자는 투입일자보다 이전일 수 없습니다.");
+	   		        	return;
+	   				}
+	   				
+	   				if($("#project_startDate").val() > pullDate) {
+						alert("철수일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+	   				}
+	   				
+	   				if($("#project_startDate").val() > pushDate) {
+						alert("투입일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+					}
+	   				
+	   				if($("#project_endDate").val() > pushDate) {
+						alert("투입일은 프로젝트 종료일보다 먼저일 수 없습니다.");
+						return;
+					}
+	   				
+	   	    	}
+	   	        
+	   	     	if(!pushDate.length == 0){
+	   	     		if (pullDate < pushDate) {
+			        	alert("철수일자는 투입일자보다 이전일 수 없습니다.");
+			        	return;
+					}
+	   	     		
+	   	     		if($("#project_startDate").val() > pushDate) {
+						alert("투입일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+					}
+	   	     		
+	   	     		if($("#project_startDate").val() > pullDate) {
+						alert("철수일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+					}
+	   	     	}
+	   	     	
+	   	     	if(!$("#project_startDate").val().length == 0){
+		     		if (pullDate < pushDate) {
+			        	alert("투입일자는 프로젝트 시작일보다 이전일 수 없습니다.");
+			        	return;
+					}
+		     		
+		     		if($("#project_startDate").val() > pushDate) {
+						alert("투입일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+					}
+		     		
+		     		if($("#project_startDate").val() > pullDate) {
+						alert("철수일은 프로젝트 시작일보다 먼저일 수 없습니다.");
+						return;
+					}
+		     	}
+	   	        
+	   	     	if(!selectedMemberData){
+					alert("수정하고 싶은 데이터의 체크박스를 선택해주세요.");
+	   	     	}
+	   	     	
 	   	        data = {
 	   	        	project_Id : project_Id,	   	        		
 	   	    		member_Id : tr.find("td:nth-child(2)").text().trim(),        		
 	   	    		member_Name: tr.find("td:nth-child(3)").text().trim(),
-	   	           	//projectName: tr.find("td:nth-child(3)").text().trim(),
 	   	           	pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
 	   	           	pullDate: tr.find("td:nth-child(5) input[type='date']").val()
 	   	        };
@@ -371,6 +395,17 @@
 	    }); //$("#modifyButton2").click(function() EndPoint
 	    
 	    $("#removeButton2").click(function() {
+	    	var selectedMemberData = [];    	
+			$("#pro_mem_List tbody input[type='checkbox']:checked").each(function() {	    	
+				var tr = $(this).closest("tr");
+				var project_Id = $("#project_Id").val();
+				data = {
+		   	        project_Id : project_Id,	   	        		
+		   	    	member_Id : tr.find("td:nth-child(2)").text().trim()
+				}
+				selectedMemberData.push(data);
+			});	
+			//alert("selectedProjectData : " + selectedProjectData);
 	    	$.ajax({
 				type : 'POST',
 				url: '/project/projectDelete2',
@@ -384,10 +419,9 @@
 					if(result = false){
 						alert("삭제 실패");
 					}
-			        
 			    }
 	        });	//ajax EndPoint
-	    });		
+	    });	//$("#removeButton2").click(function() {	
 	    		
 		/* $("#push").click(function() {	//1
 			var project_Id = $("#project_Id").val();

@@ -246,8 +246,12 @@ $(document).ready(function() {
 			data: JSON.stringify(selectedRowData),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("추가 성공");
-				window.location.reload();
+				//window.location.reload();
 				//location.href = "/popup/projectInmember?pageNo=1";
+				if (window.opener) {
+            		window.opener.location.reload(); // 부모 창 새로고침
+        		}
+				window.close();
 			}, 
 			error : function(request, status, error) { // 결과 에러 콜백함수        
 				alert("등록 실패");

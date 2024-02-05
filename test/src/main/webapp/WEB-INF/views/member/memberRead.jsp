@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +21,7 @@ table {
 
     th, td {
         padding: 8px;
-        text-align: left;
+        text-align: center;
     }
 
     th {
@@ -37,14 +38,14 @@ table {
         margin-left: 5px;
     }
 
-    .centered {
+    .center {
         text-align: center;
     }
 </style>
 </head>
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<div class="centered">
+<div class="center">
 멤버 상세정보
 <br>
 <br>
@@ -84,7 +85,7 @@ table {
 <button type="button" id="back">뒤로 가기</button>
 </div>
 <br><br>
-<div class="centered">
+<div class="center">
 참여중인 프로젝트
 <br>
 <br>
@@ -92,7 +93,7 @@ table {
 <thead>
 	<tr>
 		<!-- <th>ㅁ</th> -->
-		<th style="display: none">번호(프로젝트)</th>
+		<th>번호(프로젝트)</th> <!-- style="display: none" -->
 		<th>이름(프로젝트)</th>
 		<!-- <th>언어</th>
 		<th>데이터베이스</th> -->
@@ -101,24 +102,27 @@ table {
 	</tr>
 </thead>
 <tbody>
-	<c:choose>
-	<c:when test="${empty memberprojectList}">
+<c:choose>
+	<c:when test="${empty projectList}">
       <tr>
-        <td colspan="5" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
+        <td colspan="4" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
       </tr>
     </c:when>
     <c:otherwise>
-		<c:forEach var="memberprojectList" items="${memberprojectList}">
-			<tr>
-				<!-- <td><input type="radio"></td> -->
-				<td style="display: none">${memberprojectList.project_Id }</td>
-				<td>${memberprojectList.project_Name }</td>
-				<td>${memberprojectList.pushDate == null ? '미정' : memberprojectList.pushDate}</td>
-				<td>${memberprojectList.pullDate == null ? '미정' : memberprojectList.pullDate} </td>
-			</tr>
+		<c:forEach var="project" items="${projectList}">
+    		<tr>
+        		<!-- <td><input type="radio"></td> -->
+        		<td>${project['PROJECT_ID']}</td> <!-- style="display: none" -->
+        		<td>${project['PROJECT_NAME']}</td>
+        		<td>${project['PUSHDATE'] == null ? '미정' : project['PUSHDATE']}</td>
+        		<td>${project['PULLDATE'] == null ? '미정' : project['PULLDATE']}</td>
+    			<%-- <td><fmt:formatDate value="${project['PUSHDATE']}" pattern="yyyy-MM-dd" /></td>
+    			<td><fmt:formatDate value="${project['PULLDATE']}" pattern="yyyy-MM-dd" /></td> --%>
+        		<%-- <td><fmt:formatDate value="${project['PULLDATE']}" pattern="yyyy-MM-dd" /></td>	 --%>
+    		</tr>
 		</c:forEach>
 	</c:otherwise>
-	</c:choose>
+</c:choose>
 </tbody>
 </table>
 </div>		

@@ -258,19 +258,20 @@ public class ProjectController {
 	}
 	
 	@PostMapping("/projectDelete2")
-	public ResponseEntity<Boolean> memberDelete2(@RequestBody ProjectDetailDto selectedMemberData) {
-		boolean result = false;
-		System.out.println("selectedMemberData : " + selectedMemberData.getProject_Id());
-		System.out.println("selectedMemberData : " + selectedMemberData.getPullDate());
-		System.out.println("selectedMemberData : " + selectedMemberData.getPushDate());
+	public ResponseEntity<Boolean> projectDelete2(@RequestBody List<ProjectDetailDto> selectedMemberData) {
+		System.out.println("selectedMemberData : " + selectedMemberData);
 		
-		int deleteCnt = projectService.projectDelete2(selectedMemberData);
+		Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("selectedMemberData", selectedMemberData);
+		System.out.println("resultMap : " + resultMap);
+		boolean result = false;
+		int deleteCnt = projectService.projectDelete2(resultMap);
 		
 		if(deleteCnt > 0) {
-			System.out.println("수정성공");
+			System.out.println("삭제성공");
 			result = true;
 		}else if(deleteCnt < 0) {
-			System.out.println("수정실패");
+			System.out.println("삭제실패");
 			result = false;
 		}
 		

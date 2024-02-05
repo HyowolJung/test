@@ -388,7 +388,8 @@ VALUES
 	</foreach>
 </update>
 
-<delete id="projectDelete2" parameterType="int">
+<!-- <delete id="projectDelete2" parameterType="int">
+
 		DELETE 
 		FROM 
 			PROJECT_DETAIL
@@ -396,7 +397,19 @@ VALUES
 			MEMBER_ID = #{member_Id}
 		AND
 			PROJECT_ID = #{project_Id}
-	</delete>
+			
+</delete> -->
+<delete id="projectDelete2" parameterType="map">
+    DELETE 
+    FROM 
+    	PROJECT_DETAIL
+    WHERE 
+    	(MEMBER_ID, PROJECT_ID) 
+    IN
+    <foreach item="item" collection="selectedMemberData" open="(" separator="," close=")">
+        (#{item.member_Id}, #{item.project_Id})
+    </foreach>
+</delete>
 
 <select id="getprojectmemberList" resultType="map" parameterType="int">
 	SELECT 
@@ -425,8 +438,11 @@ VALUES
             WHEN MEMBER_SKILL_DB = 'S022' THEN 'MYSQL'
             WHEN MEMBER_SKILL_DB = 'S023' THEN 'POSTGRESQL'
           END AS MEMBER_SKILL_DB
-          ,PD.PUSHDATE
-          ,PD.PULLDATE
+           ,TO_CHAR(PD.PUSHDATE, 'YYYY-MM-DD') AS PUSHDATE
+    		,TO_CHAR(PD.PULLDATE, 'YYYY-MM-DD') AS PULLDATE
+          <!-- ,PD.PUSHDATE
+          
+          ,PD.PULLDATE -->
 	FROM 
     	MEMBER M
 	JOIN

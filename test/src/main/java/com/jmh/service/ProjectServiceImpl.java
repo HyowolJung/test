@@ -98,9 +98,9 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Override
-	public int projectDelete2(ProjectDetailDto selectedMemberData) {
+	public int projectDelete2(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
-		return projectMapper.projectDelete2(selectedMemberData);
+		return projectMapper.projectDelete2(resultMap);
 	}
 
 	@Override

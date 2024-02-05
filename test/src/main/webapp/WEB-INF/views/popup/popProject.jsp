@@ -256,7 +256,7 @@ $('#insert').click(function() {
         };
         selectedRowData.push(selectedData);
     });
-
+	//alert("selectedData : " + selectedData);
     $.ajax({
 		type : 'POST',
 		url: '/popup/projectDetailInsert',
