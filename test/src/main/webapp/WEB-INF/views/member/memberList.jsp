@@ -81,6 +81,9 @@
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div>
+	<%-- dd1 : ${pageDto.cri.search_startDate}<br> --%>
+	<%-- dd2 : ${pageDto.search_startDate}<br> --%>
+	<%-- dd3 : ${search_startDate}<br> --%>
 	<input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"><!-- type="hidden" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
@@ -89,10 +92,12 @@
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
     <label>입사일</label>
-	<input type="date" name="searchDate" ${pageDto.cri.search_startDate == 'search_startDate' ? 'selected' : ''} id = "search_startDate" onblur="validateDate1()"> 
+	
+	<input type="date" name="searchDate" value="${pageDto.cri.search_startDate}" id="search_startDate" onblur="validateDate1()">
 	~
 	<label>퇴사일</label>
-	<input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()">
+	<input type="date" name="searchDate" value="${pageDto.cri.search_endDate}" id="search_endDate" onblur="validateDate2()">
+	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
 	<button id="searchButton">조회</button>
 	<button id="resetButton">초기화</button>
 </div>
@@ -144,11 +149,11 @@ $(document).ready(function() {
 	
 	//1. 조회(#searchButton)버튼 클릭 했을 때
 	$("#searchButton").click(function(){
-		let search_startDate = $("#search_startDate").val();
-		let search_endDate = $("#search_endDate").val();
-		let searchField = document.getElementById("searchField").value; 
-		let searchWord = $("#searchWord").val();
-		let pageNo = document.getElementById("pageNo").value; 
+		var search_startDate = $("#search_startDate").val();
+		var search_endDate = $("#search_endDate").val();
+		var searchField = document.getElementById("searchField").value; 
+		var searchWord = $("#searchWord").val();
+		var pageNo = document.getElementById("pageNo").value; 
 		
 		if (search_startDate && search_endDate && search_startDate > search_endDate) {
 		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
@@ -618,21 +623,29 @@ function validateDate2() {
 }
 
 function go(pageNo){
-	let searchField = document.getElementById("searchField").value; 
-	let searchWord = document.getElementById("searchWord").value;
+	alert("페이지 버튼 클릭");
+	var searchField = document.getElementById("searchField").value; 
+	var searchWord = document.getElementById("searchWord").value;
 	//var pageNo = document.getElementById("pageNo").value; 
+	var search_startDate = document.getElementById("search_startDate").value;
+	var search_endDate = document.getElementById("search_endDate").value;
+	//alert("search_startDate : " + search_startDate);
+	//alert("search_endDate : " + search_endDate);
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,
-			 "searchField" : searchField
+			 "searchField" : searchField,
+			 "search_startDate" : search_startDate,
+			 "search_endDate" : search_endDate
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수    
 			if (searchWord.trim() !== "") {
 			    //console.log("검색어가 있습니다.");
-			    location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			    //location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+				location.href = "/member/memberList?pageNo=" + pageNo;
 			} else {
 			    //console.log("검색어가 없습니다.");
 			    location.href = "/member/memberList?pageNo=" + pageNo;

@@ -30,7 +30,7 @@
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -384,7 +384,10 @@ function validateDate2() {
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = document.getElementById("searchWord").value;
+	let search_startDate = document.getElementById("search_startDate").value;
+	let search_endDate = document.getElementById("search_endDate").value;
 	//var pageNo = document.getElementById("pageNo").value; 
+	alert("search_startDate  : " + search_startDate);
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popProject',
@@ -392,6 +395,8 @@ function go(pageNo){
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,
 			 "searchField" : searchField,
+			 "search_endDate" : search_endDate,
+			 "search_startDate" : search_startDate
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수    
 			if (searchWord.trim() !== "") {

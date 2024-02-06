@@ -66,6 +66,9 @@ public class MemberController {
 	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
+		System.err.println("cri.getSearchWord() : " + cri.getSearchWord());
+		System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
+		System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 			System.err.println("검색어 없는 조회");
 			
@@ -88,10 +91,16 @@ public class MemberController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
-			System.out.println("POST O) searchWord : " + cri.getSearchWord());
-			System.out.println("POST O) getSearch_startDate : " + cri.getSearch_startDate());
-			System.out.println("POST O) getSearch_endDate : " + cri.getSearch_endDate());
-			System.out.println("POST O) totalCnt : " + totalCnt);
+			//System.err.println("pageDto.cri : " + pageDto.cri);
+			//System.err.println("memberList : " + memberList);
+			//System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
+			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
+			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
+			//System.out.println("POST O) totalCnt : " + totalCnt);
+			ModelAndView mav = new ModelAndView();
+			mav.setViewName("/member/memberList");
+			mav.addObject("pageDto", pageDto);
+			//System.err.println("mav : " + mav);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
 			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
@@ -160,8 +169,8 @@ public class MemberController {
 		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
 		System.out.println("memberprojectList : " + memberprojectList);
 		model.addAttribute("memberprojectList", memberprojectList);
-		model.addAttribute("memberList" ,memberService.getModifyList(member_Id));
-		model.addAttribute("pageNo" , pageNo);
+		model.addAttribute("memberList", memberService.getModifyList(member_Id));
+		model.addAttribute("pageNo", pageNo);
 		return "member/memberModify";
 	}
 	

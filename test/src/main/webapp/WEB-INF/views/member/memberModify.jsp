@@ -452,32 +452,16 @@ $("#modifyButton").click(function() {
 					alert("철수일은 회원 입사일보다 먼저일 수 없습니다.");
 					return;
    				}
-   				
-   				if($("#member_startDate").val() > pushDate) {
-					alert("투입일은 회원 입사일보다 먼저일 수 없습니다.");
-					return;
-				}
-   				
-   				if($("#member_endDate").val() > pushDate) {
-					alert("투입일은 회원 퇴사일보다 먼저일 수 없습니다.");
-					return;
-				}
-   				
    	    	}
    	        
    	     	if(!pushDate.length == 0){
    	     		if (pullDate < pushDate) {
-		        	alert("투입일자는 철수일자보다 이전일 수 없습니다.");
+		        	alert("투입일은 철수일보다 이전일 수 없습니다.");
 		        	return;
 				}
    	     		
    	     		if($("#member_startDate").val() > pushDate) {
 					alert("투입일은 회원 입사일보다 먼저일 수 없습니다.");
-					return;
-				}
-   	     		
-   	     		if($("#member_startDate").val() > pullDate) {
-					alert("철수일은 회원 입사일보다 먼저일 수 없습니다.");
 					return;
 				}
    	     	}
