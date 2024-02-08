@@ -12,7 +12,7 @@ public class Login extends HandlerInterceptorAdapter{
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         HttpSession session = request.getSession();
-        System.err.println("interCepter)session.getAttribute() : " + session.getAttribute("member_Id"));
+        //System.err.println("interCepter)session.getAttribute() : " + session.getAttribute("member_Id"));
         if (session.getAttribute("member_Id") == null) {
             response.sendRedirect("/login"); // 로그인 페이지로 리다이렉트
             return false; // 컨트롤러 메소드 실행 중지

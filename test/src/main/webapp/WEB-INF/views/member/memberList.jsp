@@ -85,7 +85,7 @@
 	<%-- dd2 : ${pageDto.search_startDate}<br> --%>
 	<%-- dd3 : ${search_startDate}<br> --%>
 	<input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"><!-- type="hidden" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden">
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
 	  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>
@@ -624,13 +624,14 @@ function validateDate2() {
 
 function go(pageNo){
 	alert("페이지 버튼 클릭");
-	var searchField = document.getElementById("searchField").value; 
+	var searchField1 = $("searchField");
+	var searchField = document.getElementById("searchField").value;
+	var searchWord1 = $("searchWord");
 	var searchWord = document.getElementById("searchWord").value;
-	//var pageNo = document.getElementById("pageNo").value; 
+	var search_startDate1 = $("search_startDate");
 	var search_startDate = document.getElementById("search_startDate").value;
+	var search_endDate1 = $("search_endDate");
 	var search_endDate = document.getElementById("search_endDate").value;
-	//alert("search_startDate : " + search_startDate);
-	//alert("search_endDate : " + search_endDate);
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
@@ -641,15 +642,26 @@ function go(pageNo){
 			 "search_startDate" : search_startDate,
 			 "search_endDate" : search_endDate
 		},
-		success : function(resultMap) { // 결과 성공 콜백함수    
-			if (searchWord.trim() !== "") {
-			    //console.log("검색어가 있습니다.");
+		success : function(resultMap) { // 결과 성공 콜백함수
+			//location.href = "/member/memberList?pageNo=" + pageNo;
+			location.reload(true);
+			searchField1.val(searchField);
+			searchWord1.val(searchWord);
+			search_startDate1.val(search_startDate);
+			search_endDate1.val(search_endDate);
+			/* if (searchWord.trim() !== "") {
+				location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
+				if(search_startDate != null){
+					location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord + "&search_startDate" + search_startDate;
+				}
+				
+				//console.log("검색어가 있습니다.");
 			    //location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-				location.href = "/member/memberList?pageNo=" + pageNo;
+				//location.href = "/member/memberList?pageNo=" + pageNo;
 			} else {
 			    //console.log("검색어가 없습니다.");
-			    location.href = "/member/memberList?pageNo=" + pageNo;
-			}
+			    //location.href = "/member/memberList?pageNo=" + pageNo;
+			} */
 			
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        

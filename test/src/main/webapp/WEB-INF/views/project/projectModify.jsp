@@ -238,7 +238,7 @@
 		});
 		
 		var checkboxClicked = false; // 라디오 버튼 클릭 상태 추적 변수
-		var selectedMemberData = {};
+		var selectedMemberData = [];
 		
 		 /* $("#pro_mem_List tbody").on("click", "input[type='checkbox']", function() {
 			radioClicked = true; // 라디오 버튼이 클릭되었다고 표시

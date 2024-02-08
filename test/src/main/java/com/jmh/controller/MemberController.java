@@ -52,7 +52,14 @@ public class MemberController {
 	
 	//1. 조회(페이징 정보)
 	@GetMapping("/memberList")	//parameter 와 argument의 차이
-	public String memberList(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
+	public String memberList(Model model, Criteria cri, HttpSession session,
+			@RequestParam int pageNo, 
+			@RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "searchField", required = false) String searchField,
+            @RequestParam(value = "search_startDate", required = false) String search_startDate,
+            @RequestParam(value = "search_endDate", required = false) String search_endDate) {
+		System.err.println("searchWord : " + searchWord);
+		System.err.println("searchField : " + searchField);
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
@@ -97,9 +104,9 @@ public class MemberController {
 			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
 			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
 			//System.out.println("POST O) totalCnt : " + totalCnt);
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName("/member/memberList");
-			mav.addObject("pageDto", pageDto);
+			//ModelAndView mav = new ModelAndView();
+			//mav.setViewName("/member/memberList");
+			//mav.addObject("pageDto", pageDto);
 			//System.err.println("mav : " + mav);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
