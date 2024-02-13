@@ -81,18 +81,21 @@
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div>
+	<%-- <p>Page Number: ${pageNoPost}</p> --%>
+	<!-- <input id="pageNoPost" name="pageNoPost" > -->
 	<%-- dd1 : ${pageDto.cri.search_startDate}<br> --%>
 	<%-- dd2 : ${pageDto.search_startDate}<br> --%>
 	<%-- dd3 : ${search_startDate}<br> --%>
 	<input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"><!-- type="hidden" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- type="hidden" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- style="display: none" -->
+	<%-- <input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo ? 1 : pageDto.cri.pageNo}"> --%>
+	<%-- <input id="pageNo" name="pageNo" value="${empty pageDto.cri.pageNo ? 1 : pageNoPost}" > --%>
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
 	  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
     <label>입사일</label>
-	
 	<input type="date" name="searchDate" value="${pageDto.cri.search_startDate}" id="search_startDate" onblur="validateDate1()">
 	~
 	<label>퇴사일</label>
@@ -623,15 +626,27 @@ function validateDate2() {
 }
 
 function go(pageNo){
-	alert("페이지 버튼 클릭");
-	var searchField1 = $("searchField");
+	//alert("페이지 버튼 클릭");
 	var searchField = document.getElementById("searchField").value;
-	var searchWord1 = $("searchWord");
 	var searchWord = document.getElementById("searchWord").value;
-	var search_startDate1 = $("search_startDate");
 	var search_startDate = document.getElementById("search_startDate").value;
-	var search_endDate1 = $("search_endDate");
 	var search_endDate = document.getElementById("search_endDate").value;
+	//var pageNoPost1 = $("pageNoPost");
+	//var pageNoPost = document.getElementById("pageNoPost").value;
+	
+	/* $.ajax({
+		type : 'POST',
+		url: '/member/memberListInfo',
+		data: {
+			 "pageNo" : pageNo
+		},
+		success : function(resultMap) {
+			pageNoPost1.val(mav.pageNoPost);
+		},
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("작동 실패");
+		}
+	}); */
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
@@ -644,11 +659,60 @@ function go(pageNo){
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수
 			//location.href = "/member/memberList?pageNo=" + pageNo;
-			location.reload(true);
-			searchField1.val(searchField);
-			searchWord1.val(searchWord);
-			search_startDate1.val(search_startDate);
-			search_endDate1.val(search_endDate);
+			//location.reload(true);
+			$("searchField").val(searchField);
+			$("searchWord").val(searchWord);
+			$("search_startDate").val(search_startDate);
+			$("search_endDate").val(search_endDate);
+			
+			var pageNoPost = resultMap.pageNoPost;
+			$("#pageNoPost").val(pageNoPost);
+			
+			var memberList = resultMap.memberList;
+			var pageDto = resultMap.pageDto;
+			$("#memberTable tbody").empty();
+			
+       		if (memberList && memberList.length > 0) {
+				//console.log("memberList가 있어요");     
+				//alert("조회를 성공했어요.");
+       			for (let i = 0; i < memberList.length; i++) {
+                	var newRow = $("<tr>");
+                	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
+                	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                	newRow.append("<td>" + memberList[i].member_Name + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Position + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Department + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
+                	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
+                	newRow.append("<td>" + (memberList[i].member_endDate === null ? '미정' : memberList[i].member_endDate) + "</td>");
+                	//newRow.append("<td>" + memberList[i].project_Id + "</td>");
+                	$("#memberTable tbody").append(newRow);
+       			}
+       			var pagination = $("#pagination ul");
+       	        pagination.empty();
+
+       	        if (pageDto.prev) {
+       	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+       	        }
+
+       	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+       	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+       	        }
+
+       	        if (pageDto.next) {
+       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+       	        }
+       			
+       		}else{
+       			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+       			//console.log("memberList 가 NULL 이에요.")
+       			$("#memberTable tbody").empty();
+       		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+       		}
+			
 			/* if (searchWord.trim() !== "") {
 				location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
 				if(search_startDate != null){

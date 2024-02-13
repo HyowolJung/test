@@ -444,41 +444,52 @@ $("#modifyButton").click(function() {
    	        
    	     	if(!pullDate.length == 0){
    				if (pullDate < pushDate) {
-   		        	alert("투입일자는 철수일자보다 이전일 수 없습니다.");
+   		        	alert("투입일은 철수일보다 이전일 수 없습니다.1");
    		        	return;
    				}
    				
    				if($("#member_startDate").val() > pullDate) {
-					alert("철수일은 회원 입사일보다 먼저일 수 없습니다.");
+					alert("철수일은 회원 입사일보다 이전일 수 없습니다.1");
 					return;
    				}
    	    	}
    	        
    	     	if(!pushDate.length == 0){
-   	     		if (pullDate < pushDate) {
-		        	alert("투입일은 철수일보다 이전일 수 없습니다.");
+   	     		/* if (pullDate < pushDate) {//12/01 < 12/02
+		        	alert("투입일은 철수일보다 이전일 수 없습니다.2");
 		        	return;
-				}
+				} */
    	     		
    	     		if($("#member_startDate").val() > pushDate) {
-					alert("투입일은 회원 입사일보다 먼저일 수 없습니다.");
+					alert("투입일은 회원 입사일보다 이전일 수 없습니다.2");
 					return;
 				}
    	     	}
    	     	
    	     	if(!$("#member_startDate").val().length == 0){
-	     		if (pullDate < pushDate) {
-		        	alert("투입일자는 철수일자보다 이전일 수 없습니다.");
+	     		/* if (pullDate < pushDate) {
+		        	alert("투입일자는 철수일자보다 이전일 수 없습니다.3");
 		        	return;
-				}
+				} */
 	     		
-	     		if($("#member_startDate").val() > pushDate) {
-					alert("투입일은 회원 입사일보다 먼저일 수 없습니다.");
+	     		if($("#member_startDate").val() > pushDate) { //12/01 > 12/03
+					alert("투입일은 회원 입사일보다 이전일 수 없습니다.3");
 					return;
 				}
 	     		
-	     		if($("#member_startDate").val() > pullDate) {
-					alert("철수일은 회원 입사일보다 먼저일 수 없습니다.");
+	     	}
+   	     	
+   	     	//입사일이 있으면서 철수일이 있을 때 12/01 > 12/02
+   	     	if(!$("#member_startDate").val().length == 0 || !pullDate.length == 0){
+   	     		if($("#member_startDate").val() < pullDate) {
+					alert("철수일은 회원 입사일보다 이전일 수 없습니다.3");
+					return;
+				}
+   	     	}
+   	     	
+   	     	if(!$("#member_endDate").val().length == 0 || !pullDate.length == 0){
+	     		if($("#member_endDate").val() < pushDate) {
+					alert("투입일은 회원 퇴사일보다 이전일 수 없습니다.3");
 					return;
 				}
 	     	}
