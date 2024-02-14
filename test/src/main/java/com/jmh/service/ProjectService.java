@@ -18,6 +18,7 @@ public interface ProjectService {
 	public List<ProjectDto> getProjectList(Criteria cri);
 	
 	//1. 조회(페이지 번호 출력에 필요한 총 게시물 갯수)	
+	public int getTotalCntPop(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 	public int getTotalCnt(Criteria cri);
 	
 	//1. 조회(검색어 O)

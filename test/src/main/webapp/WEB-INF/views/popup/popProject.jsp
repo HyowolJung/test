@@ -81,7 +81,7 @@
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
 <div>
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"><!-- style="display: none"  -->
 	프로젝트명 : <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 		<option selected>고객사</option>
@@ -100,8 +100,8 @@
 	<button id="insert">추가</button>	
 </div>
 
-<input type="text" id="result_member_Id" readonly  style="display: none" /><!-- style="display: none" -->
-<input type="text" id="result_member_Name" readonly style="display: none" /><!-- style="display: none" -->
+<input type="text" id="result_member_Id" readonly  /><!-- style="display: none" -->
+<input type="text" id="result_member_Name" readonly /><!-- style="display: none" -->
 
 <table border="1" id="projectTable">
 	<thead>
@@ -386,8 +386,9 @@ function go(pageNo){
 	let searchWord = document.getElementById("searchWord").value;
 	let search_startDate = document.getElementById("search_startDate").value;
 	let search_endDate = document.getElementById("search_endDate").value;
+	let member_Id = $("#result_member_Id").val();
 	//var pageNo = document.getElementById("pageNo").value; 
-	alert("search_startDate  : " + search_startDate);
+	alert("member_Id  : " + member_Id);
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popProject',
@@ -396,17 +397,55 @@ function go(pageNo){
 			 "searchWord" : searchWord,
 			 "searchField" : searchField,
 			 "search_endDate" : search_endDate,
-			 "search_startDate" : search_startDate
+			 "search_startDate" : search_startDate,
+			 "member_Id" : member_Id
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수    
-			if (searchWord.trim() !== "") {
-			    //console.log("검색어가 있습니다.");
-			    location.href = "/popup/popProject?pageNo=" + pageNo + "&searchWord=" + searchWord;
-			} else {
-			    //console.log("검색어가 없습니다.");
-			    location.href = "/popup/popProject?pageNo=" + pageNo;
-			}
+			$("searchField").val(searchField);
+			$("searchWord").val(searchWord);
+			$("search_startDate").val(search_startDate);
+			$("search_endDate").val(search_endDate);
 			
+			var projectList = resultMap.projectList;
+			var pageDto = resultMap.pageDto;
+			$("#projectTable tbody").empty();
+			alert("조회를 성공했어요.");
+			if (projectList && projectList.length > 0) {
+       			for (let i = 0; i < projectList.length; i++) {
+                	var newRow = $("<tr>");
+                	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
+                	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
+                	newRow.append("<td>" + projectList[i].project_Name + "</td>");
+                	//newRow.append("<td>" + projectList[i].custom_company_id + "</td>");
+                	newRow.append("<td>" + (projectList[i].custom_company_id === null ? '미정' : projectList[i].custom_company_id) + "</td>");
+                	newRow.append("<td>" + projectList[i].project_startDate + "</td>");
+                	newRow.append("<td>" + (projectList[i].project_endDate === null ? '미정' : projectList[i].project_endDate) + "</td>");
+                	//newRow.append("<td><input type='date' name='pushdate' value='" + projectList[i].pushDate + "')></td>");
+                	//newRow.append("<td><input type='date' name='pulldate' value='" + projectList[i].pullDate + "')></td>");
+                	$("#projectTable tbody").append(newRow);
+            	}
+       			
+       			var pagination = $("#pagination ul");
+       	        pagination.empty();
+       	        
+				if (pageDto.prev) {
+       	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+       	        }
+
+       	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+       	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+       	        }
+
+       	        if (pageDto.next) {
+       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+       	        }
+       	     	
+       		}else{
+       			alert("조회는 성공했는데, 결과값이 없는거 같아요.");       			
+       			//console.log("projectList 가 NULL 이에요.")
+       			$("#projectTable tbody").empty();
+       		    $("#projectTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+       		}
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("작동 실패");

@@ -81,15 +81,8 @@
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div>
-	<%-- <p>Page Number: ${pageNoPost}</p> --%>
-	<!-- <input id="pageNoPost" name="pageNoPost" > -->
-	<%-- dd1 : ${pageDto.cri.search_startDate}<br> --%>
-	<%-- dd2 : ${pageDto.search_startDate}<br> --%>
-	<%-- dd3 : ${search_startDate}<br> --%>
 	<input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"><!-- type="hidden" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- style="display: none" -->
-	<%-- <input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo ? 1 : pageDto.cri.pageNo}"> --%>
-	<%-- <input id="pageNo" name="pageNo" value="${empty pageDto.cri.pageNo ? 1 : pageNoPost}" > --%>
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
 	  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>

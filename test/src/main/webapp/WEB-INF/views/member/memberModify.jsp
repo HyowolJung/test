@@ -397,7 +397,7 @@ $("#modifyButton").click(function() {
             	var member_Id = $("#member_Id").val();
             	var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
             
-            	alert("선택된 프로젝트: " + project_Id, member_Id);
+            	//alert("선택된 프로젝트: " + project_Id, member_Id);
             
             	data = {
         			member_Id : $("#member_Id").val(),        		
@@ -481,7 +481,7 @@ $("#modifyButton").click(function() {
    	     	
    	     	//입사일이 있으면서 철수일이 있을 때 12/01 > 12/02
    	     	if(!$("#member_startDate").val().length == 0 || !pullDate.length == 0){
-   	     		if($("#member_startDate").val() < pullDate) {
+   	     		if($("#member_startDate").val() > pullDate) {
 					alert("철수일은 회원 입사일보다 이전일 수 없습니다.3");
 					return;
 				}

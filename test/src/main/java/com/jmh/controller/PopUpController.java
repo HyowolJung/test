@@ -46,6 +46,7 @@ public class PopUpController {
 		int totalCnt = projectService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		//model.addAttribute("member_Id", member_Id);
+		System.err.println("pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
 		model.addAttribute("member_Name", member_Name);
 		return "popup/popProject";	
@@ -64,11 +65,12 @@ public class PopUpController {
 		Map<String, Object> resultMap = new HashMap<>();
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		System.err.println("popProject 분기점 도착");
-		if(cri.getSearchWord().equals("") && cri.getSearchField().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
+		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
 			System.err.println("검색어 없는 조회");
 			int totalCnt = projectService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			//projectList = projectService.getProjectList(cri);
+			System.err.println("pa : " + pageDto.cri.getStartNo());
 			List<ProjectDto> Filterd_pro_List = projectService.getFilterd_pro_List(cri,member_Id); 
 			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
 			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
@@ -81,11 +83,11 @@ public class PopUpController {
 		}
 		
 		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null || cri.getSearchField() != null) {	
+		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {	
 			System.err.println("검색어 있는 조회");
 			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
 			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
-			int totalCnt = projectService.getTotalCnt(cri);
+			int totalCnt = projectService.getTotalCntPop(cri, member_Id);
 			//System.out.println("POST O) totalCnt : " + totalCnt);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			//projectList = projectService.searchProjectList(cri);

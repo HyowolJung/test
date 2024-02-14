@@ -16,6 +16,11 @@ import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
+/*public interface CreateService {
+	public List<BoardVO> insertBoard();
+	public List<MemberVO> createMember();
+}*/
+
 public interface MemberService {
 	//0. 로그인
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);

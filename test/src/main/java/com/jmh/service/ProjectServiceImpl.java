@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +27,17 @@ public class ProjectServiceImpl implements ProjectService{
 	}
 
 	@Override
+	public int getTotalCntPop(@Param("cri") Criteria cri, @Param("member_Id") int member_Id) {
+		// TODO Auto-generated method stub
+		return projectMapper.getTotalCntPop(cri, member_Id);
+	}
+
+	@Override
 	public int getTotalCnt(Criteria cri) {
 		// TODO Auto-generated method stub
 		return projectMapper.getTotalCnt(cri);
 	}
-
+	
 	@Override
 	public List<ProjectDto> searchProjectList(Criteria cri) {
 		// TODO Auto-generated method stub
@@ -114,6 +121,8 @@ public class ProjectServiceImpl implements ProjectService{
 		// TODO Auto-generated method stub
 		return projectMapper.deleteProjectCheck(checkList);
 	}
+
+	
 
 //	@Override
 //	public List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id) {

@@ -43,14 +43,11 @@ public interface ProjectMapper {
 
 	int projectDelete2(Map<String, Object> resultMap);
 
-	
-	
-	
-	
-	
 	int deleteProject(List<String> checkList);
 
 	ArrayList<String> deleteProjectCheck(List<String> checkList);
+
+	int getTotalCntPop(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
 	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 

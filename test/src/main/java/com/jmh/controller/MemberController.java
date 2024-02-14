@@ -51,7 +51,7 @@ public class MemberController {
 	private MemberService memberService;
 	
 	//1. 조회(페이징 정보)
-	@GetMapping("/memberList")	//parameter 와 argument의 차이
+	@GetMapping("/memberList")	//memberList.jsp
 	public String memberList(Model model, Criteria cri, HttpSession session,
 			@RequestParam(value = "pageNo", required = false) int pageNo, 
 			@RequestParam(value = "searchWord", required = false) String searchWord,
@@ -60,6 +60,7 @@ public class MemberController {
             @RequestParam(value = "search_endDate", required = false) String search_endDate) {
 		System.err.println("pageNo : " + pageNo);
 		System.err.println("searchField : " + searchField);
+		pageNo = 1;
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
@@ -67,35 +68,13 @@ public class MemberController {
 		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
 	}
 	
-//	@PostMapping("/memberListInfo")
-//	public ModelAndView memberList(Criteria cri, HttpSession session) {
-//		int pageNoPost = cri.getPageNo();
-//		ModelAndView mav = new ModelAndView();
-//	    mav.setViewName("/member/memberList"); // 뷰의 이름 설정
-//	    mav.addObject("pageNoPost", pageNoPost); // 모델에 데이터 추가
-//	    // 여기서 pageNoPost는 전달하고자 하는 페이지 번호 변수입니다.
-//	    // 이 변수의 값이 무엇인지, 어디서 오는지에 따라 달라질 수 있으므로, 이에 맞게 설정해야 합니다.
-//	    System.err.println("pageNoPostpageNoPostpageNoPost : " + pageNoPost);
-//	    return mav; // ModelAndView 객체 반환
-//	}
-	
-	
 	//1. 조회(사원 정보)
-	@PostMapping("/memberList")
+	@PostMapping("/memberList") //memberList.jsp
 	@ResponseBody
 	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getmemberList(cri); 
 		int pageNoPost = cri.getPageNo();
-		System.err.println("cri.pageNo() : " + cri.getPageNo() + "pageNoPost : " + pageNoPost);
-		System.err.println("cri.getSearch_startDate() : " + cri.getSearch_startDate());
-		System.err.println("cri.getSearch_endDate() : " + cri.getSearch_endDate());
-		
-		//int totalCnt = memberService.getTotalCnt(cri);
-		//PageDto pageDto = new PageDto(cri, totalCnt);
-		//ModelAndView mav = new ModelAndView();
-		//mav.setViewName("/member/memberList");
-		//mav.addObject("pageNoPost", pageNoPost);
 		
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 			System.err.println("검색어 없는 조회");
@@ -126,10 +105,6 @@ public class MemberController {
 			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
 			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
 			//System.out.println("POST O) totalCnt : " + totalCnt);
-			//ModelAndView mav = new ModelAndView();
-			//mav.setViewName("/member/memberList");
-			//mav.addObject("pageDto", pageDto);
-			//System.err.println("mav : " + mav);
 			resultMap.put("pageNoPost", pageNoPost);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
@@ -140,7 +115,7 @@ public class MemberController {
 	}
 	
 	//2. 등록(페이지 이동)
-	@GetMapping("/memberInsert")
+	@GetMapping("/memberInsert") //memberList.jsp
 	public String memberInsert() {
 		return "member/memberInsert";
 	}
@@ -193,7 +168,7 @@ public class MemberController {
 	}
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
-	@GetMapping("/memberModify")
+	@GetMapping("/memberModify") ////memberList.jsp
 	public String modifyMember(@RequestParam("member_Id") int member_Id, Model model, @RequestParam int pageNo, ProjectDto projectDto) { /* , @RequestParam int pageNo */
 		//System.out.println("수정 화면 작동");
 		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);

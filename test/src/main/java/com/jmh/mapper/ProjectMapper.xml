@@ -59,7 +59,7 @@ WHERE
 
 <!-- 1. 조회(검색어 O) -->
 <select id="searchProjectList" resultType="com.jmh.dto.ProjectDto"><!-- parameterType="com.jmh.vo.memberVO" -->
-SELECT
+	SELECT
 	  	PROJECT_ID ,
 	  	NVL(
 	  	CASE
@@ -92,7 +92,6 @@ SELECT
         AS PROJECT_SKILL_DB ,
 	  	PROJECT_STARTDATE ,
 	  	PROJECT_ENDDATE
-	 
 	FROM 
 	(
 	   SELECT
@@ -113,25 +112,66 @@ SELECT
 	WHERE 
 		NUMROW BETWEEN #{startNo} AND #{endNo} <!-- AND MEMBER_NAME = #{searchWord} -->
 </select>
-	<select id="getTotalCnt" resultType="integer"  parameterType="integer">
+<select id="getTotalCnt" resultType="integer"  parameterType="integer">
 		
-		<if test="searchWord == null and search_startDate == null and search_endDate == null">
-		SELECT 
+	<!-- <if test="searchWord == null and search_startDate == null and search_endDate == null"> -->
+	/*검색어 없는 쿼리문*/
+	SELECT 
 			COUNT(*) 
-		FROM 
+	FROM 
 			PROJECT
-		</if>
-		
-		<if test="searchWord != null or search_startDate != null or search_endDate != null">
-		SELECT 
-			COUNT(*) 
-		FROM 
-			PROJECT
+	<!-- </if> -->
 			
-		<include refid="criteria"></include>
-		
-		</if>
-	</select>
+	<!-- <if test="searchWord != null or search_startDate != null or search_endDate != null">
+	</if> -->
+</select>
+
+<select id="getTotalCntPop" resultType="integer"  parameterType="integer">
+	/*검색어 있는 쿼리문*/
+	SELECT 
+			COUNT(*) 
+	FROM (
+			SELECT 
+					ROW_NUMBER() OVER(ORDER BY P.PROJECT_ID DESC) AS NUMROW,
+    				P.PROJECT_ID,
+    				CASE
+        				WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+       					WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+        				WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+        				WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+        				WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+    				END AS CUSTOM_COMPANY_ID,
+    				P.PROJECT_NAME,
+    				CASE
+        				WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+        				WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+        				WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+        				WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+    				END AS PROJECT_SKILL_LANGUAGE,
+    				CASE
+        				WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+        				WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+        				WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+        				WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+    				END AS PROJECT_SKILL_DB,
+    				P.PROJECT_STARTDATE,
+   					P.PROJECT_ENDDATE
+			FROM 
+    				PROJECT P
+			WHERE NOT EXISTS (
+    							SELECT 1
+    							FROM 
+    									PROJECT_DETAIL PD
+    							WHERE 
+    									PD.PROJECT_ID = P.PROJECT_ID
+    							AND 
+    									PD.MEMBER_ID = #{member_Id}
+							)
+	 		<include refid="criteria2"/>
+		) 
+		<!-- WHERE NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo} -->
+</select>
+
 
 	<!-- 2. 등록(아이디 체크) -->
 	<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
@@ -247,8 +287,8 @@ VALUES
 		PROJECT_ID = #{project_Id}
 </select>
 	
-	<!-- 3. 수정(회원 정보 수정) -->
-	<update id="projectModify" parameterType="com.jmh.dto.ProjectDto">
+<!-- 3. 수정(회원 정보 수정) -->
+<update id="projectModify" parameterType="com.jmh.dto.ProjectDto">
 		<if test="project_endDate != null">
 		UPDATE 
 			PROJECT 
@@ -275,7 +315,7 @@ VALUES
 		WHERE 
 			PROJECT_ID = #{project_Id}
 		</if>
-	</update>
+</update>
 
 	<!-- 4. 삭제(회원 정보 삭제) -->
 	<!-- <delete id="deleteProject" parameterType="integer" >
@@ -295,48 +335,53 @@ VALUES
 			PROJECT_ID=#{project_Id}
 	</select>
 	
-	<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
-	SELECT 
-    		P.PROJECT_ID,
-    CASE
-        	WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
-        	WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
-        	WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
-        	WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
-        	WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
-    END AS CUSTOM_COMPANY_ID,
-    		P.PROJECT_NAME,
-    CASE
-        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
-        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
-        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
-        	WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
-    END AS PROJECT_SKILL_LANGUAGE,
-    CASE
-        	WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
-        	WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
-        	WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
-        	WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
-    END AS PROJECT_SKILL_DB,
-    		P.PROJECT_STARTDATE,
-   			P.PROJECT_ENDDATE
-   				
-	FROM 
-    		PROJECT P
-	WHERE 
-			NOT EXISTS (
-    			SELECT 1
-    			FROM 
-    				PROJECT_DETAIL PD
-    			WHERE 
-    				PD.PROJECT_ID = P.PROJECT_ID
-    			AND 
-    				PD.MEMBER_ID = #{member_Id}
-			)
-	</select>	
+<select id="getFilterd_pro_List" resultType="com.jmh.dto.ProjectDto">
+SELECT * FROM (
+    SELECT
+        ROW_NUMBER() OVER(ORDER BY P.PROJECT_ID DESC) AS NUMROW,
+        P.PROJECT_ID,
+        CASE
+            WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
+            WHEN P.CUSTOM_COMPANY_ID = 'D062' THEN '엘지'
+            WHEN P.CUSTOM_COMPANY_ID = 'D063' THEN '애플'
+            WHEN P.CUSTOM_COMPANY_ID = 'D064' THEN '구글'
+            WHEN P.CUSTOM_COMPANY_ID = 'D065' THEN '아마존'
+        END AS CUSTOM_COMPANY_ID,
+        P.PROJECT_NAME,
+        CASE
+            WHEN P.PROJECT_SKILL_LANGUAGE = 'S010' THEN 'JAVA'
+            WHEN P.PROJECT_SKILL_LANGUAGE = 'S011' THEN 'PYTHON'
+            WHEN P.PROJECT_SKILL_LANGUAGE = 'S012' THEN 'C++'
+            WHEN P.PROJECT_SKILL_LANGUAGE = 'S013' THEN 'RUBY'
+        END AS PROJECT_SKILL_LANGUAGE,
+        CASE
+            WHEN P.PROJECT_SKILL_DB = 'S020' THEN 'ORACLE'
+            WHEN P.PROJECT_SKILL_DB = 'S021' THEN 'MSSQL'
+            WHEN P.PROJECT_SKILL_DB = 'S022' THEN 'MYSQL'
+            WHEN P.PROJECT_SKILL_DB = 'S023' THEN 'POSTGRESQL'
+        END AS PROJECT_SKILL_DB,
+        P.PROJECT_STARTDATE,
+        P.PROJECT_ENDDATE
+    FROM 
+        PROJECT P
+    WHERE 
+        NOT EXISTS (
+            SELECT 1
+            FROM 
+                PROJECT_DETAIL PD
+            WHERE 
+                PD.PROJECT_ID = P.PROJECT_ID
+            AND 
+                PD.MEMBER_ID = #{member_Id}
+        )
+) 
+WHERE NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
+</select>	
 	
-	<select id="getFilterd_search_pro_List" resultType="com.jmh.dto.ProjectDto">
+<select id="getFilterd_search_pro_List" resultType="com.jmh.dto.ProjectDto">
+SELECT * FROM (
 	SELECT 
+	ROW_NUMBER() OVER(ORDER BY P.PROJECT_ID DESC) AS NUMROW,
     P.PROJECT_ID,
     CASE
         WHEN P.CUSTOM_COMPANY_ID = 'D061' THEN '삼성'
@@ -372,7 +417,10 @@ VALUES
     		PD.MEMBER_ID = #{member_Id}
 	)
 	 <include refid="criteria2"/>
-	</select>
+) 
+WHERE NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}	
+</select>
+	
 	
 <update id="projectModify2" parameterType="java.util.Map">
 	<foreach item="member" index="index" collection="selectedMemberData" open="DECLARE BEGIN" separator=";" close="; END;">
