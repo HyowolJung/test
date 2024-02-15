@@ -176,7 +176,8 @@ $(document).ready(function() {
            			for (let i = 0; i < memberList.length; i++) {
                     	var newRow = $("<tr>");
                     	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                    	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                    	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                    	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td>" + memberList[i].member_Name + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Position + "</td>");
@@ -204,7 +205,7 @@ $(document).ready(function() {
            	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
            	        }
            			
-           		}else{
+           		} else {
            			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
            			//console.log("memberList 가 NULL 이에요.")
            			$("#memberTable tbody").empty();
@@ -217,10 +218,10 @@ $(document).ready(function() {
 		}); //$.ajax EndPoint
 	});//$("#searchButton").click EndPoint
 	
-	$("#memberTable").on("click", ".member-id", function () {
+	/* $("#memberTable").on("click", ".member-id", function () {
 		var member_Id = $(this).data("memberid");
 		window.location.href = "/member/memberRead?member_Id=" + member_Id;
-	});
+	}); */
 	
 	//2. 수정(#modifyButton)버튼 클릭했을 때
 	$("#modifyButton").click(function() {
@@ -478,11 +479,39 @@ $(document).ready(function() {
 	});//$("#resetButton").click(function() { EndPoint
 		
 	$("#backButton").click(function() {
-		location.href="/member/memberList?pageNo=1";
+		location.href="/member/memberList";
 	});
 	
+	//var pageNo = $("#pageNo").val();
+	
+	
+	
 });//document EndPoint
+function submitPost(member_Id, pageNo) {
+	//alert("pageNo : " + pageNo);
+	//alert("member_Id : " + member_Id);
+    // 폼 생성
+    var form = $('<form></form>', {
+        method: 'POST',
+        action: '/member/memberRead'
+    });
 
+    // memberId와 pageNo 값을 input으로 추가
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'member_Id',
+        value: member_Id
+    }));
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'pageNo',
+        value: pageNo
+    }));
+
+    // 폼을 body에 추가하고 제출
+    $('body').append(form);
+    form.submit();
+}
 //체크데이터 수집 공통 모듈(미완성)
 /* var checkList1 = [];
 $(document).on('click', '.checkbox', function() {
@@ -653,10 +682,10 @@ function go(pageNo){
 		success : function(resultMap) { // 결과 성공 콜백함수
 			//location.href = "/member/memberList?pageNo=" + pageNo;
 			//location.reload(true);
-			$("searchField").val(searchField);
-			$("searchWord").val(searchWord);
-			$("search_startDate").val(search_startDate);
-			$("search_endDate").val(search_endDate);
+			$("#searchField").val(searchField);
+			$("#searchWord").val(searchWord);
+			$("#search_startDate").val(search_startDate);
+			$("#search_endDate").val(search_endDate);
 			
 			var pageNoPost = resultMap.pageNoPost;
 			$("#pageNoPost").val(pageNoPost);
@@ -671,7 +700,8 @@ function go(pageNo){
        			for (let i = 0; i < memberList.length; i++) {
                 	var newRow = $("<tr>");
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
-                	newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
+                	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                 	newRow.append("<td>" + memberList[i].member_Name + "</td>");
                 	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
                 	newRow.append("<td>" + memberList[i].member_Position + "</td>");

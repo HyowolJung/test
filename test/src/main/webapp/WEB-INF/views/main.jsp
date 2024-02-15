@@ -13,7 +13,7 @@
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
 <a href="/board/boardList?pageNo=1" style="display: inline;">자유 게시판</a>
 <c:if test="${member_Department == '인사부'}">
-	<a href="/member/memberList?pageNo=1" style="display: inline;">회원 관리</a>
+	<a href="/member/memberList" style="display: inline;">회원 관리</a>
 </c:if>
 <c:if test="${member_Department == 'IT부'}">
  	<a href="/project/projectList?pageNo=1" style="display: inline;">프로젝트 관리</a>

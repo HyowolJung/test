@@ -81,7 +81,7 @@ table {
 		</c:forEach>
 	</tbody>
 </table>
-<button type="button" id="modify">수정</button>
+<button type="button" id="modify" onclick="submitPost()">수정</button>
 <button type="button" id="back">뒤로 가기</button>
 </div>
 <br><br>
@@ -118,7 +118,7 @@ table {
         		<td>${project['PULLDATE'] == null ? '미정' : project['PULLDATE']}</td>
     			<%-- <td><fmt:formatDate value="${project['PUSHDATE']}" pattern="yyyy-MM-dd" /></td>
     			<td><fmt:formatDate value="${project['PULLDATE']}" pattern="yyyy-MM-dd" /></td> --%>
-        		<%-- <td><fmt:formatDate value="${project['PULLDATE']}" pattern="yyyy-MM-dd" /></td>	 --%>
+        		<%-- <td><fmt:formatDate value="${project['PULLDATE']}" pattern="yyyy-MM-dd" /></td> --%>
     		</tr>
 		</c:forEach>
 	</c:otherwise>
@@ -131,12 +131,42 @@ var member_Id = document.getElementById("td_Id").innerText;
 var pageNo = $("#pageNo").val();
 //console.log("member_Id : " + member_Id);
 
-$("#modify").click(function(){
-	location.href = "/member/memberModify?member_Id=" + member_Id + "&pageNo=" + pageNo;
-});
+function submitPost() {//member_Id, pageNo
+	//alert("pageNo : " + pageNo);
+	//alert("member_Id : " + member_Id);
+    // 폼 생성
+    //location.href ="/member/memberModify";
+    var member_Id = document.getElementById("td_Id").innerText;
+	var pageNo = $("#pageNo").val();
+	
+	//alert("member_Id : " + member_Id);
+	//alert("pageNo : " + pageNo);
+	
+    var form = $('<form></form>', {
+        method: 'POST',
+        action: '/member/memberModify'
+    });
+
+    // memberId와 pageNo 값을 input으로 추가
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'member_Id',
+        value: member_Id
+    }));
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'pageNo',
+        value: pageNo
+    }));
+
+    // 폼을 body에 추가하고 제출
+    $('body').append(form);
+    form.submit();
+}
 
 $("#back").click(function(){
-	location.href = "/member/memberList?pageNo=" + pageNo;
+	//location.href = "/member/memberList?pageNo=" + pageNo;
+	location.href = "/member/memberList";
 });
 </script>
 </body>
