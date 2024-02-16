@@ -169,18 +169,6 @@ public class MemberController {
 		}
 	}
 	
-	//3. 수정(페이지 이동 + 회원 정보 조회)
-	@GetMapping("/memberModify") ////memberList.jsp
-	public String modifyMember(Model model, ProjectDto projectDto, int member_Id, int pageNo ) { /* @RequestParam("member_Id") int member_Id, @RequestParam int pageNo */
-		//System.out.println("수정 화면 작동");
-		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
-		System.out.println("memberprojectList : " + memberprojectList);
-		model.addAttribute("memberprojectList", memberprojectList);
-		model.addAttribute("memberList", memberService.getModifyList(member_Id));
-		model.addAttribute("pageNo", pageNo);
-		return "member/memberModify";
-	}
-	
 	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
 	@PostMapping("/memberListM")
 	@ResponseBody
@@ -200,53 +188,69 @@ public class MemberController {
 		return resultMap;
 	}
 	
-	//3. 수정(회원 정보 수정)
-	@PostMapping("/memberModify")//@RequestBody MemberDto modifyDatas, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
-	public ResponseEntity<Boolean> memberModify(Model model,
-			@RequestParam("member_Id") int member_Id, 
-			@RequestParam("pageNo") int pageNo) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
-		//System.err.println("member_Id2 : " + member_Id);
-		//System.err.println("pageNo : " + pageNo);
-		//List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+	//3. 수정(페이지 이동 + 회원 정보 조회)
+//	@GetMapping("/memberModify") ////memberList.jsp
+//	public String modifyMember(Model model, ProjectDto projectDto, int member_Id, int pageNo ) { /* @RequestParam("member_Id") int member_Id, @RequestParam int pageNo */
+//		//System.out.println("수정 화면 작동");
+//		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
 //		System.out.println("memberprojectList : " + memberprojectList);
-		//model.addAttribute("memberprojectList", memberprojectList);
-		//model.addAttribute("memberList", memberService.getModifyList(member_Id));
-		//model.addAttribute("pageNo", pageNo);
-		
-		
-		System.err.println("여기에 도착했어요!");
-		//String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
-		//int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
-		//System.err.println("modifyDatas : " + modifyDatas);
+//		model.addAttribute("memberprojectList", memberprojectList);
+//		model.addAttribute("memberList", memberService.getModifyList(member_Id));
+//		model.addAttribute("pageNo", pageNo);
+//		return "member/memberModify";
+//	}
+	
+	
+	@PostMapping("/memberModify")
+	public String modifyMember(Model model,
+			@RequestParam("member_Id") int member_Id, 
+			@RequestParam("pageNo") int pageNo) {
+		System.err.println("member_Id2 : " + member_Id);
+		System.err.println("pageNo : " + pageNo);
+		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("memberprojectList : " + memberprojectList);
+		model.addAttribute("memberprojectList", memberprojectList);
+		model.addAttribute("memberList", memberService.getModifyList(member_Id));
+		model.addAttribute("pageNo", pageNo);
+				
+		return "member/memberModify";
+	}
+	
+	//3. 수정(회원 정보 수정)
+	@PostMapping("/memberModifyInfo")//, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
+	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
+		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
+		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
+		System.err.println("modifyDatas : " + modifyDatas);
 		
 		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
 		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
 		//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
-		//int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
-		boolean result = true;
+		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
+		boolean result = false;
 		
-//		System.out.println("member_Tel_ck : " + member_Tel_ck);
-//		if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
-//			System.out.println("내 번호가 맞아");
-//			int modifyCnt = memberService.memberModify(modifyDatas);
-//			if(modifyCnt > 0) {
-//				System.out.println("수정 성공1");
-//				result = true;
-//			}else if(modifyCnt < 0 ) {
-//				System.out.println("수정 실패1");
-//				result = false;
-//			}
-//		}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
-//			System.out.println("내 번호가 아니야");
-//			int modifyCnt = memberService.memberModify(modifyDatas);
-//			if(modifyCnt > 0) {
-//				System.out.println("수정 성공2");
-//				result = true;
-//			}else if(modifyCnt < 0) {
-//				System.out.println("수정 실패2");
-//				result = false;
-//			}
-//		}
+		System.out.println("member_Tel_ck : " + member_Tel_ck);
+		if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
+			System.out.println("내 번호가 맞아");
+			int modifyCnt = memberService.memberModify(modifyDatas);
+			if(modifyCnt > 0) {
+				System.out.println("수정 성공1");
+				result = true;
+			}else if(modifyCnt < 0 ) {
+				System.out.println("수정 실패1");
+				result = false;
+			}
+		}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
+			System.out.println("내 번호가 아니야");
+			int modifyCnt = memberService.memberModify(modifyDatas);
+			if(modifyCnt > 0) {
+				System.out.println("수정 성공2");
+				result = true;
+			}else if(modifyCnt < 0) {
+				System.out.println("수정 실패2");
+				result = false;
+			}
+		}
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

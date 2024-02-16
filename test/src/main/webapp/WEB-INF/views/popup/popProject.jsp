@@ -81,8 +81,8 @@
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
 <div>
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"><!-- style="display: none"  -->
-	프로젝트명 : <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none; width: 10px"><!-- style="display: none"  -->
+	<input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="프로젝트 이름" value="${pageDto.cri.searchWord }">
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 		<option selected>고객사</option>
     	<option value="D062" ${pageDto.cri.searchField == 'D062' ? 'selected' : ''}>엘지</option>
@@ -100,8 +100,8 @@
 	<button id="insert">추가</button>	
 </div>
 
-<input type="text" id="result_member_Id" readonly  /><!-- style="display: none" -->
-<input type="text" id="result_member_Name" readonly /><!-- style="display: none" -->
+<input type="text" id="result_member_Id" readonly  style="display: none"/><!-- style="display: none" -->
+<input type="text" id="result_member_Name" readonly style="display: none"/><!-- style="display: none" -->
 
 <table border="1" id="projectTable">
 	<thead>
@@ -132,20 +132,16 @@
 </body>
 <script>
 $(document).ready(function() {
+var member_Id = localStorage.getItem('member_Id');
 var member_Name = localStorage.getItem('member_Name');
 //alert("member_Name : " + member_Name);	
 $("#projectTable tbody").empty();
 $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 
-const urlParams = new URLSearchParams(window.location.search);
-const member_Id = urlParams.get('member_Id');
-
 // 가져온 member_Id 값을 input 요소에 설정합니다.
 $("#result_member_Id").val(member_Id);
 $("#result_member_Name").val(member_Name);
-//alert("member_Id : " + member_Id);
 
-//alert("result_member_Id : " + $("#result_member_Id").val(member_Id));
 
 //1. 검색 폼
 //let newRow = $("<tr>");
@@ -172,7 +168,7 @@ $("#searchButton").click(function(){
 	let pageNo = document.getElementById("pageNo").value; 
 	$.ajax({
 		type : 'POST',
-		url: '/popup/popProject',
+		url: '/popup/popProjectInfo',
 		data: {
 			"searchField" : searchField,
 		 	"searchWord" : searchWord,
@@ -388,10 +384,10 @@ function go(pageNo){
 	let search_endDate = document.getElementById("search_endDate").value;
 	let member_Id = $("#result_member_Id").val();
 	//var pageNo = document.getElementById("pageNo").value; 
-	alert("member_Id  : " + member_Id);
+	//alert("member_Id  : " + member_Id);
 	$.ajax({
 		type : 'POST',
-		url: '/popup/popProject',
+		url: '/popup/popProjectInfo',
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,

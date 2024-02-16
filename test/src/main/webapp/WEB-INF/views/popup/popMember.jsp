@@ -9,74 +9,74 @@
 <title>Insert title here</title>
 </head>
 <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-        }
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 20px;
+}
 
-        div {
-            margin-bottom: 20px;
-        }
+div {
+	margin-bottom: 20px;
+}
 
-        input, select {
-            margin-right: 10px;
-        }
+input, select {
+	margin-right: 10px;
+}
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
 
-        th {
-            background-color: #f2f2f2;
-        }
+th {
+	background-color: #f2f2f2;
+}
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-        }
+button {
+	padding: 10px;
+	cursor: pointer;
+}
 
-        #pagination {
-            margin-top: 20px;
-        }
+#pagination {
+	margin-top: 20px;
+}
 
-        ul.pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+ul.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
 
-        li.page-item {
-            margin-right: 10px;
-        }
+li.page-item {
+	margin-right: 10px;
+}
 
-        a.page-link {
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            color: #333;
-            background-color: #fff;
-            cursor: pointer;
-        }
+a.page-link {
+	text-decoration: none;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	color: #333;
+	background-color: #fff;
+	cursor: pointer;
+}
 
-        a.page-link.active {
-            background-color: #007bff;
-            color: #fff;
-        }
+a.page-link.active {
+	background-color: #007bff;
+	color: #fff;
+}
 
-        .result-message {
-            text-align: center;
-            font-style: italic;
-            color: #777;
-        }
+.result-message {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+}
 </style>
 <body>
 <div>
@@ -98,7 +98,6 @@
 	<button id="searchButton">검색</button>
 	<button id="insert">추가</button>	
 </div>
-
 
 <input type="text" id="result_project_Id" readonly style="display: none"/>
 <input id="project_Name" name="project_Name" value="${project_Name}" style="display: none">
@@ -150,7 +149,7 @@ $(document).ready(function() {
 		//let searchField = document.getElementById("searchField").value; 
 		let searchWord = $("#searchWord").val();
 		let pageNo = document.getElementById("pageNo").value; 
-		alert("searchButton 버튼이 클릭: " + searchWord, search_startDate, search_endDate);
+		//alert("searchButton 버튼이 클릭: " + searchWord, search_startDate, search_endDate);
 		$.ajax({
 			type : 'POST',
 			url: '/popup/popMember',
@@ -207,7 +206,7 @@ $(document).ready(function() {
 	       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
 	       	        }
 	       	     	
-	       		}else{
+	       		} else {
 	       			console.log("memberList 가 NULL 이에요.")
 	       			$("#memberTable tbody").empty();
 	       		    $("#memberTable tbody").html("<tr><td colspan='10' style='text-align:center;'>결과가 없어요.</td></tr>");
@@ -258,27 +257,32 @@ $(document).ready(function() {
 			}
 		}); //ajax EndPoint
 	});	//insertEndPoint
-});
+	
+});	//$(document).ready(function() {
 	
 function go(pageNo){
-	//let searchField = document.getElementById("searchField").value; 
-	let searchWord = document.getElementById("searchWord").value;
+	//alert("project_Id : " + project_Id + "project_Name : " + project_Name);	
 	//var pageNo = document.getElementById("pageNo").value; 
+	//let searchField = document.getElementById("searchField").value; 
+	var searchWord = document.getElementById("searchWord").value;
+	
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popMember',
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,
+			 "project_Id" : project_Id,
+			 "project_Name" : project_Name,
 			 //"searchField" : searchField,
 		},
 		success : function(resultMap) { // 결과 성공 콜백함수    
 			if (searchWord.trim() !== "") {
 			    //console.log("검색어가 있습니다.");
-			    location.href = "/popup/popMember?pageNo=" + pageNo + "&searchWord=" + searchWord;
+			    location.href = "/popup/popMember?pageNo=" + pageNo + "&searchWord=" + searchWord + "&project_Id=" + project_Id;
 			} else {
 			    //console.log("검색어가 없습니다.");
-			    location.href = "/popup/popMember?pageNo=" + pageNo;
+			    location.href = "/popup/popMember?pageNo=" + pageNo + "&project_Id=" + project_Id;
 			}
 			
 		},

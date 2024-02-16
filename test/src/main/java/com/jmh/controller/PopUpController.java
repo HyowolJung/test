@@ -39,7 +39,8 @@ public class PopUpController {
 	@Autowired
 	private ProjectService projectService;
 	
-	@GetMapping("/popProject")
+	//@GetMapping("/popProject")
+	@PostMapping("/popProject")
 	public String popProject(Model model, Criteria cri, int member_Id, String member_Name) {
 		System.out.println("pop)member_Id : " + member_Id);
 		System.out.println("pop)member_Name : " + member_Name);
@@ -53,7 +54,7 @@ public class PopUpController {
 	}
 	
 	//1. 조회(프로젝트 정보)
-	@PostMapping("/popProject")
+	@PostMapping("/popProjectInfo")
 	@ResponseBody
 	public Map<String, Object> popProject(Model model, Criteria cri, int member_Id) {
 		System.out.println("cri.getSearchField() : " + cri.getSearchField());
@@ -147,8 +148,8 @@ public class PopUpController {
 	}
 	
 	@GetMapping("/popMember")
-	public String popMember(Model model, Criteria cri,
-			@RequestParam(value = "project_Id", required = false) String project_Id,
+	public String popMemberGet(Model model, Criteria cri,
+			@RequestParam(value = "project_Id", required = false) int project_Id,
 			@RequestParam(value = "project_Name", required = false) String project_Name) {
 		System.err.println("project_Name11 : " + project_Name);
 		int totalCnt = memberService.getTotalCnt(cri);
@@ -172,15 +173,10 @@ public class PopUpController {
 	
 	@PostMapping("/popMember")
 	@ResponseBody
-	public Map<String, Object> popMember(Model model, Criteria cri, int project_Id, String project_Name) {
+	public Map<String, Object> popMemberPost(Model model, Criteria cri, int project_Id, String project_Name) {
 		System.out.println("popMember)project_Name : " + project_Name);
 		System.out.println("popMember)project_Id : " + project_Id);
 		Map<String, Object> resultMap = new HashMap<>();
-//		if(project_Name != null) {
-//			ModelAndView mav = new ModelAndView();
-//			mav.setViewName("/pop/popMember");
-//			mav.addObject("project_Name" , project_Name);
-//		}
 		
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
@@ -188,7 +184,7 @@ public class PopUpController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			List<MemberDto> getFilterd_mem_List = memberService.getFilterd_mem_List(cri, project_Id);
-			System.out.println("getFilterd_mem_List : " + getFilterd_mem_List);
+			//System.out.println("getFilterd_mem_List : " + getFilterd_mem_List);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", getFilterd_mem_List);
 			//System.err.println("popMemberpopMemberpopMember");
@@ -202,9 +198,9 @@ public class PopUpController {
 			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
-			//List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id); 
+			List<MemberDto> memberList = memberService.getFilterd_search_mem_List(cri, project_Id); 
 			resultMap.put("pageDto", pageDto);
-			//resultMap.put("memberList", memberList);
+			resultMap.put("memberList", memberList);
 			return resultMap;
 		}
 		return resultMap;	

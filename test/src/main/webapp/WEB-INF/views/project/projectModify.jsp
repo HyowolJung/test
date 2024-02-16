@@ -145,55 +145,22 @@
 <script type="text/javascript">
 //$("#pro_mem_List tbody").empty();
 //$("#pro_mem_List tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
-	$(document).ready(function() {
-		$("#modifyButton").click(function() {
-			console.log("수정버튼 클릭됨");
-			
-			let project_Id = $("#project_Id").val();
-			let project_startDate = $("#project_startDate").val();
-			let project_endDate = $("#project_endDate").val();
-			
-			//1. 종료일이 있을 때
-			if(!project_endDate.length == 0){
-				console.log("종료일이 있어요.")				
-				if (project_endDate < project_startDate) {
-			        alert("종료일은 시작일보다 이전일 수 없습니다.");
-			        return;
-				}
-				if(project_endDate > project_startDate){
-					let modifyDatas = {
-						project_Id : $("#project_Id").val()
-						,project_Name : $("#project_Name").val()
-						,custom_company_id : $("#custom_company_id").val()
-						,project_Skill_DB : $("#project_Skill_DB").val()
-						,project_Skill_Language : $("#project_Skill_Language").val()
-						,project_startDate : $("#project_startDate").val()
-						,project_endDate : $("#project_endDate").val()
-					}	
-						
-					console.log("project_Name : " , project_Name);	
-					$.ajax({
-						type : 'POST',
-						url: '/project/projectModify',
-						contentType : 'application/json; charset=utf-8',
-						data: JSON.stringify(modifyDatas),
-						success : function(result) { // 결과 성공 콜백함수        
-							if(result == true){
-								alert("수정 성공");
-								var pageNo = $("#pageNo").val();
-								location.href = "/project/projectRead?project_Id=" + project_Id + "&pageNo=" + pageNo;
-							}				
-						},    
-						error : function(request, status, error) { // 결과 에러 콜백함수        
-							alert("수정 실패");
-						}
-					}); //ajax EndPoint
-				}//if(project_endDate > project_startDate) //EndPoint
-			}//if(!project_endDate.length == 0){
-			
-			//2. 종료일이 없을 때
-			if(project_endDate.length == 0){
-				console.log("종료일이 없어요.");
+$(document).ready(function() {
+	$("#modifyButton").click(function() {
+		console.log("수정버튼 클릭됨");
+		
+		let project_Id = $("#project_Id").val();
+		let project_startDate = $("#project_startDate").val();
+		let project_endDate = $("#project_endDate").val();
+		
+		//1. 종료일이 있을 때
+		if(!project_endDate.length == 0){
+			console.log("종료일이 있어요.")				
+			if (project_endDate < project_startDate) {
+		        alert("종료일은 시작일보다 이전일 수 없습니다.");
+		        return;
+			}
+			if(project_endDate > project_startDate){
 				let modifyDatas = {
 					project_Id : $("#project_Id").val()
 					,project_Name : $("#project_Name").val()
@@ -203,6 +170,7 @@
 					,project_startDate : $("#project_startDate").val()
 					,project_endDate : $("#project_endDate").val()
 				}	
+					
 				console.log("project_Name : " , project_Name);	
 				$.ajax({
 					type : 'POST',
@@ -214,46 +182,78 @@
 							alert("수정 성공");
 							var pageNo = $("#pageNo").val();
 							location.href = "/project/projectRead?project_Id=" + project_Id + "&pageNo=" + pageNo;
-						}			
+						}				
 					},    
 					error : function(request, status, error) { // 결과 에러 콜백함수        
 						alert("수정 실패");
 					}
 				}); //ajax EndPoint
-			}
-	    });//$("#modifyButton").click(function() { EndPoint
+			}//if(project_endDate > project_startDate) //EndPoint
+		}//if(!project_endDate.length == 0){
 		
-	    $("#back2").click(function() {
-			console.log("뒤로가기 클릭")
-			var project_Id = $("#project_Id").val();
-			var pageNo = $("#pageNo").val();
-			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
-		});
-	    	
-		$("#back").click(function() {
-			console.log("뒤로가기 클릭")
-			let project_Id = $("#project_Id").val();
-			var pageNo = $("#pageNo").val();
-			location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
-		});
-		
-		var checkboxClicked = false; // 라디오 버튼 클릭 상태 추적 변수
-		var selectedMemberData = [];
-		
-		 /* $("#pro_mem_List tbody").on("click", "input[type='checkbox']", function() {
-			radioClicked = true; // 라디오 버튼이 클릭되었다고 표시
-		    console.log("선택되었다.");
-		    var tr = $(this).closest("tr");
-				
-		        // 행의 데이터 추출
-		        var project_Id = $("#project_Id").val();
-		        var project_Name = $("#project_Name").val();
-		        var member_Id = tr.find("td:nth-child(2)").text().trim();//$("#member_Id").val();
-		        var member_Name = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 번호
-		        var pushDate = tr.find("td:nth-child(8) input[type='date']").val(); // 투입일
-		        var pullDate = tr.find("td:nth-child(9) input[type='date']").val(); // 철수일
-		        
-		        console.log("선택된 pushDate 1 : " + pushDate);
+		//2. 종료일이 없을 때
+		if(project_endDate.length == 0){
+			console.log("종료일이 없어요.");
+			let modifyDatas = {
+				project_Id : $("#project_Id").val()
+				,project_Name : $("#project_Name").val()
+				,custom_company_id : $("#custom_company_id").val()
+				,project_Skill_DB : $("#project_Skill_DB").val()
+				,project_Skill_Language : $("#project_Skill_Language").val()
+				,project_startDate : $("#project_startDate").val()
+				,project_endDate : $("#project_endDate").val()
+			}	
+			console.log("project_Name : " , project_Name);	
+			$.ajax({
+				type : 'POST',
+				url: '/project/projectModify',
+				contentType : 'application/json; charset=utf-8',
+				data: JSON.stringify(modifyDatas),
+				success : function(result) { // 결과 성공 콜백함수        
+					if(result == true){
+						alert("수정 성공");
+						var pageNo = $("#pageNo").val();
+						location.href = "/project/projectRead?project_Id=" + project_Id + "&pageNo=" + pageNo;
+					}			
+				},    
+				error : function(request, status, error) { // 결과 에러 콜백함수        
+					alert("수정 실패");
+				}
+			}); //ajax EndPoint
+		}
+    });//$("#modifyButton").click(function() { EndPoint
+	
+    $("#back2").click(function() {
+		console.log("뒤로가기 클릭")
+		var project_Id = $("#project_Id").val();
+		var pageNo = $("#pageNo").val();
+		location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
+	});
+    	
+	$("#back").click(function() {
+		console.log("뒤로가기 클릭")
+		let project_Id = $("#project_Id").val();
+		var pageNo = $("#pageNo").val();
+		location.href = "/project/projectRead?project_Id=" + project_Id +"&pageNo=" + pageNo;
+	});
+	
+	var checkboxClicked = false; // 라디오 버튼 클릭 상태 추적 변수
+	var selectedMemberData = [];
+	
+	 /* $("#pro_mem_List tbody").on("click", "input[type='checkbox']", function() {
+		radioClicked = true; // 라디오 버튼이 클릭되었다고 표시
+	    console.log("선택되었다.");
+	    var tr = $(this).closest("tr");
+			
+	    // 행의 데이터 추출
+		var project_Id = $("#project_Id").val();
+	       var project_Name = $("#project_Name").val();
+	       var member_Id = tr.find("td:nth-child(2)").text().trim();//$("#member_Id").val();
+	       var member_Name = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 번호
+	       var pushDate = tr.find("td:nth-child(8) input[type='date']").val(); // 투입일
+	       var pullDate = tr.find("td:nth-child(9) input[type='date']").val(); // 철수일
+	        
+	        console.log("선택된 pushDate 1 : " + pushDate);
 		        console.log("선택된 pullDate 1 : " + pullDate);
 		        
 		        selectedMemberData = {

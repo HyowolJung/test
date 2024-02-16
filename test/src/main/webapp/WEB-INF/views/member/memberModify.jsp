@@ -176,7 +176,7 @@
 		
 	</table>
 <button type="button" id="modifyButton">수정하기</button>
-<button type="button" id="back1" >뒤로 가기</button>
+<button type="button" id="back1" onclick="back()">뒤로 가기</button>
 </div>
 
 <br><br>
@@ -196,7 +196,7 @@
 	<c:choose>
     <c:when test="${empty memberprojectList}">
       <tr>
-        <td colspan="4" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
+        <td colspan="5" style="text-align: center;">참여중인 프로젝트가 없습니다</td>
       </tr>
     </c:when>
     <c:otherwise>
@@ -214,10 +214,38 @@
 </tbody>
 </table>
 <button type="button" id="modifyButton2">수정</button>
-<button type="button" id="back2">뒤로 가기</button>
+<button type="button" id="back2" onclick="back()">뒤로 가기</button>
 </div>	
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+function back() {
+	var member_Id = $("#member_Id").val();
+	var pageNo = $("#pageNo").val();
+	//alert("member_Id : " + member_Id + " / pageNo : " + pageNo);	
+	//alert("함수 작동!")
+	var form = $('<form></form>', {
+        method: 'POST',
+        action: '/member/memberRead'
+    });
+	
+	// memberId와 pageNo 값을 input으로 추가
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'member_Id',
+        value: member_Id
+    }));
+	
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'pageNo',
+        value: pageNo
+    }));
+    
+    $('body').append(form);
+	form.submit();
+}
+
+
 $(document).ready(function() {
 //1. 수정버튼 클릭
 $("#modifyButton").click(function() {
@@ -262,14 +290,14 @@ $("#modifyButton").click(function() {
 				//console.log("member_Department : " , member_Department);	
 				$.ajax({
 					type : 'POST',
-					url: '/member/memberModify',
+					url: '/member/memberModifyInfo',
 					contentType : 'application/json; charset=utf-8',
 					data: JSON.stringify(modifyDatas),
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
 							alert("수정 성공");
 							var pageNo = $("#pageNo").val();
-							location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
+							//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 						}else if(result == false){
 							alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 						}				
@@ -298,7 +326,7 @@ $("#modifyButton").click(function() {
 				console.log("member_Department : " , member_Department);	
 				$.ajax({
 					type : 'POST',
-					url: '/member/memberModify',
+					url: '/member/memberModifyInfo',
 					contentType : 'application/json; charset=utf-8',
 					data: JSON.stringify(modifyDatas),
 					success : function(result) { // 결과 성공 콜백함수        
@@ -319,22 +347,52 @@ $("#modifyButton").click(function() {
 	}// elseIf EndPoint
 });//$("#modifyButton").click(function() {
 	
-	$("#back1").click(function() {
-		console.log("뒤로가기 클릭")
-		var member_Id = $("#member_Id").val();
-		var pageNo = $("#pageNo").val();
-		location.href = "/member/memberRead?member_Id=" + member_Id +"&pageNo=" + pageNo;
-	});
+$("#push").click(function() {
+    var member_Id = $("#member_Id").val();
+    var member_Name = $("#member_Name").val();
+    localStorage.setItem('member_Id', member_Id);
+    localStorage.setItem('member_Name', member_Name);
+    // 팝업 옵션 설정
+    let popOption = "width=1150, height=650, top=200, left=300, scrollbars=yes";
+
+    // 미리 팝업 창을 열어 둡니다.
+    var popup = window.open('', 'pop', popOption);
+    if (!popup) return; // 팝업 차단 여부 확인
+
+    // 임시 폼 생성 및 속성 설정
+    var form = document.createElement("form");
+    form.target = "pop";
+    form.method = "POST";
+    form.action = "/popup/popProject";
+
+    // member_Id 필드 추가
+    var idInput = document.createElement("input");
+    idInput.type = "hidden";
+    idInput.name = "member_Id";
+    idInput.value = member_Id;
+    form.appendChild(idInput);
+
+    // member_Name 필드 추가
+    var nameInput = document.createElement("input");
+    nameInput.type = "hidden";
+    nameInput.name = "member_Name";
+    nameInput.value = member_Name;
+    form.appendChild(nameInput);
+
+    // 폼을 문서에 추가하지 않고 직접 팝업의 문서에 폼을 추가
+    popup.document.body.appendChild(form);
+
+    // 폼 제출
+    form.submit();
+});
 	
-	$("#back2").click(function() {
-		console.log("뒤로가기 클릭")
-		var member_Id = $("#member_Id").val();
-		var pageNo = $("#pageNo").val();
-		location.href = "/member/memberRead?member_Id=" + member_Id +"&pageNo=" + pageNo;
-	});
+	
+	
+	
+	
 	
 	//2. 프로젝츠 추가 버튼 클릭
-	$("#push").click(function() {
+	/* $("#push").click(function() {
 		var member_Id = $("#member_Id").val();
 		var member_Name = $("#member_Name").val();
 		localStorage.setItem('member_Name', member_Name);
@@ -354,7 +412,7 @@ $("#modifyButton").click(function() {
 		        }
 		    },
 		}); //ajax EndPoint
-	});//$("#insert").click(function() { EndPoint
+	});//$("#push").click(function() { */
 
 	var checkClicked = false; // 라디오 버튼 클릭 상태 추적 변수
 	
@@ -393,22 +451,21 @@ $("#modifyButton").click(function() {
             	
     		var tr = $(this).closest("tr");
 
-            	// 행의 데이터 추출
-            	var member_Id = $("#member_Id").val();
-            	var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
-            
-            	//alert("선택된 프로젝트: " + project_Id, member_Id);
-            
-            	data = {
-        			member_Id : $("#member_Id").val(),        		
-                	project_Id: tr.find("td:nth-child(2)").text().trim()
-                	//projectName: tr.find("td:nth-child(3)").text().trim(),
-                	//pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
-                	//pullDate: tr.find("td:nth-child(5) input[type='date']").val()
-            	};
+            // 행의 데이터 추출
+            var member_Id = $("#member_Id").val();
+            var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
+            //alert("선택된 프로젝트: " + project_Id, member_Id);
+            data = {
+        		member_Id : $("#member_Id").val(),        		
+                project_Id: tr.find("td:nth-child(2)").text().trim()
+                //projectName: tr.find("td:nth-child(3)").text().trim(),
+                //pushDate: tr.find("td:nth-child(4) input[type='date']").val(),
+                //pullDate: tr.find("td:nth-child(5) input[type='date']").val()
+            };
             	
-            	selectedProjectData.push(data);
-        });    	
+            selectedProjectData.push(data);
+        });   
+        
     	$.ajax({
 			type : 'POST',
 			url: '/member/memberDelete2',
@@ -429,70 +486,56 @@ $("#modifyButton").click(function() {
     
     $("#modifyButton2").click(function() {
     	var selectedProjectData = [];    	
-    	 $("#mem_pro_List tbody input[type='checkbox']:checked").each(function() {
-			//console.log("선택되었다.");
-    			
+		$("#mem_pro_List tbody input[type='checkbox']:checked").each(function() {
     		var tr = $(this).closest("tr");
-    	    // 행의 데이터 추출
    	        var member_Id = $("#member_Id").val();
    	        var project_Id = tr.find("td:nth-child(2)").text().trim(); // 프로젝트 번호
    	        // var projectName = tr.find("td:nth-child(3)").text().trim(); // 프로젝트 이름
    	        var pushDate = tr.find("td:nth-child(4) input[type='date']").val(); // 투입일
    	        var pullDate = tr.find("td:nth-child(5) input[type='date']").val(); // 철수일
-   	        console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
-   	       	//alert("member_startDate : " + $("#member_startDate").val());
+   	        var member_startDate = $("#member_startDate").val();
+   	     	var member_endDate = $("#member_endDate").val();
+   	        //console.log("선택된 프로젝트: " + project_Id, pushDate, pullDate);
    	        
-   	     	if(!pullDate.length == 0){
-   				if (pullDate < pushDate) {
-   		        	alert("투입일은 철수일보다 이전일 수 없습니다.1");
-   		        	return;
-   				}
-   				
-   				if($("#member_startDate").val() > pullDate) {
-					alert("철수일은 회원 입사일보다 이전일 수 없습니다.1");
-					return;
-   				}
-   	    	}
+   	        // 5. NULL 값 처리
+    pushDate = pushDate || '9999-12-31'; // NULL 이면 최대 날짜로 설정
+    pullDate = pullDate || '9999-12-31'; // NULL 이면 최대 날짜로 설정
+    member_endDate = member_endDate || '9999-12-31'; // NULL 이면 최대 날짜로 설정
+
+    // 1. 입사일은 퇴사일, 투입일, 철수일 보다 앞서야 한다.
+    if ((member_startDate >= member_endDate && member_endDate !== '9999-12-31') || 
+        (member_startDate >= pushDate && pushDate !== '9999-12-31') || 
+        (member_startDate >= pullDate && pullDate !== '9999-12-31')) {
+        alert("다시 한번 확인해주세요. 입사일은 퇴사일, 투입일, 철수일 보다 앞서야 합니다.");
+        return false;
+    }
+
+    // 2. 퇴사일은 퇴사일, 투입일, 철수일 보다 늦어야 한다.
+    if (member_endDate <= member_startDate || 
+        (member_endDate <= pushDate && pushDate !== '9999-12-31') || 
+        (member_endDate <= pullDate && pullDate !== '9999-12-31')) {
+        alert("다시 한번 확인해주세요. 퇴사일은 입사일, 투입일, 철수일 보다 늦어야 합니다.");
+        return false;
+    }
+
+    // 3. 투입일은 입사일 보다 늦고, 퇴사일, 철수일 보다 앞서야 한다.
+    if ((pushDate <= member_startDate || pushDate >= member_endDate) && pushDate !== '9999-12-31') {
+        alert("다시 한번 확인해주세요. 투입일은 입사일 보다 늦고, 퇴사일 보다 앞서야 합니다.");
+        return false;
+    }
+
+    // 4. 철수일은 입사일, 투입일 보다 늦고, 퇴사일 보다 앞서야 한다.
+    if ((pullDate <= member_startDate || pullDate <= pushDate || pullDate >= member_endDate) && pullDate !== '9999-12-31') {
+        alert("다시 한번 확인해주세요. 철수일은 입사일, 투입일 보다 늦고, 퇴사일 보다 앞서야 합니다.");
+        return false;
+    }
    	        
-   	     	if(!pushDate.length == 0){
-   	     		/* if (pullDate < pushDate) {//12/01 < 12/02
-		        	alert("투입일은 철수일보다 이전일 수 없습니다.2");
-		        	return;
-				} */
-   	     		
-   	     		if($("#member_startDate").val() > pushDate) {
-					alert("투입일은 회원 입사일보다 이전일 수 없습니다.2");
-					return;
-				}
-   	     	}
+   	        
+   	        
+   	        
+   	        
+   	        
    	     	
-   	     	if(!$("#member_startDate").val().length == 0){
-	     		/* if (pullDate < pushDate) {
-		        	alert("투입일자는 철수일자보다 이전일 수 없습니다.3");
-		        	return;
-				} */
-	     		
-	     		if($("#member_startDate").val() > pushDate) { //12/01 > 12/03
-					alert("투입일은 회원 입사일보다 이전일 수 없습니다.3");
-					return;
-				}
-	     		
-	     	}
-   	     	
-   	     	//입사일이 있으면서 철수일이 있을 때 12/01 > 12/02
-   	     	if(!$("#member_startDate").val().length == 0 || !pullDate.length == 0){
-   	     		if($("#member_startDate").val() > pullDate) {
-					alert("철수일은 회원 입사일보다 이전일 수 없습니다.3");
-					return;
-				}
-   	     	}
-   	     	
-   	     	if(!$("#member_endDate").val().length == 0 || !pullDate.length == 0){
-	     		if($("#member_endDate").val() < pushDate) {
-					alert("투입일은 회원 퇴사일보다 이전일 수 없습니다.3");
-					return;
-				}
-	     	}
    	     	
    	        data = {
    	    		member_Id : $("#member_Id").val(),        		
@@ -521,7 +564,7 @@ $("#modifyButton").click(function() {
 					}
     		        
     		    }
-            });	//ajax EndPoint
+		});	//ajax EndPoint
     }); //$("#modifyButton2").click(function() EndPoint
 });
 	</script>

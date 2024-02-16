@@ -130,13 +130,13 @@ var pageNo = $("#pageNo").val();
 console.log("project_Id : " + project_Id);
 
 $("#modify").click(function(){
-	//location.href = "/project/projectModify?project_Id=" + project_Id + "&pageNo=" + pageNo;
-	location.href = "/project/projectModify";
+	location.href = "/project/projectModify?project_Id=" + project_Id + "&pageNo=" + pageNo;
+	//location.href = "/project/projectModify";
 });
 
 $("#back").click(function(){
-	//location.href = "/project/projectList?pageNo=" + pageNo;
-	location.href = "/project/projectList";
+	location.href = "/project/projectList?pageNo=" + pageNo;
+	//location.href = "/project/projectList";
 });
 </script>
 </body>

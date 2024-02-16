@@ -49,13 +49,13 @@ public class ProjectController {
 	//1. 조회(회원 정보)
 	@PostMapping("/projectList")
 	@ResponseBody
-	public Map<String, Object> projectList2(Model model, Criteria cri, HttpSession session , int member_Id) {
+	public Map<String, Object> projectList2(Model model, Criteria cri, HttpSession session) {
 		//System.out.println("도착1");
 		//System.out.println("POST) searchWord : " + cri.getSearchWord());
 		//System.out.println("POST) searchDate : " + cri.getSearchDate());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<ProjectDto> projectList = projectService.getProjectList(cri); 
-		System.out.println("member_Idmember_Idmember_Idmember_Id : " + member_Id);
+		//System.out.println("member_Idmember_Idmember_Idmember_Id : " + member_Id);
 		//1. 검색어 없이 조회 버튼을 클릭한 경우
 		//if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchWord().length() == 0 && cri.getSearchWord().trim().isEmpty()) {	//조건 없이 조회 버튼만 누른 경우.
 		//if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
