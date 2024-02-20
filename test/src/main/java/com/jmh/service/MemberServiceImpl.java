@@ -140,7 +140,6 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		
 		return memberMapper.loginCk(member_Id, member_Pw_ck);
-		//return null;
 	}
 
 	@Override
@@ -179,12 +178,4 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.getmember_Pw(member_Id);
 	}
-
-
-	
-
-	
-
-	
-	
 }

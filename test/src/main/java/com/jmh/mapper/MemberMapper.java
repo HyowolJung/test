@@ -53,8 +53,6 @@ public interface MemberMapper {
 
 	Object projectInmember(int project_Id);
 
-	
-
 	int memberModify2(Map<String, Object> resultMap);
 
 	int memberDelete2(Map<String, Object> resultMap);

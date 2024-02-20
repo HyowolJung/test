@@ -27,7 +27,7 @@ public class MainController {
 	
 	@GetMapping("/WellCome")
 	public String wellCome(HttpSession session, Model model) {
-		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
+		model.addAttribute("member_Id" , session.getAttribute("member_Id"));
 		return "/common/WellCome";
 	}
 	

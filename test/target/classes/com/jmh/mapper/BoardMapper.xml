@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jmh.mapper.BoardMapper">
+<select id="getFreeBoardList" resultType="com.jmh.dto.BoardDto">
+SELECT
+		BOARD_NO,
+		BOARD_TITLE
+FROM
+		(
+			SELECT
+					BOARD_NO,
+					BOARD_TITLE,
+					ROW_NUMBER() OVER(ORDER BY BOARD_NO DESC) AS NUMROW,
+					COUNT(*) OVER() AS TOTAL_CNT
+			FROM
+					BOARD
+			WHERE 
+					BOARD_TYPE = 'B01'
+		)
+WHERE
+		NUMROW BETWEEN 1 AND 5
+</select>
+
+<insert id="insertBoard" parameterType="com.jmh.dto.BoardDto">
+/*insertBoard*/
+INSERT
+INTO
+	BOARD
+		(
+		BOARD_NO,
+		BOARD_TYPE,
+		BOARD_TITLE,
+		BOARD_CONTENT
+		)
+VALUES
+(
+	(
+		SELECT
+			TO_NUMBER(NVL(MAX(BOARD_NO),0))+1
+		FROM
+			BOARD
+	)
+	,#{board_Type}
+	,#{board_Title}
+	,#{board_Content}
+)		
+</insert>
+</mapper>

@@ -52,22 +52,12 @@ public class MemberController {
 	
 	//1. 조회(페이징 정보)
 	@GetMapping("/memberList")	//memberList.jsp
-	public String memberListGet(Model model, Criteria cri, HttpSession session
-			//@RequestParam(value = "pageNo", required = false) int pageNo, 
-			//@RequestParam(value = "searchWord", required = false) String searchWord,
-            //@RequestParam(value = "searchField", required = false) String searchField,
-            //@RequestParam(value = "search_startDate", required = false) String search_startDate,
-            //@RequestParam(value = "search_endDate", required = false) String search_endDate
-            ) {
-		//System.err.println("pageNo : " + pageNo);
-		//System.err.println("searchField : " + searchField);
-		//pageNo = 1;
-		
+	public String memberListGet(Model model, Criteria cri, HttpSession session) {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
 		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
-		return "member/memberList";	//뷰를 반환합니다.(뷰의 위치) - 메서드 타입이 String 이므로.
+		return "member/memberList";
 	}
 	
 	//1. 조회(사원 정보)
@@ -84,10 +74,10 @@ public class MemberController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.getmemberList(cri);
-			System.out.println("POST X) searchWord : " + cri.getSearchWord());
-			System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
-			System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
-			System.out.println("POST X) totalCnt : " + totalCnt);
+			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
+			//System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
+			//System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
+			//System.out.println("POST X) totalCnt : " + totalCnt);
 			resultMap.put("pageNoPost", pageNoPost);
 			resultMap.put("pageDto", pageDto);
 			resultMap.put("memberList", memberList);
@@ -101,8 +91,6 @@ public class MemberController {
 			int totalCnt = memberService.getTotalCnt(cri);
 			PageDto pageDto = new PageDto(cri, totalCnt);
 			memberList = memberService.searchmemberList(cri);
-			//System.err.println("pageDto.cri : " + pageDto.cri);
-			//System.err.println("memberList : " + memberList);
 			//System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
 			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
 			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
@@ -188,19 +176,6 @@ public class MemberController {
 		return resultMap;
 	}
 	
-	//3. 수정(페이지 이동 + 회원 정보 조회)
-//	@GetMapping("/memberModify") ////memberList.jsp
-//	public String modifyMember(Model model, ProjectDto projectDto, int member_Id, int pageNo ) { /* @RequestParam("member_Id") int member_Id, @RequestParam int pageNo */
-//		//System.out.println("수정 화면 작동");
-//		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
-//		System.out.println("memberprojectList : " + memberprojectList);
-//		model.addAttribute("memberprojectList", memberprojectList);
-//		model.addAttribute("memberList", memberService.getModifyList(member_Id));
-//		model.addAttribute("pageNo", pageNo);
-//		return "member/memberModify";
-//	}
-	
-	
 	@PostMapping("/memberModify")
 	public String modifyMember(Model model,
 			@RequestParam("member_Id") int member_Id, 
@@ -275,7 +250,6 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	
 	//4. 삭제(다중 회원 정보 삭제)
 	@PostMapping("/memberDeleteM") //@RequestParam(value="parameter이름[]")List<String>
 	public String memberDeleteM(@RequestBody List<String> checkList) { //@RequestParam int member_Id, @RequestParam(value="checkList[]") MemberDto[] checkList  
@@ -317,18 +291,6 @@ public class MemberController {
 		return "";
 	}
 		
-	//5. 멤버 상세화면
-//	@GetMapping("/memberRead")
-//	public String memberReadGet(Model model, @RequestParam int member_Id, Criteria cri, @RequestParam int pageNo) {
-//		List<ProjectDto> projectList = memberService.getmemberprojectList(member_Id);
-//		System.out.println("projectList : " + projectList);
-//		System.out.println("pageNo : " + pageNo);
-//		model.addAttribute("pageNo" , pageNo);
-//		model.addAttribute("projectList" , projectList);
-//		model.addAttribute("memberList" , memberService.getModifyList(member_Id));
-//		return "member/memberRead";
-//	}
-	
 	@PostMapping("/memberRead")
 	public String memberReadPost(Model model, Criteria cri, @RequestParam("member_Id") int member_Id, @RequestParam("pageNo") int pageNo) {//
 		//System.err.println("pageNo : " + pageNo);

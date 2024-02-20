@@ -6,76 +6,75 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 목록 조회</title>
-  <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-        }
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 20px;
+}
 
-        /* div {
+/* div {
             margin-bottom: 20px;
         } */
+input, select {
+	margin-right: 10px;
+}
 
-        input, select {
-            margin-right: 10px;
-        }
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: center;
+}
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+th {
+	background-color: #f2f2f2;
+}
 
-        th {
-            background-color: #f2f2f2;
-        }
+button {
+	padding: 10px;
+	cursor: pointer;
+}
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-        }
+#pagination {
+	margin-top: 20px;
+}
 
-        #pagination {
-            margin-top: 20px;
-        }
+ul.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
 
-        ul.pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+li.page-item {
+	margin-right: 10px;
+}
 
-        li.page-item {
-            margin-right: 10px;
-        }
+a.page-link {
+	text-decoration: none;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	color: #333;
+	background-color: #fff;
+	cursor: pointer;
+}
 
-        a.page-link {
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            color: #333;
-            background-color: #fff;
-            cursor: pointer;
-        }
+a.page-link.active {
+	background-color: #007bff;
+	color: #fff;
+}
 
-        a.page-link.active {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .result-message {
-            text-align: center;
-            font-style: italic;
-            color: #777;
-        }
-    </style>
+.result-message {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+}
+</style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
@@ -180,6 +179,7 @@ $(document).ready(function() {
                     	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td>" + memberList[i].member_Name + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+						//newRow.append("<td>" + memberList[i].member_status + "</td>;")                    	
                     	newRow.append("<td>" + memberList[i].member_Position + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Department + "</td>");
                     	newRow.append("<td>" + memberList[i].member_Tel + "</td>");

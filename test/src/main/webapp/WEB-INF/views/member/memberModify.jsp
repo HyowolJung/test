@@ -480,7 +480,10 @@ $("#push").click(function() {
 					alert("삭제 실패");
 				}
 		        
-		    }
+		    },
+		    error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("문제가 발생했어요");
+			}
         });	//ajax EndPoint
     });
     
@@ -529,13 +532,6 @@ $("#push").click(function() {
         alert("다시 한번 확인해주세요. 철수일은 입사일, 투입일 보다 늦고, 퇴사일 보다 앞서야 합니다.");
         return false;
     }
-   	        
-   	        
-   	        
-   	        
-   	        
-   	        
-   	     	
    	     	
    	        data = {
    	    		member_Id : $("#member_Id").val(),        		
@@ -563,11 +559,14 @@ $("#push").click(function() {
 						alert("수정 실패");
 					}
     		        
-    		    }
+    		    },
+    		    error : function(request, status, error) { // 결과 에러 콜백함수        
+					alert("문제가 발생했어요");
+				}
 		});	//ajax EndPoint
     }); //$("#modifyButton2").click(function() EndPoint
 });
-	</script>
+</script>
 	
 	
 <!-- 
