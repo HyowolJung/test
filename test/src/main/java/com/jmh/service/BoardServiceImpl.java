@@ -26,4 +26,10 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.getFreeBoardList();
 	}
 
+	@Override
+	public List<BoardDto> selectFreeBoardList(String board_Title) {
+		// TODO Auto-generated method stub
+		return boardMapper.selectFreeBoardList(board_Title);
+	}
+
 }

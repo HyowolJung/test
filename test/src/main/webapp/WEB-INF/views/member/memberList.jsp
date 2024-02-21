@@ -154,6 +154,7 @@ $(document).ready(function() {
 		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
 		    return;
 		}
+		
 		$.ajax({
 			type : 'POST',
 			url: '/member/memberList',

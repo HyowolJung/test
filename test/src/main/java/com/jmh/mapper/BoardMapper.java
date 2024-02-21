@@ -15,4 +15,6 @@ public interface BoardMapper {
 	//2. 자유게시글 목록 불러오기
 	List<BoardDto> getFreeBoardList();
 
+	List<BoardDto> selectFreeBoardList(String board_Title);
+
 }

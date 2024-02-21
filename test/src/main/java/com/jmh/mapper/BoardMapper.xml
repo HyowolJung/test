@@ -26,24 +26,45 @@ WHERE
 /*insertBoard*/
 INSERT
 INTO
-	BOARD
-		(
-		BOARD_NO,
-		BOARD_TYPE,
-		BOARD_TITLE,
-		BOARD_CONTENT
-		)
+		BOARD
+			(
+			BOARD_NO,
+			BOARD_TYPE,
+			BOARD_TITLE,
+			BOARD_CONTENT
+			)
 VALUES
-(
 	(
-		SELECT
-			TO_NUMBER(NVL(MAX(BOARD_NO),0))+1
-		FROM
-			BOARD
-	)
-	,#{board_Type}
-	,#{board_Title}
-	,#{board_Content}
-)		
+		(
+			SELECT
+				TO_NUMBER(NVL(MAX(BOARD_NO),0))+1
+			FROM
+				BOARD
+		)
+		,#{board_Type}
+		,#{board_Title}
+		,#{board_Content}
+	)		
 </insert>
+
+<select id="selectFreeBoardList" resultType="com.jmh.dto.BoardDto">
+SELECT
+		BOARD_TITLE,
+		BOARD_CONTENT,
+		BOARD_VIEWCNT,
+		BOARD_CREATEDDATETIME,
+		BOARD_UPDATEDDATETIME,
+		BOARD_DELETEDDATETIME,
+		BOARD_TYPE,
+		BOARD_NO,
+		BOARD_ID,
+FROM
+		BOARD		
+		
+		
+		
+		
+
+
+</select>
 </mapper>

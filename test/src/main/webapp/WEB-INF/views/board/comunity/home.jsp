@@ -21,56 +21,48 @@
 	padding: 20px;
 	text-align: center;
 }
-/* .get-Free-BoardList td {
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	max-width: 150px; 	
-	display: block; 	
-} */
+
 .get-Free-BoardList{
 	font-size: 17px;
 	line-height: 2.1;
-	text-align: left;
+	/* text-align: left; */
 }
 
+.board-item {
+    max-width: 400px; /* 최대 너비 설정 */
+    overflow: hidden; /* 내용이 넘치면 숨김 */
+    text-overflow: ellipsis; /* 내용이 넘칠 때 말줄임표로 표시 */
+    white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+    text-align: left;
+}
 </style>
 </head>
 <body>
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div class="grid-container">
-	<div class="grid-item">
-   	자유게시판 <button id="insertBoard" onclick="submitPost()">등록하기</button><br>
-	<div class = "get-Free-BoardList" >
-		<c:forEach var="getFreeBoardList" items="${getFreeBoardList}"><br>
-			<tr>
-				<%-- <td>${getFreeBoardList.board_No}</td> --%>
-				<td>${getFreeBoardList.board_Title}</td>
-			<tr>
-		</c:forEach>
-	</div>
-	<%-- <div class="get-Free-BoardList">
-		<c:forEach var="getFreeBoardList" items="${getFreeBoardList}">
-			<div>
-            	<span>${getFreeBoardList.board_No}</span>
-            	<span class="ellipsis">${getFreeBoardList.board_Title}</span>
-        	</div>
-   		 </c:forEach>
-	</div> --%>
-	</div>
-	
-	<div class="grid-item">2</div>
-    <div class="grid-item">3</div>
-    <div class="grid-item">4</div>
+		<div class="grid-item">
+			자유게시판
+			<button id="insertBoard" onclick="submitPost()">등록하기</button>
+			<br><br>
+			<div class="get-Free-BoardList">
+    			<c:forEach var="getFreeBoardList" items="${getFreeBoardList}">
+        			<div class="board-item"><a href = "#" onclick="moveBoard('${getFreeBoardList.board_Title}')">${getFreeBoardList.board_Title}</a></div>
+    			</c:forEach>
+			</div>
+		</div>
+
+		<div class="grid-item">2</div>
+    	<div class="grid-item">3</div>
+    	<div class="grid-item">4</div>
 </div>
-<input type="text" id="member_Id" value="${member_Id}" disabled="disabled" style="display: none"><br>
+<input type="text" id="member_Id" value="${member_Id}" disabled="disabled" ><br><!-- style="display: none" -->
 
 
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+var member_Id = $("#member_Id").val();
 function submitPost() {
-	
-	var member_Id = $("#member_Id").val();
 	alert("클릭되었다. : " + member_Id);
     var form = $('<form></form>', {
         method: 'POST',
@@ -92,6 +84,31 @@ function submitPost() {
     // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();
+}
+
+function moveBoard(board_Title) {
+	alert("여기는 moveBoard()");
+	var form = $('<form></form>', {
+        method: 'POST',
+        action: '/board/comunity/read'
+    });
+
+    // memberId와 pageNo 값을 input으로 추가
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'member_Id',
+        value: member_Id
+    }));
+   form.append($('<input>', {
+        type: 'hidden',
+        name: 'board_Title',
+        value: board_Title
+    }));
+
+    // 폼을 body에 추가하고 제출
+    $('body').append(form);
+    form.submit();
+	
 }
 </script>
 </html>

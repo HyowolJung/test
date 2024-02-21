@@ -12,7 +12,7 @@
     justify-content: space-between;
     width: 1000px;
   }
-  .board-type {
+  .board_Type {
     width: 10%;
   }
   .board-title-input {
@@ -28,9 +28,9 @@
     width: 1000px; /* Adjusted to match cols attribute and container width */
     height: auto; /* Height is automatically adjusted based on rows attribute */
   }
-  .hidden-input {
+  /* .hidden-input {
     display: none;
-  }
+  } */
   .page-title {
 	display: flex;
 	align-items: center;
@@ -50,44 +50,68 @@
 </style>
 </head>
 <body>
-	<form action="/board/comunity/insert" method="post">
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
+	<form id="postForm" action="/board/comunity/insert" method="post">
 		<div class="page-title">
 			<p>게시글 작성<p>
-			<button type="submit">등록</button>
+			<button type="submit" id="submitButton">등록</button>
 		</div><br>
-		<input type="text" name="member_Id" value="${member_Id}" class="hidden-input">
+		<input type="text" id="member_Id" name="member_Id" value="${member_Id}" class="hidden-input">
 		<div class="form-container">
-			<select name="Board_Type" class="board-type">
-				<option value="" selected="selected">선택</option>
+			<select id="board_Type" name="board_Type" class="board_Type">
+				<option value="B00" selected="selected">선택</option>
 				<option value="B01">자유게시판</option>
 				<option value="B02">익명게시판</option>
 				<option value="B03">사진게시판</option>
 			</select>
-			<input type="text" name="board_Title" placeholder="제목을 입력해주세요" class="board-title-input">
+			<input type="text" id="board_Title" name="board_Title" placeholder="제목을 입력해주세요" class="board-title-input">
 		</div>
 		<!-- <input type="text" name="board_Title" placeholder="제목을 입력해주세요" class="board-title-input"><br> -->
-		<textarea name="board_Content" rows="20" placeholder="내용을 입력해주세요" class="board-content-textarea"></textarea>
+		<textarea id="board_Content" name="board_Content" rows="20" placeholder="내용을 입력해주세요" class="board-content-textarea"></textarea>
 	</form>
-	<%-- <form action="/board/comunity/insert" method="post">
-게시글 등록
-<button type="submit">등록</button>
-<input type="text" name ="member_Id" value="${member_Id}" style="display: none">
-<!-- <label>제목</label> -->
-<select id="Board_Type">
-		<option value="" selected="selected">선택</option>
-		<option value="B01">자유게시판</option>
-		<option value="B02">익명게시판</option>
-		<option value="B03">사진게시판</option>
-	</select><br><br>
-<input type="text" name="board_Title" placeholder="제목을 입력해주세요" style="width: 997px; height: 30px;"><br>
-<!-- <label>게시글</label><br> -->
-<!-- <input type="text" id="boardContent" style="width: 1000px; height: 300px;"> -->
-<textarea name="board_Content" rows="20" cols="140" placeholder="내용을 입력해주세요"></textarea>
-</form>
- --%>
+	
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+$("#postForm").submit(function(event) {
+    var member_Id = $("#member_Id").val();
+    var board_Type = $("#board_Type").val();
+    var board_Title = $("#board_Title").val();
+    var board_Content = $("#board_Content").val();
 
+    // 조건 검사
+    if (!board_Title) {
+        alert("제목을 입력해주세요");
+        event.preventDefault(); // 폼 제출 방지
+        return false; // 이벤트 처리기 종료
+    }
+
+    if (!board_Content) {
+        alert("내용을 입력해주세요");
+        event.preventDefault(); // 폼 제출 방지
+        return false; // 이벤트 처리기 종료
+    }
+    
+    if(board_Type == "B00"){
+    	alert("게시글 타입을 선택해주세요");
+    	event.preventDefault(); // 폼 제출 방지
+        return false;
+    }
+});
+/* var member_Id = $("#member_Id").val();
+var board_Title = $("#board_Title").val();
+var board_Content = $("#board_Content").val();
+$("#submitButton").click(function () {
+	alert("member_Id : " + member_Id + "/ board_Title : " + board_Title + "/ board_Content : " + board_Content);
+	if(!board_Title){
+		alert("제목을 입력해주세요");
+		return;
+	}
+	
+	if(!board_Content){
+		alert("내용을 입력해주세요");
+		return;
+	}
+}); */
 </script>
 </body>
 </html>
