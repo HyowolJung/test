@@ -31,7 +31,12 @@
 </head>
 <body>
 <div class="user-info">
-	${member_Id} 님 환영합니다. <a href="/logout" class="logout-button">로그아웃</a>
+	${member_Id} 님 환영합니다. <!-- <a href="/logout" class="logout-button">로그아웃</a> -->
 </div>
+<form method="post" action="/logout">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input type="submit" value="로그아웃" />
+</form>
+
 </body>
 </html>

@@ -19,6 +19,7 @@
 <c:if test="${member_Department == 'IT부'}">
  	<a href="/project/projectList?pageNo=1" style="display: inline;">프로젝트 관리</a>
 </c:if>
+
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -29,7 +30,7 @@ function submitPost() {
     // 폼 생성
     var form = $('<form></form>', {
         method: 'POST',
-        action: '/board/comunity/home'
+        action: '/board/home'
     });
 
     // memberId와 pageNo 값을 input으로 추가

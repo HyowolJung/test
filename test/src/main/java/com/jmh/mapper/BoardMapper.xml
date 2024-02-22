@@ -60,11 +60,7 @@ SELECT
 		BOARD_ID,
 FROM
 		BOARD		
-		
-		
-		
-		
-
-
+WHERE
+		BOARD_TITLE = #{board_Title}		
 </select>
 </mapper>

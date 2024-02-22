@@ -3,7 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jmh.mapper.ProjectMapper">
 
-1번
+<!-- 1번
 <SELECT ID="getList" resultType="com.dto.ProjectDto">
 <if test='PROEJCTID != null'>
 	SELECT PROJECTNAME, PROJECTDATE FROM PROJECT;
@@ -19,11 +19,7 @@
 </SELECT>
 <SELECT ID="selectList" resultType="com.dto.ProjectDto">
 	SELECT PROJECTNAME, PROJECTDATE FROM PROEJCT WHERE PROEJCTID = #{projectId}
-</SELECT>
-
-
-
-
+</SELECT> -->
 
 <!-- 1. 조회(검색어 X) -->
 <select id="getProjectList" resultType="com.jmh.dto.ProjectDto">
