@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jmh.dto.MemberDto;
 import com.jmh.service.MemberService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class MainController {
 	
 	@Autowired
@@ -45,12 +49,29 @@ public class MainController {
 		return "/success";	
 	}
 	
-	//@GetMapping("/login")
-	//public void login1() {}
+//	@GetMapping("/login")
+//	public String login(Model model , CsrfToken csrfToken) {
+//		model.addAttribute("_csrf", csrfToken);
+//		return "/login";	
+//	}
+
+//	@GetMapping("/login")
+//	public String login(Model model , CsrfToken csrfToken) {
+//		model.addAttribute("_csrf", csrfToken);
+//		return "/login";	
+//	}
 	
+//	@GetMapping("/login")
+//	public String login() {
+//		//model.addAttribute("_csrf", csrfToken);
+//		return "/login";	
+//	}
 	
-	@RequestMapping(value="/login", method=RequestMethod.GET)
+	@GetMapping("/login")
 	public void login() {}
+	
+	//@RequestMapping(value="/login", method=RequestMethod.GET)
+	//public void login() {}
 //	@RequestMapping("/login")
 //	public void login1() {}
 	
@@ -58,10 +79,11 @@ public class MainController {
 //	public void login2() {}
 	
 //	@GetMapping("/login")
-//	public String login() {
+//	public String login(Model model , CsrfToken csrfToken) {
+//		model.addAttribute("_csrf", csrfToken);
 //		return "/login";	
 //	}
-	
+//	
 //	@PostMapping("/login")
 //	@ResponseBody
 //	public List<MemberDto> memberLogin(int member_Id, String member_Pw, HttpSession session, MemberDto dto, Model model) {

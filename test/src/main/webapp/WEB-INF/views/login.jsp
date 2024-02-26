@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/security/tags"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,12 +75,19 @@ button:hover {
 </div> --%>
 
 <form action="/login" method="post">
-	아이디 : <input type="text" id="member_Id" name="member_Id" placeholder="부여받은 사번을 입력하세요." value="user"><br>
+	<div>
+		아이디 : <input type="text" id="username" name="username" placeholder="부여받은 사번을 입력하세요." value="admin"><br>
+	</div>
+	<!-- 아이디 : <input type="text" id="member_Id" name="member_Id" placeholder="부여받은 사번을 입력하세요." value="user"><br> -->
 	혹은 99999999<br>
-	비밀번호 : <input type="password" id="member_Pw" name="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="user"><br>
+	<div>
+		비밀번호 : <input type="password" id="password" name="password" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="admin"><br>
+	</div>
+	<!-- 비밀번호 : <input type="password" id="member_Pw" name="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="user"><br> -->
 	<button type="submit">로그인</button>
-	<%-- <input type="text" name="${_csrf.parameterName}" value="${_csrf.token}"/> --%>
+	
 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+	<%-- <csrfInput /> --%>
 </form>
 
 </body>

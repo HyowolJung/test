@@ -12,7 +12,9 @@
 메인페이지
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
 <input type ="text" id="member_Id" value = "${member_Id}" disabled="disabled" style="display: none;">
+
 <a href="#" onclick="submitPost()" style="display: inline;">자유 게시판</a>
+
 <c:if test="${member_Department == '인사부'}">
 	<a href="/member/memberList" style="display: inline;">회원 관리</a>
 </c:if>

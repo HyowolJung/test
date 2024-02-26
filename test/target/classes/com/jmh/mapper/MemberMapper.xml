@@ -10,6 +10,9 @@
     	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
     	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
     </RESULTMAP> -->
+<select id="loginID" resultType="com.jmh.auth.CustomUserDetails">
+	select * from CUSTOMMEMBER where ID='human'
+</select>
     
 <select id="getmemberListM" resultType="com.jmh.dto.MemberDto" parameterType="list">
 /*getmemberListM*/

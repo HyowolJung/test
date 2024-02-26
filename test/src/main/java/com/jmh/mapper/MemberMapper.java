@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.jmh.auth.CustomUserDetails;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
@@ -18,6 +19,8 @@ import com.jmh.dto.ProjectDto;
 @Repository
 public interface MemberMapper {
 
+	public CustomUserDetails loginID(String ID);
+	
 	//1. 조회(검색어 X)
 	List<MemberDto> getmemberList(Criteria cri);
 	
