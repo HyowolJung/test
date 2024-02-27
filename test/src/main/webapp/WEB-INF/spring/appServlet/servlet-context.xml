@@ -39,6 +39,6 @@
 	
 	<context:component-scan base-package="com.jmh.test" />
 	<context:component-scan base-package="com.jmh.controller" />
-	<context:component-scan base-package="com.jmh.auth"/>
+	<context:component-scan base-package="com.jmh.security"/>
 	
 </beans:beans>

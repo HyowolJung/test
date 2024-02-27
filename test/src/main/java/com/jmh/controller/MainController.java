@@ -70,6 +70,9 @@ public class MainController {
 	@GetMapping("/login")
 	public void login() {}
 	
+	@GetMapping("/logout")
+	public void logout() {}
+	
 	//@RequestMapping(value="/login", method=RequestMethod.GET)
 	//public void login() {}
 //	@RequestMapping("/login")

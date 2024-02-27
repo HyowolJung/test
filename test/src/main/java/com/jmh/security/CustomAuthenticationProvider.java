@@ -1,4 +1,4 @@
-package com.jmh.auth;
+package com.jmh.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

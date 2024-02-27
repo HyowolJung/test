@@ -37,6 +37,9 @@ public class MemberDto {
 	private String member_Skill_DB;
 	private ProjectDetailDto projectDetail;
 	private String member_Department;
+	private String member_Authority; 
+	private String member_Enabled;
+	
 	
 	//@DateTimeFormat(pattern = "yy/MM/dd")
 	//@PastOrPresent

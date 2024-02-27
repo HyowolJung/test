@@ -76,12 +76,12 @@ button:hover {
 
 <form action="/login" method="post">
 	<div>
-		아이디 : <input type="text" id="username" name="username" placeholder="부여받은 사번을 입력하세요." value="admin"><br>
+		아이디 : <input type="text" id="member_Id" name="member_Id" placeholder="부여받은 사번을 입력하세요." value="95956301"><br>
 	</div>
 	<!-- 아이디 : <input type="text" id="member_Id" name="member_Id" placeholder="부여받은 사번을 입력하세요." value="user"><br> -->
 	혹은 99999999<br>
 	<div>
-		비밀번호 : <input type="password" id="password" name="password" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="admin"><br>
+		비밀번호 : <input type="password" id="member_Pw" name="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="1234"><br>
 	</div>
 	<!-- 비밀번호 : <input type="password" id="member_Pw" name="member_Pw" placeholder="본인의 전화번호 뒷자리를 입력하세요" value="user"><br> -->
 	<button type="submit">로그인</button>
@@ -95,7 +95,6 @@ button:hover {
 <script type="text/javascript">
 $(document).ready(function() {
 	$("#welcomeMessage").hide();
-	
 	/* let member_Id = $("#member_Id");
 	let member_Id_csrf = $("#member_Id_csrf");
 	let member_Pw = $("#member_Pw");
