@@ -21,7 +21,7 @@ public interface MemberMapper {
 
 	public CustomUserDetails loginID(String member_Id);
 	
-	//public MemberDto read(String member_Id);
+	public MemberDto read(String member_Id);
 	
 	//1. 조회(검색어 X)
 	List<MemberDto> getmemberList(Criteria cri);

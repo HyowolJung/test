@@ -10,9 +10,10 @@
     <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean>
     <bean id ="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
     
-    <security:http auto-config="true" use-expressions="false">
+    <security:http auto-config="true" use-expressions="false"><!--  -->
 		
 		<security:intercept-url pattern="/member/memberList" access="ROLE_MEMBER"/>
+		<security:intercept-url pattern="/project/projectList?pageNo=1" access="ROLE_PROJECT"/>
 		
 		<security:form-login login-page="/login"
 		authentication-success-handler-ref="customLoginSuccess"
@@ -26,10 +27,10 @@
 		<security:authentication-provider user-service-ref="customUserDetailsService">
 			<!-- <security:password-encoder ref="customPasswordEncorder"/> -->
 			<security:password-encoder ref="bcryptPasswordEncoder"/>
-			<security:jdbc-user-service data-source-ref="dataSource"
+			<!-- <security:jdbc-user-service data-source-ref="dataSource"
 				users-by-username-query="SELECT MEMBER_ID, MEMBER_PW, MEMBER_ENABLED FROM MEMBER WHERE MEMBER_ID=?"
 				authorities-by-username-query="SELECT MEMBER_ID, MEMBER_PW, MEMBER_AUTHORITY FROM MEMBER WHERE MEMBER_ID=?"
-			/>
+			/> -->
 		</security:authentication-provider>
 	</security:authentication-manager>
 	

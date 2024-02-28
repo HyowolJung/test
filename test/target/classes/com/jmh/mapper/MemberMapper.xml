@@ -12,14 +12,13 @@
     </RESULTMAP> -->
     
 <resultMap type="com.jmh.dto.MemberDto" id="memberMap">
-	<id property="member_Id" column="member_Id"/>
 	<result property="member_Id" column="member_Id"/>
 	<result property="member_Pw" column="member_Pw"/>
 	<result property="member_Name" column="member_Name"/>
 	<result property="member_authority" column="member_authority"/>
 </resultMap>
 
-<select id="read" resultType="memberMap">
+<select id="read" resultMap="memberMap" >
 SELECT 
 		MEMBER_ID, 
 		MEMBER_PW, 
@@ -35,6 +34,19 @@ WHERE
 <!-- <select id="loginID" resultType="com.jmh.security.CustomUserDetails">
 	select * from CUSTOMMEMBER where ID='human'
 </select> -->
+
+<select id="loginID" resultType="com.jmh.security.CustomUserDetails">
+SELECT 
+		MEMBER_ID, 
+		MEMBER_PW, 
+		MEMBER_NAME, 
+		MEMBER_AUTHORITY, 
+		MEMBER_ENABLED 
+FROM 
+		MEMBER 
+WHERE 
+		MEMBER_ID=#{member_Id}
+</select>
     
     
     

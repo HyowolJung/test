@@ -80,7 +80,9 @@ a.page-link.active {
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
 <div>
-	<input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"><!-- type="hidden" -->
+	
+	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
+	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- style="display: none" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>

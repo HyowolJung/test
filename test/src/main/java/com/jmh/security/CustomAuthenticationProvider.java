@@ -9,7 +9,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider{
-
+	
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
@@ -19,6 +19,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		System.err.println("CustomAuthenticationProvider 도착했습니다.");
+		
 		String username=(String) authentication.getPrincipal();
 		String password=(String) authentication.getCredentials();
 		
@@ -38,6 +40,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
 	@Override
 	public boolean supports(Class<?> authentication) {
 		// TODO Auto-generated method stub
+		System.err.println("CustomAuthenticationProvider 도착했어요 3");
 		return true;
 	}
 
