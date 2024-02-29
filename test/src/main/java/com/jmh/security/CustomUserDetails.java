@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails{
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		System.err.println("CustomUserDetails 도착했어요!! 1");
+		System.err.println("CustomUserDetails 도착했어요!! 1 : " + member_Authority);
 		ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
 		auth.add(new SimpleGrantedAuthority(member_Authority));
 		
@@ -50,7 +50,7 @@ public class CustomUserDetails implements UserDetails{
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		System.err.println("CustomUserDetails 도착했어요!! 5");
+		System.err.println("CustomUserDetails 도착했어요!! 5 : " + member_Id);
 		return member_Id;
 	}
 

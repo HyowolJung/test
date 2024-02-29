@@ -13,19 +13,22 @@
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
 <input type ="text" id="member_Id" value = "${member_Id}" disabled="disabled" style="display: none;">
 
-<a href="#" onclick="submitPost()" style="display: inline;">자유 게시판</a>
+<!-- <a href="#" onclick="submitPost()" style="display: inline;">자유 게시판</a> -->
+<a href="/board/home" style="display: inline;">자유 게시판</a><!-- onclick="submitPost()"  -->
+<a href="/member/memberList" style="display: inline;">회원 관리</a>
+<a href="/project/projectList?pageNo=1" style="display: inline;">프로젝트 관리</a>
 
-<c:if test="${member_Department == '인사부'}">
+<%-- <c:if test="${member_Department == '인사부'}">
 	<a href="/member/memberList" style="display: inline;">회원 관리</a>
 </c:if>
 <c:if test="${member_Department == 'IT부'}">
  	<a href="/project/projectList?pageNo=1" style="display: inline;">프로젝트 관리</a>
-</c:if>
+</c:if> --%>
 
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
-var member_Id = $("#member_Id").val();
+/* var member_Id = $("#member_Id").val();
 function submitPost() {
 	//alert("pageNo : " + pageNo);
 	//alert("member_Id : " + member_Id);
@@ -41,15 +44,10 @@ function submitPost() {
         name: 'member_Id',
         value: member_Id
     }));
-    /* form.append($('<input>', {
-        type: 'hidden',
-        name: 'pageNo',
-        value: pageNo
-    })); */
 
     // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();
-}
+} */
 </script>
 </html>

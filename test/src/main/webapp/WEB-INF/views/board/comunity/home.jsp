@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>Insert title here</title>
 <style>
 .grid-container {
@@ -46,7 +48,10 @@
 			<br><br>
 			<div class="get-Free-BoardList">
     			<c:forEach var="getFreeBoardList" items="${getFreeBoardList}">
-        			<div class="board-item"><a href = "#" onclick="moveBoard('${getFreeBoardList.board_Title}')">${getFreeBoardList.board_Title}</a></div>
+        			<div class="board-item">
+        				<%-- <a href = "#" onclick="moveBoard('${getFreeBoardList.board_Title}')">${getFreeBoardList.board_Title}</a> --%>
+        				<a href="/board/comunity/insert" >${getFreeBoardList.board_Title}</a>
+        			</div>
     			</c:forEach>
 			</div>
 		</div>
@@ -63,7 +68,7 @@
 <script type="text/javascript">
 var member_Id = $("#member_Id").val();
 function submitPost() {
-	alert("클릭되었다. : " + member_Id);
+	//alert("클릭되었다. : " + member_Id);
     var form = $('<form></form>', {
         method: 'POST',
         action: '/board/comunity/insert'
@@ -75,11 +80,6 @@ function submitPost() {
         name: 'member_Id',
         value: member_Id
     }));
-    /* form.append($('<input>', {
-        type: 'hidden',
-        name: 'pageNo',
-        value: pageNo
-    })); */
 
     // 폼을 body에 추가하고 제출
     $('body').append(form);
@@ -87,7 +87,38 @@ function submitPost() {
 }
 
 function moveBoard(board_Title) {
-	alert("여기는 moveBoard()");
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+
+    alert("token : " + token);
+    alert("header : " + header);
+    var form = $('<form></form>', {
+        method: 'POST',
+        action: '/board/comunity/read'
+    });
+
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'member_Id',
+        value: member_Id
+    }));
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'board_Title',
+        value: board_Title
+    }));
+    form.append($('<input>', {
+        type: 'hidden',
+        name: header,
+        value: token
+    }));
+
+    $('body').append(form);
+    form.submit();
+}
+
+/* function moveBoard(board_Title) {
+	//alert("여기는 moveBoard()");
 	var form = $('<form></form>', {
         method: 'POST',
         action: '/board/comunity/read'
@@ -108,7 +139,6 @@ function moveBoard(board_Title) {
     // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();
-	
-}
+} */
 </script>
 </html>

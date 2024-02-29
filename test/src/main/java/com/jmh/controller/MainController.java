@@ -49,37 +49,18 @@ public class MainController {
 		return "/success";	
 	}
 	
-//	@GetMapping("/login")
-//	public String login(Model model , CsrfToken csrfToken) {
-//		model.addAttribute("_csrf", csrfToken);
-//		return "/login";	
-//	}
-
-//	@GetMapping("/login")
-//	public String login(Model model , CsrfToken csrfToken) {
-//		model.addAttribute("_csrf", csrfToken);
-//		return "/login";	
-//	}
+	@GetMapping("/error")
+	public void error() {}
 	
-//	@GetMapping("/login")
-//	public String login() {
-//		//model.addAttribute("_csrf", csrfToken);
-//		return "/login";	
-//	}
+	@PostMapping("/error")
+	public void error2() {}
 	
 	@GetMapping("/login")
 	public void login() {}
 	
-	@GetMapping("/logout")
+	@PostMapping("/logout")
 	public void logout() {}
 	
-	//@RequestMapping(value="/login", method=RequestMethod.GET)
-	//public void login() {}
-//	@RequestMapping("/login")
-//	public void login1() {}
-	
-//	@PostMapping("/login")
-//	public void login2() {}
 	
 //	@GetMapping("/login")
 //	public String login(Model model , CsrfToken csrfToken) {
