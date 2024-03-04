@@ -11,8 +11,7 @@
 
 메인페이지
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
-<input type ="text" id="member_Id" value = "${member_Id}" disabled="disabled" style="display: none;">
-
+<input type="text" id="member_Id" value="${member_Id}" disabled="disabled" style="display: none;">
 <!-- <a href="#" onclick="submitPost()" style="display: inline;">자유 게시판</a> -->
 <a href="/board/home" style="display: inline;">자유 게시판</a><!-- onclick="submitPost()"  -->
 <a href="/member/memberList" style="display: inline;">회원 관리</a>

@@ -38,8 +38,9 @@ public class MainController {
 	}
 	
 	@GetMapping("/main")
-	public String main(HttpSession session, Model model) {
+	public String main(HttpSession session, Model model, String member_Id) {
 		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		//model.addAttribute("member_Department" , "인사부");
 		return "/main";
 	}

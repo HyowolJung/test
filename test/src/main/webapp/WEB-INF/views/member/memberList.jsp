@@ -75,6 +75,8 @@ a.page-link.active {
 	color: #777;
 }
 </style>
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
@@ -97,6 +99,7 @@ a.page-link.active {
 	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
 	<button id="searchButton">조회</button>
 	<button id="resetButton">초기화</button>
+	
 </div>
 <br><br>
 <table border="1" id="memberTable">
@@ -143,7 +146,8 @@ $(document).ready(function() {
 	$("#backButton").hide();
 	$("#memberTable tbody").empty();
 	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 	//1. 조회(#searchButton)버튼 클릭 했을 때
 	$("#searchButton").click(function(){
 		var search_startDate = $("#search_startDate").val();
@@ -160,12 +164,17 @@ $(document).ready(function() {
 		$.ajax({
 			type : 'POST',
 			url: '/member/memberList',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
 			data: {
-			 	"searchField" :  searchField,
+			 	"searchField" : searchField,
 			 	"searchWord" : searchWord,
 			 	"pageNo" : pageNo,
 			 	"search_startDate" : search_startDate,
-			 	"search_endDate" : search_endDate
+			 	"search_endDate" : search_endDate,
+			 	"header" : header,
+			 	"token" : token
 			},
 			success : function(resultMap) { // 결과 성공 콜백함수  
 				var memberList = resultMap.memberList;
@@ -177,6 +186,7 @@ $(document).ready(function() {
 					alert("조회를 성공했어요.");
            			for (let i = 0; i < memberList.length; i++) {
                     	var newRow = $("<tr>");
+                    	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
                     	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                     	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
@@ -237,6 +247,9 @@ $(document).ready(function() {
 			type : 'POST',
 			url: '/member/memberListM',
 			contentType: 'application/json',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
 			data: JSON.stringify(checkList),
 			success : function(resultMap) { // 결과 성공 콜백함수
 				alert("회원정보를 수정합니다.");
@@ -291,6 +304,7 @@ $(document).ready(function() {
         				select_member_Skill_DB += "</select>"; 
         				
            				let newRow = $("<tr>");
+           				newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
                     	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                     	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td>" + memberList[i].member_Id + "</td>");
@@ -373,6 +387,9 @@ $(document).ready(function() {
 						type : 'POST',
 						url: '/member/memberModifyM',
 						contentType : 'application/json; charset=utf-8',
+						beforeSend: function(xhr) {
+				            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+				        },
 						data: JSON.stringify(modifyDatas),
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
@@ -421,6 +438,9 @@ $(document).ready(function() {
 						type : 'POST',
 						url: '/member/memberModifyM',
 						contentType : 'application/json; charset=utf-8',
+						beforeSend: function(xhr) {
+				            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+				        },
 						data: JSON.stringify(modifyDatas),
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
@@ -454,6 +474,9 @@ $(document).ready(function() {
 			type : 'POST',
 			url: '/member/memberDeleteM',
 			contentType: 'application/json',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
 			data: JSON.stringify(checkList),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("삭제를 성공했어요.");
@@ -510,7 +533,13 @@ function submitPost(member_Id, pageNo) {
         name: 'pageNo',
         value: pageNo
     }));
-
+	
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
+    }));
+    
     // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();
@@ -675,6 +704,9 @@ function go(pageNo){
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,
@@ -702,6 +734,7 @@ function go(pageNo){
 				//alert("조회를 성공했어요.");
        			for (let i = 0; i < memberList.length; i++) {
                 	var newRow = $("<tr>");
+                	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                 	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
                 	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
@@ -738,7 +771,7 @@ function go(pageNo){
        			$("#memberTable tbody").empty();
        		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
        		}
-			
+       		
 			/* if (searchWord.trim() !== "") {
 				location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
 				if(search_startDate != null){

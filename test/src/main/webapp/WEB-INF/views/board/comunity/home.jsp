@@ -41,6 +41,7 @@
 </head>
 <body>
 <%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
+<input type="text" id="member_Id" name="member_Id" value="${member_Id}" disabled="disabled" style="display: none"><br>
 <div class="grid-container">
 		<div class="grid-item">
 			자유게시판
@@ -49,18 +50,19 @@
 			<div class="get-Free-BoardList">
     			<c:forEach var="getFreeBoardList" items="${getFreeBoardList}">
         			<div class="board-item">
+        				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         				<%-- <a href = "#" onclick="moveBoard('${getFreeBoardList.board_Title}')">${getFreeBoardList.board_Title}</a> --%>
-        				<a href="/board/comunity/insert" >${getFreeBoardList.board_Title}</a>
+        				<a href="#" onclick="moveBoard('${getFreeBoardList.board_Title}')">${getFreeBoardList.board_Title}</a>
         			</div>
     			</c:forEach>
 			</div>
 		</div>
-
+		<%-- <a href="/board/comunity/read" >${getFreeBoardList.board_Title}</a> --%>
 		<div class="grid-item">2</div>
     	<div class="grid-item">3</div>
     	<div class="grid-item">4</div>
 </div>
-<input type="text" id="member_Id" value="${member_Id}" disabled="disabled" ><br><!-- style="display: none" -->
+
 
 
 </body>
@@ -87,35 +89,43 @@ function submitPost() {
 }
 
 function moveBoard(board_Title) {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-
-    alert("token : " + token);
-    alert("header : " + header);
+    
     var form = $('<form></form>', {
         method: 'POST',
         action: '/board/comunity/read'
     });
 
-    form.append($('<input>', {
+   form.append($('<input>', {
         type: 'hidden',
         name: 'member_Id',
         value: member_Id
     }));
+    
     form.append($('<input>', {
         type: 'hidden',
         name: 'board_Title',
         value: board_Title
     }));
+    
     form.append($('<input>', {
         type: 'hidden',
-        name: header,
-        value: token
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
     }));
-
+    
     $('body').append(form);
     form.submit();
 }
+//var token = $("meta[name='_csrf']").attr("content");
+	//var header = $("meta[name='_csrf_header']").attr("content");
+
+//alert("token : " + token);
+//alert("header : " + header);
+/* form.append($('<input>', {
+type: 'hidden',
+name: header,
+value: token
+})); */
 
 /* function moveBoard(board_Title) {
 	//alert("여기는 moveBoard()");

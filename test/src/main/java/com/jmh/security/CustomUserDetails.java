@@ -3,6 +3,8 @@ package com.jmh.security;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,6 +53,7 @@ public class CustomUserDetails implements UserDetails{
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		System.err.println("CustomUserDetails 도착했어요!! 5 : " + member_Id);
+		
 		return member_Id;
 	}
 

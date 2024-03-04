@@ -26,6 +26,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 			
 		});
 		
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String member_Id = userDetails.getUsername(); // 또는 getMember_Id()
+        HttpSession session = request.getSession();
+        session.setAttribute("member_Id", member_Id);
 		response.sendRedirect("/main");
 		
 //		if(roleNames.contains("ROLE_MEMBER")) {

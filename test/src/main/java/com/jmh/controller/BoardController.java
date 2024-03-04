@@ -2,6 +2,8 @@ package com.jmh.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,19 +24,20 @@ public class BoardController {
 	BoardService boardService;
 	
 	@GetMapping("/home")
-	public String home(Model model) {
+	public String home(Model model, HttpSession session) {
 		List<BoardDto> getFreeBoardList = boardService.getFreeBoardList();
 		//System.out.println("getFreeBoardList : " + getFreeBoardList);
 		model.addAttribute("getFreeBoardList" , getFreeBoardList);
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		return "/board/comunity/home"; 
 	}
 	
 	@PostMapping("/home")
-	public String home(@RequestParam int member_Id, Model model) {
+	public String home(@RequestParam String member_Id, Model model, HttpSession session) {
 		List<BoardDto> getFreeBoardList = boardService.getFreeBoardList();
 		//System.out.println("getFreeBoardList : " + getFreeBoardList);
 		model.addAttribute("getFreeBoardList" , getFreeBoardList);
-		model.addAttribute("member_Id" , member_Id);
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		return "/board/comunity/home";
 	}
 	
@@ -68,17 +71,23 @@ public class BoardController {
 	}
 	
 	@PostMapping("/comunity/read")
-	public String read2(Model model, int member_Id, String board_Title) {
+	public String read2(Model model, String member_Id, String board_Title, HttpSession session) {
 		System.err.println("POST) member_Id : " + member_Id + "/ board_Title : " + board_Title);
 		List<BoardDto> selectFreeBoardList = boardService.selectFreeBoardList(board_Title);
 		model.addAttribute("selectFreeBoardList" , selectFreeBoardList);
+		//	List<BoardDto> selectFreeBoardList = boardService.selectFreeBoardList(board_Title);
+		//	model.addAttribute("selectFreeBoardList" , selectFreeBoardList);
+		System.err.println("selectFreeBoardList 1 : " + selectFreeBoardList);
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		return "/board/comunity/read";
 	}
 	
 	@GetMapping("/comunity/read")
-	public String read1(Model model, int member_Id) {
-		System.out.println("안녕!!!!!!!!!!!!!!!");
-		//System.err.println("GET) member_Id : " + member_Id);
+	public String read1(Model model, String member_Id, String board_Title, HttpSession session) {
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
+		List<BoardDto> selectFreeBoardList = boardService.selectFreeBoardList(board_Title);
+		System.err.println("selectFreeBoardList 2 : " + selectFreeBoardList);
+		model.addAttribute("selectFreeBoardList" , selectFreeBoardList);
 		return "/board/comunity/read";
 	}
 }
