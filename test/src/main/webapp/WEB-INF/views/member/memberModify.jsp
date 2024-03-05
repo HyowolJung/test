@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>회원 수정</title>
 <style>
     table {
@@ -45,6 +47,7 @@
 </head>
 <body>
 <%-- <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br> --%>
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
 <div class="centered">
 멤버 수정화면
 <br><br>
@@ -218,6 +221,9 @@
 </div>	
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
+
 function back() {
 	var member_Id = $("#member_Id").val();
 	var pageNo = $("#pageNo").val();
@@ -239,6 +245,12 @@ function back() {
         type: 'hidden',
         name: 'pageNo',
         value: pageNo
+    }));
+    
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
     }));
     
     $('body').append(form);
@@ -292,6 +304,9 @@ $("#modifyButton").click(function() {
 					type : 'POST',
 					url: '/member/memberModifyInfo',
 					contentType : 'application/json; charset=utf-8',
+					beforeSend: function(xhr) {
+	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        		},
 					data: JSON.stringify(modifyDatas),
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
@@ -328,6 +343,9 @@ $("#modifyButton").click(function() {
 					type : 'POST',
 					url: '/member/memberModifyInfo',
 					contentType : 'application/json; charset=utf-8',
+					beforeSend: function(xhr) {
+	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        		},
 					data: JSON.stringify(modifyDatas),
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
@@ -348,6 +366,58 @@ $("#modifyButton").click(function() {
 });//$("#modifyButton").click(function() {
 	
 $("#push").click(function() {
+    var member_Id = $("#member_Id").val();
+    var member_Name = $("#member_Name").val();
+    localStorage.setItem('member_Id', member_Id);
+    localStorage.setItem('member_Name', member_Name);
+    
+    // CSRF 토큰 가져오기
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+    // 팝업 옵션 설정
+    let popOption = "width=1150, height=650, top=200, left=300, scrollbars=yes";
+
+    // 미리 팝업 창을 열어 둡니다.
+    var popup = window.open('', 'pop', popOption);
+    if (!popup) return; // 팝업 차단 여부 확인
+
+    // 임시 폼 생성 및 속성 설정
+    var form = document.createElement("form");
+    form.target = "pop";
+    form.method = "POST";
+    form.action = "/popup/popProject";
+
+    // member_Id 필드 추가
+    var idInput = document.createElement("input");
+    idInput.type = "hidden";
+    idInput.name = "member_Id";
+    idInput.value = member_Id;
+    form.appendChild(idInput);
+
+    // member_Name 필드 추가
+    var nameInput = document.createElement("input");
+    nameInput.type = "hidden";
+    nameInput.name = "member_Name";
+    nameInput.value = member_Name;
+    form.appendChild(nameInput);
+
+    // CSRF 토큰 필드 추가
+    var csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = csrfHeader; // 서버에서 이 헤더 이름을 기대합니다.
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    // 폼을 문서에 추가하지 않고 직접 팝업의 문서에 폼을 추가
+    popup.document.body.appendChild(form);
+
+    // 폼 제출
+    form.submit();
+});
+	
+	
+/* $("#push").click(function() {
     var member_Id = $("#member_Id").val();
     var member_Name = $("#member_Name").val();
     localStorage.setItem('member_Id', member_Id);
@@ -384,7 +454,7 @@ $("#push").click(function() {
 
     // 폼 제출
     form.submit();
-});
+}); */
 	
 	
 	
@@ -470,6 +540,9 @@ $("#push").click(function() {
 			type : 'POST',
 			url: '/member/memberDelete2',
 			contentType : 'application/json; charset=utf-8',
+			beforeSend: function(xhr) {
+        		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+    		},
 			data: JSON.stringify(selectedProjectData),
 			success: function(result) {
 				if(result = true){
@@ -549,6 +622,9 @@ $("#push").click(function() {
     			type : 'POST',
     			url: '/member/memberModify2',
     			contentType : 'application/json; charset=utf-8',
+    			beforeSend: function(xhr) {
+            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        		},
 				data: JSON.stringify(selectedProjectData),
     			success: function(result) {
 					if(result = true){

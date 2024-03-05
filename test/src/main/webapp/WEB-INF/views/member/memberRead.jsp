@@ -6,6 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>회원 상세정보</title>
 <style>
 table {
@@ -45,6 +47,7 @@ table {
 </head>
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
 <div class="center">
 멤버 상세정보
 <br>
@@ -129,6 +132,8 @@ table {
 <script type="text/javascript">
 var member_Id = document.getElementById("td_Id").innerText;
 var pageNo = $("#pageNo").val();
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
 //console.log("member_Id : " + member_Id);
 
 function submitPost() {//member_Id, pageNo
@@ -153,12 +158,19 @@ function submitPost() {//member_Id, pageNo
         name: 'member_Id',
         value: member_Id
     }));
+    
     form.append($('<input>', {
         type: 'hidden',
         name: 'pageNo',
         value: pageNo
     }));
 
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
+    }));
+    
     // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();

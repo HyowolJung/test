@@ -20,20 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService{
 		// TODO Auto-generated method stub
 		CustomUserDetails user = mapper.loginID(member_Id);
 		
-//		System.err.println("설마 여기인가요? : " + member_Id);
-//		if(member_Id != null) {
-//			HttpSession session = null;
-//			session.setAttribute(member_Id, "member_Id");
-//		}
-		
-		
 		if(member_Id==null) {
 			System.err.println("CustomUserDetailsService 도착 2");
 			throw new UsernameNotFoundException(member_Id);
 		}
 		
 		return user;
-		//return null;
 	}
-
 }

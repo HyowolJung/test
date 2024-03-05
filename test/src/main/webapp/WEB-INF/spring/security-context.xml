@@ -7,7 +7,7 @@
     
     <bean id="customLoginSuccess" class="com.jmh.security.CustomLoginSuccessHandler"></bean>
     <bean id="customUserDetailsService" class="com.jmh.security.CustomUserDetailsService"></bean>
-    <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean>
+    <!-- <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean> -->
     <bean id ="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
     
     <security:http auto-config="true" use-expressions="true">

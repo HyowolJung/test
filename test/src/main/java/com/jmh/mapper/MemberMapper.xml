@@ -563,7 +563,8 @@ WHERE
 <update id="memberModify_M" parameterType="java.util.Map">
     <!-- resultMap에서 "modifyDatas" 키를 사용하여 데이터 추출 -->
     <foreach item="member" index="index" collection="modifyDatas" open="DECLARE BEGIN" separator=";" close="; END;">
-        UPDATE MEMBER
+        UPDATE 
+        	MEMBER
         SET
             MEMBER_NAME = #{member.member_Name},
             MEMBER_SEX = #{member.member_Sex},
@@ -573,7 +574,12 @@ WHERE
             MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
             MEMBER_SKILL_DB = #{member.member_Skill_DB},
             MEMBER_STARTDATE = #{member.member_startDate},
+        <if test="member.member_endDate != null">    
             MEMBER_ENDDATE = #{member.member_endDate}
+        </if>
+        <if test="member.member_endDate == null">
+        	MEMBER_ENDDATE = null
+        </if>	   
         WHERE
             MEMBER_ID = #{member.member_Id}
     </foreach>
@@ -594,8 +600,6 @@ WHERE
 	
 	</foreach>
 </update>
-
-
 
 <select id="member_Tel_ck_M" resultType="String" parameterType="java.util.List">
     <foreach item="member" index="index" collection="modifyList" open="(" separator="," close=")">

@@ -5,7 +5,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}" />
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>Insert title here</title>
 <style type="text/css">
 .user-info {
@@ -45,7 +47,30 @@
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <button class="logout-button">로그아웃</button>
   </form>
+  <button class="logout-button" onclick="main()">메인화면</button>
 </div>
 
 </body>
+<script type="text/javascript">
+	function main(){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+	
+		var form = $('<form></form>', {
+        	method: 'GET',
+        	action: '/main'
+    	});
+	
+    	form.append($('<input>', {
+        	type: 'hidden',
+        	name: '${_csrf.parameterName}',
+        	value: '${_csrf.token}'
+    	}));
+    
+    	// 폼을 body에 추가하고 제출
+    	$('body').append(form);
+    	form.submit();
+	}
+	
+</script>
 </html>

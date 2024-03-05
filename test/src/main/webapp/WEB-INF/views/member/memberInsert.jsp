@@ -4,6 +4,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}" />
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>회원 등록</title>
     <style>
     body {
@@ -50,6 +52,7 @@
 </style>
 </head>
 <body>
+<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
 <div class="column" style="text-align: left;">
 	<p style="color: red; text-align: center;" >필수 입력</p>
 
@@ -129,6 +132,9 @@
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+	var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+	
 	let member_Id = $("#member_Id");
 	const randomNumber = Math.floor(Math.random() * 99999999) + 1;
     // 숫자를 8자리 문자열로 포맷, 필요한 경우 앞에 0을 추가
@@ -138,10 +144,7 @@ $(document).ready(function() {
     const randomNumber2 = "010" + Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
     // replace 함수와 정규 표현식을 사용하여 형식 변환
     const formattedNumber2 = randomNumber2.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-    // 변환된 번호를 alert으로 출력
-    //alert(formattedNumber);
-    //변환된 번호를 alert으로 출력
-    //alert(formattedNumber2);
+
     $("#member_Tel").val(formattedNumber2);
     
 	//1. 아이디 체크
@@ -168,18 +171,18 @@ $(document).ready(function() {
 	       			url : '/member/memberInsert_ck',
 	       			data : {
 	       				"member_Id" : member_Id.val()
-	       		},
-	       		success : 	
-	       			function(result) {			
-	       				if(result == false){
-	       					console.log("result : " + result);
-	       					result_Id.css("color","red").html("중복된 아이디입니다.");
-	       				}else if(result == true){
-	       					result_Id.css("color", "green").html("");
+	       			},
+	       			success : 	
+	       				function(result) {			
+	       					if(result == false){
+	       						console.log("result : " + result);
+	       						result_Id.css("color","red").html("중복된 아이디입니다.");
+	       					}else if(result == true){
+	       						result_Id.css("color", "green").html("");
+	       					}
 	       				}
-	       			}
 	       		}); //ajax EndPoint	
-	         }
+			}
 	    } 
 	}); //member_Tel.on('blur', function EndPoint
 	
@@ -225,7 +228,7 @@ $(document).ready(function() {
         console.log("member_Tel : " + member_Tel.val());
         // 전화번호 유효성 체크(비어있는지)
         if (member_Tel.val().length == 0) {
-            result_Tel.css("color", "red").html("전화번호가 비어있어요");
+            result_Tel.css("color", "red").html("전화번호가 비어있어요.");
             return;
         } else {
             result_Tel.css("color", "green").html("");
@@ -238,6 +241,9 @@ $(document).ready(function() {
                 $.ajax({
         			type : 'GET',
         			url : '/member/memberInsert_ck',
+        			beforeSend: function(xhr) {
+        	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        	        },
         			data : {
         				"member_Tel" : member_Tel.val()
         			},
@@ -262,7 +268,7 @@ $(document).ready(function() {
 	let result_Date = $("#result_Date");
     member_startDate.on('blur', function() {
 		if(member_startDate.val() == 0){
-			result_Date.css("color","red").html("날짜가 비어있어요");
+			result_Date.css("color","red").html("날짜가 비어있어요.");
 			return;
 		}else if(member_startDate.val() != 0){
 			result_Date.css("color", "green").html("");
@@ -272,7 +278,7 @@ $(document).ready(function() {
 	//2. 추가 버튼 클릭
 	$("#insert").click(function() {
 		if (result_Date.html().trim().length > 0 || result_Id.html().trim().length > 0 || result_Tel.html().trim().length > 0 || result_Name.html().trim().length > 0) {
-			alert("다시 한번 확인해주세요");
+			alert("다시 한번 확인해주세요.");
 			return;
 		}
 		
@@ -297,13 +303,16 @@ $(document).ready(function() {
 					url : '/member/memberInsert',
 					contentType : 'application/json; charset=utf-8',
 					/* data : insertDatas, */
+					beforeSend: function(xhr) {
+	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        		},
 					data: JSON.stringify(insertDatas),
 					success : function(result) { // 결과 성공 콜백함수        
-						alert("등록 성공");
-						location.href = "/member/memberList?pageNo=1";
+						alert("등록을 성공했습니다");
+						location.href = "/member/memberList";
 					},
 					error : function(request, status, error) { // 결과 에러 콜백함수        
-						alert("등록 실패");
+						alert("등록을 실패했습니다.");
 					}
 				}); //ajax EndPoint
 			}
@@ -316,7 +325,7 @@ $(document).ready(function() {
 	}); //#insert EndPoint
 	
 	$("#back").click(function() {
-		location.href = "/member/memberList?pageNo=1";
+		location.href = "/member/memberList";
 	});
 });
 </script>

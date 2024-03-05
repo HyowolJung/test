@@ -12,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 
 	@Override
@@ -28,22 +27,23 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String member_Id = userDetails.getUsername(); // 또는 getMember_Id()
+        
         HttpSession session = request.getSession();
         session.setAttribute("member_Id", member_Id);
-		response.sendRedirect("/main");
 		
-//		if(roleNames.contains("ROLE_MEMBER")) {
-//			response.sendRedirect("/member/memberList");
-//			return;
-//		}
-//		
-//		if(roleNames.contains("ROLE_PROJECT")) {
-//			response.sendRedirect("/member/memberList");
-//			return;
-//		}
+//        if(member_Id != null) {
+//        	System.err.println("이미 로그인이 되어있습니다.");
+//        	response.sendRedirect("/main");
+//        	return;
+//        }
+        
+//        if (authentication.isAuthenticated()) {
+//            // Redirect to a different page
+//        	System.err.println("이미 로그인이 되어있습니다.");
+//            response.sendRedirect("/main");
+//            return;
+//        }
 		
-		//response.sendRedirect("/");
-		
+        response.sendRedirect("/login");
 	}
-
 }

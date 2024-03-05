@@ -146,8 +146,10 @@ $(document).ready(function() {
 	$("#backButton").hide();
 	$("#memberTable tbody").empty();
 	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+	
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
+	
 	//1. 조회(#searchButton)버튼 클릭 했을 때
 	$("#searchButton").click(function(){
 		var search_startDate = $("#search_startDate").val();
@@ -395,13 +397,13 @@ $(document).ready(function() {
 							if(result == true){
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList?pageNo=" + pageNo;
+								location.href = "/member/memberList";
 								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 							}else if(result == false){
 								//alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 								alert("수정 성공");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList?pageNo=" + pageNo;
+								location.href = "/member/memberList";
 							}				
 						},    
 						error : function(request, status, error) { // 결과 에러 콜백함수        
@@ -444,19 +446,19 @@ $(document).ready(function() {
 						data: JSON.stringify(modifyDatas),
 						success : function(result) { // 결과 성공 콜백함수        
 							if(result == true){
-								alert("수정 성공");
+								alert("수정을 성공했어요");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList?pageNo=" + pageNo;
+								location.href = "/member/memberList";
 								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 							}else if(result == false){
 								//alert("수정하려는 번호는 현재 존재하는 번호입니다.");
-								alert("수정 성공");
+								alert("수정을 성공했어요");
 								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList?pageNo=" + pageNo;
+								location.href = "/member/memberList";
 							}				
 						},    
 						error : function(request, status, error) { // 결과 에러 콜백함수        
-							alert("수정 실패");
+							alert("수정을 실패했어요");
 						}
 					}); //ajax EndPoint
 				}// elseIf EndPoint
@@ -480,7 +482,7 @@ $(document).ready(function() {
 			data: JSON.stringify(checkList),
 			success : function(result) { // 결과 성공 콜백함수        
 				alert("삭제를 성공했어요.");
-				location.href = "/member/memberList?pageNo=1";
+				location.href = "/member/memberList";
 			}, 
 			error : function(request, status, error) { // 결과 에러 콜백함수        
 				alert("투입 이력이 있는 회원은 삭제할 수 없어요.");
@@ -509,10 +511,8 @@ $(document).ready(function() {
 	});
 	
 	//var pageNo = $("#pageNo").val();
-	
-	
-	
 });//document EndPoint
+
 function submitPost(member_Id, pageNo) {
 	//alert("pageNo : " + pageNo);
 	//alert("member_Id : " + member_Id);
@@ -606,7 +606,7 @@ function validateDate1() {
     
  	// 년도에 대한 최소 및 최대 제한
     if (year < 2000 || year > 2099) {
-        alert("년도는 2000부터 2099까지만 가능해요.");
+        alert("년도는 2000부터 2099까지만 가능합니다.");
         startDateInput.value = "";
         return;
     }
@@ -624,8 +624,7 @@ function validateDate1() {
     	startDateInput.value = "";    	
         alert("유효하지 않아요1-2.");
     } else {
-        //alert("제대로 입력했어요. 잘했어요.");
-        console.log("제대로 입력했어요. 잘했어요.");
+        console.log("유효한 입력입니다.");
     }
 }
 
@@ -655,7 +654,7 @@ function validateDate2() {
     
  	// 년도에 대한 최소 및 최대 제한
     if (year < 2000 || year > 2099) {
-        alert("년도는 2000부터 2099까지만 가능해요.");
+        alert("년도는 2000부터 2099까지만 가능합니다.");
         endDateInput.value = "";
         return;
     }
@@ -674,7 +673,7 @@ function validateDate2() {
         endDateInput.value = "";
     } else {
         //alert("제대로 입력했어요. 잘했어요.");
-        console.log("제대로 입력했어요. 잘했어요.");
+        console.log("유효한 입력입니다");
     }
     
 }
@@ -685,6 +684,8 @@ function go(pageNo){
 	var searchWord = document.getElementById("searchWord").value;
 	var search_startDate = document.getElementById("search_startDate").value;
 	var search_endDate = document.getElementById("search_endDate").value;
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 	//var pageNoPost1 = $("pageNoPost");
 	//var pageNoPost = document.getElementById("pageNoPost").value;
 	
