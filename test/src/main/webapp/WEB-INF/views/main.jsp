@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<!-- 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 -->
 메인페이지
 <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
 <input type="text" id="member_Id" value="${member_Id}" disabled="disabled" style="display: none;">
