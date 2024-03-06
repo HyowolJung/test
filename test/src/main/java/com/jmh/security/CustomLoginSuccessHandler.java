@@ -37,12 +37,12 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 //        	return;
 //        }
         
-//        if (authentication.isAuthenticated()) {
-//            // Redirect to a different page
-//        	System.err.println("이미 로그인이 되어있습니다.");
-//            response.sendRedirect("/main");
-//            return;
-//        }
+        if (authentication.isAuthenticated()) {
+            // Redirect to a different page
+        	System.err.println("이미 로그인이 되어있습니다.");
+            response.sendRedirect("/main");
+            return;
+        }
 		
         response.sendRedirect("/login");
 	}
