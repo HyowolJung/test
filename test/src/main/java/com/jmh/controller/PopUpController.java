@@ -41,12 +41,12 @@ public class PopUpController {
 	
 	//@GetMapping("/popProject")
 	@PostMapping("/popProject")
-	public String popProject(Model model, Criteria cri, int member_Id, String member_Name) {
+	//public String popProject(Model model, Criteria cri, int member_Id, String member_Name) {
+	public String popProject(Model model, Criteria cri, @RequestParam("member_Id") String member_Id, @RequestParam("member_Name") String member_Name) {	
 		System.out.println("pop)member_Id : " + member_Id);
 		System.out.println("pop)member_Name : " + member_Name);
 		int totalCnt = projectService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		//model.addAttribute("member_Id", member_Id);
 		System.err.println("pageDto : " + pageDto);
 		model.addAttribute("pageDto", pageDto);
 		model.addAttribute("member_Name", member_Name);

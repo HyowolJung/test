@@ -5,8 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="_csrf" content="${_csrf.token}"/>
-<meta name="_csrf_header" content="${_csrf.headerName}"/>
+<meta name="_csrf" content="${_csrf.token}" />
+<meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>회원 수정</title>
 <style>
     table {
@@ -281,7 +281,7 @@ $("#modifyButton").click(function() {
 	}else if(member_Tel.length != 0){
 		//2-2. 전화번호 유효성체크(적절한 조합인지)
 		if (member_Tel_Check.test(member_Tel) != true){
-			alert("적절한 형식이 아닙니다.")
+			alert("적절한 형식이 아닙니다.");
 			return;
 		}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
 			if(member_endDate.length == 0){
@@ -366,15 +366,19 @@ $("#modifyButton").click(function() {
 });//$("#modifyButton").click(function() {
 	
 $("#push").click(function() {
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	
+	//alert("token : " + token + " /header : " + header);
+	
     var member_Id = $("#member_Id").val();
     var member_Name = $("#member_Name").val();
     localStorage.setItem('member_Id', member_Id);
     localStorage.setItem('member_Name', member_Name);
     
-    // CSRF 토큰 가져오기
-    var csrfToken = $("meta[name='_csrf']").attr("content");
-    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
-
+    //var csrfTokenName = $("meta[name='_csrf_header']").attr("content"); // CSRF 토큰의 이름을 가져옵니다.
+    //var csrfTokenValue = $("meta[name='_csrf']").attr("content"); // CSRF 토큰의 값을 가져옵니다.
+    
     // 팝업 옵션 설정
     let popOption = "width=1150, height=650, top=200, left=300, scrollbars=yes";
 
@@ -401,14 +405,36 @@ $("#push").click(function() {
     nameInput.name = "member_Name";
     nameInput.value = member_Name;
     form.appendChild(nameInput);
-
-    // CSRF 토큰 필드 추가
+	
+    /* var csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = header; // 서버에서 요구하는 CSRF 토큰의 이름을 입력 필드의 이름으로 설정합니다.
+    csrfInput.value = token; // CSRF 토큰의 값을 입력 필드의 값으로 설정합니다.
+    form.appendChild(csrfInput); */
+    
+ 	// CSRF 토큰 필드 추가
+    /* var csrfToken = document.createElement("input");
+    csrfToken.type = "hidden";
+    csrfToken.name = $("meta[name='_csrf_header']").attr("content"); // 토큰 이름 동적으로 가져오기
+    csrfToken.value = $("meta[name='_csrf']").attr("content"); // 토큰 값 동적으로 가져오기
+    form.appendChild(csrfToken); */
+    
+    /* <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" /> */
+    
     var csrfInput = document.createElement("input");
     csrfInput.type = "hidden";
-    csrfInput.name = csrfHeader; // 서버에서 이 헤더 이름을 기대합니다.
-    csrfInput.value = csrfToken;
+    csrfInput.name = '${_csrf.parameterName}'; // 서버에서 이 헤더 이름을 기대합니다.
+    csrfInput.value = '${_csrf.token}';
     form.appendChild(csrfInput);
-
+    
+    /* form.append($('<input>', {
+		type : 'hidden',
+		name : '${_csrf.parameterName}',
+		value : '${_csrf.token}'
+	})); */
+    
+    
     // 폼을 문서에 추가하지 않고 직접 팝업의 문서에 폼을 추가
     popup.document.body.appendChild(form);
 

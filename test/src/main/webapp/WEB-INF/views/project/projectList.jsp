@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>프로젝트 목록 조회</title>
   <style>
         body {
@@ -126,6 +128,8 @@
 <br><br><br><br><br><br><br>
 </body>
 <script type="text/javascript">
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
 $("#projectTable tbody").empty();
 $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>결과가 없어요.</td></tr>");
 //1. 검색 폼
@@ -140,6 +144,9 @@ $("#searchButton").click(function(){
 	$.ajax({
 		type : 'POST',
 		url: '/project/projectList',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: {
 			"searchField" :  searchField,
 		 	"searchWord" : searchWord,
@@ -156,6 +163,7 @@ $("#searchButton").click(function(){
 			if (projectList && projectList.length > 0) {
        			for (let i = 0; i < projectList.length; i++) {
                 	let newRow = $("<tr>");
+                	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
                 	newRow.append("<td>" + projectList[i].project_Id + "</a></td>");
                 	newRow.append("<td><a href='/project/projectRead?project_Id="+ projectList[i].project_Id + "&pageNo="+ pageNo +"'>" + projectList[i].project_Name + "</td>");
@@ -264,6 +272,9 @@ $("#deleteButton").click(function() {
 		type : 'POST',
 		url: '/project/deleteProject',
 		contentType: 'application/json',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: JSON.stringify(checkList),
 		success : function(result) { // 결과 성공 콜백함수        
 			if(result != null) {
@@ -305,10 +316,14 @@ $.ajax({
 function go(pageNo){
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = document.getElementById("searchWord").value;
-	
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
 	$.ajax({
 		type : 'POST',
 		url: '/project/projectList',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,

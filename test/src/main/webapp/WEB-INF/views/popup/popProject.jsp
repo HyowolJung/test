@@ -4,7 +4,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
+<meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>Insert title here</title>
 </head>
 <style>
@@ -142,6 +144,8 @@ $("#projectTable tbody").html("<tr><td colspan='9' style='text-align:center;'>�
 $("#result_member_Id").val(member_Id);
 $("#result_member_Name").val(member_Name);
 
+var token = $("meta[name='_csrf']").attr("content");
+var header = $("meta[name='_csrf_header']").attr("content");
 
 //1. 검색 폼
 //let newRow = $("<tr>");
@@ -169,6 +173,9 @@ $("#searchButton").click(function(){
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popProjectInfo',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: {
 			"searchField" : searchField,
 		 	"searchWord" : searchWord,
@@ -256,6 +263,9 @@ $('#insert').click(function() {
     $.ajax({
 		type : 'POST',
 		url: '/popup/projectDetailInsert',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		//data: selectedRowData,
 		contentType: 'application/json; charset=utf-8',
 		data: JSON.stringify(selectedRowData),
@@ -378,6 +388,9 @@ function validateDate2() {
 }
 	
 function go(pageNo){
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+
 	let searchField = document.getElementById("searchField").value; 
 	let searchWord = document.getElementById("searchWord").value;
 	let search_startDate = document.getElementById("search_startDate").value;
@@ -388,6 +401,9 @@ function go(pageNo){
 	$.ajax({
 		type : 'POST',
 		url: '/popup/popProjectInfo',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
 		data: {
 			 "pageNo" : pageNo,
 			 "searchWord" : searchWord,
@@ -409,6 +425,7 @@ function go(pageNo){
 			if (projectList && projectList.length > 0) {
        			for (let i = 0; i < projectList.length; i++) {
                 	var newRow = $("<tr>");
+                	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
                 	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + projectList[i].project_Id + "' data-id='" + projectList[i].project_Id + "'></td>");
                 	newRow.append("<td hidden>" + projectList[i].project_Id + "</td>");
                 	newRow.append("<td>" + projectList[i].project_Name + "</td>");

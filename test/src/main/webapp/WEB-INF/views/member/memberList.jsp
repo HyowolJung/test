@@ -5,6 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>회원 목록 조회</title>
 <style>
 body {
@@ -75,8 +77,6 @@ a.page-link.active {
 	color: #777;
 }
 </style>
-<meta name="_csrf" content="${_csrf.token}"/>
-<meta name="_csrf_header" content="${_csrf.headerName}"/>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
@@ -188,7 +188,7 @@ $(document).ready(function() {
 					alert("조회를 성공했어요.");
            			for (let i = 0; i < memberList.length; i++) {
                     	var newRow = $("<tr>");
-                    	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
+                    	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
                     	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
                     	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
                     	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
