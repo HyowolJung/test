@@ -82,7 +82,7 @@
 	  					<option value="S012" ${projectList.project_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
 	  					<option value="S013" ${projectList.project_Skill_Language == 'RUBY' ? 'selected' : ''}>RUBY</option>
 					</select>
-				</td><br>
+				</td>
 				<td>
 					<select id="project_Skill_DB">
 	  					<option value="S020" ${projectList.project_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
@@ -90,7 +90,7 @@
 	  					<option value="S022" ${projectList.project_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
 	  					<option value="S023" ${projectList.project_Skill_DB == 'POSTGRESQL' ? 'selected' : ''}>POSTGRESQL</option>
 					</select>
-				</td><br>
+				</td>
 				<td><input type="date" name="project_startDate" id="project_startDate" value = "${projectList.project_startDate }"/></td>
 				<td><input type="date" name="project_endDate" id="project_endDate" value = "${projectList.project_endDate }"/></td>
 			</tr>
