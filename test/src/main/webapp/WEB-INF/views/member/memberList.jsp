@@ -13,7 +13,10 @@ body {
 	font-family: 'Arial', sans-serif;
 	margin: 20px;
 }
-
+.total-div{
+	margin-top: 10px;
+	margin-left: 230px; 
+}
 /* div {
             margin-bottom: 20px;
         } */
@@ -80,9 +83,10 @@ a.page-link.active {
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
-<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
+<%@include file="/WEB-INF/views/common/header.jsp"%>
+<%@include file="/WEB-INF/views/common/sideBar.jsp" %>
+<div class="total-div">
 <div>
-	
 	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
 	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- style="display: none" -->
@@ -132,11 +136,11 @@ a.page-link.active {
 <button type="button" value="modify" id="m_modifyButton">수정</button>
 <button type="button" value="back" id="backButton">뒤로가기</button>
 <div id="pagination">
-	<ul class="pagination" style= "list-style: none;">
-	</ul>
+	<ul class="pagination" style="list-style: none;"></ul>
 </div>
 
 <br><br><br><br><br><br><br>
+</div>
 </body>
 <script type="text/javascript">
 $(document).ready(function() {

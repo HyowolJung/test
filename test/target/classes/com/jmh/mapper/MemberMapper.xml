@@ -18,13 +18,31 @@
 	<result property="member_authority" column="member_authority"/>
 </resultMap>
 
+<select id="getDept" resultType="com.jmh.dto.MemberDto"  resultMap="memberMap">
+	SELECT 
+			MEMBER_ID
+			<!-- CASE
+				WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
+				WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+				WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+				WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+				WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+				ELSE '미정' 
+			END
+			AS MEMBER_DEPARTMENT -->
+	FROM 
+				MEMBER 
+	WHERE 
+				MEMBER_ID = #{member_Id}
+</select>
+
 <select id="read" resultMap="memberMap" >
 SELECT 
 		MEMBER_ID, 
 		MEMBER_PW, 
 		MEMBER_NAME, 
-		MEMBER_AUTHORITY, 
-		MEMBER_ENABLED 
+		MEMBER_AUTHORITY
+		<!-- MEMBER_ENABLED  -->
 FROM 
 		MEMBER 
 WHERE 
@@ -40,16 +58,13 @@ SELECT
 		MEMBER_ID, 
 		MEMBER_PW, 
 		MEMBER_NAME, 
-		MEMBER_AUTHORITY, 
-		MEMBER_ENABLED 
+		MEMBER_AUTHORITY
+		<!-- MEMBER_ENABLED --> 
 FROM 
 		MEMBER 
 WHERE 
 		MEMBER_ID=#{member_Id}
 </select>
-    
-    
-    
     
 <select id="getmemberListM" resultType="com.jmh.dto.MemberDto" parameterType="list">
 /*getmemberListM*/
@@ -139,7 +154,8 @@ FROM
 			FROM     
 					MEMBER 
 		)
-WHERE MEMBER_ID IN
+WHERE 
+			MEMBER_ID IN
 <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
         #{item}
 </foreach>

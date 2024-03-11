@@ -52,7 +52,7 @@
 </style>
 </head>
 <body>
-<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
+<%@include file="/WEB-INF/views/common/header.jsp"%><br>
 <div class="column" style="text-align: left;">
 	<p style="color: red; text-align: center;" >필수 입력</p>
 

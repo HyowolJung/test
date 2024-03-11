@@ -9,11 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
+import com.jmh.mapper.MemberMapper;
+import com.jmh.service.MemberService;
 
+public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
+	@Autowired
+	MemberService service;
+	
+	@Autowired
+	MemberMapper mapper;
+	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
@@ -22,7 +31,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		authentication.getAuthorities().forEach(authrity -> {
 			roleNames.add(authrity.getAuthority());
-			
 		});
 		
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -30,7 +38,15 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
         
         HttpSession session = request.getSession();
         session.setAttribute("member_Id", member_Id);
-		
+        
+        //String member_Department = service.getDept(member_Id);
+        //System.err.println("service.getDept(member_Id); : " + service.getDept(member_Id));
+        //System.err.println("member_Department : " + member_Department);
+//        if(!member_Department.equals( "A021")) {
+//        	response.sendRedirect("/myPage");
+//        	return;
+//        }
+        	
 //        if(member_Id != null) {
 //        	System.err.println("이미 로그인이 되어있습니다.");
 //        	response.sendRedirect("/main");

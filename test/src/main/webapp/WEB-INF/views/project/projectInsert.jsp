@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-<%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
+<%@include file="/WEB-INF/views/common/header.jsp" %><br><br>
 <div>
 	<label style="color: red">아이디</label>
 	<input type="text" id="project_Id"/><br>

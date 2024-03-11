@@ -31,14 +31,27 @@ public class MainController {
 	@Autowired
 	MemberService memberService;
 	
-	@GetMapping("/WellCome")
-	public String wellCome(HttpSession session, Model model) {
+	@GetMapping("/header")
+	public String header(HttpSession session, Model model) {
 		model.addAttribute("member_Id" , session.getAttribute("member_Id"));
-		return "/common/WellCome";
+		return "/common/header";
+	}
+	
+	@GetMapping("/myPage")
+	public String myPage() {
+		return "/myPage";
 	}
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model, String member_Id) {
+		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
+		model.addAttribute("member_Id", session.getAttribute("member_Id"));
+		//model.addAttribute("member_Department" , "인사부");
+		return "/main";
+	}
+	
+	@PostMapping("/main")
+	public String main2(HttpSession session, Model model, String member_Id) {
 		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
 		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		//model.addAttribute("member_Department" , "인사부");
@@ -90,7 +103,7 @@ public class MainController {
 //			if(isValid == true) {
 //				System.err.println("isValid TRUE 진입");
 //				ModelAndView mav = new ModelAndView();
-//				mav.setViewName("/common/WellCome");
+//				mav.setViewName("/common/header");
 //				mav.addObject("member_Id", session.getAttribute("member_Id"));
 //				
 //				loginCk = memberService.loginCk(member_Id, member_Pw_ck);
@@ -123,7 +136,7 @@ public class MainController {
 //List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
 //if(loginCk != null) {
 //	session.setAttribute("member_Id", dto.getMember_Id());
-//	mav.setViewName("/common/WellCome");
+//	mav.setViewName("/common/header");
 //	mav.addObject("member_Id", session.getAttribute("member_Id"));
 //	model.addAttribute("loginCk" , loginCk);
 //	//System.out.println("loginCk : " + loginCk);

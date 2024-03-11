@@ -50,6 +50,12 @@ public class MemberController {
 	@Autowired	//의존성 주입
 	private MemberService memberService;
 	
+	//1. 메인페이지
+	@GetMapping("/memberMain")
+	public String memberMain() {
+		return "member/memberMain";
+	}
+	
 	//1. 조회(페이징 정보)
 	@GetMapping("/memberList")	//memberList.jsp
 	public String memberListGet(Model model, Criteria cri, HttpSession session) {

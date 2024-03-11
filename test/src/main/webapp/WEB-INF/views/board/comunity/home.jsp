@@ -39,7 +39,7 @@
 </style>
 </head>
 <body>
-	<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
+	<%@include file="/WEB-INF/views/common/header.jsp"%><br>
 	<br>
 	<input type="text" id="member_Id" name="member_Id" value="${member_Id}" disabled="disabled" style="display: none">
 	<br>

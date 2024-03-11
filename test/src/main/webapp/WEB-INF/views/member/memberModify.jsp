@@ -46,8 +46,8 @@
 </style>
 </head>
 <body>
-<%-- <%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br> --%>
-<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
+<%-- <%@include file="/WEB-INF/views/common/header.jsp" %><br><br> --%>
+<%@include file="/WEB-INF/views/common/header.jsp"%><br>
 <div class="centered">
 멤버 수정화면
 <br><br>

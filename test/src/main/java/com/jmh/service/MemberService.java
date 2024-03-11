@@ -22,6 +22,8 @@ import com.jmh.dto.ProjectDto;
 }*/
 
 public interface MemberService {
+	public String getDept(String member_Id);
+	
 	//0. 로그인
 	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 	

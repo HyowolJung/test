@@ -50,7 +50,7 @@
 </style>
 </head>
 <body>
-<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br><br>
+<%@include file="/WEB-INF/views/common/header.jsp"%><br><br>
 	<form id="postForm" action="/board/comunity/insert" method="post">
 		<div class="page-title">
 			<p>게시글 작성<p>

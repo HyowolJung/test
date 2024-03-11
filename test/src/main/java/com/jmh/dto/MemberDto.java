@@ -40,7 +40,6 @@ public class MemberDto {
 	private String member_Authority; 
 	private String member_Enabled;
 	
-	
 	//@DateTimeFormat(pattern = "yy/MM/dd")
 	//@PastOrPresent
 	//RequestBody로 Json을 바인딩 받을때는 @JsonFormat을 사용한다!

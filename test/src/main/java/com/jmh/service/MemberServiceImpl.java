@@ -178,4 +178,10 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.getmember_Pw(member_Id);
 	}
+
+	@Override
+	public String getDept(String member_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.getDept(member_Id);
+	}
 }

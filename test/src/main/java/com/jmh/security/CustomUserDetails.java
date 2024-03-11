@@ -20,15 +20,15 @@ public class CustomUserDetails implements UserDetails{
 	private String member_Id;
 	private String member_Pw;
 	private String member_Name;
+	private String memeber_Department;
 	private String member_Authority;
-	private boolean member_Enabled;
+	//private boolean member_Enabled;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		System.err.println("CustomUserDetails 도착했어요!! 1 : " + member_Authority);
 		ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
 		auth.add(new SimpleGrantedAuthority(member_Authority));
-		
 		return auth;
 	}
 
@@ -41,7 +41,17 @@ public class CustomUserDetails implements UserDetails{
 		System.err.println("CustomUserDetails 도착했어요!! 3 : " + member_Name);
 		this.member_Name = member_Name;
 	}
+	
+	public String getMemeber_Department() {
+		System.err.println("CustomUserDetails 도착했어요!! 10");
+		return memeber_Department;
+	}
 
+	public void setMemeber_Department(String memeber_Department) {
+		System.err.println("CustomUserDetails 도착했어요!! 11");
+		this.memeber_Department = memeber_Department;
+	}
+	
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
@@ -53,7 +63,6 @@ public class CustomUserDetails implements UserDetails{
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		System.err.println("CustomUserDetails 도착했어요!! 5 : " + member_Id);
-		
 		return member_Id;
 	}
 
@@ -84,5 +93,5 @@ public class CustomUserDetails implements UserDetails{
 		System.err.println("CustomUserDetails 도착했어요!! 9");
 		return true;
 	}
-	
 }
+

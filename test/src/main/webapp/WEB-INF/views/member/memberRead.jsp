@@ -47,7 +47,7 @@ table {
 </head>
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<%@include file="/WEB-INF/views/common/WellCome.jsp"%><br>
+<%@include file="/WEB-INF/views/common/header.jsp"%><br>
 <div class="center">
 멤버 상세정보
 <br>

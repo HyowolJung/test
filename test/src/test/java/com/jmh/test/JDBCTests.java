@@ -17,8 +17,8 @@ public class JDBCTests {
 		}
 	}
 	
-	// Oracle19 ¹öÀüÀÎ °æ¿ì => "jdbc:oracle:thin:@localhost:1521:orcl"
-    // Oracle11 ¹öÀüÀÎ °æ¿ì => "jdbc:oracle:thin:@localhost:1521:XE"
+	// Oracle19 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ => "jdbc:oracle:thin:@localhost:1521:orcl"
+    // Oracle11 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ => "jdbc:oracle:thin:@localhost:1521:XE"
 	
 	@Test
 	public void testConnection() {
@@ -26,8 +26,8 @@ public class JDBCTests {
 		try(Connection con = 
 				DriverManager.getConnection(
                 
-						"jdbc:oracle:thin:@localhost:1521:XE",
-						"practice",
+						"jdbc:oracle:thin:@localhost:1521:orcl",
+						"test",
 						"1234")){
 			System.out.println(con);
 		} catch (Exception e) {

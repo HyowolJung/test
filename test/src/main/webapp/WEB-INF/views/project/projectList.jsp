@@ -81,7 +81,7 @@
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
-<%@include file="/WEB-INF/views/common/WellCome.jsp" %><br><br>
+<%@include file="/WEB-INF/views/common/header.jsp" %><br><br>
 <div>
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">

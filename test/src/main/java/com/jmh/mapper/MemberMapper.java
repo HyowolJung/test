@@ -19,6 +19,8 @@ import com.jmh.security.CustomUserDetails;
 @Repository
 public interface MemberMapper {
 
+	String getDept(String member_Id);
+	
 	public CustomUserDetails loginID(String member_Id);
 	
 	public MemberDto read(String member_Id);
