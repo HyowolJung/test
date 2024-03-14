@@ -42,19 +42,26 @@
   <a href="#" class="menu-item" onclick="toggleSubmenu()">사원 관리</a>
   <div class="submenu" id="submenu">
   	<a href="/member/memberList" class="menu-item">사원 조회</a>
-    <a href="#" class="menu-item">사원 등록</a>
+    <a href="/member/memberInsert" class="menu-item">사원 등록</a>
   </div>
 </div>
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 function toggleSubmenu() {
-    var submenu = document.getElementById("submenu");
+	var submenu = document.getElementById("submenu");
     if (submenu.style.display === "block") {
-      submenu.style.display = "none";
+		submenu.style.display = "none";
+		localStorage.setItem("submenuVisible", "false");
     } else {
-      submenu.style.display = "block";
+		submenu.style.display = "block";
+		localStorage.setItem("submenuVisible", "true");
     }
+}
+
+window.onload = function() {
+	var submenuVisible = localStorage.getItem("submenuVisible") === "true";
+	document.getElementById("submenu").style.display = submenuVisible ? "block" : "none";
 }
 </script>
 </html>

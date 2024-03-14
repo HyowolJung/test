@@ -1,17 +1,26 @@
 package com.jmh.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
+import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -24,19 +33,22 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberMapper memberMapper;
 	
+	@Autowired
+	MemberService memberService;
+	
 	//1. 조회(검색어 X)
 	@Override
-	public List<MemberDto> getmemberList(Criteria cri) {
+	public List<MemberDetailDTO> getmemberList(Criteria cri) {
 		// TODO Auto-generated method stub
 		return memberMapper.getmemberList(cri);
 	}
 	
 	//1. 조회(검색어 O)
-	@Override
-	public List<MemberDto> searchmemberList(Criteria cri) {
-		// TODO Auto-generated method stub
-		return memberMapper.searchmemberList(cri);
-	}
+//	@Override
+//	public List<MemberDto> searchmemberList(Criteria cri) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.searchmemberList(cri);
+//	}
 	
 	//1. 조회(페이징 정보)
 	@Override
@@ -47,27 +59,28 @@ public class MemberServiceImpl implements MemberService{
 	
 	//2. 등록(아이디 체크)
 	@Override
-	public boolean checkId(int member_Id) {
+	public boolean checkId(String memberId) {
 		// TODO Auto-generated method stub
-		return memberMapper.checkId(member_Id);
+		return memberMapper.checkId(memberId);
 	}
 	
-	//2. 등록(아이디 체크)
+	//2. 등록(전화번호 체크)
 	@Override
-	public boolean checkTel(String member_Tel) {
+	public boolean checkTel(String memberTel) {
 		// TODO Auto-generated method stub
-		return memberMapper.checkTel(member_Tel);
+		return memberMapper.checkTel(memberTel);
 	}
 	
 	//2. 등록(회원 등록)
 	@Override
-	public int insertMember(MemberDto insertDatas) {
+	public int insertMember(MemberDetailDTO insertDatas) {
 		// TODO Auto-generated method stub
-		String pwd = insertDatas.getMember_Pw();
+		String pwd = insertDatas.getMemberPw();
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		String encodedPwd = encoder.encode(pwd);
 		
-		insertDatas.setMember_Pw(encodedPwd);
+		//insertDatas.setMember_Pw(encodedPwd);
+		insertDatas.setMemberPw(encodedPwd);
 		return memberMapper.insertMember(insertDatas);
 	}
 	
@@ -135,17 +148,17 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getFilterd_mem_List(cri, project_Id);
 	}
 
-	@Override
-	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck) {
-		// TODO Auto-generated method stub
-		
-		return memberMapper.loginCk(member_Id, member_Pw_ck);
-	}
+//	@Override
+//	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck) {
+//		// TODO Auto-generated method stub
+//		
+//		return memberMapper.loginCk(member_Id, member_Pw_ck);
+//	}
 
 	@Override
-	public List<String> getmemberListM(List<String> checkList) {
+	public List<String> checkedList(List<String> checkList) {
 		// TODO Auto-generated method stub
-		return memberMapper.getmemberListM(checkList);
+		return memberMapper.checkedList(checkList);
 	}
 
 	@Override
@@ -179,9 +192,135 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getmember_Pw(member_Id);
 	}
 
+//	@Override
+//	public void exportToExcel(HttpServletResponse response) throws IOException {
+//	    List<MemberDetailDTO> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+//
+//	    Workbook workbook = new XSSFWorkbook();
+//	    Sheet sheet = workbook.createSheet("Data");
+//
+//	    // 헤더 생성
+//	    Row headerRow = sheet.createRow(0);
+//	    String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"}; // 실제 컬럼명으로 변경하세요
+//	    for (int i = 0; i < headers.length; i++) {
+//	        Cell cell = headerRow.createCell(i);
+//	        cell.setCellValue(headers[i]);
+//	    }
+//
+//	    // 데이터 쓰기
+//	    int rowIdx = 1;
+//	    for (MemberDetailDTO member : memberList) {
+//	        Row row = sheet.createRow(rowIdx++);
+//
+//	        row.createCell(0).setCellValue(member.getMemberId());
+//	        row.createCell(1).setCellValue(member.getMemberName());
+//	        row.createCell(2).setCellValue(member.getMemberGn());
+//	        // 나머지 필드도 이와 같은 방식으로 추가...
+//	    }
+//
+//	    // HTTP 응답으로 Excel 파일 전송
+//	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+//	    response.setHeader("Content-Disposition", "attachment; filename=\"members.xlsx\"");
+//
+//	    workbook.write(response.getOutputStream());
+//	    workbook.close();
+//	}
+	
 	@Override
-	public String getDept(String member_Id) {
+	public void exportToExcel(HttpServletResponse response) throws IOException{
 		// TODO Auto-generated method stub
-		return memberMapper.getDept(member_Id);
+		List<MemberDetailDTO> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+		System.err.println("memberListmemberListmemberListmemberList : " + memberList);
+		Workbook workbook = new XSSFWorkbook();
+	    Sheet sheet = workbook.createSheet("Data");
+
+	    Row headerRow = sheet.createRow(0);
+	    String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"}; // 실제 컬럼명으로 변경하세요
+	    for (int i = 0; i < headerNames.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headerNames[i]);
+	    }
+	    
+	    int rowIdx = 1;
+	    for (MemberDetailDTO member : memberList) {
+	        Row row = sheet.createRow(rowIdx++);
+	        row.createCell(0).setCellValue(member.getMemberId());
+	        row.createCell(1).setCellValue(member.getMemberName());
+	        row.createCell(2).setCellValue(member.getMemberGn());
+	        row.createCell(3).setCellValue(member.getMemberPos());
+	        row.createCell(4).setCellValue(member.getMemberDept());
+	        row.createCell(5).setCellValue(member.getMemberTel());
+	        row.createCell(6).setCellValue(member.getMemberStDay());
+	        row.createCell(7).setCellValue(member.getMemberLaDay());
+	    }
+	    
+	    //String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"};
+	    
+//	    // 헤더 생성
+//	    Row headerRow = sheet.createRow(0);
+//	    Cell headerCell = headerRow.createCell(0);
+//	    headerCell.setCellValue("Column1");
+//
+//	    headerCell = headerRow.createCell(1);
+//	    headerCell.setCellValue("Column2");
+
+//	    // 데이터 쓰기
+//	    Row dataRow = sheet.createRow(1);
+//	    Cell dataCell = dataRow.createCell(0);
+//	    dataCell.setCellValue("Data1");
+//
+//	    dataCell = dataRow.createCell(1);
+//	    dataCell.setCellValue("Data2");
+
+	    // 여기에서 실제 데이터를 반복해서 추가...
+
+	    // HTTP 응답으로 Excel 파일 전송
+	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	    response.setHeader("Content-Disposition", "attachment; filename=\"member.xlsx\"");
+
+	    workbook.write(response.getOutputStream());
+	    workbook.close();
 	}
+	
+//	@Override
+//	public void exportToExcel2(HttpServletResponse response, List<MemberDetailDTO> modifyDatas) throws IOException {
+//		System.err.println("modifyDatasmodifyDatasmodifyDatas : " + modifyDatas);
+//		Workbook workbook = new XSSFWorkbook();
+//	    Sheet sheet = workbook.createSheet("Data");
+//
+//	    // 헤더 생성
+//	    Row headerRow = sheet.createRow(0);
+//	    String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"};
+//	    for (int i = 0; i < headerNames.length; i++) {
+//	        Cell cell = headerRow.createCell(i);
+//	        cell.setCellValue(headerNames[i]);
+//	    }
+//
+//	    // 데이터 쓰기
+//	    int rowNum = 1;
+//	    for (MemberDetailDTO member : modifyDatas) {
+//	        Row row = sheet.createRow(rowNum++);
+//	        row.createCell(0).setCellValue(member.getMemberId());
+//	        row.createCell(1).setCellValue(member.getMemberName());
+//	        row.createCell(2).setCellValue(member.getMemberGn());
+//	        row.createCell(3).setCellValue(member.getMemberPos());
+//	        row.createCell(4).setCellValue(member.getMemberDept());
+//	        row.createCell(5).setCellValue(member.getMemberTel());
+//	        row.createCell(6).setCellValue(member.getMemberStDay());
+//	        row.createCell(7).setCellValue(member.getMemberLaDay());
+//	    }
+//	    
+//	    // HTTP 응답으로 Excel 파일 전송
+//	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+//	    response.setHeader("Content-Disposition", "attachment; filename=\"data.xlsx\"");
+//
+//	    workbook.write(response.getOutputStream());
+//	    workbook.close();
+//	}
+
+//	@Override
+//	public String getDept(String member_Id) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.getDept(member_Id);
+//	}
 }

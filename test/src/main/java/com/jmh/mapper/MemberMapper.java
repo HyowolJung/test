@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.jmh.dto.Criteria;
+import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -18,28 +19,32 @@ import com.jmh.security.CustomUserDetails;
 
 @Repository
 public interface MemberMapper {
-
-	String getDept(String member_Id);
-	
-	public CustomUserDetails loginID(String member_Id);
-	
+	//String getDept(String member_Id);
 	public MemberDto read(String member_Id);
 	
-	//1. 조회(검색어 X)
-	List<MemberDto> getmemberList(Criteria cri);
+	//0. 로그인
+	public CustomUserDetails loginID(String memberId);
 	
-	//1. 조회(검색어 O)
-	List<MemberDto> searchmemberList(Criteria cri);
-
+	//1. 조회
+	List<MemberDetailDTO> getmemberList(Criteria cri);
+	
 	//1. 조회(페이징 정보)
 	int getTotalCnt(Criteria cri);
 	
 	//2. 등록(아이디 체크)
-	boolean checkId(int member_Id);
-	boolean checkTel(String member_Tel);
+	boolean checkId(String memberId);
+	boolean checkTel(String memberTel);
+		
+		
+	//1. 조회(검색어 O)
+	//List<MemberDto> searchmemberList(Criteria cri);
+	
+	//2. 등록(아이디 체크)
+//	boolean checkId(int member_Id);
+//	boolean checkTel(String member_Tel);
 	
 	//2. 등록(회원 등록)
-	int insertMember(MemberDto insertDatas);
+	int insertMember(MemberDetailDTO insertDatas);
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
@@ -70,7 +75,7 @@ public interface MemberMapper {
 
 	List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 
-	List<String> getmemberListM(List<String> checkList);
+	List<String> checkedList(List<String> checkList);
 
 	ArrayList<MemberDto> member_Tel_ck_M(List<MemberDto> modifyList);
 

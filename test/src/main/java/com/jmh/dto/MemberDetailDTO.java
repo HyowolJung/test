@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class MemberDetailDTO {
 	private String memberId;		//memberId				아이디
 	private String memberPw;		//memberPassword		비밀번호
+	private String memberGn;		//memberGender			성별
 	private String memberName;	//memberName			이름
 	private String memberEmail;	//memberEmail			이메일
 	private String memberTel;		//memberTel				전화번호

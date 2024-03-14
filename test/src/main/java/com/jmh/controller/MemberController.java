@@ -1,5 +1,6 @@
 package com.jmh.controller;
 
+import java.io.IOException;
 //import java.lang.ProcessBuilder.Redirect;
 //import java.sql.Date;
 //import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 //import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 //import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jmh.dto.Criteria;
+import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -62,7 +65,7 @@ public class MemberController {
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		model.addAttribute("pageDto", pageDto);
-		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
+		model.addAttribute("memberId" , session.getAttribute("memberId"));
 		return "member/memberList";
 	}
 	
@@ -71,77 +74,86 @@ public class MemberController {
 	@ResponseBody
 	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		Map<String, Object> resultMap = new HashMap<>();
-		List<MemberDto> memberList = memberService.getmemberList(cri); 
+		List<MemberDetailDTO> memberList = memberService.getmemberList(cri); 
 		int pageNoPost = cri.getPageNo();
+		int totalCnt = memberService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		resultMap.put("pageNoPost", pageNoPost);
+		resultMap.put("pageDto", pageDto);
+		resultMap.put("memberList", memberList);
 		
-		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
-			System.err.println("검색어 없는 조회");
-			
-			int totalCnt = memberService.getTotalCnt(cri);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			memberList = memberService.getmemberList(cri);
-			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
-			//System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
-			//System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
-			//System.out.println("POST X) totalCnt : " + totalCnt);
-			resultMap.put("pageNoPost", pageNoPost);
-			resultMap.put("pageDto", pageDto);
-			resultMap.put("memberList", memberList);
-			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-			return resultMap;
-		}
-		
-		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
-			System.err.println("검색어 있는 조회");
-			
-			int totalCnt = memberService.getTotalCnt(cri);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			memberList = memberService.searchmemberList(cri);
-			//System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
-			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
-			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
-			//System.out.println("POST O) totalCnt : " + totalCnt);
-			resultMap.put("pageNoPost", pageNoPost);
-			resultMap.put("pageDto", pageDto);
-			resultMap.put("memberList", memberList);
-			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-			return resultMap;
-		}
+//		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
+//			System.err.println("검색어 없는 조회");
+//			
+//			int totalCnt = memberService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			memberList = memberService.getmemberList(cri);
+//			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
+//			//System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
+//			//System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
+//			//System.out.println("POST X) totalCnt : " + totalCnt);
+//			resultMap.put("pageNoPost", pageNoPost);
+//			resultMap.put("pageDto", pageDto);
+//			System.err.println("memberListPost : " + memberList);
+//			resultMap.put("memberList", memberList);
+//			//resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//			return resultMap;
+//		}
+//		
+//		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
+//			System.err.println("검색어 있는 조회");
+//			
+//			int totalCnt = memberService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			memberList = memberService.getmemberList(cri);
+//			//memberList = memberService.searchmemberList(cri);
+//			//System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
+//			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
+//			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
+//			//System.out.println("POST O) totalCnt : " + totalCnt);
+//			resultMap.put("pageNoPost", pageNoPost);
+//			resultMap.put("pageDto", pageDto);
+//			resultMap.put("memberList", memberList);
+//			//resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//			return resultMap;
+//		}
 		return resultMap;	
 	}
 	
 	//2. 등록(페이지 이동)
-	@GetMapping("/memberInsert") //memberList.jsp
-	public String memberInsert() {
-		return "member/memberInsert";
-	}
-	
-	//2. 등록(아이디 체크)
+		@GetMapping("/memberInsert") //memberList.jsp
+		public String memberInsert() {
+			return "member/memberInsert";
+		}
+		
+	//2. 등록(중복 체크)
 	@GetMapping("/memberInsert_ck")
 	@ResponseBody
-	public ResponseEntity<Boolean> insertMember_ck(String member_Tel, Integer member_Id) {
+	public ResponseEntity<Boolean> insertMember_ck(String memberTel, String memberId) {
 		boolean result = true;
-		System.out.println("member_Tel : " + member_Tel);
-		System.out.println("member_Id : " + member_Id);
+		System.out.println("member_Tel : " + memberTel);
+		System.out.println("member_Id : " + memberId);
 		
-		if(member_Id != null) {
-			if(memberService.checkId(member_Id)) {
-				System.out.println("memberService.checkId1(member_Id : " + memberService.checkId(member_Id));
+		//1. 아이디(사번) 중복 체크
+		if(memberId != null) {
+			if(memberService.checkId(memberId)) {
+				System.out.println("memberService.checkId1(member_Id : " + memberService.checkId(memberId));
 				result = false;
 				
 			}else {
-				System.out.println("memberService.checkId2(member_Id : " + memberService.checkId(member_Id));
+				System.out.println("memberService.checkId2(member_Id : " + memberService.checkId(memberId));
 				result = true;
 			}
 		}
 		
-		if(member_Tel != null) {
-			if(memberService.checkTel(member_Tel)) {
-				System.out.println("memberService.checkTel1(member_Tel : " + memberService.checkTel(member_Tel));
+		//2. 전화번호 중복 체크
+		if(memberTel != null) {
+			if(memberService.checkTel(memberTel)) {
+				System.out.println("memberService.checkTel1(member_Tel : " + memberService.checkTel(memberTel));
 				result = false;
 			
 			}else {
-				System.out.println("memberService.checkTel2(member_Tel : " + memberService.checkTel(member_Tel));
+				System.out.println("memberService.checkTel2(member_Tel : " + memberService.checkTel(memberTel));
 				result = true;
 			}
 		}
@@ -151,7 +163,7 @@ public class MemberController {
 	
 	//2. 등록(회원 등록)
 	@PostMapping("/memberInsert")
-	public String insertMember(@RequestBody MemberDto insertDatas) {
+	public String insertMember(@RequestBody MemberDetailDTO insertDatas) {
 		
 		int insertCnt = memberService.insertMember(insertDatas);
 		if(insertCnt > 0) {
@@ -162,21 +174,33 @@ public class MemberController {
 			return "";
 		}
 	}
+		
+	@GetMapping("/download")
+	public void downloadExcel(HttpServletResponse response) throws IOException {
+	    memberService.exportToExcel(response);
+	}
+	
+	@PostMapping(value = "/download") //, produces = "application/json;charset=UTF-8"
+	public void downloadExcel(HttpServletResponse response, @RequestParam Map<String, String> data) throws IOException {
+		System.err.println("datadatadata : " + data);
+		//memberService.exportToExcel2(response, data);
+	}
+	
 	
 	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
 	@PostMapping("/memberListM")
 	@ResponseBody
-	public Map<String, Object> memberListM(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		System.out.println("checkList : " + checkList);
 		Map<String, Object> resultMap = new HashMap<>();
 		if(checkList != null) {
 			System.err.println("checkList가 비어있지 않아요.");
-			List<String> memberListM = memberService.getmemberListM(checkList);
-			resultMap.put("memberList", memberListM);
+			List<String> memberList = memberService.checkedList(checkList);
+			resultMap.put("memberList", memberList);
 			
 			ModelAndView mav = new ModelAndView();
 			mav.setViewName("/member/memberModify");
-			mav.addObject("memberListM", memberListM);
+			mav.addObject("memberList", memberList);
 			return resultMap;	
 		}
 		return resultMap;

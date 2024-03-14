@@ -11,63 +11,317 @@
     	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
     </RESULTMAP> -->
     
-<resultMap type="com.jmh.dto.MemberDto" id="memberMap">
+<!-- <resultMap type="com.jmh.dto.MemberDto" id="memberMap">
 	<result property="member_Id" column="member_Id"/>
 	<result property="member_Pw" column="member_Pw"/>
 	<result property="member_Name" column="member_Name"/>
 	<result property="member_authority" column="member_authority"/>
+</resultMap> -->
+
+<resultMap type="com.jmh.dto.MemberDetailDTO" id="memberMap">
+	<result property="memberId" column="MEMBER_ID"/>
+	<result property="memberPw" column="MEMBER_PW"/>
+	<result property="memberGn" column="MEMBER_GN"/>
+	<result property="memberName" column="MEMBER_NAME"/>
+	<result property="memberEmail" column="MEMBER_EMAIL"/>
+	<result property="memberTel" column="MEMBER_TEL"/>
+	<result property="memberSt" column="MEMBER_ST"/>
+	<result property="memberPos" column="MEMBER_POS"/>
+	<result property="memberDept" column="MEMBER_DEPT"/>
+	<result property="memberTeam" column="MEMBER_TEAM"/>
+	<result property="memberAuth" column="MEMBER_AUTH"/>
+	<result property="memberStDay" column="MEMBER_STDAY"/>
+	<result property="memberLaDay" column="MEMBER_LADAY"/>
 </resultMap>
 
-<select id="getDept" resultType="com.jmh.dto.MemberDto"  resultMap="memberMap">
-	SELECT 
-			MEMBER_ID
-			<!-- CASE
-				WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
-				WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
-				WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
-				WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
-				WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
-				ELSE '미정' 
-			END
-			AS MEMBER_DEPARTMENT -->
-	FROM 
-				MEMBER 
-	WHERE 
-				MEMBER_ID = #{member_Id}
-</select>
+<resultMap type="com.jmh.security.CustomUserDetails" id="securityMap">
+	<result property="memberId" column="MEMBER_ID"/>
+	<result property="memberPw" column="MEMBER_PW"/>
+	<result property="memberName" column="MEMBER_NAME"/>
+	<result property="memberDept" column="MEMBER_DEPT"/>
+	<result property="memberAuth" column="MEMBER_AUTH"/>
+</resultMap>
 
-<select id="read" resultMap="memberMap" >
+<!-- 0. 로그인 -->
+<select id="loginID" resultType="com.jmh.security.CustomUserDetails" resultMap="securityMap">
 SELECT 
 		MEMBER_ID, 
 		MEMBER_PW, 
 		MEMBER_NAME, 
-		MEMBER_AUTHORITY
-		<!-- MEMBER_ENABLED  -->
-FROM 
-		MEMBER 
-WHERE 
-		MEMBER_ID=#{member_Id}
-</select>
-
-<!-- <select id="loginID" resultType="com.jmh.security.CustomUserDetails">
-	select * from CUSTOMMEMBER where ID='human'
-</select> -->
-
-<select id="loginID" resultType="com.jmh.security.CustomUserDetails">
-SELECT 
-		MEMBER_ID, 
-		MEMBER_PW, 
-		MEMBER_NAME, 
-		MEMBER_AUTHORITY
+		MEMBER_AUTH
 		<!-- MEMBER_ENABLED --> 
 FROM 
-		MEMBER 
+		MEMBER_DETAIL 
 WHERE 
-		MEMBER_ID=#{member_Id}
+		MEMBER_ID=#{memberId}
 </select>
-    
-<select id="getmemberListM" resultType="com.jmh.dto.MemberDto" parameterType="list">
-/*getmemberListM*/
+
+<!-- 1. 조회 -->
+<select id="getmemberList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="list" resultMap="memberMap">
+/*getmemberList*/
+SELECT
+    MEMBER_ID,
+    NVL(MEMBER_NAME, '미정') AS MEMBER_NAME,
+    CASE
+        WHEN MEMBER_GN = 'G01' THEN '남자'
+        WHEN MEMBER_GN = 'G02' THEN '여자'
+        ELSE '(미정)'
+    END AS MEMBER_GN,
+    CASE
+        WHEN MEMBER_POS = 'P16' THEN '인턴'
+        WHEN MEMBER_POS = 'P15' THEN '사원'
+        WHEN MEMBER_POS = 'P14' THEN '주임'
+        WHEN MEMBER_POS = 'P13' THEN '대리'
+        WHEN MEMBER_POS = 'P12' THEN '과장'
+        WHEN MEMBER_POS = 'P11' THEN '차장'
+        WHEN MEMBER_POS = 'P10' THEN '부장'
+        WHEN MEMBER_POS = 'P09' THEN '팀장'
+        WHEN MEMBER_POS = 'P08' THEN '실장'
+        WHEN MEMBER_POS = 'P07' THEN '본부장'
+        WHEN MEMBER_POS = 'P06' THEN '상무'
+        WHEN MEMBER_POS = 'P05' THEN '전무'
+        WHEN MEMBER_POS = 'P04' THEN '부사장'
+        WHEN MEMBER_POS = 'P03' THEN '사장'
+        WHEN MEMBER_POS = 'P02' THEN '부회장'
+        WHEN MEMBER_POS = 'P01' THEN '회장'
+        ELSE '(미정)'
+    END AS MEMBER_POS,
+    CASE
+        WHEN MEMBER_DEPT = 'D01' THEN '경영지원부'
+        WHEN MEMBER_DEPT = 'D02' THEN '인사부'
+        WHEN MEMBER_DEPT = 'D03' THEN 'IT부'
+        WHEN MEMBER_DEPT = 'D04' THEN '재무부'
+        WHEN MEMBER_DEPT = 'D05' THEN '회계부'
+        WHEN MEMBER_DEPT = 'D06' THEN '마케팅부'
+        ELSE '(미정)'
+    END AS MEMBER_DEPT,
+    NVL(MEMBER_TEL, '(미정)') AS MEMBER_TEL,
+    CASE
+        WHEN MEMBER_ST = 'S01' THEN '재직'
+        WHEN MEMBER_ST = 'S02' THEN '파견'
+        WHEN MEMBER_ST = 'S03' THEN '휴가'
+        WHEN MEMBER_ST = 'S04' THEN '병가'
+        WHEN MEMBER_LADAY IS NOT NULL THEN '퇴사'
+        <!-- WHEN MEMBER_ST = 'S05' THEN '퇴사' -->
+        ELSE '(미정)'
+    END AS MEMBER_ST,
+    MEMBER_STDAY,
+    MEMBER_LADAY
+FROM (
+    SELECT
+        MEMBER_ID,
+        MEMBER_NAME,
+        MEMBER_GN,
+        MEMBER_POS,
+        MEMBER_DEPT,
+        MEMBER_TEL,
+        MEMBER_ST,
+        MEMBER_STDAY,
+        MEMBER_LADAY,
+        ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW,
+        COUNT(*) OVER() AS TOTAL_CNT
+    FROM
+        MEMBER_DETAIL
+<include refid="criteria"></include> 
+)
+WHERE 
+			NUMROW BETWEEN #{startNo} AND #{endNo}
+</select>
+
+<!-- 1. 조회(페이징 정보) -->
+<select id="getTotalCnt" resultType="integer"  parameterType="integer">
+	/*getTotalCnt*/		
+	<if test="searchWord == null and search_startDate == null and search_endDate == null">
+	SELECT 
+			COUNT(*) 
+	FROM 
+			MEMBER_DETAIL
+	</if>
+	
+	<if test="searchWord != null or search_startDate != null or search_endDate != null">
+	SELECT 
+			COUNT(*) 
+	FROM 
+			MEMBER_DETAIL
+	<include refid="criteria"></include>
+	</if>	
+	
+</select>
+
+<!-- 2. 등록(아이디 체크) -->
+<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
+/*checkId*/
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_ID = #{memberId}
+</select>
+
+<!-- 2. 등록(전화번호 체크) -->
+<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
+/*checkTel*/
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_TEL = #{memberTel}
+</select>
+
+<!-- 2. 등록(회원 등록) -->
+<insert id="insertMember" parameterType="com.jmh.dto.MemberDetailDTO">
+/*insertMember*/
+INSERT 
+INTO 
+		MEMBER_DETAIL
+				(
+					MEMBER_ID,
+					MEMBER_PW,
+		  			MEMBER_NAME,
+		  			MEMBER_GN,
+		  			MEMBER_POS,
+		  			MEMBER_DEPT,
+		  			MEMBER_TEL,
+		  			MEMBER_STDAY,
+		  			MEMBER_AUTH
+		  		) 
+VALUES 
+		(
+		  		#{memberId},
+    			#{memberPw},
+    			#{memberName},
+    			#{memberGn},
+    			#{memberPos},
+    			#{memberDept},
+    			#{memberTel},
+    			#{memberStDay},
+    			#{memberAuth}
+		 )
+</insert>
+<!-- <insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
+/*insertMember*/
+INSERT 
+INTO 
+		MEMBER
+				(
+					MEMBER_ID,
+					MEMBER_PW,
+		  			MEMBER_NAME,
+		  			MEMBER_SEX,
+		  			MEMBER_POSITION,
+		  			MEMBER_DEPARTMENT,
+		  			MEMBER_TEL,
+		  			MEMBER_SKILL_LANGUAGE,
+		  			MEMBER_SKILL_DB,
+		  			MEMBER_STARTDATE
+		  		) 
+VALUES 
+		(
+		  		#{member_Id},
+    			#{member_Pw},
+    			#{member_Name},
+    			#{member_Sex},
+    			#{member_Position},
+    			#{member_Department},
+    			#{member_Tel},
+    			#{member_Skill_Language},
+    			#{member_Skill_DB},
+    			#{member_startDate}
+		 )
+</insert> -->
+
+
+
+<!-- SELECT
+		MEMBER_ID ,
+		NVL(
+		MEMBER_NAME, ('미정')
+		) 
+		AS MEMBER_NAME
+		CASE
+			WHEN MEMBER_GN = 'G01' THEN '남자'
+            WHEN MEMBER_GN = 'G02' THEN '여자'
+            ELSE ('미정')
+		END 
+		AS MEMBER_GN ,
+		CASE
+			WHEN MEMBER_POS = 'P16' THEN '인턴'
+			WHEN MEMBER_POS = 'P15' THEN '사원'
+			WHEN MEMBER_POS = 'P14' THEN '주임'
+			WHEN MEMBER_POS = 'P13' THEN '대리'
+			WHEN MEMBER_POS = 'P12' THEN '과장'
+			WHEN MEMBER_POS = 'P11' THEN '차장'
+			WHEN MEMBER_POS = 'P10' THEN '부장'
+			WHEN MEMBER_POS = 'P09' THEN '팀장'
+			WHEN MEMBER_POS = 'P08' THEN '실장'
+			WHEN MEMBER_POS = 'P07' THEN '본부장'
+			WHEN MEMBER_POS = 'P06' THEN '상무'
+			WHEN MEMBER_POS = 'P05' THEN '전무'
+			WHEN MEMBER_POS = 'P04' THEN '부사장'
+			WHEN MEMBER_POS = 'P03' THEN '사장'
+			WHEN MEMBER_POS = 'P02' THEN '부회장'
+			WHEN MEMBER_POS = 'P01' THEN '회장'
+			ELSE ('미정')
+		END 
+		AS MEMBER_POS,
+		CASE
+			WHEN MEMBER_DEPT  = 'D01' THEN '경영지원부'
+			WHEN MEMBER_DEPT  = 'D02' THEN '인사부'
+			WHEN MEMBER_DEPT  = 'D03' THEN 'IT부'
+			WHEN MEMBER_DEPT  = 'D04' THEN '재무부'
+			WHEN MEMBER_DEPT  = 'D05' THEN '회계부'
+			WHEN MEMBER_DEPT  = 'D06' THEN '마케팅부'
+			ELSE ('미정')
+		END 
+		AS MEMBER_DEPT,
+        NVL(
+		MEMBER_TEL, ('미정')
+		) 
+		AS MEMBER_TEL,
+		CASE
+			WHEN MEMBER_ST = 'S01' THEN '재직'
+			WHEN MEMBER_ST = 'S02' THEN '파견'
+			WHEN MEMBER_ST = 'S03' THEN '휴가'
+			WHEN MEMBER_ST = 'S04' THEN '병가'
+			WHEN MEMBER_ST = 'S05' THEN '퇴사'
+			ELSE ('미정')
+		END
+		AS MEMBER_ST,
+		MEMBER_STDAY,
+		MEMBER_LADAY,
+FROM   
+		(
+			SELECT   
+					MEMBER_ID ,
+					MEMBER_NAME ,
+					MEMBER_GN ,
+					MEMBER_POS ,
+					MEMBER_DEPT ,
+					MEMBER_TEL ,
+					MEMBER_ST ,
+					MEMBER_STDAY,
+					MEMBER_LADAY,
+					ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+					COUNT(*) OVER() AS TOTAL_CNT
+			FROM     
+					MEMBER_DETAIL 
+		)
+WHERE
+			NUMROW BETWEEN #{startNo} AND #{endNo} -->					
+<!-- WHERE 
+			MEMBER_ID IN
+<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        #{item}
+</foreach> -->
+
+<!-- ORDER BY
+			MEMBER_ID DESC -->
+
+
+<!-- <select id="checkedList" resultType="com.jmh.dto.MemberDto" parameterType="list">
+/*checkedList*/
 SELECT
 		MEMBER_ID ,
 		MEMBER_NAME ,
@@ -161,8 +415,46 @@ WHERE
 </foreach>
 ORDER BY
 			MEMBER_ID DESC
-<!-- NUMROW BETWEEN #{startNo} AND #{endNo}  -->
-</select>    
+NUMROW BETWEEN #{startNo} AND #{endNo} 
+</select> -->
+<select id="getDept" resultType="com.jmh.dto.MemberDto"  resultMap="memberMap">
+	SELECT 
+			MEMBER_ID
+			<!-- CASE
+				WHEN MEMBER_DEPARTMENT = 'NULL' THEN '미정'
+				WHEN MEMBER_DEPARTMENT = 'A020' THEN '경영지원부'
+				WHEN MEMBER_DEPARTMENT = 'A021' THEN '인사부'
+				WHEN MEMBER_DEPARTMENT = 'A022' THEN 'IT부'
+				WHEN MEMBER_DEPARTMENT = 'A023' THEN '마케팅부'
+				ELSE '미정' 
+			END
+			AS MEMBER_DEPARTMENT -->
+	FROM 
+				MEMBER 
+	WHERE 
+				MEMBER_ID = #{member_Id}
+</select>
+
+<select id="read" resultMap="memberMap" >
+SELECT 
+		MEMBER_ID, 
+		MEMBER_PW, 
+		MEMBER_NAME, 
+		MEMBER_AUTHORITY
+		<!-- MEMBER_ENABLED  -->
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_ID=#{member_Id}
+</select>
+
+<!-- <select id="loginID" resultType="com.jmh.security.CustomUserDetails">
+	select * from CUSTOMMEMBER where ID='human'
+</select> -->
+
+
+    
+    
 <select id="loginCk" resultType="com.jmh.dto.MemberDto">
   SELECT 
 		MEMBER_ID
@@ -184,19 +476,19 @@ ORDER BY
 	
 <!-- NVL(P.PROJECT_ENDDATE, '1900-01-01') AS PROJECT_ENDDATE	 -->
 <!-- 1. 조회(검색어 X) -->
-<select id="getmemberList" resultType="com.jmh.dto.MemberDto">
+<!-- <select id="getmemberList" resultType="com.jmh.dto.MemberDto">
 /*getmemberList*/
 SELECT 
 		MEMBER_ID ,
 		MEMBER_NAME ,
-		<!-- NVL(
+		NVL(
 		CASE
 			WHEN MEMBER_SEX = 'NULL' THEN '미정'
 			WHEN MEMBER_SEX = 'D011' THEN '남자'
             WHEN MEMBER_SEX = 'D012' THEN '여자'
 		END, 
 		'미정')
-		AS MEMBER_SEX , -->
+		AS MEMBER_SEX ,
 		CASE
 			WHEN MEMBER_SEX = 'D011' THEN '남자'
             WHEN MEMBER_SEX = 'D012' THEN '여자'
@@ -283,12 +575,12 @@ FROM
 	
 WHERE 
 		NUMROW BETWEEN #{startNo} AND #{endNo}
-</select>
+</select> -->
 	
 <!-- 1. 조회(검색어 O) -->
 <select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
 /*searchmemberList*/
-SELECT MEMBER_ID ,
+<!-- SELECT MEMBER_ID ,
        MEMBER_NAME ,
        NVL(
        CASE
@@ -371,85 +663,18 @@ FROM   (
                 FROM     MEMBER 
 <include refid="criteria"></include> 
         )
-WHERE NUMROW BETWEEN #{startNo} AND #{endNo}
+WHERE NUMROW BETWEEN #{startNo} AND #{endNo} -->
 </select>
 	
-<!-- 1. 조회(페이징 정보) -->
-<select id="getTotalCnt" resultType="integer"  parameterType="integer">
-		
-	<if test="searchWord == null and search_startDate == null and search_endDate == null">
-	SELECT 
-			COUNT(*) 
-	FROM 
-			MEMBER
-	</if>
-	
-	<if test="searchWord != null or search_startDate != null or search_endDate != null">
-	SELECT 
-			COUNT(*) 
-	FROM 
-			MEMBER
-	<include refid="criteria"></include>
-	</if>	
-</select>
-	
-<!-- 2. 등록(아이디 체크) -->
-<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
-SELECT 
-		COUNT(*)
-FROM 
-		MEMBER 
-WHERE 
-		MEMBER_ID = #{member_Id}
-</select>
 
-<!-- 2. 등록(전화번호 체크) -->
-<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
-SELECT 
-		COUNT(*)
-FROM 
-		MEMBER 
-WHERE 
-		MEMBER_TEL = #{member_Tel}
-</select>
+	
 
 <!-- 로그인할때 암호화된 비밀번호 가져오기(입력한 비밀번호랑 비교할 수 있도록) -->		
 <select id="getmember_Pw" resultType="String">
 	SELECT MEMBER_PW FROM MEMBER WHERE MEMBER_ID = #{member_Id}
 </select>		
 		
-<!-- 2. 등록(회원 등록) -->
-<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
-/*insertMember*/
-INSERT 
-INTO 
-		MEMBER
-				(
-					MEMBER_ID,
-					MEMBER_PW,
-		  			MEMBER_NAME,
-		  			MEMBER_SEX,
-		  			MEMBER_POSITION,
-		  			MEMBER_DEPARTMENT,
-		  			MEMBER_TEL,
-		  			MEMBER_SKILL_LANGUAGE,
-		  			MEMBER_SKILL_DB,
-		  			MEMBER_STARTDATE
-		  		) 
-VALUES 
-		(
-		  		#{member_Id},
-    			#{member_Pw},
-    			#{member_Name},
-    			#{member_Sex},
-    			#{member_Position},
-    			#{member_Department},
-    			#{member_Tel},
-    			#{member_Skill_Language},
-    			#{member_Skill_DB},
-    			#{member_startDate}
-		 )
-</insert>
+
 	
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
 <select id="getModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer">
@@ -908,10 +1133,10 @@ WHERE
             AND MEMBER_TEL LIKE '%'||#{searchWord}||'%'
         </if>
         <if test="search_startDate != null">
-            AND MEMBER_STARTDATE = #{search_startDate}
+            AND MEMBER_STDAY = #{search_startDate}
         </if>
          <if test="search_endDate != null">
-            AND MEMBER_ENDDATE = #{search_endDate}
+            AND MEMBER_LADAY = #{search_endDate}
         </if>
     </where>
 </sql>

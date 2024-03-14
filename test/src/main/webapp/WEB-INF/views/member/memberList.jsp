@@ -103,6 +103,9 @@ a.page-link.active {
 	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
 	<button id="searchButton">조회</button>
 	<button id="resetButton">초기화</button>
+	<button id="downloadButton" onclick="downloadButton()">함수)다운로드1</button>
+	<button id="downloadButton2" onclick="downloadButton2()">함수)다운로드2</button>
+	<a href="/member/download">a태그) 다운로드</a>
 	
 </div>
 <br><br>
@@ -117,8 +120,7 @@ a.page-link.active {
 			<th>직급</th>
 			<th>부서</th>
 			<th>전화번호</th>
-			<th>언어</th>
-			<th>데이터베이스</th>
+			<th>상태</th>
 			<th>입사일</th>
 			<th>퇴사일</th>
 			<th style="display: none">프로젝트아이디</th>
@@ -132,7 +134,7 @@ a.page-link.active {
 
 <button type="button" value="delete" id="deleteButton">삭제</button>
 <button type="button" value="modify" id="modifyButton">수정</button>
-<button id="insertButton" onclick="insertMember();">등록</button>
+<!-- <button id="insertButton" onclick="insertMember();">등록</button> -->
 <button type="button" value="modify" id="m_modifyButton">수정</button>
 <button type="button" value="back" id="backButton">뒤로가기</button>
 <div id="pagination">
@@ -193,20 +195,18 @@ $(document).ready(function() {
            			for (let i = 0; i < memberList.length; i++) {
                     	var newRow = $("<tr>");
                     	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
-                    	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
+                    	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
                     	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-                    	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
-                    	newRow.append("<td>" + memberList[i].member_Name + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+                    	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+                    	newRow.append("<td>" + memberList[i].memberName + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberGn + "</td>");
 						//newRow.append("<td>" + memberList[i].member_status + "</td>;")                    	
-                    	newRow.append("<td>" + memberList[i].member_Position + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Department + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
-                    	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
-                    	newRow.append("<td>" + (memberList[i].member_endDate === null ? '미정' : memberList[i].member_endDate) + "</td>");
-                    	//newRow.append("<td>" + memberList[i].project_Id + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberPos + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberDept + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberTel + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberSt + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+                    	newRow.append("<td>" + (memberList[i].memberLaDay === null ? '미정' : memberList[i].memberLaDay) + "</td>");
                     	$("#memberTable tbody").append(newRow);
            			}
            			var pagination = $("#pagination ul");
@@ -591,9 +591,16 @@ function validateDate1() {
     var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
     var startDateInput = document.getElementById("search_startDate");
     
-    if (!search_startDate) {
-		alert("유효하지 않은 입력입니다.");
+    /* if (!search_startDate) {
+		alert("유효하지 않은 입력입니다1.");
 		startDateInput.value = "";
+        return;
+    } */
+    if (!search_startDate) {
+        setTimeout(function() {
+            alert("유효하지 않은 입력입니다1.");
+        }, 0);
+        startDateInput.value = "";
         return;
     }
     
@@ -639,10 +646,18 @@ function validateDate2() {
     var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
     var endDateInput = document.getElementById("search_endDate");
     
-    if (!search_endDate) {
-    	alert("유효하지 않은 입력입니다.");
+    /* if (!search_endDate) {
+    	alert("유효하지 않은 입력입니다2.");
     	endDateInput.value = "";
     	return;
+    } */
+    
+    if (!search_endDate) {
+        setTimeout(function() {
+            alert("유효하지 않은 입력입니다1.");
+        }, 0);
+        endDateInput.value = "";
+        return;
     }
     
     if (search_endDate && !search_endDate.match(dateFormat)) {
@@ -690,22 +705,6 @@ function go(pageNo){
 	var search_endDate = document.getElementById("search_endDate").value;
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
-	//var pageNoPost1 = $("pageNoPost");
-	//var pageNoPost = document.getElementById("pageNoPost").value;
-	
-	/* $.ajax({
-		type : 'POST',
-		url: '/member/memberListInfo',
-		data: {
-			 "pageNo" : pageNo
-		},
-		success : function(resultMap) {
-			pageNoPost1.val(mav.pageNoPost);
-		},
-		error : function(request, status, error) { // 결과 에러 콜백함수        
-			alert("작동 실패");
-		}
-	}); */
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
@@ -777,20 +776,6 @@ function go(pageNo){
        		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
        		}
        		
-			/* if (searchWord.trim() !== "") {
-				location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-				if(search_startDate != null){
-					location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord + "&search_startDate" + search_startDate;
-				}
-				
-				//console.log("검색어가 있습니다.");
-			    //location.href = "/member/memberList?pageNo=" + pageNo + "&searchWord=" + searchWord;
-				//location.href = "/member/memberList?pageNo=" + pageNo;
-			} else {
-			    //console.log("검색어가 없습니다.");
-			    //location.href = "/member/memberList?pageNo=" + pageNo;
-			} */
-			
 		},
 		error : function(request, status, error) { // 결과 에러 콜백함수        
 			alert("작동 실패");
@@ -801,6 +786,8 @@ function go(pageNo){
 function insertMember(){
 	location.href = "/member/memberInsert";
 }
+
+
 
 </script>
 </html>

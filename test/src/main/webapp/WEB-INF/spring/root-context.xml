@@ -38,6 +38,7 @@
 		<property name="dataSource" ref="dataSource"></property>
 		<!-- <property name="typeAliasesPackage" value="com.jmh.dto"></property> -->
 	</bean>
+	
 	<context:component-scan base-package="com.jmh.service"/>
 	<context:component-scan base-package="com.jmh.mapper"/>
 	<context:component-scan base-package="com.jmh.security"/>

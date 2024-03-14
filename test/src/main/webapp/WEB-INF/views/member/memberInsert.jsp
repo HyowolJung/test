@@ -11,7 +11,7 @@
     body {
         font-family: 'Arial', sans-serif;
         margin: 20px;
-        background-color: #f4f4f4;
+        /* background-color: #f4f4f4; */
         text-align: center;
     }
 
@@ -49,10 +49,17 @@
         padding: 10px;
         cursor: pointer;
     }
+    
+    .total-div {
+		margin-top: 10px;
+		margin-left: 230px; 
+	}
 </style>
 </head>
 <body>
-<%@include file="/WEB-INF/views/common/header.jsp"%><br>
+<%@include file="/WEB-INF/views/common/header.jsp"%>
+<%@include file="/WEB-INF/views/common/sideBar.jsp" %>
+<div class="total-div">
 <div class="column" style="text-align: left;">
 	<p style="color: red; text-align: center;" >필수 입력</p>
 
@@ -84,25 +91,40 @@
 	<label>부서</label>
 	<select id="member_Department">
 		<option value="" selected="selected">선택</option>
-		<option value="A020">경영지원부</option>
-		<option value="A021">인사부</option>
-		<option value="A022">IT부</option>
-		<option value="A023">마케팅부</option>
+		<option value="D01">경영지원부</option>
+		<option value="D02">인사부</option>
+		<option value="D03">IT부</option>
+		<option value="D04">재무부</option>
+		<option value="D05">회계부</option>
+		<option value="D06">마케팅부</option>
 	</select><br><br>
 	
 	<label>직급</label>
 	<select id="member_Position">
 		<option value="" selected="selected">선택</option>
-		<option value="D028" >사원</option>
-		<option value="D027">대리</option>
-		<option value="D026">과장</option>
+		<option value="P01">회장</option>
+		<option value="P02">부회장</option>
+		<option value="P03">사장</option>
+		<option value="P04">부사장</option>
+		<option value="P05">전무</option>
+		<option value="P06">상무</option>
+		<option value="P07">본부장</option>
+		<option value="P08">실장</option>
+		<option value="P09">팀장</option>
+		<option value="P10">부장</option>
+		<option value="P11">차장</option>
+		<option value="P12">과장</option>
+		<option value="P13">대리</option>
+		<option value="P14">주임</option>
+		<option value="P15">사원</option>
+		<option value="P16">인턴</option>
 	</select><br><br>
 	
 	<label>성별</label>
 	<select id="member_Gender">
 		<option value="" selected="selected">선택</option>
-		<option value="D011" >남자</option>
-		<option value="D012">여자</option>
+		<option value="G01" >남자</option>
+		<option value="G02">여자</option>
 	</select><br><br>
 	<label>언어</label>
 	<select id="member_Skill_Language">
@@ -127,7 +149,7 @@
 	<button type="button" value="insert" id="insert">추가</button>
 	<button type="button" value="back" id="back">뒤로 가기</button>
 </div>
-
+</div>
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
@@ -170,7 +192,7 @@ $(document).ready(function() {
 	       			type : 'GET',
 	       			url : '/member/memberInsert_ck',
 	       			data : {
-	       				"member_Id" : member_Id.val()
+	       				"memberId" : member_Id.val()
 	       			},
 	       			success : 	
 	       				function(result) {			
@@ -245,7 +267,7 @@ $(document).ready(function() {
         	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         	        },
         			data : {
-        				"member_Tel" : member_Tel.val()
+        				"memberTel" : member_Tel.val()
         			},
         			success : 	
         				function(result) {			
@@ -286,16 +308,15 @@ $(document).ready(function() {
 			
 			if(!member_Tel.val().length == 0 || !member_Id.val().length == 0 || !member_startDate.val().length == 0 || !member_Name.val().length == 0){
 				let insertDatas = {
-					member_Id : $("#member_Id").val()
-					,member_Pw : $("#member_Pw").val()
-					,member_Name : $("#member_Name").val()
-					,member_Position : $("#member_Position").val()
-					,member_Department : $("#member_Department").val()
-					,member_Sex : $("#member_Gender").val()
-					,member_Tel : $("#member_Tel").val()
-					,member_Skill_Language : $("#member_Skill_Language").val()
-					,member_Skill_DB : $("#member_Skill_DB").val()
-					,member_startDate: $("#member_startDate").val()
+					memberId : $("#member_Id").val()
+					,memberPw : $("#member_Pw").val()
+					,memberName : $("#member_Name").val()
+					,memberPos : $("#member_Position").val()
+					,memberDept : $("#member_Department").val()
+					,memberGn : $("#member_Gender").val()
+					,memberTel : $("#member_Tel").val()
+					,memberStDay : $("#member_startDate").val()
+					,memberAuth : "ROLE_MEMBER" 
 				}
 					
 				$.ajax({
@@ -312,14 +333,14 @@ $(document).ready(function() {
 						location.href = "/member/memberList";
 					},
 					error : function(request, status, error) { // 결과 에러 콜백함수        
-						alert("등록을 실패했습니다.");
+						//alert("등록을 실패했습니다.");
 					}
 				}); //ajax EndPoint
 			}
 			
 			if(member_Tel.val().length == 0 || member_Id.val().length == 0 || member_startDate.val().length == 0 || member_Name.val().length == 0){
 				alert("아직 입력하지 않은 부분이 있어요.");
-				return;
+				return null;
 			}
 		}
 	}); //#insert EndPoint

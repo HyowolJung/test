@@ -1,9 +1,12 @@
 package com.jmh.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.jmh.dto.Criteria;
+import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -22,27 +26,29 @@ import com.jmh.dto.ProjectDto;
 }*/
 
 public interface MemberService {
-	public String getDept(String member_Id);
+	//public String getDept(String member_Id);
 	
 	//0. 로그인
-	public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
+	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 	
 	//1. 조회(검색어 X)
-	public List<MemberDto> getmemberList(Criteria cri);
+	public List<MemberDetailDTO> getmemberList(Criteria cri);
+	
+	
 	
 	//1. 조회(검색어 O)
 	//public List<MemberDto> searchmemberList(@Param("cri") Criteria cri , @Param("pageDto") PageDto pageDto);
-	public List<MemberDto> searchmemberList(Criteria cri);
+	//public List<MemberDto> searchmemberList(Criteria cri);
 	
 	//1. 조회(페이징 정보)	
 	public int getTotalCnt(Criteria cri);
 	
-	//2. 등록(아이디 체크)
-	public boolean checkId(int member_Id);
-	public boolean checkTel(String member_Tel);
+	//2. 등록(중복 체크)
+	public boolean checkId(String memberId);
+	public boolean checkTel(String memberTel);
 	
 	//2. 등록(회원 등록)
-	public int insertMember(MemberDto insertDatas);
+	public int insertMember(MemberDetailDTO insertDatas);
 	
 	//3. 상세화면 조회(memberRead.jsp)
 	public List<ProjectDto> getmemberprojectList(int member_Id);
@@ -60,7 +66,7 @@ public interface MemberService {
 	public int memberModify2(Map<String, Object> resultMap);
 	
 	//3. 조회(다중 회원 정보 조회)(memberList.jsp)
-	public List<String> getmemberListM(List<String> checkList);
+	public List<String> checkedList(List<String> checkList);
 	
 	//3. 수정(memberList.jsp)
 	@Transactional
@@ -88,4 +94,16 @@ public interface MemberService {
 	public int projectDetailInsert(Map<String, Object> resultMap);
 
 	public String getmember_Pw(int member_Id);
+
+
+
+	public void exportToExcel(HttpServletResponse response)throws IOException ;
+	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDetailDTO> modifyDatas)throws IOException ;
 }
+
+
+
+
+
+
+

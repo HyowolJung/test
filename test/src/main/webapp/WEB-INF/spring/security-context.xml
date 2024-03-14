@@ -5,8 +5,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
     
-    <bean id="customLoginSuccess" class="com.jmh.security.CustomLoginSuccessHandler"></bean>
-    <bean id="customUserDetailsService" class="com.jmh.security.CustomUserDetailsService"></bean>
+    <bean id="customLoginSuccess" class="com.jmh.security.CustomLoginSuccessHandler"/>
+    <bean id="customUserDetailsService" class="com.jmh.security.CustomUserDetailsService"/>
     <!-- <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean> -->
     <bean id ="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
     
@@ -22,14 +22,15 @@
 		
 		<security:form-login login-page="/login"
 		authentication-success-handler-ref="customLoginSuccess"
-		username-parameter="member_Id"
-		password-parameter="member_Pw"
+		username-parameter="memberId"
+		password-parameter="memberPw"
 		/>
 		
 		<security:logout logout-url="/logout" 
 		logout-success-url="/login"
 		delete-cookies="true"
-		invalidate-session="true"/>
+		invalidate-session="true"
+		/>
 		
 		<security:access-denied-handler error-page="/error"/>
 	</security:http>

@@ -34,10 +34,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		});
 		
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String member_Id = userDetails.getUsername(); // 또는 getMember_Id()
+        String memberId = userDetails.getUsername(); // 또는 getMember_Id()
         
         HttpSession session = request.getSession();
-        session.setAttribute("member_Id", member_Id);
+        session.setAttribute("memberId", memberId);
         
         //String member_Department = service.getDept(member_Id);
         //System.err.println("service.getDept(member_Id); : " + service.getDept(member_Id));

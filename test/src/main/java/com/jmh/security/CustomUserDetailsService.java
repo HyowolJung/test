@@ -15,14 +15,15 @@ public class CustomUserDetailsService implements UserDetailsService{
 	MemberMapper mapper;
 	
 	@Override
-	public UserDetails loadUserByUsername(String member_Id) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
 		System.err.println("CustomUserDetailsService 도착 1");
 		// TODO Auto-generated method stub
-		CustomUserDetails user = mapper.loginID(member_Id);
-		
-		if(member_Id==null) {
+		System.err.println("혹시 여기부터 에러인건가??? : " + memberId);
+		CustomUserDetails user = mapper.loginID(memberId);
+		System.err.println("user : " + user);
+		if(memberId==null) {
 			System.err.println("CustomUserDetailsService 도착 2");
-			throw new UsernameNotFoundException(member_Id);
+			throw new UsernameNotFoundException(memberId);
 		}
 		
 		return user;

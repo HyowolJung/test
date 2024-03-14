@@ -92,6 +92,8 @@ a {
 			<a href="">근태 관리</a> 
 			| 
 			<a href="">휴가 관리</a>
+			|
+			<a href="">내 정보</a>
 		</div>
 	</div>
 </body>

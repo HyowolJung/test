@@ -55,10 +55,10 @@ button:hover, .logout-button:hover {
     <br><br>
     <form action="/login" method="post">
         <div>
-            아이디 <input type="text" id="member_Id" name="member_Id" placeholder="부여받은 사번을 입력하세요." value="99999999"><br>
+            아이디 <input type="text" id="memberId" name="memberId" placeholder="부여받은 사번을 입력하세요." value="99999999"><br>
         </div><br>
         <div>
-            비밀번호 <input type="password" id="member_Pw" name="member_Pw"  value="1234"><br>
+            비밀번호 <input type="password" id="memberPw" name="memberPw"  value="1234"><br>
         </div><br>
         <button type="submit">로그인</button>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

@@ -33,7 +33,7 @@ public class MainController {
 	
 	@GetMapping("/header")
 	public String header(HttpSession session, Model model) {
-		model.addAttribute("member_Id" , session.getAttribute("member_Id"));
+		model.addAttribute("memberId" , session.getAttribute("memberId"));
 		return "/common/header";
 	}
 	
@@ -43,17 +43,17 @@ public class MainController {
 	}
 	
 	@GetMapping("/main")
-	public String main(HttpSession session, Model model, String member_Id) {
-		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
-		model.addAttribute("member_Id", session.getAttribute("member_Id"));
+	public String main(HttpSession session, Model model, String memberId) {
+		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
+		model.addAttribute("memberId", session.getAttribute("memberId"));
 		//model.addAttribute("member_Department" , "인사부");
 		return "/main";
 	}
 	
 	@PostMapping("/main")
-	public String main2(HttpSession session, Model model, String member_Id) {
-		model.addAttribute("member_Department" , session.getAttribute("member_Department"));
-		model.addAttribute("member_Id", session.getAttribute("member_Id"));
+	public String main2(HttpSession session, Model model, String memberId) {
+		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
+		model.addAttribute("memberId", session.getAttribute("memberId"));
 		//model.addAttribute("member_Department" , "인사부");
 		return "/main";
 	}
