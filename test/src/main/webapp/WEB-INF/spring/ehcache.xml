@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd">
+
+    <cache name="memberListCache"
+           maxEntriesLocalHeap="1000"
+           timeToLiveSeconds="600"
+           timeToIdleSeconds="300"/>
+</ehcache>

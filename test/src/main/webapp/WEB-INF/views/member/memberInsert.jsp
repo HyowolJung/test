@@ -126,7 +126,8 @@
 		<option value="G01" >남자</option>
 		<option value="G02">여자</option>
 	</select><br><br>
-	<label>언어</label>
+	
+	<!-- <label>언어</label>
 	<select id="member_Skill_Language">
 		<option value="" selected="selected">선택</option>
 		<option value="S010">JAVA</option>
@@ -142,7 +143,7 @@
 		<option value="S021">MSSQL</option>
 		<option value="S022">MYSQL</option>
 		<option value="S023">POSTGRESQL</option>
-	</select><br><br>
+	</select><br><br> -->
 </div>
 
 <div class="buttons">

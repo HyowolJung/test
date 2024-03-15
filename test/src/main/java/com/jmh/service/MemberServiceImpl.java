@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,10 @@ import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
 @Service
 public class MemberServiceImpl implements MemberService{
 
@@ -36,10 +41,16 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberService memberService;
 	
+	@Autowired
+    private CacheManager cacheManager;
 	//1. 조회(검색어 X)
 	@Override
+	//@Cacheable(value = "memberListCache", key = "#cri")
 	public List<MemberDetailDTO> getmemberList(Criteria cri) {
 		// TODO Auto-generated method stub
+		//Cache cache = cacheManager.getCache("memberListCache");
+        //Element element = cache.get(cri);
+        //System.err.println("elementelementelement : " + element);
 		return memberMapper.getmemberList(cri);
 	}
 	

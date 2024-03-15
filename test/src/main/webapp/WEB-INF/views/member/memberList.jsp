@@ -103,9 +103,7 @@ a.page-link.active {
 	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
 	<button id="searchButton">조회</button>
 	<button id="resetButton">초기화</button>
-	<button id="downloadButton" onclick="downloadButton()">함수)다운로드1</button>
-	<button id="downloadButton2" onclick="downloadButton2()">함수)다운로드2</button>
-	<a href="/member/download">a태그) 다운로드</a>
+	<button id="downloadButton" onclick="downloadButton()">명단 다운로드</button>
 	
 </div>
 <br><br>
@@ -206,7 +204,7 @@ $(document).ready(function() {
                     	newRow.append("<td>" + memberList[i].memberTel + "</td>");
                     	newRow.append("<td>" + memberList[i].memberSt + "</td>");
                     	newRow.append("<td>" + memberList[i].memberStDay + "</td>");
-                    	newRow.append("<td>" + (memberList[i].memberLaDay === null ? '미정' : memberList[i].memberLaDay) + "</td>");
+                    	newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
                     	$("#memberTable tbody").append(newRow);
            			}
            			var pagination = $("#pagination ul");
@@ -787,7 +785,8 @@ function insertMember(){
 	location.href = "/member/memberInsert";
 }
 
-
-
+function downloadButton(){
+	window.location.href ="/member/download";
+}
 </script>
 </html>
