@@ -16,21 +16,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
-import com.jmh.dto.PageDto;
-import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -41,19 +34,28 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberService memberService;
 	
-	@Autowired
-    private CacheManager cacheManager;
+	//@Autowired
+    //private CacheManager cacheManager;
+	
 	//1. 조회(검색어 X)
 	@Override
-	//@Cacheable(value = "memberListCache", key = "#cri")
+	//@Cacheable(value = "memberListCache")
 	public List<MemberDetailDTO> getmemberList(Criteria cri) {
-		// TODO Auto-generated method stub
-		//Cache cache = cacheManager.getCache("memberListCache");
-        //Element element = cache.get(cri);
-        //System.err.println("elementelementelement : " + element);
+		
+		System.err.println("cricricricricricri : " + cri);
 		return memberMapper.getmemberList(cri);
 	}
 	
+	@Override
+	@Cacheable(value = "memberListCache")
+	public List<MemberDetailDTO> getmemberList2() {
+		System.err.println("cricricricricricri2222 : ");
+		return memberMapper.getmemberList2();
+	}
+	// TODO Auto-generated method stub
+			//Cache cache = cacheManager.getCache("memberListCache");
+	        //Element element = cache.get(cri);
+	        //System.err.println("elementelementelement : " + element);
 	//1. 조회(검색어 O)
 //	@Override
 //	public List<MemberDto> searchmemberList(Criteria cri) {
@@ -100,6 +102,13 @@ public class MemberServiceImpl implements MemberService{
 	public List<MemberDto> getModifyList(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.getModifyList(member_Id);
+	}
+	
+	//3. 수정(페이지 이동 + 회원 정보 조회)
+	@Override
+	public List<MemberDetailDTO> selectModifyList(int member_Id) {
+		// TODO Auto-generated method stub
+		return memberMapper.selectModifyList(member_Id);
 	}
 	
 	//3. 수정(전화번호 중복체크) - 수정하려는 전화번호가 다른 회원의 전화번호와 겹치는지

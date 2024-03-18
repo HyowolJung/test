@@ -34,7 +34,7 @@ public interface MemberService {
 	//1. 조회(검색어 X)
 	public List<MemberDetailDTO> getmemberList(Criteria cri);
 	
-	
+	public List<MemberDetailDTO> getmemberList2();
 	
 	//1. 조회(검색어 O)
 	//public List<MemberDto> searchmemberList(@Param("cri") Criteria cri , @Param("pageDto") PageDto pageDto);
@@ -55,6 +55,7 @@ public interface MemberService {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)(memberRead.jsp)
 	public List<MemberDto> getModifyList(int member_Id);
+	public List<MemberDetailDTO> selectModifyList(int member_Id);
 	
 	//3. 수정(전화번호 중복체크)
 	public int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);

@@ -7,8 +7,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(of = {"searchField", "searchWord", "search_startDate", "search_endDate"})
 public class Criteria {
 	
 	private String searchField; 

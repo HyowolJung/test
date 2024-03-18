@@ -59,10 +59,13 @@ table {
 			<th>사번</th>
 			<th>이름</th>
 			<th>성별</th>
+			<th>이메일</th>
 			<th>직급</th>
+			<th>부서</th>
 			<th>전화번호</th>
-			<th>언어</th>
-			<th>데이터베이스</th>
+			<th>상태</th>
+			<th>팀</th>
+			<th>권한</th>
 			<th>입사일</th>
 			<th>퇴사일</th>
 		</tr>
@@ -70,16 +73,19 @@ table {
 	<tbody>
 		<c:forEach var="memberList" items="${memberList}">
 			<tr>
-				<td id="td_Id">${memberList.member_Id }</td>
-				<td>${memberList.member_Name }</td>
-				<td>${memberList.member_Sex}</td>
-				<td>${memberList.member_Position}</td>
-				<td>${memberList.member_Tel }</td>
-				<td>${memberList.member_Skill_Language}</td>
-				<td>${memberList.member_Skill_DB}</td>
-				<td>${memberList.member_startDate }</td>
+				<td id="td_Id">${memberList.memberId }</td>
+				<td>${memberList.memberName }</td>
+				<td>${memberList.memberGn}</td>
+				<td>${memberList.memberEmail}</td>
+				<td>${memberList.memberPos}</td>
+				<td>${memberList.memberDept}</td>
+				<td>${memberList.memberTel }</td>
+				<td>${memberList.memberSt }</td>
+				<td>${memberList.memberTeam }</td>
+				<td>${memberList.memberAuth }</td>
+				<td>${memberList.memberStDay }</td>
 				<%-- <td>${memberList.member_endDate == '1900-01-01' ? '미정' :  memberList.member_endDate}</td> --%>
-				<td>${memberList.member_endDate == null ? '미정' :  memberList.member_endDate}</td>
+				<td>${memberList.memberLaDay == null ? '미정' :  memberList.memberLaDay}</td>
 			</tr>
 		</c:forEach>
 	</tbody>

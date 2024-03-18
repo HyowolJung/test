@@ -27,7 +27,7 @@ public interface MemberMapper {
 	
 	//1. 조회
 	List<MemberDetailDTO> getmemberList(Criteria cri);
-	
+	List<MemberDetailDTO> getmemberList2();
 	//1. 조회(페이징 정보)
 	int getTotalCnt(Criteria cri);
 	
@@ -48,6 +48,7 @@ public interface MemberMapper {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
+	List<MemberDetailDTO> selectModifyList(int member_Id);
 	
 	//3. 수정(전화번호 중복체크)
 	int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 //import org.apache.ibatis.annotations.Param;
 //import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 //import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +49,7 @@ import com.jmh.service.MemberService;
 //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
 
 @Controller
+@EnableCaching
 @RequestMapping("/member")
 public class MemberController {
 	@Autowired	//의존성 주입
@@ -75,14 +76,18 @@ public class MemberController {
 	@ResponseBody
 	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
 		Map<String, Object> resultMap = new HashMap<>();
-		List<MemberDetailDTO> memberList = memberService.getmemberList(cri); 
+		List<MemberDetailDTO> memberList = memberService.getmemberList(cri);
+		//List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
 		int pageNoPost = cri.getPageNo();
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		resultMap.put("pageNoPost", pageNoPost);
 		resultMap.put("pageDto", pageDto);
 		resultMap.put("memberList", memberList);
-		
+		//resultMap.put("memberList", memberList2);
+		return resultMap;	
+	}
+	
 //		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 //			System.err.println("검색어 없는 조회");
 //			
@@ -118,9 +123,7 @@ public class MemberController {
 //			//resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
 //			return resultMap;
 //		}
-		return resultMap;	
-	}
-	
+
 	//2. 등록(페이지 이동)
 		@GetMapping("/memberInsert") //memberList.jsp
 		public String memberInsert() {
@@ -175,7 +178,24 @@ public class MemberController {
 			return "";
 		}
 	}
+	
+	@PostMapping("/memberRead")
+	public String memberReadPost(Model model, Criteria cri, @RequestParam("member_Id") int member_Id, @RequestParam("pageNo") int pageNo) {//
+		//System.err.println("pageNo : " + pageNo);
+		//System.err.println("member_Id : " + member_Id);
 		
+		//List<ProjectDto> projectList = memberService.getmemberprojectList(member_Id);
+		//List<ProjectDto> projectList = memberService.getMemberProjectList(member_Id);
+		//System.out.println("projectList : " + projectList);
+		
+		model.addAttribute("pageNo" , pageNo);
+		//model.addAttribute("projectList" , projectList);
+		//model.addAttribute("memberList" , memberService.getModifyList(member_Id));
+		model.addAttribute("memberList" , memberService.selectModifyList(member_Id));
+		return "member/memberRead";
+	}
+	
+	
 	@GetMapping("/download")
 	public void downloadExcel(HttpServletResponse response) throws IOException {
 	    memberService.exportToExcel(response);
@@ -322,20 +342,6 @@ public class MemberController {
 		return "";
 	}
 		
-	@PostMapping("/memberRead")
-	public String memberReadPost(Model model, Criteria cri, @RequestParam("member_Id") int member_Id, @RequestParam("pageNo") int pageNo) {//
-		//System.err.println("pageNo : " + pageNo);
-		//System.err.println("member_Id : " + member_Id);
-		
-		List<ProjectDto> projectList = memberService.getmemberprojectList(member_Id);
-		System.out.println("projectList : " + projectList);
-		
-		model.addAttribute("pageNo" , pageNo);
-		model.addAttribute("projectList" , projectList);
-		model.addAttribute("memberList" , memberService.getModifyList(member_Id));
-		return "member/memberRead";
-	}
-	
 	@PostMapping("/memberModify2")
 	public ResponseEntity<Boolean> memberModify2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
 		System.out.println("selectedProjectData : " + selectedProjectData);
