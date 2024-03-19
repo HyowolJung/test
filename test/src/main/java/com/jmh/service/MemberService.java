@@ -55,7 +55,7 @@ public interface MemberService {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)(memberRead.jsp)
 	public List<MemberDto> getModifyList(int member_Id);
-	public List<MemberDetailDTO> selectModifyList(int member_Id);
+	public List<MemberDetailDTO> selectModifyList(int memberId);
 	
 	//3. 수정(전화번호 중복체크)
 	public int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);

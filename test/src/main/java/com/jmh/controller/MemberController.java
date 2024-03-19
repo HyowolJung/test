@@ -180,7 +180,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("/memberRead")
-	public String memberReadPost(Model model, Criteria cri, @RequestParam("member_Id") int member_Id, @RequestParam("pageNo") int pageNo) {//
+	public String memberReadPost(Model model, Criteria cri, @RequestParam("memberId") int memberId, @RequestParam("pageNo") int pageNo) {//
 		//System.err.println("pageNo : " + pageNo);
 		//System.err.println("member_Id : " + member_Id);
 		
@@ -191,7 +191,7 @@ public class MemberController {
 		model.addAttribute("pageNo" , pageNo);
 		//model.addAttribute("projectList" , projectList);
 		//model.addAttribute("memberList" , memberService.getModifyList(member_Id));
-		model.addAttribute("memberList" , memberService.selectModifyList(member_Id));
+		model.addAttribute("memberList" , memberService.selectModifyList(memberId));
 		return "member/memberRead";
 	}
 	

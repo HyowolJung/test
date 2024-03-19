@@ -515,7 +515,7 @@ $(document).ready(function() {
 	//var pageNo = $("#pageNo").val();
 });//document EndPoint
 
-function submitPost(member_Id, pageNo) {
+function submitPost(memberId, pageNo) {
 	//alert("pageNo : " + pageNo);
 	//alert("member_Id : " + member_Id);
     // 폼 생성
@@ -527,8 +527,8 @@ function submitPost(member_Id, pageNo) {
     // memberId와 pageNo 값을 input으로 추가
     form.append($('<input>', {
         type: 'hidden',
-        name: 'member_Id',
-        value: member_Id
+        name: 'memberId',
+        value: memberId
     }));
     form.append($('<input>', {
         type: 'hidden',

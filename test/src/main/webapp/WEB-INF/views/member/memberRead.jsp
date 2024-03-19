@@ -48,11 +48,12 @@ table {
 <body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <%@include file="/WEB-INF/views/common/header.jsp"%><br>
+<input id="pageNo" name="pageNo" value="${pageNo}" type="hidden">
 <div class="center">
 멤버 상세정보
 <br>
 <br>
-<input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"> <!--  -->
+ <!--  -->
 <table border="1">
 	<thead>
 		<tr>
@@ -84,8 +85,8 @@ table {
 				<td>${memberList.memberTeam }</td>
 				<td>${memberList.memberAuth }</td>
 				<td>${memberList.memberStDay }</td>
-				<%-- <td>${memberList.member_endDate == '1900-01-01' ? '미정' :  memberList.member_endDate}</td> --%>
-				<td>${memberList.memberLaDay == null ? '미정' :  memberList.memberLaDay}</td>
+				<%-- <td>${memberList.memberLaDay == '1900-01-01' ? '(미정)' :  memberList.memberLaDay}</td> --%>
+				<td>${memberList.memberLaDay == null ? '(미정)' :  memberList.memberLaDay}</td>
 			</tr>
 		</c:forEach>
 	</tbody>

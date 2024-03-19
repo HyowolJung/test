@@ -106,9 +106,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@Override
-	public List<MemberDetailDTO> selectModifyList(int member_Id) {
+	public List<MemberDetailDTO> selectModifyList(int memberId) {
 		// TODO Auto-generated method stub
-		return memberMapper.selectModifyList(member_Id);
+		return memberMapper.selectModifyList(memberId);
 	}
 	
 	//3. 수정(전화번호 중복체크) - 수정하려는 전화번호가 다른 회원의 전화번호와 겹치는지
