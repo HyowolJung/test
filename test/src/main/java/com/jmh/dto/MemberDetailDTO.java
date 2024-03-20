@@ -25,6 +25,7 @@ public class MemberDetailDTO {
 	private String memberDept;	//memberDepartment	부서
 	private String memberTeam;	//memberTeam			팀
 	private String memberAuth;	//memberAuthority		권한
+	private String memberRo;		//memberResponsibilities of office					직책
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

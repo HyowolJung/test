@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sound.midi.SysexMessage;
 
 //import org.apache.ibatis.annotations.Param;
 //import org.apache.ibatis.javassist.expr.NewArray;
@@ -55,6 +56,18 @@ public class MemberController {
 	@Autowired	//의존성 주입
 	private MemberService memberService;
 	
+	//엑셀 다운로드
+	@GetMapping("/download")
+	public void downloadExcel(HttpServletResponse response) throws IOException {
+	    memberService.exportToExcel(response);
+	}
+	
+	@PostMapping(value = "/download") //, produces = "application/json;charset=UTF-8"
+	public void downloadExcel(HttpServletResponse response, @RequestParam Map<String, String> data) throws IOException {
+		System.err.println("datadatadata : " + data);
+		//memberService.exportToExcel2(response, data);
+	}
+	
 	//1. 메인페이지
 	@GetMapping("/memberMain")
 	public String memberMain() {
@@ -74,7 +87,8 @@ public class MemberController {
 	//1. 조회(사원 정보)
 	@PostMapping("/memberList") //memberList.jsp
 	@ResponseBody
-	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList, @RequestParam( value = "selectedList[]" , required = false)List<String>selectedList
+		//System.err.println("selectedListselectedListselectedList는 : " + selectedList);
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDetailDTO> memberList = memberService.getmemberList(cri);
 		//List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
@@ -125,13 +139,13 @@ public class MemberController {
 //		}
 
 	//2. 등록(페이지 이동)
-		@GetMapping("/memberInsert") //memberList.jsp
-		public String memberInsert() {
-			return "member/memberInsert";
-		}
+	@GetMapping("/memberInsert") //memberList.jsp
+	public String memberInsert() {
+		return "member/memberInsert";
+	}
 		
 	//2. 등록(중복 체크)
-	@GetMapping("/memberInsert_ck")
+	@GetMapping("/memberInsert_ck")	//memberList.jsp
 	@ResponseBody
 	public ResponseEntity<Boolean> insertMember_ck(String memberTel, String memberId) {
 		boolean result = true;
@@ -166,7 +180,7 @@ public class MemberController {
 	}
 	
 	//2. 등록(회원 등록)
-	@PostMapping("/memberInsert")
+	@PostMapping("/memberInsert")	//memberList.jsp
 	public String insertMember(@RequestBody MemberDetailDTO insertDatas) {
 		
 		int insertCnt = memberService.insertMember(insertDatas);
@@ -179,110 +193,8 @@ public class MemberController {
 		}
 	}
 	
-	@PostMapping("/memberRead")
-	public String memberReadPost(Model model, Criteria cri, @RequestParam("memberId") int memberId, @RequestParam("pageNo") int pageNo) {//
-		//System.err.println("pageNo : " + pageNo);
-		//System.err.println("member_Id : " + member_Id);
-		
-		//List<ProjectDto> projectList = memberService.getmemberprojectList(member_Id);
-		//List<ProjectDto> projectList = memberService.getMemberProjectList(member_Id);
-		//System.out.println("projectList : " + projectList);
-		
-		model.addAttribute("pageNo" , pageNo);
-		//model.addAttribute("projectList" , projectList);
-		//model.addAttribute("memberList" , memberService.getModifyList(member_Id));
-		model.addAttribute("memberList" , memberService.selectModifyList(memberId));
-		return "member/memberRead";
-	}
-	
-	
-	@GetMapping("/download")
-	public void downloadExcel(HttpServletResponse response) throws IOException {
-	    memberService.exportToExcel(response);
-	}
-	
-	@PostMapping(value = "/download") //, produces = "application/json;charset=UTF-8"
-	public void downloadExcel(HttpServletResponse response, @RequestParam Map<String, String> data) throws IOException {
-		System.err.println("datadatadata : " + data);
-		//memberService.exportToExcel2(response, data);
-	}
-	
-	
-	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
-	@PostMapping("/memberListM")
-	@ResponseBody
-	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
-		System.out.println("checkList : " + checkList);
-		Map<String, Object> resultMap = new HashMap<>();
-		if(checkList != null) {
-			System.err.println("checkList가 비어있지 않아요.");
-			List<String> memberList = memberService.checkedList(checkList);
-			resultMap.put("memberList", memberList);
-			
-			ModelAndView mav = new ModelAndView();
-			mav.setViewName("/member/memberModify");
-			mav.addObject("memberList", memberList);
-			return resultMap;	
-		}
-		return resultMap;
-	}
-	
-	@PostMapping("/memberModify")
-	public String modifyMember(Model model,
-			@RequestParam("member_Id") int member_Id, 
-			@RequestParam("pageNo") int pageNo) {
-		System.err.println("member_Id2 : " + member_Id);
-		System.err.println("pageNo : " + pageNo);
-		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
-		System.out.println("memberprojectList : " + memberprojectList);
-		model.addAttribute("memberprojectList", memberprojectList);
-		model.addAttribute("memberList", memberService.getModifyList(member_Id));
-		model.addAttribute("pageNo", pageNo);
-				
-		return "member/memberModify";
-	}
-	
-	//3. 수정(회원 정보 수정)
-	@PostMapping("/memberModifyInfo")//, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
-	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
-		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
-		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
-		System.err.println("modifyDatas : " + modifyDatas);
-		
-		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
-		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
-		//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
-		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
-		boolean result = false;
-		
-		System.out.println("member_Tel_ck : " + member_Tel_ck);
-		if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
-			System.out.println("내 번호가 맞아");
-			int modifyCnt = memberService.memberModify(modifyDatas);
-			if(modifyCnt > 0) {
-				System.out.println("수정 성공1");
-				result = true;
-			}else if(modifyCnt < 0 ) {
-				System.out.println("수정 실패1");
-				result = false;
-			}
-		}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
-			System.out.println("내 번호가 아니야");
-			int modifyCnt = memberService.memberModify(modifyDatas);
-			if(modifyCnt > 0) {
-				System.out.println("수정 성공2");
-				result = true;
-			}else if(modifyCnt < 0) {
-				System.out.println("수정 실패2");
-				result = false;
-			}
-		}
-		
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	
-	//2-2. 다중 수정(#m_modifyButton)버튼 클릭했을 때
-	@PostMapping("/memberModifyM") 
+	//2. 수정
+	@PostMapping("/memberModifyM")	//memberList.jsp
 	public ResponseEntity<?> memberModifyM(@RequestBody List<MemberDto> modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
 		Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("modifyDatas", modifyDatas);
@@ -300,6 +212,132 @@ public class MemberController {
 		}
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	
+	
+	
+	
+	//3. 상세화면
+	@PostMapping("/memberRead")
+	public String memberReadPost(Model model, Criteria cri, @RequestParam("selectedList[]")List<String>selectedList, @RequestParam("pageNo") int pageNo) {//@RequestParam("memberId") int memberId, 
+		System.err.println("selectedList : " + selectedList);
+		
+		model.addAttribute("pageNo" , pageNo);
+		model.addAttribute("memberList" , memberService.getSelectedList(selectedList));
+		return "member/memberRead";
+	}
+	
+	//3. 수정(회원 정보 수정)
+		@PostMapping("/memberModifyInfo")//, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
+		public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
+			String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
+			int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
+			System.err.println("modifyDatas : " + modifyDatas);
+			
+			//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
+			//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
+			//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+			int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
+			boolean result = false;
+		
+			System.out.println("member_Tel_ck : " + member_Tel_ck);
+			if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
+				System.out.println("내 번호가 맞아");
+				int modifyCnt = memberService.memberModify(modifyDatas);
+				if(modifyCnt > 0) {
+					System.out.println("수정 성공1");
+					result = true;
+				}else if(modifyCnt < 0 ) {
+					System.out.println("수정 실패1");
+					result = false;
+				}
+			}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
+				System.out.println("내 번호가 아니야");
+				int modifyCnt = memberService.memberModify(modifyDatas);
+				if(modifyCnt > 0) {
+					System.out.println("수정 성공2");
+					result = true;
+				}else if(modifyCnt < 0) {
+					System.out.println("수정 실패2");
+					result = false;
+				}
+			}
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	
+	
+	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
+//	@PostMapping("/memberListM")
+//	@ResponseBody
+//	public Map<String, Object> memberList(Model model, Criteria cri, HttpSession session, @RequestBody(required = false) List<String> checkList) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList
+//		System.out.println("checkList : " + checkList);
+//		Map<String, Object> resultMap = new HashMap<>();
+//		if(checkList != null) {
+//			System.err.println("checkList가 비어있지 않아요.");
+//			List<String> memberList = memberService.checkedList(checkList);
+//			System.err.println("memberList의 여러건 선택값은 : " + memberList);
+//			resultMap.put("memberList", memberList);
+//			
+//			ModelAndView mav = new ModelAndView();
+//			mav.setViewName("/member/memberModify");
+//			mav.addObject("memberList", memberList);
+//			return resultMap;	
+//		}
+//		return resultMap;
+//	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@PostMapping("/memberModify")
+	public String modifyMember(Model model,
+			@RequestParam("member_Id") int member_Id, 
+			@RequestParam("pageNo") int pageNo) {
+		System.err.println("member_Id2 : " + member_Id);
+		System.err.println("pageNo : " + pageNo);
+		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+		System.out.println("memberprojectList : " + memberprojectList);
+		model.addAttribute("memberprojectList", memberprojectList);
+		model.addAttribute("memberList", memberService.getModifyList(member_Id));
+		model.addAttribute("pageNo", pageNo);
+				
+		return "member/memberModify";
+	}
+	
+	
 	
 	//4. 삭제(다중 회원 정보 삭제)
 	@PostMapping("/memberDeleteM") //@RequestParam(value="parameter이름[]")List<String>

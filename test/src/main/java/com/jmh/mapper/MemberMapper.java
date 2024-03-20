@@ -49,9 +49,14 @@ public interface MemberMapper {
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
 	List<MemberDetailDTO> selectModifyList(int memberId);
+	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+	
+	
+	
 	
 	//3. 수정(전화번호 중복체크)
 	int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);
+	List<String> checkedList(List<String> checkList);
 	
 	//3. 수정(회원 정보 수정)
 	int memberModify(MemberDto modifyDatas);
@@ -76,7 +81,7 @@ public interface MemberMapper {
 
 	List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 
-	List<String> checkedList(List<String> checkList);
+	
 
 	ArrayList<MemberDto> member_Tel_ck_M(List<MemberDto> modifyList);
 
@@ -89,4 +94,6 @@ public interface MemberMapper {
 	int projectDetailInsert(Map<String, Object> resultMap);
 
 	String getmember_Pw(int member_Id);
+
+	
 }

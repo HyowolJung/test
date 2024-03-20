@@ -3,20 +3,62 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jmh.mapper.MemberMapper">
 	
-	<!--  데이터베이스의 컬럼과 VO가 다를때-->
-	<!-- <RESULTMAP TYPE="com.jmh.dto.MemberDto" ID="MemberDto">
-    	<RESULT PROPERTY="BOARDTYPE" 	COLUMN="BOARD_TYPE"/>
-    	<RESULT PROPERTY="BOARDNUM" 	COLUMN="BOARD_NUM"/>
-    	<RESULT PROPERTY="BOARDTITLE" 	COLUMN="BOARD_TITLE"/>
-    	<RESULT PROPERTY="BOARDCOMMENT" COLUMN="BOARD_COMMENT"/>
-    </RESULTMAP> -->
-    
-<!-- <resultMap type="com.jmh.dto.MemberDto" id="memberMap">
-	<result property="member_Id" column="member_Id"/>
-	<result property="member_Pw" column="member_Pw"/>
-	<result property="member_Name" column="member_Name"/>
-	<result property="member_authority" column="member_authority"/>
-</resultMap> -->
+<!-- SELECT
+    MEMBER_ID,
+    NVL(MEMBER_NAME, '(미정)') AS MEMBER_NAME,
+    CASE
+        WHEN MEMBER_GN = 'G01' THEN '남자'
+        WHEN MEMBER_GN = 'G02' THEN '여자'
+        ELSE '(미정)'
+    END AS MEMBER_GN,
+    MEMBER_IMG,
+    NVL(MEMBER_EMAIL, '(미정)') AS MEMBER_EMAIL,
+    NVL(MEMBER_TEL, '(미정)') AS MEMBER_TEL,
+    NVL(MEMBER_ADR, '(미정)') AS MEMBER_ADR,
+    MEMBER_STDAY,
+    MEMBER_LADAY,
+    CASE
+        WHEN MEMBER_LADAY IS NULL THEN '재직'
+        WHEN MEMBER_ST = 'S02' THEN '파견'
+        WHEN MEMBER_ST = 'S03' THEN '휴가'
+        WHEN MEMBER_ST = 'S04' THEN '병가'
+        WHEN MEMBER_LADAY IS NOT NULL THEN '퇴사'
+        ELSE '(미정)'
+    END AS MEMBER_ST,
+    CASE
+        WHEN MEMBER_POS = 'P16' THEN '인턴'
+        WHEN MEMBER_POS = 'P15' THEN '사원'
+        WHEN MEMBER_POS = 'P14' THEN '주임'
+        WHEN MEMBER_POS = 'P13' THEN '대리'
+        WHEN MEMBER_POS = 'P12' THEN '과장'
+        WHEN MEMBER_POS = 'P11' THEN '차장'
+        WHEN MEMBER_POS = 'P10' THEN '부장'
+        WHEN MEMBER_POS = 'P09' THEN '팀장'
+        WHEN MEMBER_POS = 'P08' THEN '실장'
+        WHEN MEMBER_POS = 'P07' THEN '본부장'
+        WHEN MEMBER_POS = 'P06' THEN '상무'
+        WHEN MEMBER_POS = 'P05' THEN '전무'
+        WHEN MEMBER_POS = 'P04' THEN '부사장'
+        WHEN MEMBER_POS = 'P03' THEN '사장'
+        WHEN MEMBER_POS = 'P02' THEN '부회장'
+        WHEN MEMBER_POS = 'P01' THEN '회장'
+        ELSE '(미정)'
+    END AS MEMBER_POS,
+    CASE
+        WHEN MEMBER_DEPT = 'D01' THEN '경영지원부'
+        WHEN MEMBER_DEPT = 'D02' THEN '인사부'
+        WHEN MEMBER_DEPT = 'D03' THEN 'IT부'
+        WHEN MEMBER_DEPT = 'D04' THEN '재무부'
+        WHEN MEMBER_DEPT = 'D05' THEN '회계부'
+        WHEN MEMBER_DEPT = 'D06' THEN '마케팅부'
+        ELSE '(미정)'
+    END AS MEMBER_DEPT,
+    MEMBER_TEAM,
+    MEMBER_AUTH
+FROM
+        	MEMBER_DETAIL
+WHERE 
+			MEMBER_ID = #{member_Id} -->
 
 <resultMap type="com.jmh.dto.MemberDetailDTO" id="memberMap">
 	<result property="memberId" column="MEMBER_ID"/>
@@ -32,6 +74,7 @@
 	<result property="memberAuth" column="MEMBER_AUTH"/>
 	<result property="memberStDay" column="MEMBER_STDAY"/>
 	<result property="memberLaDay" column="MEMBER_LADAY"/>
+	<result property="memberRo" column="MEMBER_RO"/>
 </resultMap>
 
 <resultMap type="com.jmh.security.CustomUserDetails" id="securityMap">
@@ -63,7 +106,6 @@ SELECT
     MD.MEMBER_ID,
     NVL(MD.MEMBER_NAME, '(미정)') AS MEMBER_NAME,
     NVL(GN.DTLCODENM, '(미정)') AS MEMBER_GN,
-    <!-- GN.DTLCODENM AS MEMBER_GN, -->
     MD.MEMBER_IMG,
     NVL(MD.MEMBER_EMAIL, '(미정)') AS MEMBER_EMAIL,
     NVL(MD.MEMBER_TEL, '(미정)') AS MEMBER_TEL,
@@ -74,10 +116,31 @@ SELECT
     NVL(POS.DTLCODENM, '(미정)') AS MEMBER_POS,
     NVL(DEPT.DTLCODENM, '(미정)') AS MEMBER_DEPT,
     MD.MEMBER_TEAM,
-    MD.MEMBER_AUTH
-FROM 
-    MEMBER_DETAIL MD
-
+    MD.MEMBER_AUTH,
+    NVL(RO.DTLCODENM, '(미정)') AS MEMBER_RO
+FROM (
+	SELECT   
+		MEMBER_ID,
+		MEMBER_PW,
+		MEMBER_NAME,
+		MEMBER_GN,
+		MEMBER_IMG,
+		MEMBER_EMAIL,
+		MEMBER_TEL,
+		MEMBER_ADR,
+		MEMBER_STDAY,
+		MEMBER_LADAY,
+		MEMBER_ST,
+		MEMBER_POS,
+		MEMBER_DEPT,
+		MEMBER_TEAM,
+		MEMBER_AUTH,
+		MEMBER_RO,
+		ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+		COUNT(*) OVER() AS TOTAL_CNT
+	FROM     
+			MEMBER_DETAIL 
+)MD
 LEFT JOIN 
     CODE_DETAIL GN 
 ON 
@@ -117,82 +180,16 @@ ON
 AND
 	RO.DCODE = 'D500'
 	 	
-LEFT JOIN
+<!-- LEFT JOIN
 	CODE_DETAIL AU
 ON
-	<!-- MD.MEMBER_AUTH = AU.DTLCODE -->
+	MD.MEMBER_AUTH = AU.DTLCODE
 	TO_NUMBER(SUBSTR(MD.MEMBER_AUTH, -1)) = AU.DTLCODE
 AND
-	AU.DCODE = 'D600'		
-</select>
+	AU.DCODE = 'D600'		 -->
 
-<select id="getmemberList2" resultType="com.jmh.dto.MemberDetailDTO" parameterType="list" resultMap="memberMap">
-/*getmemberList*/
-SELECT
-    MEMBER_ID,
-    NVL(MEMBER_NAME, '미정') AS MEMBER_NAME,
-    CASE
-        WHEN MEMBER_GN = 'G01' THEN '남자'
-        WHEN MEMBER_GN = 'G02' THEN '여자'
-        ELSE '(미정)'
-    END AS MEMBER_GN,
-    CASE
-        WHEN MEMBER_POS = 'P16' THEN '인턴'
-        WHEN MEMBER_POS = 'P15' THEN '사원'
-        WHEN MEMBER_POS = 'P14' THEN '주임'
-        WHEN MEMBER_POS = 'P13' THEN '대리'
-        WHEN MEMBER_POS = 'P12' THEN '과장'
-        WHEN MEMBER_POS = 'P11' THEN '차장'
-        WHEN MEMBER_POS = 'P10' THEN '부장'
-        WHEN MEMBER_POS = 'P09' THEN '팀장'
-        WHEN MEMBER_POS = 'P08' THEN '실장'
-        WHEN MEMBER_POS = 'P07' THEN '본부장'
-        WHEN MEMBER_POS = 'P06' THEN '상무'
-        WHEN MEMBER_POS = 'P05' THEN '전무'
-        WHEN MEMBER_POS = 'P04' THEN '부사장'
-        WHEN MEMBER_POS = 'P03' THEN '사장'
-        WHEN MEMBER_POS = 'P02' THEN '부회장'
-        WHEN MEMBER_POS = 'P01' THEN '회장'
-        ELSE '(미정)'
-    END AS MEMBER_POS,
-    CASE
-        WHEN MEMBER_DEPT = 'D01' THEN '경영지원부'
-        WHEN MEMBER_DEPT = 'D02' THEN '인사부'
-        WHEN MEMBER_DEPT = 'D03' THEN 'IT부'
-        WHEN MEMBER_DEPT = 'D04' THEN '재무부'
-        WHEN MEMBER_DEPT = 'D05' THEN '회계부'
-        WHEN MEMBER_DEPT = 'D06' THEN '마케팅부'
-        ELSE '(미정)'
-    END AS MEMBER_DEPT,
-    NVL(MEMBER_TEL, '(미정)') AS MEMBER_TEL,
-    CASE
-        WHEN MEMBER_LADAY IS NULL THEN '재직'
-        WHEN MEMBER_ST = 'S02' THEN '파견'
-        WHEN MEMBER_ST = 'S03' THEN '휴가'
-        WHEN MEMBER_ST = 'S04' THEN '병가'
-        WHEN MEMBER_LADAY IS NOT NULL THEN '퇴사'
-        <!-- WHEN MEMBER_ST = 'S05' THEN '퇴사' -->
-        ELSE '(미정)'
-    END AS MEMBER_ST,
-    MEMBER_STDAY,
-    MEMBER_LADAY
-    <!-- NVL(MEMBER_LADAY, '(미정)') AS MEMBER_LADAY -->
-FROM (
-    SELECT
-        MEMBER_ID,
-        MEMBER_NAME,
-        MEMBER_GN,
-        MEMBER_POS,
-        MEMBER_DEPT,
-        MEMBER_TEL,
-        MEMBER_ST,
-        MEMBER_STDAY,
-        MEMBER_LADAY,
-        ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW,
-        COUNT(*) OVER() AS TOTAL_CNT
-    FROM
-        MEMBER_DETAIL
-)
+WHERE 
+		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
 
 <!-- 1. 조회(페이징 정보) -->
@@ -268,6 +265,101 @@ VALUES
 		 )
 </insert>
 
+<!-- 3. 상세화면 -->
+<select id="getSelectedList" resultType="String" parameterType="java.util.List" resultMap="memberMap">
+SELECT
+    MD.MEMBER_ID,
+    NVL(MD.MEMBER_NAME, '(미정)') AS MEMBER_NAME,
+    NVL(GN.DTLCODENM, '(미정)') AS MEMBER_GN,
+    MD.MEMBER_IMG,
+    NVL(MD.MEMBER_EMAIL, '(미정)') AS MEMBER_EMAIL,
+    NVL(MD.MEMBER_TEL, '(미정)') AS MEMBER_TEL,
+    NVL(MD.MEMBER_ADR, '(미정)') AS MEMBER_ADR,
+    MD.MEMBER_STDAY,
+    MD.MEMBER_LADAY,
+    NVL(ST.DTLCODENM, '(미정)') AS MEMBER_ST,
+    NVL(POS.DTLCODENM, '(미정)') AS MEMBER_POS,
+    NVL(DEPT.DTLCODENM, '(미정)') AS MEMBER_DEPT,
+    MD.MEMBER_TEAM,
+    MD.MEMBER_AUTH,
+    NVL(RO.DTLCODENM, '(미정)') AS MEMBER_RO
+FROM (
+	SELECT   
+		MEMBER_ID,
+		MEMBER_PW,
+		MEMBER_NAME,
+		MEMBER_GN,
+		MEMBER_IMG,
+		MEMBER_EMAIL,
+		MEMBER_TEL,
+		MEMBER_ADR,
+		MEMBER_STDAY,
+		MEMBER_LADAY,
+		MEMBER_ST,
+		MEMBER_POS,
+		MEMBER_DEPT,
+		MEMBER_TEAM,
+		MEMBER_AUTH,
+		MEMBER_RO,
+		ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+		COUNT(*) OVER() AS TOTAL_CNT
+	FROM     
+			MEMBER_DETAIL 
+)MD
+LEFT JOIN 
+    CODE_DETAIL GN 
+ON 
+    TO_NUMBER(SUBSTR(MD.MEMBER_GN, -1)) = GN.DTLCODE 
+AND 
+	GN.DCODE = 'D100'
+	
+LEFT JOIN
+	CODE_DETAIL POS
+ON
+	<!-- MD.MEMBER_POS = POS.DTLCODE -->
+	 TO_NUMBER(SUBSTR(MD.MEMBER_POS, -2, 2)) = POS.DTLCODE
+AND
+	POS.DCODE = 'D200'
+
+LEFT JOIN
+	CODE_DETAIL DEPT
+ON
+	<!-- MD.MEMBER_DEPT = DEPT.DTLCODE -->
+	TO_NUMBER(SUBSTR(MD.MEMBER_DEPT, -1)) = DEPT.DTLCODE
+AND
+	DEPT.DCODE = 'D300'
+
+LEFT JOIN
+	CODE_DETAIL ST
+ON
+	<!-- MD.MEMBER_ST = ST.DTLCODE -->
+	TO_NUMBER(SUBSTR(MD.MEMBER_ST, -1)) = ST.DTLCODE
+AND
+	ST.DCODE = 'D400'
+
+LEFT JOIN
+	CODE_DETAIL RO
+ON
+	<!-- MD.MEMBER_RO = RO.DTLCODE -->
+	TO_NUMBER(SUBSTR(MD.MEMBER_RO, -1)) = RO.DTLCODE
+AND
+	RO.DCODE = 'D500'
+	 	
+<!-- LEFT JOIN
+	CODE_DETAIL AU
+ON
+	MD.MEMBER_AUTH = AU.DTLCODE
+	TO_NUMBER(SUBSTR(MD.MEMBER_AUTH, -1)) = AU.DTLCODE
+AND
+	AU.DCODE = 'D600'		 -->
+
+WHERE
+	MD.MEMBER_ID IN
+ 	<foreach item="memberId" collection="list" open="(" separator="," close=")">
+		 #{memberId}
+	</foreach>
+</select>
+
 <!-- 사번을 클릭했을 때 -->
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
 <select id="selectModifyList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="integer" resultMap="memberMap">
@@ -285,7 +377,8 @@ SELECT
     POS.DTLCODENM AS MEMBER_POS,
     DEPT.DTLCODENM AS MEMBER_DEPT,
     MD.MEMBER_TEAM,
-    MD.MEMBER_AUTH
+    MD.MEMBER_AUTH,
+    NVL(RO.DTLCODENM, '(미정)') AS MEMBER_RO
 FROM 
 	MEMBER_DETAIL MD
 LEFT JOIN 
@@ -314,65 +407,13 @@ AND
 	ST.DCODE = 'D040' 
 WHERE 
 	MEMBER_ID = #{memberId}
-
-
-<!-- SELECT
-    MEMBER_ID,
-    NVL(MEMBER_NAME, '(미정)') AS MEMBER_NAME,
-    CASE
-        WHEN MEMBER_GN = 'G01' THEN '남자'
-        WHEN MEMBER_GN = 'G02' THEN '여자'
-        ELSE '(미정)'
-    END AS MEMBER_GN,
-    MEMBER_IMG,
-    NVL(MEMBER_EMAIL, '(미정)') AS MEMBER_EMAIL,
-    NVL(MEMBER_TEL, '(미정)') AS MEMBER_TEL,
-    NVL(MEMBER_ADR, '(미정)') AS MEMBER_ADR,
-    MEMBER_STDAY,
-    MEMBER_LADAY,
-    CASE
-        WHEN MEMBER_LADAY IS NULL THEN '재직'
-        WHEN MEMBER_ST = 'S02' THEN '파견'
-        WHEN MEMBER_ST = 'S03' THEN '휴가'
-        WHEN MEMBER_ST = 'S04' THEN '병가'
-        WHEN MEMBER_LADAY IS NOT NULL THEN '퇴사'
-        ELSE '(미정)'
-    END AS MEMBER_ST,
-    CASE
-        WHEN MEMBER_POS = 'P16' THEN '인턴'
-        WHEN MEMBER_POS = 'P15' THEN '사원'
-        WHEN MEMBER_POS = 'P14' THEN '주임'
-        WHEN MEMBER_POS = 'P13' THEN '대리'
-        WHEN MEMBER_POS = 'P12' THEN '과장'
-        WHEN MEMBER_POS = 'P11' THEN '차장'
-        WHEN MEMBER_POS = 'P10' THEN '부장'
-        WHEN MEMBER_POS = 'P09' THEN '팀장'
-        WHEN MEMBER_POS = 'P08' THEN '실장'
-        WHEN MEMBER_POS = 'P07' THEN '본부장'
-        WHEN MEMBER_POS = 'P06' THEN '상무'
-        WHEN MEMBER_POS = 'P05' THEN '전무'
-        WHEN MEMBER_POS = 'P04' THEN '부사장'
-        WHEN MEMBER_POS = 'P03' THEN '사장'
-        WHEN MEMBER_POS = 'P02' THEN '부회장'
-        WHEN MEMBER_POS = 'P01' THEN '회장'
-        ELSE '(미정)'
-    END AS MEMBER_POS,
-    CASE
-        WHEN MEMBER_DEPT = 'D01' THEN '경영지원부'
-        WHEN MEMBER_DEPT = 'D02' THEN '인사부'
-        WHEN MEMBER_DEPT = 'D03' THEN 'IT부'
-        WHEN MEMBER_DEPT = 'D04' THEN '재무부'
-        WHEN MEMBER_DEPT = 'D05' THEN '회계부'
-        WHEN MEMBER_DEPT = 'D06' THEN '마케팅부'
-        ELSE '(미정)'
-    END AS MEMBER_DEPT,
-    MEMBER_TEAM,
-    MEMBER_AUTH
-FROM
-        	MEMBER_DETAIL
-WHERE 
-			MEMBER_ID = #{member_Id} -->
 </select>
+
+
+
+
+
+
 
 <select id="getmemberprojectList" resultType="map" parameterType="int">
 /*getmemberprojectList*/

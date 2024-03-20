@@ -97,6 +97,17 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.insertMember(insertDatas);
 	}
 	
+	@Override
+	public List<MemberDetailDTO> getSelectedList(List<String> selectedList) {
+		// TODO Auto-generated method stub
+		return memberMapper.getSelectedList(selectedList);
+	}
+	
+	
+	
+	
+	
+	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@Override
 	public List<MemberDto> getModifyList(int member_Id) {
@@ -301,6 +312,8 @@ public class MemberServiceImpl implements MemberService{
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
 	}
+
+	
 	
 //	@Override
 //	public void exportToExcel2(HttpServletResponse response, List<MemberDetailDTO> modifyDatas) throws IOException {

@@ -52,6 +52,10 @@ public interface MemberService {
 	
 	//3. 상세화면 조회(memberRead.jsp)
 	public List<ProjectDto> getmemberprojectList(int member_Id);
+	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+	
+	
+	
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)(memberRead.jsp)
 	public List<MemberDto> getModifyList(int member_Id);
@@ -100,6 +104,9 @@ public interface MemberService {
 
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDetailDTO> modifyDatas)throws IOException ;
+
+	//public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+
 }
 
 
