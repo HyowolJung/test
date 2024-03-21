@@ -25,6 +25,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDetailDTO;
 import com.jmh.dto.MemberDto;
+import com.jmh.dto.MemberMTO;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
@@ -50,11 +52,25 @@ import com.jmh.service.MemberService;
 //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
 
 @Controller
-@EnableCaching
+//@EnableCaching
 @RequestMapping("/member")
 public class MemberController {
 	@Autowired	//의존성 주입
 	private MemberService memberService;
+	
+//	@PostMapping("testData")
+//	public String testData(@RequestParam("member_Name1") String member_Name1 , @RequestParam("member_Name2")String member_Name2) {
+//		memberService.add(member_Name1, member_Name2);
+//		return null;
+//	}
+	
+	@GetMapping("/testData")
+	@Transactional
+	public ResponseEntity<?> testData() {
+		memberService.add();
+	    return ResponseEntity.ok().build();
+	}
+	
 	
 	//엑셀 다운로드
 	@GetMapping("/download")
@@ -193,6 +209,44 @@ public class MemberController {
 		}
 	}
 	
+	//3. 수정
+	@PostMapping("/memberModify")
+	public ResponseEntity<?> memberModify(@RequestBody List<MemberDetailDTO> modifyList){
+		//System.err.println("sendListsendListsendList : " + modifyList);
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("modifyList", modifyList);
+		
+		int modifyCnt = memberService.modifyMember(resultMap);
+		System.err.println("modifyCntmodifyCnt : " + modifyCnt);
+		boolean result = false;
+		if(modifyCnt > 0) {
+			result = true;
+		}else if(modifyCnt < 0) {
+			result = false;
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	
+	
+	
+	
+	
+	
+	//3. 상세화면
+	@PostMapping("/memberRead")
+	public String memberReadPost(Model model, Criteria cri, @RequestParam("selectedList[]")List<String>selectedList, @RequestParam("pageNo") int pageNo) {//@RequestParam("memberId") int memberId, 
+		System.err.println("selectedList : " + selectedList);
+		
+		model.addAttribute("pageNo" , pageNo);
+		model.addAttribute("memberList" , memberService.getSelectedList(selectedList));
+		return "member/memberRead";
+	}
+	
+	
+	
+	
 	//2. 수정
 	@PostMapping("/memberModifyM")	//memberList.jsp
 	public ResponseEntity<?> memberModifyM(@RequestBody List<MemberDto> modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
@@ -215,54 +269,43 @@ public class MemberController {
 	
 	
 	
-	
-	//3. 상세화면
-	@PostMapping("/memberRead")
-	public String memberReadPost(Model model, Criteria cri, @RequestParam("selectedList[]")List<String>selectedList, @RequestParam("pageNo") int pageNo) {//@RequestParam("memberId") int memberId, 
-		System.err.println("selectedList : " + selectedList);
-		
-		model.addAttribute("pageNo" , pageNo);
-		model.addAttribute("memberList" , memberService.getSelectedList(selectedList));
-		return "member/memberRead";
-	}
-	
 	//3. 수정(회원 정보 수정)
-		@PostMapping("/memberModifyInfo")//, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
-		public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
-			String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
-			int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
-			System.err.println("modifyDatas : " + modifyDatas);
-			
-			//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
-			//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
-			//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
-			int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
-			boolean result = false;
+	@PostMapping("/memberModifyInfo")//, @RequestParam("member_Id") int member_Id2, @RequestParam("pageNo") int pageNo
+	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {//HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
+		String member_Tel = modifyDatas.getMember_Tel();	//jsp 에서 보내온 전화번호
+		int member_Id = modifyDatas.getMember_Id();		//jsp 에서 보내온 아이디
+		System.err.println("modifyDatas : " + modifyDatas);
 		
-			System.out.println("member_Tel_ck : " + member_Tel_ck);
-			if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
-				System.out.println("내 번호가 맞아");
-				int modifyCnt = memberService.memberModify(modifyDatas);
-				if(modifyCnt > 0) {
-					System.out.println("수정 성공1");
-					result = true;
-				}else if(modifyCnt < 0 ) {
-					System.out.println("수정 실패1");
-					result = false;
-				}
-			}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
-				System.out.println("내 번호가 아니야");
-				int modifyCnt = memberService.memberModify(modifyDatas);
-				if(modifyCnt > 0) {
-					System.out.println("수정 성공2");
-					result = true;
-				}else if(modifyCnt < 0) {
-					System.out.println("수정 실패2");
-					result = false;
-				}
+		//1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
+		//2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
+		//예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id);	//바꾸고자 하는 번호가 원래 내 번호인지 아닌지
+		boolean result = false;
+	
+		System.out.println("member_Tel_ck : " + member_Tel_ck);
+		if(member_Tel_ck > 0) {  //수정하고자 하는 번호가 내 번호야.
+			System.out.println("내 번호가 맞아");
+			int modifyCnt = memberService.memberModify(modifyDatas);
+			if(modifyCnt > 0) {
+				System.out.println("수정 성공1");
+				result = true;
+			}else if(modifyCnt < 0 ) {
+				System.out.println("수정 실패1");
+				result = false;
 			}
-			return new ResponseEntity<>(result, HttpStatus.OK);
+		}else if(member_Tel_ck <= 0) {	//수정하고자 하는 번호가 내 번호가 아니야.
+			System.out.println("내 번호가 아니야");
+			int modifyCnt = memberService.memberModify(modifyDatas);
+			if(modifyCnt > 0) {
+				System.out.println("수정 성공2");
+				result = true;
+			}else if(modifyCnt < 0) {
+				System.out.println("수정 실패2");
+				result = false;
+			}
 		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 	
 	
 	//3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
@@ -322,20 +365,20 @@ public class MemberController {
 	
 	
 	
-	@PostMapping("/memberModify")
-	public String modifyMember(Model model,
-			@RequestParam("member_Id") int member_Id, 
-			@RequestParam("pageNo") int pageNo) {
-		System.err.println("member_Id2 : " + member_Id);
-		System.err.println("pageNo : " + pageNo);
-		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
-		System.out.println("memberprojectList : " + memberprojectList);
-		model.addAttribute("memberprojectList", memberprojectList);
-		model.addAttribute("memberList", memberService.getModifyList(member_Id));
-		model.addAttribute("pageNo", pageNo);
-				
-		return "member/memberModify";
-	}
+//	@PostMapping("/memberModify")
+//	public String modifyMember(Model model,
+//			@RequestParam("member_Id") int member_Id, 
+//			@RequestParam("pageNo") int pageNo) {
+//		System.err.println("member_Id2 : " + member_Id);
+//		System.err.println("pageNo : " + pageNo);
+//		List<ProjectDto> memberprojectList = memberService.getmemberprojectList(member_Id);
+//		System.out.println("memberprojectList : " + memberprojectList);
+//		model.addAttribute("memberprojectList", memberprojectList);
+//		model.addAttribute("memberList", memberService.getModifyList(member_Id));
+//		model.addAttribute("pageNo", pageNo);
+//				
+//		return "member/memberModify";
+//	}
 	
 	
 	
@@ -380,24 +423,24 @@ public class MemberController {
 		return "";
 	}
 		
-	@PostMapping("/memberModify2")
-	public ResponseEntity<Boolean> memberModify2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
-		System.out.println("selectedProjectData : " + selectedProjectData);
-		Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("selectedProjectData", selectedProjectData);
-		boolean result = false;
-		int modifyCnt = memberService.memberModify2(resultMap);
-		
-		if(modifyCnt > 0) {
-			System.out.println("수정성공");
-			result = true;
-		}else if(modifyCnt < 0) {
-			System.out.println("수정실패");
-			result = false;
-		}
-		
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
+//	@PostMapping("/memberModify2")
+//	public ResponseEntity<Boolean> memberModify2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
+//		System.out.println("selectedProjectData : " + selectedProjectData);
+//		Map<String, Object> resultMap = new HashMap<>();
+//        resultMap.put("selectedProjectData", selectedProjectData);
+//		boolean result = false;
+//		//int modifyCnt = memberService.memberModify2(resultMap);
+//		
+//		if(modifyCnt > 0) {
+//			System.out.println("수정성공");
+//			result = true;
+//		}else if(modifyCnt < 0) {
+//			System.out.println("수정실패");
+//			result = false;
+//		}
+//		
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
 	
 	@PostMapping("/memberDelete2")
 	public ResponseEntity<Boolean> memberDelete2(@RequestBody List<ProjectDetailDto> selectedProjectData) {

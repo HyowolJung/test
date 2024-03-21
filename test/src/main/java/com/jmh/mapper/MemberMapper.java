@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDetailDTO;
@@ -19,6 +19,11 @@ import com.jmh.security.CustomUserDetails;
 
 @Repository
 public interface MemberMapper {
+	
+	int add(@Param("member_Name1") String member_Name1, @Param("member_Name2") String member_Name2);
+	int insertTest1(String memberName1);
+	int insertTest2(String memberName2);
+	
 	//String getDept(String member_Id);
 	public MemberDto read(String member_Id);
 	
@@ -27,7 +32,7 @@ public interface MemberMapper {
 	
 	//1. 조회
 	List<MemberDetailDTO> getmemberList(Criteria cri);
-	List<MemberDetailDTO> getmemberList2();
+	
 	//1. 조회(페이징 정보)
 	int getTotalCnt(Criteria cri);
 	
@@ -46,14 +51,19 @@ public interface MemberMapper {
 	//2. 등록(회원 등록)
 	int insertMember(MemberDetailDTO insertDatas);
 	
+	//3. 수정
+	public int modifyMember(Map<String, Object> modifyList);
+	
+	
+	
+	
+	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
 	List<MemberDetailDTO> selectModifyList(int memberId);
 	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
 	
-	
-	
-	
+	List<MemberDetailDTO> getmemberList2();
 	//3. 수정(전화번호 중복체크)
 	int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);
 	List<String> checkedList(List<String> checkList);
@@ -94,6 +104,9 @@ public interface MemberMapper {
 	int projectDetailInsert(Map<String, Object> resultMap);
 
 	String getmember_Pw(int member_Id);
+	
+
+	
 
 	
 }

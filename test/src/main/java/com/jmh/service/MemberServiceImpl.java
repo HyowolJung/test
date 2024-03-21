@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDetailDTO;
@@ -33,6 +35,31 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Autowired
 	MemberService memberService;
+	
+	@Override
+	//@Transactional
+	public void add() {
+		String memberName1 = "abc";
+		String memberName2 = "abc";
+		
+	    memberMapper.insertTest1(memberName1);
+	    memberMapper.insertTest2(memberName2);
+	}
+	
+//	@Override
+//	public int insertTest1(String member_Name1) {
+//		// TODO Auto-generated method stub
+//		
+//		return memberMapper.insertTest1(member_Name1);
+//	}
+//
+//	@Override
+//	public int insertTest2(String member_Name2) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.insertTest2(member_Name2);
+//	}
+
+	
 	
 	//@Autowired
     //private CacheManager cacheManager;
@@ -103,6 +130,16 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getSelectedList(selectedList);
 	}
 	
+	@Override
+	public int modifyMember(Map<String, Object> resultMap) {
+		// TODO Auto-generated method stub
+		return memberMapper.modifyMember(resultMap);
+	}
+	
+	
+	
+	
+	
 	
 	
 	
@@ -136,6 +173,10 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.memberModify(modifyDatas);
 	}
 	
+	
+	
+	
+	
 	//4. 삭제(회원 정보 삭제)
 	@Override
 	public int deleteMember(List<String> member_Id) {
@@ -155,11 +196,11 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getmemberId(member_Id);
 	}
 
-	@Override
-	public int memberModify2(Map<String, Object> resultMap) {
-		// TODO Auto-generated method stub
-		return memberMapper.memberModify2(resultMap);
-	}
+//	@Override
+//	public int memberModify2(Map<String, Object> resultMap) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.memberModify2(resultMap);
+//	}
 
 	@Override
 	public int memberDelete2(Map<String, Object> resultMap) {
@@ -312,6 +353,11 @@ public class MemberServiceImpl implements MemberService{
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
 	}
+
+	
+
+	
+	
 
 	
 	

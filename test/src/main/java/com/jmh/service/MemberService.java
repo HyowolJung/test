@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDetailDTO;
@@ -26,6 +27,11 @@ import com.jmh.dto.ProjectDto;
 }*/
 
 public interface MemberService {
+	
+	public void add();
+	
+	//public int insertTest1(String member_Name1);
+	//public int insertTest2(String member_Name2);
 	//public String getDept(String member_Id);
 	
 	//0. 로그인
@@ -50,6 +56,11 @@ public interface MemberService {
 	//2. 등록(회원 등록)
 	public int insertMember(MemberDetailDTO insertDatas);
 	
+	//3. 수정
+	public int modifyMember(Map<String, Object> resultMap);
+	
+	
+	
 	//3. 상세화면 조회(memberRead.jsp)
 	public List<ProjectDto> getmemberprojectList(int member_Id);
 	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
@@ -57,7 +68,11 @@ public interface MemberService {
 	
 	
 	
-	//3. 수정(페이지 이동 + 회원 정보 조회)(memberRead.jsp)
+	
+	
+	
+	
+	
 	public List<MemberDto> getModifyList(int member_Id);
 	public List<MemberDetailDTO> selectModifyList(int memberId);
 	
@@ -68,7 +83,7 @@ public interface MemberService {
 	public int memberModify(MemberDto modifyDatas);
 	
 	//3. 수정(다중 수정)(memberModify.jsp)
-	public int memberModify2(Map<String, Object> resultMap);
+	//public int memberModify2( resultMap);
 	
 	//3. 조회(다중 회원 정보 조회)(memberList.jsp)
 	public List<String> checkedList(List<String> checkList);
@@ -104,6 +119,8 @@ public interface MemberService {
 
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDetailDTO> modifyDatas)throws IOException ;
+
+	
 
 	//public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
 

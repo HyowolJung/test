@@ -85,6 +85,13 @@ WHERE
 	<result property="memberAuth" column="MEMBER_AUTH"/>
 </resultMap>
 
+<insert id="insertTest1" parameterType="String">
+	INSERT INTO TEST_TABLE (MEMBER_NAME) VALUES (#{memberName1})
+</insert> 
+<insert id="insertTest2" parameterType="String">
+	INSERT INTO TEST_TABLE (MEMBER_NAME) VALUES (#{memberName2})
+</insert>
+
 <!-- 0. 로그인 -->
 <select id="loginID" resultType="com.jmh.security.CustomUserDetails" resultMap="securityMap">
 SELECT 
@@ -265,6 +272,14 @@ VALUES
 		 )
 </insert>
 
+
+
+
+
+
+
+
+
 <!-- 3. 상세화면 -->
 <select id="getSelectedList" resultType="String" parameterType="java.util.List" resultMap="memberMap">
 SELECT
@@ -359,6 +374,44 @@ WHERE
 		 #{memberId}
 	</foreach>
 </select>
+
+<!-- 3. 수정(다중 회원 정보 수정) -->
+<update id="modifyMember" parameterType="java.util.Map" >
+    <foreach item="member" index="index" collection="modifyList" open="DECLARE BEGIN" separator=";" close="; END;">
+        UPDATE 
+        	MEMBER_DETAIL
+        SET
+            MEMBER_NAME = #{member.memberName},
+            MEMBER_GN = #{member.memberGn},
+            MEMBER_DEPT = #{member.memberDept},
+            MEMBER_RO = #{member.memberRo},
+            MEMBER_POS = #{member.memberPos},
+            <!-- MEMBER_TEL = #{member.memberTel}, -->
+            MEMBER_STDAY = #{member.memberStDay},
+            MEMBER_ST = #{member.memberSt}
+<!--         <if test="member.memberLaDay != null">    
+            MEMBER_LADAY = #{member.memberLaDay}
+        </if>
+        <if test="member.memberLaDay == null">
+        	MEMBER_LADAY = null
+        </if>	 -->   
+        WHERE
+            MEMBER_ID = #{member.memberId}
+    </foreach>
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- 사번을 클릭했을 때 -->
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
@@ -828,31 +881,7 @@ WHERE
 		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
 </select> -->
 
-<!-- 3. 수정(다중 회원 정보 수정) -->
-<update id="memberModify_M" parameterType="java.util.Map">
-    <!-- resultMap에서 "modifyDatas" 키를 사용하여 데이터 추출 -->
-    <foreach item="member" index="index" collection="modifyDatas" open="DECLARE BEGIN" separator=";" close="; END;">
-        UPDATE 
-        	MEMBER
-        SET
-            MEMBER_NAME = #{member.member_Name},
-            MEMBER_SEX = #{member.member_Sex},
-            MEMBER_POSITION = #{member.member_Position},
-            MEMBER_DEPARTMENT = #{member.member_Department},
-            MEMBER_TEL = #{member.member_Tel},
-            MEMBER_SKILL_LANGUAGE = #{member.member_Skill_Language},
-            MEMBER_SKILL_DB = #{member.member_Skill_DB},
-            MEMBER_STARTDATE = #{member.member_startDate},
-        <if test="member.member_endDate != null">    
-            MEMBER_ENDDATE = #{member.member_endDate}
-        </if>
-        <if test="member.member_endDate == null">
-        	MEMBER_ENDDATE = null
-        </if>	   
-        WHERE
-            MEMBER_ID = #{member.member_Id}
-    </foreach>
-</update>
+
 
 <update id="memberModify2" parameterType="java.util.Map">
 	<foreach item="member" index="index" collection="selectedProjectData" open="DECLARE BEGIN" separator=";" close="; END;">

@@ -140,14 +140,38 @@ a.page-link.active {
 	<ul class="pagination" style="list-style: none;"></ul>
 </div>
 
-<br><br><br><br><br><br><br>
+<br><br><br>
+<a href="/member/testData">테스트</a>
 </div>
+
+
 </body>
 <script type="text/javascript">
 $(document).ready(function() {
+	/* $("#testButton").click(function(){
+		var member_Name1 = $("#member_Name1").val();
+		var member_Name2 = $("#member_Name2").val();
+		alert("member_Name1 : " + member_Name1 + "member_Name2 : " + member_Name2);
+		$.ajax({
+			type : 'POST',
+			url: '/member/testData',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
+	        data: {
+	        	member_Name1 : member_Name1,
+	        	member_Name2 : member_Name2
+	        },
+	        success : function(resultMap) {
+	        	alert("성공")
+	        }	
+		});
+	}); */
+	
+	
 	//0. 페이지 기본 이벤트
 	let member_Id = $("#member_Id_SE").val();
-	$("#m_modifyButton").hide();
+	$("#modifyButton").hide();
 	$("#backButton").hide();
 	$("#memberTable tbody").empty();
 	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
@@ -251,6 +275,7 @@ $(document).ready(function() {
 	});//$("#searchButton").click EndPoint
 	
 	//2. 수정(#modifyButton)버튼 클릭했을 때
+	var editableRowList = [];
 	$('#selectButton').click(function() {
 		if ($('input[type="checkbox"].checkbox:checked').length === 0) {
 	        alert("수정할 항목을 선택해주세요.");
@@ -258,9 +283,9 @@ $(document).ready(function() {
 	    }	
 			
         $("#deleteButton").hide();
- 		$("#modifyButton").hide();
+ 		$("#selectButton").hide();
  		$("#insertButton").hide();
- 		$("#m_modifyButton").show();
+ 		$("#modifyButton").show();
  		$("#backButton").show();
 		
         // 체크된 체크박스를 순회하면서 데이터 처리
@@ -285,16 +310,16 @@ $(document).ready(function() {
             
             // 해당 행 숨기기 (또는 삭제)
             memberRow.empty();
-            
+
             //select박스 만들기
             var select_memberGN = "<select id='memberGn'>";
-            select_memberGN += "<option value='null'" + (memberData.memberGn == '(미정)' ? 'selected' : '') + ">선택</option>";
+            select_memberGN += "<option value=''" + (memberData.memberGn == '(미정)' ? 'selected' : '') + ">선택</option>";
             select_memberGN += "<option value='D101'" + (memberData.memberGn == '남성' ? 'selected' : '') + ">남성</option>";
 			select_memberGN += "<option value='D102'" + (memberData.memberGn == '여성' ? " selected" : '') + ">여성</option>";
 			select_memberGN += "</select>";
 
 			var select_memberPos = "<select id='memberPos'>";
-			select_memberPos += "<option value='null'" + (memberData.memberPos == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberPos += "<option value=''" + (memberData.memberPos == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberPos += "<option value='D201'" + (memberData.memberPos == '회장' ? 'selected' : '') + ">회장</option>";
 			select_memberPos += "<option value='D202'" + (memberData.memberPos == '부회장' ? " selected" : '') + ">부회장</option>";
 			select_memberPos += "<option value='D203'" + (memberData.memberPos == '사장' ? " selected" : '') + ">사장</option>";
@@ -314,7 +339,7 @@ $(document).ready(function() {
 			select_memberPos += "</select>";
             
 			var select_memberDept = "<select id='memberDept'>";
-			select_memberDept += "<option value='null'" + (memberData.memberDept == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberDept += "<option value=''" + (memberData.memberDept == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberDept += "<option value='D301'" + (memberData.memberDept == '경영지원부' ? 'selected' : '') + ">경영지원부</option>";
 			select_memberDept += "<option value='D302'" + (memberData.memberDept == '인사부' ? 'selected' : '') + ">인사부</option>";
 			select_memberDept += "<option value='D303'" + (memberData.memberDept == 'IT부' ? 'selected' : '') + ">IT부</option>";
@@ -324,7 +349,7 @@ $(document).ready(function() {
 			select_memberDept += "</select>";
 			
 			var select_memberSt = "<select id='memberSt'>";
-			select_memberSt += "<option value='null'" + (memberData.memberSt == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberSt += "<option value=''" + (memberData.memberSt == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberSt += "<option value='D401'" + (memberData.memberSt == '재직' ? 'selected' : '') + ">재직</option>";
 			select_memberSt += "<option value='D402'" + (memberData.memberSt == '파견' ? 'selected' : '') + ">파견</option>";
 			select_memberSt += "<option value='D403'" + (memberData.memberSt == '휴가' ? 'selected' : '') + ">휴가</option>";
@@ -333,7 +358,7 @@ $(document).ready(function() {
 			select_memberSt += "</select>";
 			
 			var select_memberRo = "<select id='memberRo'>";
-			select_memberRo += "<option value='null'" + (memberData.memberRo == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberRo += "<option value=''" + (memberData.memberRo == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberRo += "<option value='D501'" + (memberData.memberRo == 'PM' ? 'selected' : '') + ">PM</option>";
 			select_memberRo += "<option value='D502'" + (memberData.memberRo == 'PO' ? 'selected' : '') + ">PO</option>";
 			select_memberRo += "<option value='D503'" + (memberData.memberRo == 'PL' ? 'selected' : '') + ">PL</option>";
@@ -352,153 +377,73 @@ $(document).ready(function() {
                 $('<td>').append(select_memberRo).val(select_memberRo),
                 $('<td>').append(select_memberPos).val(select_memberPos),
                 $('<td>').append($('<input type="text" style="width: 90px;" disabled="disabled">').val(memberData.memberTel)),
-                $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberStDay)),
-                $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberLaDay)),
+                $('<td>').append($('<input type="date" style="width: 100px;" id="memberStDay">').val(memberData.memberStDay)),
+                $('<td>').append($('<input type="date" style="width: 100px;" id="memberLaDay">').val(memberData.memberLaDay)),
                 $('<td>').append(select_memberSt).val(select_memberSt) 
             );
             $('#memberTable tbody').append(editableRow);
+            editableRowList.push(editableRow);
         });
     });
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	//2-2. 다중 수정(#m_modifyButton)버튼 클릭했을 때
 	$("#modifyButton").click(function() {
-		let member_Tel = $("#member_Tel").val();//입력한 전화번호
-		let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-		let member_startDate = $("#member_startDate").val();
-		let member_endDate = $("#member_endDate").val();
-		if(!member_endDate.length == 0){
-			if (member_endDate < member_startDate) {
+		//let member_Tel = $("#member_Tel").val();//입력한 전화번호
+		//let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+		let memberStDay = $("#memberStDay").val();
+		let memberLaDay = $("#memberLaDay").val();
+		if(!memberLaDay.length == 0){
+			if (memberLaDay < memberStDay) {
 		        alert("퇴사날짜는 입사날짜보다 이전일 수 없습니다.");
 		        return;
 			}
 	    }
-			
-		//2-1. 전화번호 유효성 체크(비어있는지)
-		if(member_Tel.length == 0){
-			alert("전화번호는 반드시 입력해야 합니다.");
-			return;
-		}else if(member_Tel.length != 0){
-			//2-2. 전화번호 유효성체크(적절한 조합인지)
-			if (member_Tel_Check.test(member_Tel) != true){
-				alert("적절한 형식이 아닙니다.")
-				return;
-			}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
-				if(member_endDate.length == 0){
-					console.log("퇴사일이 없어요.");
-					var modifyDatas = [];
-					$('.checkbox:checked').each(function() {
-			    		// 현재 체크박스를 포함하는 행(tr)을 가져옵니다.
-			    		let row = $(this).closest('tr');
+		
+		var modifyList = [];
+		editableRowList.forEach(function(row) {
+	        // row는 jQuery 객체이므로, 각 input/select 태그의 값을 추출합니다.
+	        var rowObj = {
+	            memberId: row.find('input[type="text"][disabled="disabled"]').val(),
+	            memberName: row.find('input[type="text"]:not([disabled])').val(),
+	            memberGn: row.find('#memberGn').val(),
+	            memberDept: row.find('#memberDept').val(),
+	            memberRo: row.find('#memberRo').val(),
+	            memberPos: row.find('#memberPos').val(),
+	            memberTel: row.find('input[type="text"][disabled="disabled"]').val(),
+	            memberStDay: row.find('#memberStDay').val(),
+	            memberLaDay: row.find('#memberLaDay').val(),
+	            memberSt: row.find('#memberSt').val()
+	        };
 
-			    		// 행에서 필요한 데이터를 추출합니다.
-			    		let data = {
-								member_Id: row.find('td:eq(1)').text(), // 첫 번째 <td>의 <a> 태그 내용
-				        		member_Name: row.find('td:eq(2) input').val(), // 두 번째 <td>의 <input> 값
-				        		member_Sex: row.find('td:eq(3) select').val(), // 세 번째 <td>의 텍스트
-				        		member_Position: row.find('td:eq(4) select').val(), // ...
-				        		member_Department: row.find('td:eq(5) select').val(),
-				        		member_Tel: row.find('td:eq(6) input').val(),
-				        		member_Skill_Language: row.find('td:eq(7) select').val(),
-				        		member_Skill_DB: row.find('td:eq(8) select').val(),
-				        		member_startDate: row.find('td:eq(9) input').val(),
-				        		member_endDate: row.find('td:eq(10) input').val()
-			    		};
-						//alert("data : " + data);
-			    		// 추출한 데이터를 배열에 추가합니다.
-			    		modifyDatas.push(data);
-					});
-					
-					$.ajax({
-						type : 'POST',
-						url: '/member/memberModifyM',
-						contentType : 'application/json; charset=utf-8',
-						beforeSend: function(xhr) {
-				            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-				        },
-						data: JSON.stringify(modifyDatas),
-						success : function(result) { // 결과 성공 콜백함수        
-							if(result == true){
-								alert("수정 성공");
-								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList";
-								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
-							}else if(result == false){
-								//alert("수정하려는 번호는 현재 존재하는 번호입니다.");
-								alert("수정 성공");
-								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList";
-							}				
-						},    
-						error : function(request, status, error) { // 결과 에러 콜백함수        
-							alert("수정 실패");
-						}
-					}); //ajax EndPoint
-				}else if(!member_endDate.length == 0){
-					console.log("퇴사일이 있어요.");
-					var modifyDatas = [];
-					$('.checkbox:checked').each(function() {
-			    		// 현재 체크박스를 포함하는 행(tr)을 가져옵니다.
-			    		let row = $(this).closest('tr');
-
-			    		// 행에서 필요한 데이터를 추출합니다.
-			    		let data = {
-								member_Id: row.find('td:eq(1)').text(), // 첫 번째 <td>의 <a> 태그 내용
-				        		member_Name: row.find('td:eq(2) input').val(), // 두 번째 <td>의 <input> 값
-				        		member_Sex: row.find('td:eq(3) select').val(), // 세 번째 <td>의 텍스트
-				        		member_Position: row.find('td:eq(4) select').val(), // ...
-				        		member_Department: row.find('td:eq(5) select').val(),
-				        		member_Tel: row.find('td:eq(6) input').val(),
-				        		member_Skill_Language: row.find('td:eq(7) select').val(),
-				        		member_Skill_DB: row.find('td:eq(8) select').val(),
-				        		member_startDate: row.find('td:eq(9) input').val(),
-				        		member_endDate: row.find('td:eq(10) input').val()
-			    		};
-			    		//alert("data : " + data);
-			    		// 추출한 데이터를 배열에 추가합니다.
-			    		modifyDatas.push(data);
-			    		
-					});
-					//console.log("modifyDatas : " + modifyDatas);
-					$.ajax({
-						type : 'POST',
-						url: '/member/memberModifyM',
-						contentType : 'application/json; charset=utf-8',
-						beforeSend: function(xhr) {
-				            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-				        },
-						data: JSON.stringify(modifyDatas),
-						success : function(result) { // 결과 성공 콜백함수        
-							if(result == true){
-								alert("수정을 성공했어요");
-								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList";
-								//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
-							}else if(result == false){
-								//alert("수정하려는 번호는 현재 존재하는 번호입니다.");
-								alert("수정을 성공했어요");
-								var pageNo = $("#pageNo").val();
-								location.href = "/member/memberList";
-							}				
-						},    
-						error : function(request, status, error) { // 결과 에러 콜백함수        
-							alert("수정을 실패했어요");
-						}
-					}); //ajax EndPoint
-				}// elseIf EndPoint
-			}// elseIf EndPoint
-		}// elseIf EndPoint
+	        // 수집된 데이터를 dataToSend 배열에 추가
+	        modifyList.push(rowObj);
+	    });
+		
+		$.ajax({
+			type : 'POST',
+			url: '/member/memberModify',
+			contentType : 'application/json; charset=utf-8',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
+			data: JSON.stringify(modifyList),
+			success : function(result) { // 결과 성공 콜백함수        
+				if(result == true){
+					alert("수정 성공");
+					var pageNo = $("#pageNo").val();
+					location.href = "/member/memberList";
+					//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
+				}else if(result == false){
+					//alert("수정하려는 번호는 현재 존재하는 번호입니다.");
+					alert("수정 실패");
+					var pageNo = $("#pageNo").val();
+					location.href = "/member/memberList";
+				}				
+			},    
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("수정 실패");
+			}
+		}); //ajax EndPoint
 	});//$("#modifyButton").click(function() {
 		
     //3. 삭제(#deleteButton)버튼 클릭했을 때(+ 다중)
