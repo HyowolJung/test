@@ -55,6 +55,7 @@ import com.jmh.service.MemberService;
 //@EnableCaching
 @RequestMapping("/member")
 public class MemberController {
+	
 	@Autowired	//의존성 주입
 	private MemberService memberService;
 	
@@ -65,12 +66,11 @@ public class MemberController {
 //	}
 	
 	@GetMapping("/testData")
-	@Transactional
+	//@Transactional
 	public ResponseEntity<?> testData() {
 		memberService.add();
 	    return ResponseEntity.ok().build();
 	}
-	
 	
 	//엑셀 다운로드
 	@GetMapping("/download")

@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,29 +37,19 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberService memberService;
 	
-	@Override
-	//@Transactional
-	public void add() {
-		String memberName1 = "abc";
-		String memberName2 = "abc";
-		
-	    memberMapper.insertTest1(memberName1);
-	    memberMapper.insertTest2(memberName2);
-	}
+	@Autowired
+	ProjectService projectService;
 	
-//	@Override
-//	public int insertTest1(String member_Name1) {
-//		// TODO Auto-generated method stub
-//		
-//		return memberMapper.insertTest1(member_Name1);
-//	}
-//
-//	@Override
-//	public int insertTest2(String member_Name2) {
-//		// TODO Auto-generated method stub
-//		return memberMapper.insertTest2(member_Name2);
-//	}
-
+	@Transactional
+	@Override
+	public void add() {
+		String data1 = "abc";
+		String data2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+		//projectService.insertTest1(data1);
+		//projectService.insertTest2(data2);
+		memberMapper.insertTest1(data1);
+		memberMapper.insertTest2(data2);
+	}
 	
 	
 	//@Autowired
@@ -357,7 +348,28 @@ public class MemberServiceImpl implements MemberService{
 	
 
 	
-	
+//	try {
+//	String memberName1 = "abc";
+//	String memberName2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+//	
+//    memberMapper.insertTest1(memberName1);
+//    memberMapper.insertTest2(memberName2);
+//} catch (DataIntegrityViolationException e) {
+//	// TODO: handle exception
+//	System.err.println("데이터 크기 오류");
+//}	
+//	@Override
+//	public int insertTest1(String member_Name1) {
+//		// TODO Auto-generated method stub
+//		
+//		return memberMapper.insertTest1(member_Name1);
+//	}
+//
+//	@Override
+//	public int insertTest2(String member_Name2) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.insertTest2(member_Name2);
+//	}	
 
 	
 	

@@ -2,7 +2,12 @@
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jmh.mapper.ProjectMapper">
-
+<insert id="insertTest1" parameterType="String">
+	INSERT INTO TEST_TABLE (data) VALUES (#{data1})
+</insert> 
+<insert id="insertTest2" parameterType="String">
+	INSERT INTO TEST_TABLE2 (data) VALUES (#{data2})
+</insert>
 <!-- 1번
 <SELECT ID="getList" resultType="com.dto.ProjectDto">
 <if test='PROEJCTID != null'>

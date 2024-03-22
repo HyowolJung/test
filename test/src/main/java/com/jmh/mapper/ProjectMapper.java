@@ -49,6 +49,10 @@ public interface ProjectMapper {
 
 	int getTotalCntPop(@Param("cri") Criteria cri, @Param("member_Id") int member_Id);
 
+	public int insertTest2(String data2);
+
+	public int insertTest1(String data1);
+
 	//List<ProjectDto> getProjectListWithId(Criteria cri, int member_Id);
 
 }

@@ -122,6 +122,18 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.deleteProjectCheck(checkList);
 	}
 
+	@Override
+	public int insertTest1(String data1) {
+		// TODO Auto-generated method stub
+		return projectMapper.insertTest1(data1);
+	}
+
+	@Override
+	public int insertTest2(String data2) {
+		// TODO Auto-generated method stub
+		return projectMapper.insertTest2(data2);
+	}
+
 	
 
 //	@Override

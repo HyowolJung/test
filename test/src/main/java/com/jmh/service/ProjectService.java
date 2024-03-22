@@ -15,6 +15,11 @@ import com.jmh.dto.ProjectDto;
 @Service
 public interface ProjectService {
 	//1. 조회(검색어 X)
+	
+	public int insertTest1(String data1);
+	public int insertTest2(String data2);
+	
+	
 	public List<ProjectDto> getProjectList(Criteria cri);
 	
 	//1. 조회(페이지 번호 출력에 필요한 총 게시물 갯수)	

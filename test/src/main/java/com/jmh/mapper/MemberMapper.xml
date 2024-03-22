@@ -86,10 +86,10 @@ WHERE
 </resultMap>
 
 <insert id="insertTest1" parameterType="String">
-	INSERT INTO TEST_TABLE (MEMBER_NAME) VALUES (#{memberName1})
+	INSERT INTO TEST_TABLE (data) VALUES (#{data1})
 </insert> 
 <insert id="insertTest2" parameterType="String">
-	INSERT INTO TEST_TABLE (MEMBER_NAME) VALUES (#{memberName2})
+	INSERT INTO TEST_TABLE2 (data) VALUES (#{data2})
 </insert>
 
 <!-- 0. 로그인 -->

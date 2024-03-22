@@ -69,10 +69,6 @@ public interface MemberService {
 	
 	
 	
-	
-	
-	
-	
 	public List<MemberDto> getModifyList(int member_Id);
 	public List<MemberDetailDTO> selectModifyList(int memberId);
 	

@@ -20,9 +20,10 @@ import com.jmh.security.CustomUserDetails;
 @Repository
 public interface MemberMapper {
 	
-	int add(@Param("member_Name1") String member_Name1, @Param("member_Name2") String member_Name2);
-	int insertTest1(String memberName1);
-	int insertTest2(String memberName2);
+	//int add(@Param("member_Name1") String member_Name1, @Param("member_Name2") String member_Name2);
+	
+	public int insertTest1(String data1);
+	public int insertTest2(String data2);
 	
 	//String getDept(String member_Id);
 	public MemberDto read(String member_Id);
