@@ -51,6 +51,13 @@ public class MemberServiceImpl implements MemberService{
 		memberMapper.insertTest2(data2);
 	}
 	
+//	@Override
+//	public int modifyMember2(Map<String, Object> resultMap) {
+//		// TODO Auto-generated method stub
+//		return memberMapper.modifyMember(resultMap);
+//	}
+
+	
 	
 	//@Autowired
     //private CacheManager cacheManager;
@@ -345,6 +352,8 @@ public class MemberServiceImpl implements MemberService{
 	    workbook.close();
 	}
 
+
+	
 	
 
 	

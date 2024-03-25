@@ -141,11 +141,12 @@ a.page-link.active {
 </div>
 
 <br><br><br>
-<a href="/member/testData">테스트</a>
+<!-- <a href="/member/testData" > 트랜잭션 테스트</a> -->
 </div>
 
 
 </body>
+<script src="/common/commonsMember.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	/* $("#testButton").click(function(){
@@ -246,6 +247,7 @@ $(document).ready(function() {
                     	newRow.append("<td>" + memberList[i].memberSt + "</td>");
                     	$("#memberTable tbody").append(newRow);
            			}
+           			
            			var pagination = $("#pagination ul");
            	        pagination.empty();
 
@@ -281,12 +283,6 @@ $(document).ready(function() {
 	        alert("수정할 항목을 선택해주세요.");
 	        return;
 	    }	
-			
-        $("#deleteButton").hide();
- 		$("#selectButton").hide();
- 		$("#insertButton").hide();
- 		$("#modifyButton").show();
- 		$("#backButton").show();
 		
         // 체크된 체크박스를 순회하면서 데이터 처리
         $('input[type="checkbox"].checkbox:checked').each(function() {
@@ -308,6 +304,12 @@ $(document).ready(function() {
             // 로컬 스토리지에 데이터 저장
             localStorage.setItem(memberId, JSON.stringify(memberData));
             
+            $("#deleteButton").hide();
+       		$("#selectButton").hide();
+       		$("#insertButton").hide();
+       		$("#modifyButton").show();
+       		$("#backButton").show();     
+            
             // 해당 행 숨기기 (또는 삭제)
             memberRow.empty();
 
@@ -318,26 +320,35 @@ $(document).ready(function() {
 			select_memberGN += "<option value='D102'" + (memberData.memberGn == '여성' ? " selected" : '') + ">여성</option>";
 			select_memberGN += "</select>";
 
-			var select_memberPos = "<select id='memberPos'>";
-			select_memberPos += "<option value=''" + (memberData.memberPos == '(미정)' ? 'selected' : '') + ">선택</option>";
-			select_memberPos += "<option value='D201'" + (memberData.memberPos == '회장' ? 'selected' : '') + ">회장</option>";
-			select_memberPos += "<option value='D202'" + (memberData.memberPos == '부회장' ? " selected" : '') + ">부회장</option>";
-			select_memberPos += "<option value='D203'" + (memberData.memberPos == '사장' ? " selected" : '') + ">사장</option>";
-			select_memberPos += "<option value='D204'" + (memberData.memberPos == '부사장' ? " selected" : '') + ">부사장</option>";
-			select_memberPos += "<option value='D205'" + (memberData.memberPos == '전무' ? " selected" : '') + ">전무</option>";
-			select_memberPos += "<option value='D206'" + (memberData.memberPos == '상무' ? " selected" : '') + ">상무</option>";
-			select_memberPos += "<option value='D207'" + (memberData.memberPos == '본부장' ? " selected" : '') + ">본부장</option>";
-			select_memberPos += "<option value='D208'" + (memberData.memberPos == '실장' ? " selected" : '') + ">실장</option>";
-			select_memberPos += "<option value='D209'" + (memberData.memberPos == '팀장' ? " selected" : '') + ">팀장</option>";
-			select_memberPos += "<option value='D210'" + (memberData.memberPos == '부장' ? " selected" : '') + ">부장</option>";
-			select_memberPos += "<option value='D211'" + (memberData.memberPos == '차장' ? " selected" : '') + ">차장</option>";
-			select_memberPos += "<option value='D212'" + (memberData.memberPos == '과장' ? " selected" : '') + ">과장</option>";
-			select_memberPos += "<option value='D213'" + (memberData.memberPos == '대리' ? " selected" : '') + ">대리</option>";
-			select_memberPos += "<option value='D214'" + (memberData.memberPos == '주임' ? " selected" : '') + ">주임</option>";
-			select_memberPos += "<option value='D214'" + (memberData.memberPos == '사원' ? " selected" : '') + ">사원</option>";
-			select_memberPos += "<option value='D214'" + (memberData.memberPos == '인턴' ? " selected" : '') + ">인턴</option>";
+			var positions = {
+				    'D201': '회장',
+				    'D202': '부회장',
+				    'D203': '사장',
+				    'D204': '부사장',
+				    'D205': '전무',
+				    'D206': '상무',
+				    'D207': '본부장',
+				    'D208': '실장',
+				    'D209': '팀장',
+				    'D210': '부장',
+				    'D211': '차장',
+				    'D212': '과장',
+				    'D213': '대리',
+				    'D214': '주임',
+				    'D215': '사원',
+				    'D216': '인턴'
+			};
+			
+			var select_memberPos = "<select id='memberPos'><option value='' " + (memberData.memberPos == '(미정)' ? 'selected' : '') + ">선택</option>";
+
+			for (var key in positions) {
+			    select_memberPos += "<option value='" + key + "'" + (memberData.memberPos == positions[key] ? " selected" : '') + ">" + positions[key] + "</option>";
+			}
+
 			select_memberPos += "</select>";
-            
+			
+			//document.getElementById('memberPos').innerHTML = generatePositionSelect('(미정)');
+			
 			var select_memberDept = "<select id='memberDept'>";
 			select_memberDept += "<option value=''" + (memberData.memberDept == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberDept += "<option value='D301'" + (memberData.memberDept == '경영지원부' ? 'selected' : '') + ">경영지원부</option>";
@@ -367,6 +378,7 @@ $(document).ready(function() {
 			select_memberRo += "<option value='D506'" + (memberData.memberRo == 'DBA' ? 'selected' : '') + ">DBA</option>";
 			select_memberRo += "</select>";
 			
+			
             // 입력 요소로 변환하여 다시 출력 (예시)
             var editableRow = $('<tr>').append(
             	$('<td>').append($('<input type="checkBox" class="checkbox">').val(memberData.memberId)),
@@ -375,6 +387,7 @@ $(document).ready(function() {
                 $('<td>').append(select_memberGN).val(select_memberGN),
                 $('<td>').append(select_memberDept).val(select_memberDept),
                 $('<td>').append(select_memberRo).val(select_memberRo),
+                //$('<td>').append(select_memberPos.attr('id', 'memberPos')).val(select_memberPos),
                 $('<td>').append(select_memberPos).val(select_memberPos),
                 $('<td>').append($('<input type="text" style="width: 90px;" disabled="disabled">').val(memberData.memberTel)),
                 $('<td>').append($('<input type="date" style="width: 100px;" id="memberStDay">').val(memberData.memberStDay)),
@@ -383,6 +396,22 @@ $(document).ready(function() {
             );
             $('#memberTable tbody').append(editableRow);
             editableRowList.push(editableRow);
+			/* var editableRow = $('<tr>').append(
+				    $('<td>').append($('<input type="checkbox" class="checkbox">').val(memberData.memberId)),
+				    $('<td>').append($('<input type="text" disabled="disabled" style="width: 60px;">').val(memberData.memberId).attr('id', 'memberId-' + memberData.memberId)),
+				    $('<td>').append($('<input type="text" style="width: 40px;">').val(memberData.memberName).attr('id', 'memberName-' + memberData.memberId)),
+				    $('<td>').append(select_memberGN.attr('id', 'memberGn-' + memberData.memberId)),
+				    $('<td>').append(select_memberDept.attr('id', 'memberDept-' + memberData.memberId)),
+				    $('<td>').append(select_memberRo.attr('id', 'memberRo-' + memberData.memberId)),
+				    $('<td>').append(select_memberPos.attr('id', 'memberPos-' + memberData.memberId)),
+				    $('<td>').append($('<input type="text" style="width: 90px;" disabled="disabled">').val(memberData.memberTel).attr('id', 'memberTel-' + memberData.memberId)),
+				    $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberStDay).attr('id', 'memberStDay-' + memberData.memberId)),
+				    $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberLaDay).attr('id', 'memberLaDay-' + memberData.memberId)),
+				    $('<td>').append(select_memberSt.attr('id', 'memberSt-' + memberData.memberId))
+				);
+
+				$('#memberTable tbody').append(editableRow);
+				editableRowList.push(editableRow); */
         });
     });
 	
@@ -390,8 +419,10 @@ $(document).ready(function() {
 	$("#modifyButton").click(function() {
 		//let member_Tel = $("#member_Tel").val();//입력한 전화번호
 		//let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+		
 		let memberStDay = $("#memberStDay").val();
 		let memberLaDay = $("#memberLaDay").val();
+		
 		if(!memberLaDay.length == 0){
 			if (memberLaDay < memberStDay) {
 		        alert("퇴사날짜는 입사날짜보다 이전일 수 없습니다.");
@@ -419,6 +450,23 @@ $(document).ready(function() {
 	        modifyList.push(rowObj);
 	    });
 		
+	   /*  var modifyList = {};
+	    $('input[type="checkbox"].checkbox:checked').each(function() {
+	        var memberRow = $(this).closest('tr');
+
+	        var modifyList = {
+	            memberId: memberRow.find('input[type="text"][disabled="disabled"]').val(),
+	            memberName: memberRow.find('input[type="text"]:not([disabled])').val(),
+	            memberGn: memberRow.find('#memberGn').val(),
+	            memberDept: memberRow.find('#memberDept').val(),
+	            memberRo: memberRow.find('#memberRo').val(),
+	            memberPos: memberRow.find('#memberPos').val(),
+	            memberTel: memberRow.find('input[type="text"][disabled="disabled"]').val()
+	        };
+	    });
+		
+	    console.log("modifyList : " + modifyList); */
+	    
 		$.ajax({
 			type : 'POST',
 			url: '/member/memberModify',
@@ -469,7 +517,6 @@ $(document).ready(function() {
 			}
 		}); //ajax EndPoint
 	});	//#deleteButton EndPoint
-	
 	
 	$("#resetButton").click(function() {
 		var selectElement = document.getElementById("searchField");
@@ -591,6 +638,7 @@ function validateDate1() {
             alert("유효하지 않은 입력입니다1.");
         }, 0);
         startDateInput.value = "";
+        href.location = "/member/memberList";
         return;
     }
     
@@ -647,6 +695,7 @@ function validateDate2() {
             alert("유효하지 않은 입력입니다1.");
         }, 0);
         endDateInput.value = "";
+        href.location = "/member/memberList";
         return;
     }
     

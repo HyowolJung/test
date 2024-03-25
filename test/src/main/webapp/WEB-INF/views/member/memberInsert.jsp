@@ -7,59 +7,146 @@
 <meta name="_csrf" content="${_csrf.token}" />
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>회원 등록</title>
-    <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 20px;
-        /* background-color: #f4f4f4; */
-        text-align: center;
-    }
+<style>
+body {
+    /* font-family: 'Arial', sans-serif; */
+    /* background-color: #f4f4f4; */
+    margin: 0;
+    padding: 20px;
+}
 
-    .column {
-        display: inline-block;
-        vertical-align: top;
-        width: 45%;
-    }
+/* 각 column에 대한 스타일 */
+.column {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
-    .buttons {
-        text-align: center;
-    }
+/* 필수 입력과 선택 입력의 제목 스타일 */
+.column p {
+    color: #333;
+    font-weight: bold;
+    text-align: left;
+    margin-top: 0;
+}
 
-    label {
-        display: inline-block;
-        width: 120px;
-        font-weight: bold;
-        text-align: right;
-    }
+/* 레이블 스타일 */
+label {
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
 
-    input, select {
-        width: 200px;
-        padding: 8px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
+/* 필수 입력 항목의 레이블에 대한 스타일 */
+label[style="color: red"] {
+    color: #d9534f;
+}
 
-    #result_Id, #result_Name, #result_Tel, #result_Date {
-        color: red;
-        margin-bottom: 10px;
-        margin-left: 125px;
-    }
+/* input 및 select 박스 기본 스타일 */
+input[type="text"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* 박스 사이즈를 지정해서 패딩이 width에 포함되도록 함 */
+}
 
+/* 버튼 스타일 */
+button {
+    background-color: #4CAF50; /* 녹색 */
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* 반응형 디자인: 화면 너비가 600px 미만일 때 column과 버튼 사이즈 조정 */
+@media screen and (max-width: 600px) {
+    .column,
     button {
-        padding: 10px;
-        cursor: pointer;
+        width: 100%;
     }
-    
-    .total-div {
-		margin-top: 10px;
-		margin-left: 230px; 
-	}
+}
+
+/* 결과 메시지 스타일 */
+#result_Id,
+#result_Pw,
+#result_Name,
+#result_Tel,
+#result_Date {
+    color: #d9534f;
+    font-size: 0.9em;
+}
+
+/* 필수 입력 부분의 제목 색상 */
+.column:first-child p {
+    color: #5cb85c; /* 연한 녹색 */
+}    
+.container {
+    width: 30%; /* or 원하는 폭에 맞게 조정 */
+    margin: auto; /* 좌우 마진을 auto로 설정하여 가운데 정렬 */
+    background-color: #fff; /* 배경색을 흰색으로 설정 */
+    padding: 20px;
+    border-radius: 8px; /* 모서리를 둥글게 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 상자 그림자를 추가하여 입체감을 줍니다 */
+}
+
+/* .column 스타일은 유지하되, 중앙 정렬이 필요없으므로 margin-bottom만 설정합니다. */
+.column {
+    padding: 20px;
+    margin-bottom: 20px; /* 컬럼 사이의 간격 */
+}
+
+/* 섹션 제목을 중앙 정렬합니다. */
+.column p {
+    text-align: center;
+}
+
+/* 버튼 컨테이너를 추가하여 버튼을 가운데로 정렬합니다. */
+.buttons {
+    text-align: center; /* 버튼을 중앙에 정렬 */
+    padding: 20px 0;
+}
+
+/* 버튼을 인라인 블록으로 변경하여 가운데 정렬되도록 합니다. */
+button {
+    width: auto; /* 버튼의 너비를 내용에 맞게 조정 */
+    display: inline-block; /* 인라인 블록으로 설정 */
+    margin: 0 10px; /* 좌우 마진을 줘서 버튼 사이에 간격을 추가 */
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+}
+
+/* 추가로, 필요하다면 개별 입력 필드의 너비를 조정할 수 있습니다. */
+input[type="text"],
+input[type="date"],
+select {
+    width: calc(100% - 20px); /* 입력 필드의 좌우 패딩을 고려하여 조정 */
+}
 </style>
 </head>
 <body>
 <%@include file="/WEB-INF/views/common/header.jsp"%>
-<%@include file="/WEB-INF/views/common/sideBar.jsp" %>
+<%@include file="/WEB-INF/views/common/sideBar.jsp" %> 
 <div class="total-div">
+<div class="container">
 <div class="column" style="text-align: left;">
 	<p style="color: red; text-align: center;" >필수 입력</p>
 
@@ -84,7 +171,8 @@
 	<input type="date" id="member_startDate" name="member_startDate"/><br>
 	<div id="result_Date"></div>
 </div>
-
+</div>
+<div class="container">
 <div class="column" style="text-align: left;">
 	<p style="text-align: center;">선택 입력</p>
 
@@ -127,6 +215,8 @@
 		<option value="G02">여자</option>
 	</select><br><br>
 	
+	<label>자격증</label>
+	
 	<!-- <label>언어</label>
 	<select id="member_Skill_Language">
 		<option value="" selected="selected">선택</option>
@@ -145,7 +235,7 @@
 		<option value="S023">POSTGRESQL</option>
 	</select><br><br> -->
 </div>
-
+</div>
 <div class="buttons">
 	<button type="button" value="insert" id="insert">추가</button>
 	<button type="button" value="back" id="back">뒤로 가기</button>

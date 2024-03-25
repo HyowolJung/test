@@ -191,7 +191,6 @@ public class MemberController {
 				result = true;
 			}
 		}
-		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -200,6 +199,7 @@ public class MemberController {
 	public String insertMember(@RequestBody MemberDetailDTO insertDatas) {
 		
 		int insertCnt = memberService.insertMember(insertDatas);
+		
 		if(insertCnt > 0) {
 			System.out.println("등록성공");
 			return "member/memberList";
@@ -224,7 +224,6 @@ public class MemberController {
 		}else if(modifyCnt < 0) {
 			result = false;
 		}
-		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	

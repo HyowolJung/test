@@ -386,31 +386,15 @@ WHERE
             MEMBER_DEPT = #{member.memberDept},
             MEMBER_RO = #{member.memberRo},
             MEMBER_POS = #{member.memberPos},
-            <!-- MEMBER_TEL = #{member.memberTel}, -->
             MEMBER_STDAY = #{member.memberStDay},
             MEMBER_ST = #{member.memberSt}
-<!--         <if test="member.memberLaDay != null">    
-            MEMBER_LADAY = #{member.memberLaDay}
-        </if>
-        <if test="member.memberLaDay == null">
-        	MEMBER_LADAY = null
-        </if>	 -->   
+            <if test="member.memberLaDay == null">
+        		MEMBER_LADAY = null
+        	</if>	
         WHERE
             MEMBER_ID = #{member.memberId}
     </foreach>
 </update>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 <!-- 사번을 클릭했을 때 -->

@@ -27,11 +27,13 @@ public class MemberDetailDTO {
 	private String memberAuth;	//memberAuthority		권한
 	private String memberRo;		//memberResponsibilities of office					직책
 	
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate memberStDay;	//memberStartDay	입사일
-	
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate memberLaDay;	//memberLastDay	퇴사일
+	private String memberStDay;
+	private String memberLaDay;
+//	@JsonFormat(pattern = "yyyy-MM-dd")
+//	@DateTimeFormat(pattern = "yyyy-MM-dd")
+//	private LocalDate memberStDay;	//memberStartDay	입사일
+//	
+//	@JsonFormat(pattern = "yyyy-MM-dd")
+//	@DateTimeFormat(pattern = "yyyy-MM-dd")
+//	private LocalDate memberLaDay;	//memberLastDay	퇴사일
 }
