@@ -107,7 +107,7 @@ WHERE
 </select>
 
 <!-- 1. 조회 -->
-<select id="getmemberList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="list" resultMap="memberMap">
+<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="list" resultMap="memberMap">
 /*getmemberList*/
 SELECT
     MD.MEMBER_ID,
@@ -143,10 +143,36 @@ FROM (
 		MEMBER_TEAM,
 		MEMBER_AUTH,
 		MEMBER_RO,
-		ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
+		ROW_NUMBER() OVER(ORDER BY 
+        CASE 
+            WHEN #{choiceValue} = 'IdUp=' THEN MD.MEMBER_ID DESC
+            WHEN #{choiceValue} = 'IdDown=' THEN MD.MEMBER_ID ASC
+            WHEN #{choiceValue} = 'DeptUp=' THEN TO_NUMBER(SUBSTR(MD.MEMBER_POS, 3, 2)) ASC
+            WHEN #{choiceValue} = 'DeptDOWN=' THEN TO_NUMBER(SUBSTR(MD.MEMBER_POS, 3, 2)) DESC
+        END
+		) AS NUMROW,
+
+
+		<!-- ROW_NUMBER() OVER(ORDER BY MEMBER_ID
+		<if test="choiceValue == 'IdUp=' ">
+			DESC
+		</if>
+		<if test="choiceValue == 'IdDown=' " >
+			ASC
+		</if>
+		) AS NUMROW, 
+		<if test= "choiceValue == 'RecentStDay=' "> 
+		ROW_NUMBER() OVER(ORDER BY MEMBER_STDAY DESC) AS NUMROW,
+		</if>
+		<if test= "choiceValue == 'DeptUp=' "> 
+		ROW_NUMBER() OVER(ORDER BY TO_NUMBER(SUBSTR(MEMBER_POS, 3,2)) DESC) AS NUMROW,
+		</if>
+		<if test= "choiceValue == 'DeptDown=' "> 
+		ROW_NUMBER() OVER(ORDER BY TO_NUMBER(SUBSTR(MEMBER_POS, 3,2)) ASC) AS NUMROW,
+		</if> -->
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
-			MEMBER_DETAIL 
+			MEMBER_DETAIL
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -196,7 +222,7 @@ AND
 	AU.DCODE = 'D600'		 -->
 
 WHERE 
-		NUMROW BETWEEN #{startNo} AND #{endNo}
+		NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
 </select>
 
 <!-- 1. 조회(페이징 정보) -->
@@ -385,9 +411,11 @@ WHERE
             MEMBER_GN = #{member.memberGn},
             MEMBER_DEPT = #{member.memberDept},
             MEMBER_RO = #{member.memberRo},
+            MEMBER_TEL = #{member.memberTel},
             MEMBER_POS = #{member.memberPos},
             MEMBER_STDAY = #{member.memberStDay},
-            MEMBER_ST = #{member.memberSt}
+            MEMBER_ST = #{member.memberSt},
+            MEMBER_LADAY = #{member.memberLaDay}
             <if test="member.memberLaDay == null">
         		MEMBER_LADAY = null
         	</if>	

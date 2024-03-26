@@ -68,7 +68,7 @@ public class MemberController {
 	@GetMapping("/testData")
 	//@Transactional
 	public ResponseEntity<?> testData() {
-		memberService.add();
+		//memberService.add();
 	    return ResponseEntity.ok().build();
 	}
 	
@@ -103,10 +103,29 @@ public class MemberController {
 	//1. 조회(사원 정보)
 	@PostMapping("/memberList") //memberList.jsp
 	@ResponseBody
-	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList, @RequestParam( value = "selectedList[]" , required = false)List<String>selectedList
+	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session, @RequestBody String data) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList, @RequestParam( value = "selectedList[]" , required = false)List<String>selectedList
+		System.err.println("choiceValuechoiceValue는 : " + data);
+		Map<String, Object> resultMap = new HashMap<>();
+		//List<MemberDetailDTO> memberList = memberService.getmemberList(cri);
+		//List<MemberDetailDTO> memberList = memberService.getMemberList(cri,choiceValue);
+		//List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
+		int pageNoPost = cri.getPageNo();
+		int totalCnt = memberService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		resultMap.put("pageNoPost", pageNoPost);
+		resultMap.put("pageDto", pageDto);
+		//resultMap.put("memberList", memberList);
+		//resultMap.put("memberList", memberList2);
+		return resultMap;	
+	}
+	
+	@PostMapping("/search") //memberList.jsp
+	@ResponseBody
+	public Map<String, Object> memberListPost2(Model model, Criteria cri, HttpSession session) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList, @RequestParam( value = "selectedList[]" , required = false)List<String>selectedList
 		//System.err.println("selectedListselectedListselectedList는 : " + selectedList);
 		Map<String, Object> resultMap = new HashMap<>();
-		List<MemberDetailDTO> memberList = memberService.getmemberList(cri);
+		
+		List<MemberDetailDTO> memberList = memberService.searchMemberList(cri);
 		//List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
 		int pageNoPost = cri.getPageNo();
 		int totalCnt = memberService.getTotalCnt(cri);
@@ -117,6 +136,8 @@ public class MemberController {
 		//resultMap.put("memberList", memberList2);
 		return resultMap;	
 	}
+	
+	
 	
 //		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
 //			System.err.println("검색어 없는 조회");
@@ -212,7 +233,7 @@ public class MemberController {
 	//3. 수정
 	@PostMapping("/memberModify")
 	public ResponseEntity<?> memberModify(@RequestBody List<MemberDetailDTO> modifyList){
-		//System.err.println("sendListsendListsendList : " + modifyList);
+		System.err.println("modifyListmodifyList : " + modifyList);
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("modifyList", modifyList);
 		

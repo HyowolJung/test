@@ -79,6 +79,32 @@ a.page-link.active {
 	font-style: italic;
 	color: #777;
 }
+.DetailedSearchForm {
+	display: none;
+}
+.choiceSort, .selectSort, #searchButton {
+	display: inline-block; /* 요소들을 인라인 블록으로 만들어 한 줄에 배치 */
+	margin-right: 10px; /* 요소들 사이의 간격을 조정 */
+}
+
+.choiceSort button {
+	background: none;
+  	border: none;
+  	padding: 0;
+  	cursor: pointer;
+}
+
+.selectSort {
+	margin-left: 350px;
+}
+
+.choiceSort button.selected {
+	font-weight: bold; /* 선택된 링크를 진하게 표시 */
+}
+
+.choiceSort button:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -86,7 +112,7 @@ a.page-link.active {
 <%@include file="/WEB-INF/views/common/header.jsp"%>
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
 <div class="total-div">
-<div>
+<div style="display: none;">
 	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
 	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
 	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!-- style="display: none" -->
@@ -101,11 +127,35 @@ a.page-link.active {
 	<label>퇴사일</label>
 	<input type="date" name="searchDate" value="${pageDto.cri.search_endDate}" id="search_endDate" onblur="validateDate2()">
 	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
+	
 	<button id="searchButton">조회</button>
 	<button id="resetButton">초기화</button>
-	<button id="downloadButton" onclick="downloadButton()">명단 다운로드</button>
-	
+	<button id="downloadButton" onclick="downloadButton()">다운로드</button>
 </div>
+
+<div>
+
+<div class="choiceSort" >
+<!-- <a id="IdUp" href="/member/memberList">사번 높은 순</a> | <a id="IdDown">사번 낮은 순</a> | <a id="DeptUp">직급 높은 순</a> | <a id="DeptDown">직급 낮은 순</a> | <a id="RecentStDay">입사 빠른 순</a> -->
+<button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">입사 빠른 순</button>
+</div>
+
+<div class="selectSort">
+<select name="memberST" style="height: 30px;">
+	<option value="">상태</option>
+	<option value="">재직</option>
+	<option value="">휴가</option>
+	<option value="">퇴직</option>
+</select>
+<select name="searchCnt" style="height: 30px;">
+	<option value="10">10명</option>
+	<option value="20">20명</option>
+	<option value="30">30명</option>
+</select>
+</div>
+
+</div>
+
 <br><br>
 <table border="1" id="memberTable">
 	<thead>
@@ -131,7 +181,7 @@ a.page-link.active {
 	</tbody>
 </table>
 
-<button type="button" value="delete" id="deleteButton">삭제</button>
+<button type="button" value="delete" id="deleteButton" >삭제</button>
 <button type="button" value="modify" id="selectButton">수정</button>
 <!-- <button id="insertButton" onclick="insertMember();">등록</button> -->
 <button type="button" value="back" id="backButton">뒤로가기</button>
@@ -146,9 +196,21 @@ a.page-link.active {
 
 
 </body>
-<script src="/common/commonsMember.js"></script>
+<!-- <script src="/common/commonsMember.js"></script> -->
 <script type="text/javascript">
 $(document).ready(function() {
+	$('.choiceSort a').click(function(event) {
+	    event.preventDefault(); // 링크의 기본 동작 방지
+
+	    // 모든 링크에서 'selected' 클래스 제거
+	    $('.choiceSort a').removeClass('selected');
+
+	    // 클릭된 링크에 'selected' 클래스 추가
+	    $(this).addClass('selected');
+	});	
+	
+	
+	
 	/* $("#testButton").click(function(){
 		var member_Name1 = $("#member_Name1").val();
 		var member_Name2 = $("#member_Name2").val();
@@ -209,7 +271,7 @@ $(document).ready(function() {
 		
 		$.ajax({
 			type : 'POST',
-			url: '/member/memberList',
+			url: '/member/search',
 			beforeSend: function(xhr) {
 	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        },
@@ -222,7 +284,12 @@ $(document).ready(function() {
 			 	"header" : header,
 			 	"token" : token
 			},
-			success : function(resultMap) { // 결과 성공 콜백함수  
+			success : function(resultMap) { // 결과 성공 콜백함수
+				$("#deleteButton").show();
+	       		$("#selectButton").show();
+	       		$("#modifyButton").hide();
+	       		$("#backButton").hide();
+	       		
 				var memberList = resultMap.memberList;
 				var pageDto = resultMap.pageDto;
 				$("#memberTable tbody").empty();
@@ -276,7 +343,7 @@ $(document).ready(function() {
 		}); //$.ajax EndPoint
 	});//$("#searchButton").click EndPoint
 	
-	//2. 수정(#modifyButton)버튼 클릭했을 때
+	//2. 체크박스 클릭했을 때
 	var editableRowList = [];
 	$('#selectButton').click(function() {
 		if ($('input[type="checkbox"].checkbox:checked').length === 0) {
@@ -389,7 +456,7 @@ $(document).ready(function() {
                 $('<td>').append(select_memberRo).val(select_memberRo),
                 //$('<td>').append(select_memberPos.attr('id', 'memberPos')).val(select_memberPos),
                 $('<td>').append(select_memberPos).val(select_memberPos),
-                $('<td>').append($('<input type="text" style="width: 90px;" disabled="disabled">').val(memberData.memberTel)),
+                $('<td>').append($('<input type="text" style="width: 90px;" id="memberTel">').val(memberData.memberTel)),
                 $('<td>').append($('<input type="date" style="width: 100px;" id="memberStDay">').val(memberData.memberStDay)),
                 $('<td>').append($('<input type="date" style="width: 100px;" id="memberLaDay">').val(memberData.memberLaDay)),
                 $('<td>').append(select_memberSt).val(select_memberSt) 
@@ -440,7 +507,7 @@ $(document).ready(function() {
 	            memberDept: row.find('#memberDept').val(),
 	            memberRo: row.find('#memberRo').val(),
 	            memberPos: row.find('#memberPos').val(),
-	            memberTel: row.find('input[type="text"][disabled="disabled"]').val(),
+	            memberTel: row.find('#memberTel').val(),
 	            memberStDay: row.find('#memberStDay').val(),
 	            memberLaDay: row.find('#memberLaDay').val(),
 	            memberSt: row.find('#memberSt').val()
@@ -746,7 +813,7 @@ function go(pageNo){
 	var header = $("meta[name='_csrf_header']").attr("content");
 	$.ajax({
 		type : 'POST',
-		url: '/member/memberList',
+		url: '/member/search',
 		beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
@@ -821,6 +888,100 @@ function go(pageNo){
 		}
 	});	//ajax EndPoint
 };//function go EndPoint
+
+function getMemberList(element){
+	var choiceValue = element.value;
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+			
+	console.log("choiceValue : " + choiceValue);
+	
+	var data = {
+			choiceValue: choiceValue
+	}
+	
+	$.ajax({
+		type : 'POST',
+		url: '/member/memberList',
+		data: data,
+		//data: JSON.stringify(choiceValue),
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
+        data: JSON.stringify(choiceValue),
+        success : function(resultMap) {
+        var memberList = resultMap.memberList;
+		var pageDto = resultMap.pageDto;
+		$("#memberTable tbody").empty();
+		
+   		if (memberList && memberList.length > 0) {
+			//console.log("memberList가 있어요");     
+			alert("조회를 성공했어요.");
+   			for (let i = 0; i < memberList.length; i++) {
+            	var newRow = $("<tr>");
+            	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
+            	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+            	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+            	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+            	newRow.append("<td>" + memberList[i].memberName + "</td>");
+            	newRow.append("<td>" + memberList[i].memberGn + "</td>");
+            	newRow.append("<td>" + memberList[i].memberDept + "</td>");
+            	newRow.append("<td>" + memberList[i].memberRo + "</td>");
+            	newRow.append("<td>" + memberList[i].memberPos + "</td>");
+            	newRow.append("<td>" + memberList[i].memberTel + "</td>");
+            	newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+            	newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
+            	newRow.append("<td>" + memberList[i].memberSt + "</td>");
+            	$("#memberTable tbody").append(newRow);
+   			}
+   			
+   			var pagination = $("#pagination ul");
+   	        pagination.empty();
+
+   	        if (pageDto.prev) {
+   	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+   	        }
+
+   	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+   	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+   	        }
+
+   	        if (pageDto.next) {
+   	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+   	        }
+   			
+   		} else {
+   			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+   			//console.log("memberList 가 NULL 이에요.")
+   			$("#memberTable tbody").empty();
+   		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+   		}
+     },
+     error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("정렬 실패");
+		}
+	});	
+	
+	/* if(choiceValue === "IdUp"){
+		console.log("choiceValue : " + choiceValue);
+	}
+	
+	if(choiceValue === "IdDown"){
+		console.log("choiceValue : " + choiceValue);
+	}
+	
+	if(choiceValue === "DeptUp"){
+		console.log("choiceValue : " + choiceValue);
+	}
+	
+	if(choiceValue === "DeptDown"){
+		console.log("choiceValue : " + choiceValue);
+	}
+	
+	if(choiceValue === "RecentStDay"){
+		console.log("choiceValue : " + choiceValue);
+	} */
+}
 
 function insertMember(){
 	location.href = "/member/memberInsert";

@@ -168,7 +168,7 @@ select {
 	<div id="result_Tel"></div><br>
 	
 	<label style="color: red">입사(예정)일</label>
-	<input type="date" id="member_startDate" name="member_startDate"/><br>
+	<input type="date" id="member_startDate" name="member_startDate" value="2024-03-10"/><br>
 	<div id="result_Date"></div>
 </div>
 </div>

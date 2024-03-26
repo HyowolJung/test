@@ -40,24 +40,16 @@ public class MemberServiceImpl implements MemberService{
 	@Autowired
 	ProjectService projectService;
 	
-	@Transactional
-	@Override
-	public void add() {
-		String data1 = "abc";
-		String data2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
-		//projectService.insertTest1(data1);
-		//projectService.insertTest2(data2);
-		memberMapper.insertTest1(data1);
-		memberMapper.insertTest2(data2);
-	}
-	
+//	@Transactional
 //	@Override
-//	public int modifyMember2(Map<String, Object> resultMap) {
-//		// TODO Auto-generated method stub
-//		return memberMapper.modifyMember(resultMap);
+//	public void add() {
+//		String data1 = "abc";
+//		String data2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+//		//projectService.insertTest1(data1);
+//		//projectService.insertTest2(data2);
+//		memberMapper.insertTest1(data1);
+//		memberMapper.insertTest2(data2);
 //	}
-
-	
 	
 	//@Autowired
     //private CacheManager cacheManager;
@@ -65,11 +57,17 @@ public class MemberServiceImpl implements MemberService{
 	//1. 조회(검색어 X)
 	@Override
 	//@Cacheable(value = "memberListCache")
-	public List<MemberDetailDTO> getmemberList(Criteria cri) {
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue) {
 		
-		System.err.println("cricricricricricri : " + cri);
-		return memberMapper.getmemberList(cri);
+		return memberMapper.getMemberList(cri, choiceValue);
 	}
+	
+	@Override
+	public List<MemberDetailDTO> searchMemberList(Criteria cri) {
+		// TODO Auto-generated method stub
+		return memberMapper.searchMemberList(cri);
+	}
+
 	
 	@Override
 	@Cacheable(value = "memberListCache")
@@ -299,7 +297,7 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void exportToExcel(HttpServletResponse response) throws IOException{
 		// TODO Auto-generated method stub
-		List<MemberDetailDTO> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+		List<MemberDetailDTO> memberList = memberService.searchMemberList(new Criteria()); // 전체 데이터를 가져오는 로직
 		System.err.println("memberListmemberListmemberListmemberList : " + memberList);
 		Workbook workbook = new XSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("Data");
@@ -351,7 +349,6 @@ public class MemberServiceImpl implements MemberService{
 	    workbook.write(response.getOutputStream());
 	    workbook.close();
 	}
-
 
 	
 	

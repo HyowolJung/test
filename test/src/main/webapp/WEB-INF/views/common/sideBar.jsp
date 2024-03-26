@@ -42,6 +42,7 @@
   <a href="#" class="menu-item" onclick="toggleSubmenu()">사원 관리</a>
   <div class="submenu" id="submenu">
   	<a href="/member/memberList" class="menu-item">사원 조회</a>
+  	<a href="/member/memberSearch" class="menu-item">사원 검색</a>
     <a href="/member/memberInsert" class="menu-item">사원 등록</a>
   </div>
 </div>

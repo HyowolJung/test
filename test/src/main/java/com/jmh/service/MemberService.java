@@ -28,7 +28,7 @@ import com.jmh.dto.ProjectDto;
 
 public interface MemberService {
 	
-	public void add();
+	//public void add();
 	
 	//public int insertTest1(String member_Name1);
 	//public int insertTest2(String member_Name2);
@@ -38,7 +38,9 @@ public interface MemberService {
 	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 	
 	//1. 조회(검색어 X)
-	public List<MemberDetailDTO> getmemberList(Criteria cri);
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue);
+	public List<MemberDetailDTO> searchMemberList(Criteria cri);
+	
 	
 	public List<MemberDetailDTO> getmemberList2();
 	

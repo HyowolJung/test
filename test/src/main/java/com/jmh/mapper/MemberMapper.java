@@ -32,7 +32,8 @@ public interface MemberMapper {
 	public CustomUserDetails loginID(String memberId);
 	
 	//1. 조회
-	List<MemberDetailDTO> getmemberList(Criteria cri);
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue);
+	public List<MemberDetailDTO> searchMemberList(Criteria cri);
 	
 	//1. 조회(페이징 정보)
 	int getTotalCnt(Criteria cri);
@@ -105,6 +106,7 @@ public interface MemberMapper {
 	int projectDetailInsert(Map<String, Object> resultMap);
 
 	String getmember_Pw(int member_Id);
+	
 	
 
 	
