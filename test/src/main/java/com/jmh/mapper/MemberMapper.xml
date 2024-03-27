@@ -107,7 +107,7 @@ WHERE
 </select>
 
 <!-- 1. 조회 -->
-<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="list" resultMap="memberMap">
+<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap"><!-- parameterType="String" -->
 /*getmemberList*/
 SELECT
     MD.MEMBER_ID,
@@ -143,33 +143,22 @@ FROM (
 		MEMBER_TEAM,
 		MEMBER_AUTH,
 		MEMBER_RO,
-		ROW_NUMBER() OVER(ORDER BY 
-        CASE 
-            WHEN #{choiceValue} = 'IdUp=' THEN MD.MEMBER_ID DESC
-            WHEN #{choiceValue} = 'IdDown=' THEN MD.MEMBER_ID ASC
-            WHEN #{choiceValue} = 'DeptUp=' THEN TO_NUMBER(SUBSTR(MD.MEMBER_POS, 3, 2)) ASC
-            WHEN #{choiceValue} = 'DeptDOWN=' THEN TO_NUMBER(SUBSTR(MD.MEMBER_POS, 3, 2)) DESC
-        END
-		) AS NUMROW,
-
-
-		<!-- ROW_NUMBER() OVER(ORDER BY MEMBER_ID
-		<if test="choiceValue == 'IdUp=' ">
-			DESC
-		</if>
-		<if test="choiceValue == 'IdDown=' " >
-			ASC
-		</if>
-		) AS NUMROW, 
-		<if test= "choiceValue == 'RecentStDay=' "> 
-		ROW_NUMBER() OVER(ORDER BY MEMBER_STDAY DESC) AS NUMROW,
-		</if>
-		<if test= "choiceValue == 'DeptUp=' "> 
-		ROW_NUMBER() OVER(ORDER BY TO_NUMBER(SUBSTR(MEMBER_POS, 3,2)) DESC) AS NUMROW,
-		</if>
-		<if test= "choiceValue == 'DeptDown=' "> 
-		ROW_NUMBER() OVER(ORDER BY TO_NUMBER(SUBSTR(MEMBER_POS, 3,2)) ASC) AS NUMROW,
-		</if> -->
+		<!-- ROW_NUMBER() OVER (ORDER BY MEMBER_ID DESC) AS NUMROW, -->
+		ROW_NUMBER() OVER (
+    	ORDER BY 
+    	CASE 
+        	WHEN #{choiceValue} = 'IdUp' THEN MEMBER_ID
+        	WHEN #{choiceValue} = 'DeptDown' THEN SUBSTR(MEMBER_POS, 3, 2)
+    		WHEN #{choiceValue} = 'RecentStDay' THEN MEMBER_STDAY
+    	END 
+    	DESC
+    	, 
+    	CASE 
+        	WHEN #{choiceValue} = 'IdDown' THEN MEMBER_ID
+        	WHEN #{choiceValue} = 'DeptUp' THEN SUBSTR(MEMBER_POS, 3, 2)
+    	END
+    	ASC 
+    	)AS NUMROW,
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
@@ -184,7 +173,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL POS
 ON
-	<!-- MD.MEMBER_POS = POS.DTLCODE -->
 	 TO_NUMBER(SUBSTR(MD.MEMBER_POS, -2, 2)) = POS.DTLCODE
 AND
 	POS.DCODE = 'D200'
@@ -192,7 +180,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL DEPT
 ON
-	<!-- MD.MEMBER_DEPT = DEPT.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_DEPT, -1)) = DEPT.DTLCODE
 AND
 	DEPT.DCODE = 'D300'
@@ -200,7 +187,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL ST
 ON
-	<!-- MD.MEMBER_ST = ST.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_ST, -1)) = ST.DTLCODE
 AND
 	ST.DCODE = 'D400'
@@ -208,22 +194,13 @@ AND
 LEFT JOIN
 	CODE_DETAIL RO
 ON
-	<!-- MD.MEMBER_RO = RO.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_RO, -1)) = RO.DTLCODE
 AND
 	RO.DCODE = 'D500'
-	 	
-<!-- LEFT JOIN
-	CODE_DETAIL AU
-ON
-	MD.MEMBER_AUTH = AU.DTLCODE
-	TO_NUMBER(SUBSTR(MD.MEMBER_AUTH, -1)) = AU.DTLCODE
-AND
-	AU.DCODE = 'D600'		 -->
-
 WHERE 
 		NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
 </select>
+
 
 <!-- 1. 조회(페이징 정보) -->
 <select id="getTotalCnt" resultType="integer"  parameterType="integer">

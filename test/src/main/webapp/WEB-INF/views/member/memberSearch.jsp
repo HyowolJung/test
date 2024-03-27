@@ -82,14 +82,9 @@ a.page-link.active {
 .DetailedSearchForm {
 	display: none;
 }
-
-.total-div {
-	margin-top: 20px;
-}
-
-.choiceSort, .selectSort {
+.choiceSort, .selectSort, #searchButton {
 	display: inline-block; /* 요소들을 인라인 블록으로 만들어 한 줄에 배치 */
-    
+	margin-right: 10px; /* 요소들 사이의 간격을 조정 */
 }
 
 .choiceSort button {
@@ -100,46 +95,62 @@ a.page-link.active {
 }
 
 .selectSort {
-	margin-left: 100px; /* choiceSort와 selectSort 사이 간격 */
-	/* //margin-left: 50%; */
+	margin-left: 350px;
+}
+
+.choiceSort button.selected {
+	font-weight: bold; /* 선택된 링크를 진하게 표시 */
 }
 
 .choiceSort button:hover {
   text-decoration: underline;
 }
-
-.choiceSort button, .selectSort select {
-    font-size: 16px; /* 글자 크기 */
-    margin: 5px; /* 버튼과 셀렉트 박스 주변 여백 */
-}
-
 </style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
 <%@include file="/WEB-INF/views/common/header.jsp"%>
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
-<div class="total-div" style="text-align: center;">
+<div class="total-div">
+<div ><!-- style="display: none;" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" ><!-- style="display: none" -->
+	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
+	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
+	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
+	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
+	  <option value="tel" ${pageDto.cri.searchField == 'tel' ? 'selected' : ''}>전화번호</option>
+	</select>
+    <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
+    <label>입사일</label>
+	<input type="date" name="searchDate" value="${pageDto.cri.search_startDate}" id="search_startDate" onblur="validateDate1()">
+	~
+	<label>퇴사일</label>
+	<input type="date" name="searchDate" value="${pageDto.cri.search_endDate}" id="search_endDate" onblur="validateDate2()">
+	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
+	
+	<button id="searchButton">조회</button>
+	<button id="resetButton">초기화</button>
+	<button id="downloadButton" onclick="downloadButton()">다운로드</button>
+</div>
 
 <div>
-<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"  style="display: none">
-<input id="choiceValue" name="choiceValue" value="${choiceValue }"  style="display: none">
 
 <div class="choiceSort" >
+<!-- <a id="IdUp" href="/member/memberList">사번 높은 순</a> | <a id="IdDown">사번 낮은 순</a> | <a id="DeptUp">직급 높은 순</a> | <a id="DeptDown">직급 낮은 순</a> | <a id="RecentStDay">입사 빠른 순</a> -->
 <button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
 </div>
 
 <div class="selectSort">
-<select id="memberST" name="memberST" style="height: 30px;">
-	<option value="ALL">상태</option>
-	<option value="D401">재직</option>
-	<option value="D403">휴가</option>
-	<option value="D405">퇴직</option>
+<select name="memberST" style="height: 30px;">
+	<option value="">상태</option>
+	<option value="">재직</option>
+	<option value="">휴가</option>
+	<option value="">퇴직</option>
 </select>
-<select id="searchCnt" name="searchCnt" style="height: 30px;">
-	<option value="5">5명</option>
+<select name="searchCnt" style="height: 30px;">
 	<option value="10">10명</option>
 	<option value="20">20명</option>
+	<option value="30">30명</option>
 </select>
 </div>
 
@@ -150,6 +161,7 @@ a.page-link.active {
 	<thead>
 		<tr>
 			<th><input type="checkbox" id="checkboxAll"></th>
+			<!-- <th>번호</th> -->
 			<th>사번</th>
 			<th>이름</th>
 			<th>성별</th>
@@ -161,6 +173,7 @@ a.page-link.active {
 			<th>퇴사일</th>
 			<th>상태</th>
 			<th style="display: none">프로젝트아이디</th>
+			<!-- <th>상태</th> -->
 		</tr>
 	</thead>
 	<tbody>
@@ -178,6 +191,7 @@ a.page-link.active {
 </div>
 
 <br><br><br>
+<!-- <a href="/member/testData" > 트랜잭션 테스트</a> -->
 </div>
 
 
@@ -195,45 +209,28 @@ $(document).ready(function() {
 	    $(this).addClass('selected');
 	});	
 	
-	$('#memberST').on('change', function() {
-	    var memberST = $(this).val();
-	    var pageNo = $("#pageNo").val();
-		var searchCnt = $("#searchCnt").val();
-		var choiceValue = $("#choiceValue").val();
-		
-		//console.log("pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST + " choiceValue : " + choiceValue);
-	   
-		
-		
-		/* $.ajax({
+	
+	
+	/* $("#testButton").click(function(){
+		var member_Name1 = $("#member_Name1").val();
+		var member_Name2 = $("#member_Name2").val();
+		alert("member_Name1 : " + member_Name1 + "member_Name2 : " + member_Name2);
+		$.ajax({
 			type : 'POST',
-			url: '/member/memberList',
-			contentType: 'application/json',
+			url: '/member/testData',
 			beforeSend: function(xhr) {
 	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        },
 	        data: {
-				 "pageNo" : pageNo,
-				 "choiceValue" : choiceValue
-			},
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("삭제를 성공했어요.");
-				location.href = "/member/memberList";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("투입 이력이 있는 회원은 삭제할 수 없어요.");
-			}
-		}); */ //ajax EndPoint		
-	});
-
-	// 'searchCount' select 요소에 대한 change 이벤트 리스너 추가
-	$('#searchCnt').on('change', function() {
-	    var searchCnt = $(this).val();
-	    var pageNo = $("#pageNo").val();
-		var memberST = $("#memberST").val();
-		var choiceValue = $("#choiceValue").val();
-		console.log("pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST + " choiceValue : " + choiceValue);
-	});	
+	        	member_Name1 : member_Name1,
+	        	member_Name2 : member_Name2
+	        },
+	        success : function(resultMap) {
+	        	alert("성공")
+	        }	
+		});
+	}); */
+	
 	
 	//0. 페이지 기본 이벤트
 	let member_Id = $("#member_Id_SE").val();
@@ -259,6 +256,92 @@ $(document).ready(function() {
         }
     });
 	
+	//1. 조회(#searchButton)버튼 클릭 했을 때
+	$("#searchButton").click(function(){
+		var search_startDate = $("#search_startDate").val();
+		var search_endDate = $("#search_endDate").val();
+		var searchField = document.getElementById("searchField").value; 
+		var searchWord = $("#searchWord").val();
+		var pageNo = document.getElementById("pageNo").value; 
+		
+		if (search_startDate && search_endDate && search_startDate > search_endDate) {
+		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
+		    return;
+		}
+		
+		$.ajax({
+			type : 'POST',
+			url: '/member/search',
+			beforeSend: function(xhr) {
+	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        },
+			data: {
+			 	"searchField" : searchField,
+			 	"searchWord" : searchWord,
+			 	"pageNo" : pageNo,
+			 	"search_startDate" : search_startDate,
+			 	"search_endDate" : search_endDate,
+			 	"header" : header,
+			 	"token" : token
+			},
+			success : function(resultMap) { // 결과 성공 콜백함수
+				$("#deleteButton").show();
+	       		$("#selectButton").show();
+	       		$("#modifyButton").hide();
+	       		$("#backButton").hide();
+	       		
+				var memberList = resultMap.memberList;
+				var pageDto = resultMap.pageDto;
+				$("#memberTable tbody").empty();
+				
+           		if (memberList && memberList.length > 0) {
+					//console.log("memberList가 있어요");     
+					alert("조회를 성공했어요.");
+           			for (let i = 0; i < memberList.length; i++) {
+                    	var newRow = $("<tr>");
+                    	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
+                    	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+                    	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                    	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+                    	newRow.append("<td>" + memberList[i].memberName + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberGn + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberDept + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberRo + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberPos + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberTel + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+                    	newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
+                    	newRow.append("<td>" + memberList[i].memberSt + "</td>");
+                    	$("#memberTable tbody").append(newRow);
+           			}
+           			
+           			var pagination = $("#pagination ul");
+           	        pagination.empty();
+
+           	        if (pageDto.prev) {
+           	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+           	        }
+
+           	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+           	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+           	        }
+
+           	        if (pageDto.next) {
+           	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+           	        }
+           			
+           		} else {
+           			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+           			//console.log("memberList 가 NULL 이에요.")
+           			$("#memberTable tbody").empty();
+           		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+           		}
+			}, 
+			error : function(request, status, error) { // 결과 에러 콜백함수        
+				alert("검색 실패");
+			}
+		}); //$.ajax EndPoint
+	});//$("#searchButton").click EndPoint
 	
 	//2. 체크박스 클릭했을 때
 	var editableRowList = [];
@@ -363,7 +446,7 @@ $(document).ready(function() {
 			select_memberRo += "</select>";
 			
 			
-            // 입력 요소로 변환하여 다시 출력
+            // 입력 요소로 변환하여 다시 출력 (예시)
             var editableRow = $('<tr>').append(
             	$('<td>').append($('<input type="checkBox" class="checkbox">').val(memberData.memberId)),
                 $('<td>').append($('<input type="text" disabled="disabled" style="width: 60px;">').val(memberData.memberId)),
@@ -380,6 +463,22 @@ $(document).ready(function() {
             );
             $('#memberTable tbody').append(editableRow);
             editableRowList.push(editableRow);
+			/* var editableRow = $('<tr>').append(
+				    $('<td>').append($('<input type="checkbox" class="checkbox">').val(memberData.memberId)),
+				    $('<td>').append($('<input type="text" disabled="disabled" style="width: 60px;">').val(memberData.memberId).attr('id', 'memberId-' + memberData.memberId)),
+				    $('<td>').append($('<input type="text" style="width: 40px;">').val(memberData.memberName).attr('id', 'memberName-' + memberData.memberId)),
+				    $('<td>').append(select_memberGN.attr('id', 'memberGn-' + memberData.memberId)),
+				    $('<td>').append(select_memberDept.attr('id', 'memberDept-' + memberData.memberId)),
+				    $('<td>').append(select_memberRo.attr('id', 'memberRo-' + memberData.memberId)),
+				    $('<td>').append(select_memberPos.attr('id', 'memberPos-' + memberData.memberId)),
+				    $('<td>').append($('<input type="text" style="width: 90px;" disabled="disabled">').val(memberData.memberTel).attr('id', 'memberTel-' + memberData.memberId)),
+				    $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberStDay).attr('id', 'memberStDay-' + memberData.memberId)),
+				    $('<td>').append($('<input type="date" style="width: 100px;">').val(memberData.memberLaDay).attr('id', 'memberLaDay-' + memberData.memberId)),
+				    $('<td>').append(select_memberSt.attr('id', 'memberSt-' + memberData.memberId))
+				);
+
+				$('#memberTable tbody').append(editableRow);
+				editableRowList.push(editableRow); */
         });
     });
 	
@@ -504,6 +603,8 @@ $(document).ready(function() {
 	$("#backButton").click(function() {
 		location.href="/member/memberList";
 	});
+	
+	//var pageNo = $("#pageNo").val();
 });//document EndPoint
 
 function submitPost(memberId, pageNo) {
@@ -527,7 +628,14 @@ function submitPost(memberId, pageNo) {
             value: memberId
         }));
     });
-
+    
+    
+   /*  form.append($('<input>', {
+        type: 'hidden',
+        name: 'selectedList[]',
+        value: selectedList
+    })); */
+    
     form.append($('<input>', {
         type: 'hidden',
         name: 'pageNo',
@@ -544,24 +652,264 @@ function submitPost(memberId, pageNo) {
     $('body').append(form);
     form.submit();
 }
+//체크데이터 수집 공통 모듈(미완성)
+/* var checkList1 = [];
+$(document).on('click', '.checkbox', function() {
+    $('.checkbox:checked').each(function() {
+		console.log("fffffffffff");        	
+    	//var member_Id = $(this).val();
+    	var row = $(this).closest('tr');
+    	var member_Id = $(this).val();
+    	var member_Name = row.find('td:nth-child(3)').val(); // 멤버 이름 가져오기
+    	var member_Sex = row.find('td:nth-child(4)').val(); // 멤버 성별 가져오기
+    	var member_Position = row.find('td:nth-child(5)').val(); // 멤버 직급 가져오기
+    	var member_Department = row.find('td:nth-child(6)').val(); // 멤버 부서 가져오기
+    	var member_Tel = row.find('td:nth-child(7)').val(); // 멤버 전화번호 가져오기
+    	var member_Skill_Language = row.find('td:nth-child(8)').val(); // 멤버 언어 스킬 가져오기
+    	var member_Skill_DB = row.find('td:nth-child(9)').val(); // 멤버 데이터베이스 스킬 가져오기
+    	var member_startDate = row.find('td:nth-child(10)').val(); // 멤버 입사일 가져오기
+    	var member_endDate = row.find('td:nth-child(11)').val(); // 멤버 퇴사일 가져오기
+    	
+    	var memberInfo = {
+    			member_Id: member_Id,
+    			member_Name: member_Name,
+    			member_Sex: member_Sex,
+    			member_Position: member_Position,
+    			member_Department: member_Department,
+    			member_Tel: member_Tel,
+    			member_Skill_Language: member_Skill_Language,
+    			member_Skill_DB: member_Skill_DB,
+    			member_startDate: member_startDate,
+    			member_endDate: member_endDate,
+        };
+        checkList1.push(memberInfo);
+    });
+    //console.log("선택된 값들!! : " + checkList);    	
+});//$(document).on('click', '.checkbox', function() { */
+
+
+function validateDate1() {
+	var search_startDate = document.getElementById("search_startDate").value;
+	
+    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
+    var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    var startDateInput = document.getElementById("search_startDate");
+    
+    /* if (!search_startDate) {
+		alert("유효하지 않은 입력입니다1.");
+		startDateInput.value = "";
+        return;
+    } */
+    if (!search_startDate) {
+        setTimeout(function() {
+            alert("유효하지 않은 입력입니다1.");
+        }, 0);
+        startDateInput.value = "";
+        href.location = "/member/memberList";
+        return;
+    }
+    
+   if (search_startDate && !search_startDate.match(dateFormat)) {
+       alert("다시 한번 확인해주세요.");
+       startDateInput.value = "";
+       return;
+   }
+   
+    var inputDate = search_startDate.split("-");
+    var year = parseInt(inputDate[0]);
+    var month = parseInt(inputDate[1]);
+    var day = parseInt(inputDate[2]);
+    
+ 	// 년도에 대한 최소 및 최대 제한
+    if (year < 2000 || year > 2099) {
+        alert("년도는 2000부터 2099까지만 가능합니다.");
+        startDateInput.value = "";
+        return;
+    }
+    
+    // 유효한 월과 일인지 확인
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+        alert("유효하지 않아요1-1.");
+        startDateInput.value = "";
+        return;
+    }
+
+    // 해당 월의 마지막 일자 확인
+    var date = new Date(year, month - 1, day);
+    if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
+    	startDateInput.value = "";    	
+        alert("유효하지 않아요1-2.");
+    } else {
+        console.log("유효한 입력입니다.");
+    }
+}
+
+function validateDate2() {
+	var search_endDate = document.getElementById("search_endDate").value;	
+	
+    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
+    var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
+    var endDateInput = document.getElementById("search_endDate");
+    
+    /* if (!search_endDate) {
+    	alert("유효하지 않은 입력입니다2.");
+    	endDateInput.value = "";
+    	return;
+    } */
+    
+    if (!search_endDate) {
+        setTimeout(function() {
+            alert("유효하지 않은 입력입니다1.");
+        }, 0);
+        endDateInput.value = "";
+        href.location = "/member/memberList";
+        return;
+    }
+    
+    if (search_endDate && !search_endDate.match(dateFormat)) {
+        alert("다시 한번 확인해주세요.");
+        endDateInput.value = "";
+        return;
+    }
+
+    var inputDate = search_endDate.split("-");
+    var year = parseInt(inputDate[0]);
+    var month = parseInt(inputDate[1]);
+    var day = parseInt(inputDate[2]);
+    
+ 	// 년도에 대한 최소 및 최대 제한
+    if (year < 2000 || year > 2099) {
+        alert("년도는 2000부터 2099까지만 가능합니다.");
+        endDateInput.value = "";
+        return;
+    }
+    
+    // 유효한 월과 일인지 확인
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+        alert("유효하지 않아요2-1.");
+        endDateInput.value = "";
+        return;
+    }
+
+    // 해당 월의 마지막 일자 확인
+    var date = new Date(year, month - 1, day);
+    if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
+        alert("유효하지 않아요2-2.");
+        endDateInput.value = "";
+    } else {
+        //alert("제대로 입력했어요. 잘했어요.");
+        console.log("유효한 입력입니다");
+    }
+    
+}
+
+function go(pageNo){
+	//alert("페이지 버튼 클릭");
+	var searchField = document.getElementById("searchField").value;
+	var searchWord = document.getElementById("searchWord").value;
+	var search_startDate = document.getElementById("search_startDate").value;
+	var search_endDate = document.getElementById("search_endDate").value;
+	var token = $("meta[name='_csrf']").attr("content");
+	var header = $("meta[name='_csrf_header']").attr("content");
+	$.ajax({
+		type : 'POST',
+		url: '/member/memberList',
+		beforeSend: function(xhr) {
+            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+        },
+		data: {
+			 "pageNo" : pageNo,
+			 "searchWord" : searchWord,
+			 "searchField" : searchField,
+			 "search_startDate" : search_startDate,
+			 "search_endDate" : search_endDate
+		},
+		success : function(resultMap) { // 결과 성공 콜백함수
+			//location.href = "/member/memberList?pageNo=" + pageNo;
+			//location.reload(true);
+			$("#searchField").val(searchField);
+			$("#searchWord").val(searchWord);
+			$("#search_startDate").val(search_startDate);
+			$("#search_endDate").val(search_endDate);
+			
+			var pageNoPost = resultMap.pageNoPost;
+			$("#pageNoPost").val(pageNoPost);
+			
+			var memberList = resultMap.memberList;
+			var pageDto = resultMap.pageDto;
+			$("#memberTable tbody").empty();
+			
+       		if (memberList && memberList.length > 0) {
+				//console.log("memberList가 있어요");     
+				//alert("조회를 성공했어요.");
+       			for (let i = 0; i < memberList.length; i++) {
+       				var newRow = $("<tr>");
+            		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
+            		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+            		//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+            		newRow.append("<td>" + memberList[i].memberName + "</td>");
+            		newRow.append("<td>" + memberList[i].memberGn + "</td>");
+            		newRow.append("<td>" + memberList[i].memberDept + "</td>");
+            		newRow.append("<td>" + memberList[i].memberRo + "</td>");
+            		newRow.append("<td>" + memberList[i].memberPos + "</td>");
+            		newRow.append("<td>" + memberList[i].memberTel + "</td>");
+            		newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+            		newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
+            		newRow.append("<td>" + memberList[i].memberSt + "</td>");
+            		$("#memberTable tbody").append(newRow);
+                /* 	var newRow = $("<tr>");
+                	newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}''/>");
+                	newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].member_Id + "' data-id='" + memberList[i].member_Id + "'></td>");
+                	newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].member_Id + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].member_Id + "</a></td>");
+                	//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
+                	newRow.append("<td>" + memberList[i].member_Name + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Sex + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Position + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Department + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Tel + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Skill_Language + "</td>");
+                	newRow.append("<td>" + memberList[i].member_Skill_DB + "</td>");
+                	newRow.append("<td>" + memberList[i].member_startDate + "</td>");
+                	newRow.append("<td>" + (memberList[i].member_endDate === null ? '미정' : memberList[i].member_endDate) + "</td>");
+                	//newRow.append("<td>" + memberList[i].project_Id + "</td>");
+                	$("#memberTable tbody").append(newRow); */
+       			}
+       			var pagination = $("#pagination ul");
+       	        pagination.empty();
+
+       	        if (pageDto.prev) {
+       	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+       	        }
+
+       	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+       	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+       	        }
+
+       	        if (pageDto.next) {
+       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+       	        }
+       			
+       		}else{
+       			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+       			//console.log("memberList 가 NULL 이에요.")
+       			$("#memberTable tbody").empty();
+       		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+       		}
+       		
+		},
+		error : function(request, status, error) { // 결과 에러 콜백함수        
+			alert("작동 실패");
+		}
+	});	//ajax EndPoint
+};//function go EndPoint
 
 function getMemberList(element){
 	var choiceValue = element.value;
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 	var pageNo = document.getElementById("pageNo").value; 		
-	var searchCnt = $("#searchCnt").val();
-	var memberST = $("#memberST").val();
-	
-	var buttons = document.querySelectorAll('.choiceSort button');
-
-    // 모든 버튼의 굵기를 초기화합니다.
-    buttons.forEach(function(button) {
-        button.style.fontWeight = 'normal';
-    });
-
-    // 클릭된 버튼만 굵게 표시합니다.
-    element.style.fontWeight = 'bold';
+	console.log("choiceValue : " + choiceValue);
 	
 	$.ajax({
 		type : 'POST',
@@ -570,22 +918,22 @@ function getMemberList(element){
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
         data: {
-        	choiceValue : choiceValue,
-        	pageNo : pageNo,
-        	searchCnt : searchCnt,
-        	memberST : memberST
+        	choiceValue: choiceValue,
+        	pageNo: pageNo
    		},
         success : function(resultMap) {
         	var memberList = resultMap.memberList;
 			var pageDto = resultMap.pageDto;
-			$("#choiceValue").val(choiceValue);
 			$("#memberTable tbody").empty();
 		
    			if (memberList && memberList.length > 0) {
+				//console.log("memberList가 있어요");     
+				alert("조회를 성공했어요.");
    				for (let i = 0; i < memberList.length; i++) {
             		var newRow = $("<tr>");
             		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
             		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+            		//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
             		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
             		newRow.append("<td>" + memberList[i].memberName + "</td>");
             		newRow.append("<td>" + memberList[i].memberGn + "</td>");
@@ -616,6 +964,7 @@ function getMemberList(element){
    			
    			} else {
    				alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+   				//console.log("memberList 가 NULL 이에요.")
    				$("#memberTable tbody").empty();
    		    	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
    			}
@@ -625,75 +974,6 @@ function getMemberList(element){
 		}
 	});	
 }
-
-function go(pageNo){
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	var choiceValue = $("#choiceValue").val();
-	//alert("choiceValue : " + choiceValue);
-	$.ajax({
-		type : 'POST',
-		url: '/member/memberList',
-		beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-        },
-		data: {
-			 "pageNo" : pageNo,
-			 "choiceValue" : choiceValue
-		},
-		success : function(resultMap) { // 결과 성공 콜백함수
-			var pageNoPost = resultMap.pageNoPost;
-			$("#choiceValue").val(choiceValue);
-			$("#pageNoPost").val(pageNoPost);
-			
-			var memberList = resultMap.memberList;
-			var pageDto = resultMap.pageDto;
-			$("#memberTable tbody").empty();
-			
-       		if (memberList && memberList.length > 0) {
-       			for (let i = 0; i < memberList.length; i++) {
-       				var newRow = $("<tr>");
-            		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
-            		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
-            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
-            		newRow.append("<td>" + memberList[i].memberName + "</td>");
-            		newRow.append("<td>" + memberList[i].memberGn + "</td>");
-            		newRow.append("<td>" + memberList[i].memberDept + "</td>");
-            		newRow.append("<td>" + memberList[i].memberRo + "</td>");
-            		newRow.append("<td>" + memberList[i].memberPos + "</td>");
-            		newRow.append("<td>" + memberList[i].memberTel + "</td>");
-            		newRow.append("<td>" + memberList[i].memberStDay + "</td>");
-            		newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
-            		newRow.append("<td>" + memberList[i].memberSt + "</td>");
-            		$("#memberTable tbody").append(newRow);
-       			}
-       			var pagination = $("#pagination ul");
-       	        pagination.empty();
-
-       	        if (pageDto.prev) {
-       	            pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-       	        }
-
-       	        for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
-       	            pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
-       	        }
-
-       	        if (pageDto.next) {
-       	        	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-       	        }
-       			
-       		}else{
-       			alert("조회는 성공했는데, 결과값이 없는거 같아요.");
-       			$("#memberTable tbody").empty();
-       		    $("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-       		}
-       		
-		},
-		error : function(request, status, error) { // 결과 에러 콜백함수        
-			alert("작동 실패");
-		}
-	});	//ajax EndPoint
-};//function go EndPoint
 
 function insertMember(){
 	location.href = "/member/memberInsert";

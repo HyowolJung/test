@@ -103,19 +103,24 @@ public class MemberController {
 	//1. 조회(사원 정보)
 	@PostMapping("/memberList") //memberList.jsp
 	@ResponseBody
-	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session, @RequestBody String data) {//@RequestParam("checkList") List<String> checkList, @RequestBody List<String> checkList, @RequestParam( value = "selectedList[]" , required = false)List<String>selectedList
-		System.err.println("choiceValuechoiceValue는 : " + data);
+	public Map<String, Object> memberListPost(Model model
+			, Criteria cri
+			, HttpSession session
+			, @RequestParam(value = "choiceValue") String choiceValue
+			, @RequestParam(value = "pageNo") int pageNo
+			, @RequestParam(value = "searchCnt") int searchCnt
+			, @RequestParam(value = "memberST") String memberST
+			) {
+		System.err.println("choiceValuechoiceValue는 : " + choiceValue + " pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST);
 		Map<String, Object> resultMap = new HashMap<>();
-		//List<MemberDetailDTO> memberList = memberService.getmemberList(cri);
-		//List<MemberDetailDTO> memberList = memberService.getMemberList(cri,choiceValue);
-		//List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
+		List<MemberDetailDTO> memberList = memberService.getMemberList(cri,choiceValue);
 		int pageNoPost = cri.getPageNo();
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
+		resultMap.put("choiceValue", choiceValue);
 		resultMap.put("pageNoPost", pageNoPost);
 		resultMap.put("pageDto", pageDto);
-		//resultMap.put("memberList", memberList);
-		//resultMap.put("memberList", memberList2);
+		resultMap.put("memberList", memberList);
 		return resultMap;	
 	}
 	
