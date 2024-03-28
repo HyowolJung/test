@@ -38,7 +38,11 @@ public interface MemberService {
 	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 	
 	//1. 조회(검색어 X)
-	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue);
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri 
+			 														,@Param("data") MemberDto data
+			 														//,@Param(value = "searchCnt") int searchCnt
+			 														//,@Param(value = "memberST") String memberST
+			 														);
 	public List<MemberDetailDTO> searchMemberList(Criteria cri);
 	
 	

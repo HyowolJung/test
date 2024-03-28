@@ -147,21 +147,32 @@ FROM (
 		ROW_NUMBER() OVER (
     	ORDER BY 
     	CASE 
-        	WHEN #{choiceValue} = 'IdUp' THEN MEMBER_ID
-        	WHEN #{choiceValue} = 'DeptDown' THEN SUBSTR(MEMBER_POS, 3, 2)
-    		WHEN #{choiceValue} = 'RecentStDay' THEN MEMBER_STDAY
+        	WHEN #{data.choiceValue} = 'IdUp' THEN MEMBER_ID
+        	WHEN #{data.choiceValue} = 'DeptDown' THEN SUBSTR(MEMBER_POS, 3, 2)
+    		WHEN #{data.choiceValue} = 'RecentStDay' THEN MEMBER_STDAY
     	END 
     	DESC
     	, 
     	CASE 
-        	WHEN #{choiceValue} = 'IdDown' THEN MEMBER_ID
-        	WHEN #{choiceValue} = 'DeptUp' THEN SUBSTR(MEMBER_POS, 3, 2)
+        	WHEN #{data.choiceValue} = 'IdDown' THEN MEMBER_ID
+        	WHEN #{data.choiceValue} = 'DeptUp' THEN SUBSTR(MEMBER_POS, 3, 2)
     	END
     	ASC 
     	)AS NUMROW,
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
+	WHERE
+            <!-- 여기에 조건을 추가합니다. -->
+            <choose>
+                <when test="data.memberStatus == 'ALL' " >
+                    MEMBER_ST = #{data.memberStatus}
+                </when>
+                <otherwise>
+                    <!-- 모든 상태를 선택할 경우 조건 없이 진행합니다. -->
+                </otherwise>
+            </choose>
+			
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 

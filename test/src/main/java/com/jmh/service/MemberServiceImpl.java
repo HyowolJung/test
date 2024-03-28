@@ -55,11 +55,19 @@ public class MemberServiceImpl implements MemberService{
     //private CacheManager cacheManager;
 	
 	//1. 조회(검색어 X)
-	@Override
 	//@Cacheable(value = "memberListCache")
-	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue) {
+	@Override
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("data") MemberDto data) {
+		cri.setPageNo(data.getPageNo());
+		cri.setAmount(data.getSearchCnt());
+//		if(data.getSearchCnt() == 5) {
+//			System.err.println("5개 출력 : " + data.getSearchCnt());
+//		}
+//		if(data.getSearchCnt() == 10) {
+//			System.err.println("10개 출력 : " + data.getSearchCnt() + " / cri 값 : " + cri.getAmount());
+//		}
 		
-		return memberMapper.getMemberList(cri, choiceValue);
+		return memberMapper.getMemberList(cri, data);
 	}
 	
 	@Override

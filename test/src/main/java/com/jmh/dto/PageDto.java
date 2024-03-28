@@ -21,7 +21,6 @@ public class PageDto {
 		this.startNo = this.endNo - 4;
 		
 		int realEnd = (int)(Math.ceil((total*1.0)/cri.getAmount()));
-	
 		if(realEnd < this.endNo) {
 			this.endNo = realEnd;
 		}
@@ -35,6 +34,4 @@ public class PageDto {
 		return "PageDTO [startNo=" + startNo + ", endNo=" + endNo + ", prev=" + prev + ", endNo=" + endNo + ", next="
 				+ next + ", total=" + total + "]";
 	}
-
-	
 }

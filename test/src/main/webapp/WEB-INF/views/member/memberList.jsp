@@ -122,15 +122,15 @@ a.page-link.active {
 <div class="total-div" style="text-align: center;">
 
 <div>
-<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }"  style="display: none">
-<input id="choiceValue" name="choiceValue" value="${choiceValue }"  style="display: none">
+<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" disabled="disabled" style="display: none"><!--  -->
+<input id="choiceValue" name="choiceValue" value="${choiceValue }"  disabled="disabled" style="display: none">
 
 <div class="choiceSort" >
 <button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
 </div>
 
 <div class="selectSort">
-<select id="memberST" name="memberST" style="height: 30px;">
+<select id="memberStatus" name="memberStatus" style="height: 30px;">
 	<option value="ALL">상태</option>
 	<option value="D401">재직</option>
 	<option value="D403">휴가</option>
@@ -195,44 +195,153 @@ $(document).ready(function() {
 	    $(this).addClass('selected');
 	});	
 	
-	$('#memberST').on('change', function() {
+	$('#memberStatus').on('change', function() {
 	    var memberST = $(this).val();
 	    var pageNo = $("#pageNo").val();
-		var searchCnt = $("#searchCnt").val();
+		var memberStatus = $("#memberStatus").val();
 		var choiceValue = $("#choiceValue").val();
-		
-		//console.log("pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST + " choiceValue : " + choiceValue);
-	   
-		
-		
-		/* $.ajax({
-			type : 'POST',
-			url: '/member/memberList',
-			contentType: 'application/json',
-			beforeSend: function(xhr) {
-	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-	        },
-	        data: {
-				 "pageNo" : pageNo,
-				 "choiceValue" : choiceValue
-			},
-			success : function(result) { // 결과 성공 콜백함수        
-				alert("삭제를 성공했어요.");
-				location.href = "/member/memberList";
-			}, 
-			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("투입 이력이 있는 회원은 삭제할 수 없어요.");
-			}
-		}); */ //ajax EndPoint		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var data = {
+		    	"choiceValue" : choiceValue,
+		        "pageNo" : pageNo,
+		        "searchCnt" : searchCnt,
+				"memberStatus" : memberStatus    		
+		    }
+		    
+			$.ajax({
+				type : 'POST',
+				url : '/member/memberList',
+				beforeSend: function(xhr) {
+		            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+		        },
+		        contentType: 'application/json; charset=utf-8',
+		        data: JSON.stringify(data),
+		        success : function(resultMap) {
+		        	var memberList = resultMap.memberList;
+					var pageDto = resultMap.pageDto;
+					$("#pageNo").val(pageNo);
+					$("#choiceValue").val(choiceValue);
+					$("#memberTable tbody").empty();
+				
+		   			if (memberList && memberList.length > 0) {
+		   				for (let i = 0; i < memberList.length; i++) {
+		            		var newRow = $("<tr>");
+		            		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
+		            		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+		            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+		            		newRow.append("<td>" + memberList[i].memberName + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberGn + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberDept + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberRo + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberPos + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberTel + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+		            		newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberSt + "</td>");
+		            		$("#memberTable tbody").append(newRow);
+		   				}
+		   			
+		   				var pagination = $("#pagination ul");
+		   	        	pagination.empty();
+
+		   	        	if (pageDto.prev) {
+		   	            	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+		   	        	}
+
+		   	        	for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+		   	            	pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+		   	        	}
+
+		   	        	if (pageDto.next) {
+		   	        		pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+		   	        	}
+		   			
+		   			} else {
+		   				alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+		   				$("#memberTable tbody").empty();
+		   		    	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+		   			}
+		     	},
+		     	error : function(request, status, error) { // 결과 에러 콜백함수        
+					alert("정렬 실패");
+				}
+			});
 	});
 
 	// 'searchCount' select 요소에 대한 change 이벤트 리스너 추가
 	$('#searchCnt').on('change', function() {
 	    var searchCnt = $(this).val();
 	    var pageNo = $("#pageNo").val();
-		var memberST = $("#memberST").val();
+		var memberStatus = $("#memberStatus").val();
 		var choiceValue = $("#choiceValue").val();
-		console.log("pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST + " choiceValue : " + choiceValue);
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var data = {
+		    	"choiceValue" : choiceValue,
+		        "pageNo" : pageNo,
+		        "searchCnt" : searchCnt,
+				"memberStatus" : memberStatus    		
+		    }
+		    
+			$.ajax({
+				type : 'POST',
+				url : '/member/memberList',
+				beforeSend: function(xhr) {
+		            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+		        },
+		        contentType: 'application/json; charset=utf-8',
+		        data: JSON.stringify(data),
+		        success : function(resultMap) {
+		        	var memberList = resultMap.memberList;
+					var pageDto = resultMap.pageDto;
+					$("#pageNo").val(pageNo);
+					$("#choiceValue").val(choiceValue);
+					$("#memberTable tbody").empty();
+				
+		   			if (memberList && memberList.length > 0) {
+		   				for (let i = 0; i < memberList.length; i++) {
+		            		var newRow = $("<tr>");
+		            		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
+		            		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
+		            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+		            		newRow.append("<td>" + memberList[i].memberName + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberGn + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberDept + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberRo + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberPos + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberTel + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberStDay + "</td>");
+		            		newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
+		            		newRow.append("<td>" + memberList[i].memberSt + "</td>");
+		            		$("#memberTable tbody").append(newRow);
+		   				}
+		   			
+		   				var pagination = $("#pagination ul");
+		   	        	pagination.empty();
+
+		   	        	if (pageDto.prev) {
+		   	            	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
+		   	        	}
+
+		   	        	for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
+		   	            	pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
+		   	        	}
+
+		   	        	if (pageDto.next) {
+		   	        		pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
+		   	        	}
+		   			
+		   			} else {
+		   				alert("조회는 성공했는데, 결과값이 없는거 같아요.");
+		   				$("#memberTable tbody").empty();
+		   		    	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
+		   			}
+		     	},
+		     	error : function(request, status, error) { // 결과 에러 콜백함수        
+					alert("정렬 실패");
+				}
+			});
 	});	
 	
 	//0. 페이지 기본 이벤트
@@ -546,12 +655,12 @@ function submitPost(memberId, pageNo) {
 }
 
 function getMemberList(element){
-	var choiceValue = element.value;
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
+	var choiceValue = element.value;
 	var pageNo = document.getElementById("pageNo").value; 		
 	var searchCnt = $("#searchCnt").val();
-	var memberST = $("#memberST").val();
+	var memberStatus = $("#memberStatus").val();
 	
 	var buttons = document.querySelectorAll('.choiceSort button');
 
@@ -563,18 +672,21 @@ function getMemberList(element){
     // 클릭된 버튼만 굵게 표시합니다.
     element.style.fontWeight = 'bold';
 	
+    var data = {
+    	"choiceValue" : choiceValue,
+        "pageNo" : pageNo,
+        "searchCnt" : searchCnt,
+		"memberStatus" : memberStatus    		
+    }
+    
 	$.ajax({
 		type : 'POST',
-		url: '/member/memberList',
+		url : '/member/memberList',
 		beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
-        data: {
-        	choiceValue : choiceValue,
-        	pageNo : pageNo,
-        	searchCnt : searchCnt,
-        	memberST : memberST
-   		},
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
         success : function(resultMap) {
         	var memberList = resultMap.memberList;
 			var pageDto = resultMap.pageDto;
@@ -630,21 +742,35 @@ function go(pageNo){
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 	var choiceValue = $("#choiceValue").val();
-	//alert("choiceValue : " + choiceValue);
+	var searchCnt = $("#searchCnt").val();
+	var memberStatus = $("#memberStatus").val();
+	$("#pageNo").val(pageNo);
+	
+	var data = {
+    	"choiceValue" : choiceValue,
+        "pageNo" : pageNo,
+        "searchCnt" : searchCnt,
+		"memberStatus" : memberStatus    		
+    }
+	
 	$.ajax({
 		type : 'POST',
 		url: '/member/memberList',
 		beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
-		data: {
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+		/* data: {
 			 "pageNo" : pageNo,
-			 "choiceValue" : choiceValue
-		},
+			 "choiceValue" : choiceValue,
+			 "searchCnt" : searchCnt,
+			 "memberStatus" : memberStatus
+		}, */
 		success : function(resultMap) { // 결과 성공 콜백함수
-			var pageNoPost = resultMap.pageNoPost;
+			//var pageNoPost = resultMap.pageNoPost;
 			$("#choiceValue").val(choiceValue);
-			$("#pageNoPost").val(pageNoPost);
+			//$("#pageNoPost").val(pageNoPost);
 			
 			var memberList = resultMap.memberList;
 			var pageDto = resultMap.pageDto;

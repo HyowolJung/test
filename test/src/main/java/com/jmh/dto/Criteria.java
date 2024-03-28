@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(of = {"searchField", "searchWord", "search_startDate", "search_endDate"})
 public class Criteria {
 	
 	private String searchField; 
@@ -37,5 +36,9 @@ public class Criteria {
 		}
 	}
 	
-	
+	public void setAmount(int amount) {
+	    this.amount = amount;
+	    this.endNo = this.pageNo * amount;
+	    this.startNo = this.endNo - amount + 1;
+	}
 }

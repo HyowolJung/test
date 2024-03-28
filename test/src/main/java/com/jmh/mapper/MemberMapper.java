@@ -32,7 +32,7 @@ public interface MemberMapper {
 	public CustomUserDetails loginID(String memberId);
 	
 	//1. 조회
-	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("choiceValue") String choiceValue);
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri , @Param("data") MemberDto data);
 	public List<MemberDetailDTO> searchMemberList(Criteria cri);
 	
 	//1. 조회(페이징 정보)

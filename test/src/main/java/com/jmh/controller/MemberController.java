@@ -106,19 +106,18 @@ public class MemberController {
 	public Map<String, Object> memberListPost(Model model
 			, Criteria cri
 			, HttpSession session
-			, @RequestParam(value = "choiceValue") String choiceValue
-			, @RequestParam(value = "pageNo") int pageNo
-			, @RequestParam(value = "searchCnt") int searchCnt
-			, @RequestParam(value = "memberST") String memberST
+			, @RequestBody MemberDto data
 			) {
-		System.err.println("choiceValuechoiceValue는 : " + choiceValue + " pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST);
+		//System.err.println("data : " + data);
+		//System.err.println("choiceValuechoiceValue는 : " + choiceValue + " pageNo : " + pageNo + " searchCnt : " + searchCnt + " memberST : " + memberST);
 		Map<String, Object> resultMap = new HashMap<>();
-		List<MemberDetailDTO> memberList = memberService.getMemberList(cri,choiceValue);
-		int pageNoPost = cri.getPageNo();
+		
+		//System.err.println("data.getPageNo() : " + data.getPageNo());
+		List<MemberDetailDTO> memberList = memberService.getMemberList(cri,data);
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
-		resultMap.put("choiceValue", choiceValue);
-		resultMap.put("pageNoPost", pageNoPost);
+		//System.err.println("cri : " + cri);
+		//System.err.println("pageDtopageDtopageDto : " + pageDto);
 		resultMap.put("pageDto", pageDto);
 		resultMap.put("memberList", memberList);
 		return resultMap;	
@@ -137,7 +136,7 @@ public class MemberController {
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		resultMap.put("pageNoPost", pageNoPost);
 		resultMap.put("pageDto", pageDto);
-		resultMap.put("memberList", memberList);
+		//resultMap.put("memberList", memberList);
 		//resultMap.put("memberList", memberList2);
 		return resultMap;	
 	}
