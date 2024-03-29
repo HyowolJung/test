@@ -113,7 +113,7 @@ a.page-link.active {
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
 <div class="total-div">
 <div ><!-- style="display: none;" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" ><!-- style="display: none" -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!--  -->
 	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
 	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
@@ -134,27 +134,6 @@ a.page-link.active {
 </div>
 
 <div>
-
-<div class="choiceSort" >
-<!-- <a id="IdUp" href="/member/memberList">사번 높은 순</a> | <a id="IdDown">사번 낮은 순</a> | <a id="DeptUp">직급 높은 순</a> | <a id="DeptDown">직급 낮은 순</a> | <a id="RecentStDay">입사 빠른 순</a> -->
-<button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
-</div>
-
-<div class="selectSort">
-<select name="memberST" style="height: 30px;">
-	<option value="">상태</option>
-	<option value="">재직</option>
-	<option value="">휴가</option>
-	<option value="">퇴직</option>
-</select>
-<select name="searchCnt" style="height: 30px;">
-	<option value="10">10명</option>
-	<option value="20">20명</option>
-	<option value="30">30명</option>
-</select>
-</div>
-
-</div>
 
 <br><br>
 <table border="1" id="memberTable">
@@ -813,7 +792,7 @@ function go(pageNo){
 	var header = $("meta[name='_csrf_header']").attr("content");
 	$.ajax({
 		type : 'POST',
-		url: '/member/memberList',
+		url: '/member/search',
 		beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },

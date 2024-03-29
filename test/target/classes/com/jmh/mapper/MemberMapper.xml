@@ -162,17 +162,11 @@ FROM (
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
-	WHERE
-            <!-- 여기에 조건을 추가합니다. -->
-            <choose>
-                <when test="data.memberStatus == 'ALL' " >
-                    MEMBER_ST = #{data.memberStatus}
-                </when>
-                <otherwise>
-                    <!-- 모든 상태를 선택할 경우 조건 없이 진행합니다. -->
-                </otherwise>
-            </choose>
-			
+	<!-- WHERE 
+			MEMBER_ST = #{data.memberStatus} -->
+			<!-- <if test="data.memberStatus != null and data.memberStatus != 'ALL'"> -->
+                
+            <!-- </if> -->
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -210,6 +204,8 @@ AND
 	RO.DCODE = 'D500'
 WHERE 
 		NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
+<!-- AND
+		MD.MEMBER_ST = #{data.memberStatus} -->
 </select>
 
 
@@ -232,6 +228,90 @@ WHERE
 	</if>	
 	
 </select>
+
+<select id="searchMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap"><!-- parameterType="String" -->
+/*searchMemberList*/
+SELECT
+    MD.MEMBER_ID,
+    NVL(MD.MEMBER_NAME, '(미정)') AS MEMBER_NAME,
+    NVL(GN.DTLCODENM, '(미정)') AS MEMBER_GN,
+    MD.MEMBER_IMG,
+    NVL(MD.MEMBER_EMAIL, '(미정)') AS MEMBER_EMAIL,
+    NVL(MD.MEMBER_TEL, '(미정)') AS MEMBER_TEL,
+    NVL(MD.MEMBER_ADR, '(미정)') AS MEMBER_ADR,
+    MD.MEMBER_STDAY,
+    MD.MEMBER_LADAY,
+    NVL(ST.DTLCODENM, '(미정)') AS MEMBER_ST,
+    NVL(POS.DTLCODENM, '(미정)') AS MEMBER_POS,
+    NVL(DEPT.DTLCODENM, '(미정)') AS MEMBER_DEPT,
+    MD.MEMBER_TEAM,
+    MD.MEMBER_AUTH,
+    NVL(RO.DTLCODENM, '(미정)') AS MEMBER_RO
+FROM (
+	SELECT   
+		MEMBER_ID,
+		MEMBER_PW,
+		MEMBER_NAME,
+		MEMBER_GN,
+		MEMBER_IMG,
+		MEMBER_EMAIL,
+		MEMBER_TEL,
+		MEMBER_ADR,
+		MEMBER_STDAY,
+		MEMBER_LADAY,
+		MEMBER_ST,
+		MEMBER_POS,
+		MEMBER_DEPT,
+		MEMBER_TEAM,
+		MEMBER_AUTH,
+		MEMBER_RO,
+		ROW_NUMBER() OVER (ORDER BY MEMBER_ID DESC) AS NUMROW,
+		COUNT(*) OVER() AS TOTAL_CNT
+	FROM     
+			MEMBER_DETAIL
+			<include refid="criteria"></include> 
+)MD
+LEFT JOIN 
+    CODE_DETAIL GN 
+ON 
+    TO_NUMBER(SUBSTR(MD.MEMBER_GN, -1)) = GN.DTLCODE 
+AND 
+	GN.DCODE = 'D100'
+	
+LEFT JOIN
+	CODE_DETAIL POS
+ON
+	 TO_NUMBER(SUBSTR(MD.MEMBER_POS, -2, 2)) = POS.DTLCODE
+AND
+	POS.DCODE = 'D200'
+
+LEFT JOIN
+	CODE_DETAIL DEPT
+ON
+	TO_NUMBER(SUBSTR(MD.MEMBER_DEPT, -1)) = DEPT.DTLCODE
+AND
+	DEPT.DCODE = 'D300'
+
+LEFT JOIN
+	CODE_DETAIL ST
+ON
+	TO_NUMBER(SUBSTR(MD.MEMBER_ST, -1)) = ST.DTLCODE
+AND
+	ST.DCODE = 'D400'
+
+LEFT JOIN
+	CODE_DETAIL RO
+ON
+	TO_NUMBER(SUBSTR(MD.MEMBER_RO, -1)) = RO.DTLCODE
+AND
+	RO.DCODE = 'D500'
+WHERE 
+		NUMROW BETWEEN #{startNo} AND #{endNo}
+</select>
+
+
+
+
 
 <!-- 2. 등록(아이디 체크) -->
 <select id="checkId" resultType="boolean"><!-- parameterType="String" -->
@@ -333,7 +413,8 @@ FROM (
 		ROW_NUMBER() OVER(ORDER BY MEMBER_ID DESC) AS NUMROW ,
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
-			MEMBER_DETAIL 
+			MEMBER_DETAIL
+	<include refid="criteria"></include>  
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -659,8 +740,8 @@ WHERE
 </select> -->
 	
 <!-- 1. 조회(검색어 O) -->
-<select id="searchmemberList" resultType="com.jmh.dto.MemberDto"><!-- parameterType="com.jmh.vo.memberVO" -->
-/*searchmemberList*/
+<!-- <select id="searchmemberList" resultType="com.jmh.dto.MemberDto"> --><!-- parameterType="com.jmh.vo.memberVO" -->
+<!-- /*searchmemberList*/ -->
 <!-- SELECT MEMBER_ID ,
        MEMBER_NAME ,
        NVL(
@@ -745,7 +826,7 @@ FROM   (
 <include refid="criteria"></include> 
         )
 WHERE NUMROW BETWEEN #{startNo} AND #{endNo} -->
-</select>
+<!-- </select> -->
 	
 
 	

@@ -37,12 +37,17 @@ public interface MemberService {
 	//0. 로그인
 	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
 	
+	//1. 엑셀 다운로드
+	public void exportToExcel(HttpServletResponse response)throws IOException ;
+	
 	//1. 조회(검색어 X)
-	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri 
-			 														,@Param("data") MemberDto data
-			 														//,@Param(value = "searchCnt") int searchCnt
-			 														//,@Param(value = "memberST") String memberST
-			 														);
+	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri ,@Param("data") MemberDto data);
+
+	
+	
+	
+	
+	
 	public List<MemberDetailDTO> searchMemberList(Criteria cri);
 	
 	
@@ -119,7 +124,7 @@ public interface MemberService {
 
 
 
-	public void exportToExcel(HttpServletResponse response)throws IOException ;
+	
 	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDetailDTO> modifyDatas)throws IOException ;
 
 	//public int modifyMember2(Map<String, Object> resultMap);
