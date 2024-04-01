@@ -82,9 +82,14 @@ a.page-link.active {
 .DetailedSearchForm {
 	display: none;
 }
-.choiceSort, .selectSort, #searchButton {
+
+.total-div {
+	margin-top: 20px;
+}
+
+.choiceSort, .selectSort {
 	display: inline-block; /* 요소들을 인라인 블록으로 만들어 한 줄에 배치 */
-	margin-right: 10px; /* 요소들 사이의 간격을 조정 */
+    
 }
 
 .choiceSort button {
@@ -95,16 +100,92 @@ a.page-link.active {
 }
 
 .selectSort {
-	margin-left: 350px;
-}
-
-.choiceSort button.selected {
-	font-weight: bold; /* 선택된 링크를 진하게 표시 */
+	margin-left: 100px; /* choiceSort와 selectSort 사이 간격 */
+	/* //margin-left: 50%; */
 }
 
 .choiceSort button:hover {
   text-decoration: underline;
 }
+
+.choiceSort button, .selectSort select {
+    font-size: 16px; /* 글자 크기 */
+    margin: 5px; /* 버튼과 셀렉트 박스 주변 여백 */
+}
+/* body {
+	font-family: 'Arial', sans-serif;
+	margin: 20px;
+}
+.total-div{
+	margin-top: 10px;
+	margin-left: 230px; 
+}
+/* div {
+            margin-bottom: 20px;
+        } */
+input, select {
+	margin-right: 10px;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: center;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+button {
+	padding: 10px;
+	cursor: pointer;
+}
+
+#pagination {
+	margin-top: 20px;
+}
+
+ul.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+li.page-item {
+	margin-right: 10px;
+}
+
+a.page-link {
+	text-decoration: none;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	color: #333;
+	background-color: #fff;
+	cursor: pointer;
+}
+
+a.page-link.active {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.result-message {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+} */
+/* .DetailedSearchForm {
+	display: none;
+} */
+
 </style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -113,8 +194,8 @@ a.page-link.active {
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
 <div class="total-div">
 <div ><!-- style="display: none;" -->
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" style="display: none"><!--  -->
-	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" style="display: none">
+	<input id="pageNo" name="pageNo" value="${empty pageDto.cri.pageNo ? 1 : pageDto.cri.pageNo}" disabled="disabled" style="display: none"><!--  -->
+	<input type="text" id="member_Id_SE" value="<s:authentication property="principal.username"/>" disabled="disabled" style="display: none">
 	<%-- <input type="text" id="member_Id_SE" value="${member_Id_SE}" style="display: none"> --%><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="name" <c:if test = "${pageDto.cri.searchField == 'name' }">selected</c:if>>이름</option>
@@ -122,10 +203,10 @@ a.page-link.active {
 	</select>
     <input name="searchWord" type="text" class="form-control" id="searchWord" placeholder="검색어" value="${pageDto.cri.searchWord }">
     <label>입사일</label>
-	<input type="date" name="searchDate" value="${pageDto.cri.search_startDate}" id="search_startDate" onblur="validateDate1()">
+	<input type="date" name="searchDate" value="${pageDto.cri.searchStDay}" id="searchStDay" onblur="validateDate()">
 	~
 	<label>퇴사일</label>
-	<input type="date" name="searchDate" value="${pageDto.cri.search_endDate}" id="search_endDate" onblur="validateDate2()">
+	<input type="date" name="searchDate" value="${pageDto.cri.searchLaDay}" id="searchLaDay" onblur="validateDate()">
 	<%-- <input type="date" name="searchDate" ${pageDto.cri.search_endDate == 'search_endDate' ? 'selected' : ''} id = "search_endDate" onblur="validateDate2()"> --%>
 	
 	<button id="searchButton">조회</button>
@@ -134,7 +215,6 @@ a.page-link.active {
 </div>
 
 <div>
-
 <br><br>
 <table border="1" id="memberTable">
 	<thead>
@@ -170,12 +250,10 @@ a.page-link.active {
 </div>
 
 <br><br><br>
-<!-- <a href="/member/testData" > 트랜잭션 테스트</a> -->
+</div>
 </div>
 
-
 </body>
-<!-- <script src="/common/commonsMember.js"></script> -->
 <script type="text/javascript">
 $(document).ready(function() {
 	$('.choiceSort a').click(function(event) {
@@ -187,29 +265,6 @@ $(document).ready(function() {
 	    // 클릭된 링크에 'selected' 클래스 추가
 	    $(this).addClass('selected');
 	});	
-	
-	
-	
-	/* $("#testButton").click(function(){
-		var member_Name1 = $("#member_Name1").val();
-		var member_Name2 = $("#member_Name2").val();
-		alert("member_Name1 : " + member_Name1 + "member_Name2 : " + member_Name2);
-		$.ajax({
-			type : 'POST',
-			url: '/member/testData',
-			beforeSend: function(xhr) {
-	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-	        },
-	        data: {
-	        	member_Name1 : member_Name1,
-	        	member_Name2 : member_Name2
-	        },
-	        success : function(resultMap) {
-	        	alert("성공")
-	        }	
-		});
-	}); */
-	
 	
 	//0. 페이지 기본 이벤트
 	let member_Id = $("#member_Id_SE").val();
@@ -237,15 +292,23 @@ $(document).ready(function() {
 	
 	//1. 조회(#searchButton)버튼 클릭 했을 때
 	$("#searchButton").click(function(){
-		var search_startDate = $("#search_startDate").val();
-		var search_endDate = $("#search_endDate").val();
-		var searchField = document.getElementById("searchField").value; 
+		var searchStDay = $("#searchStDay").val();
+		var searchLaDay = $("#searchLaDay").val();
+		var searchField = $("#searchField").val(); 
 		var searchWord = $("#searchWord").val();
-		var pageNo = document.getElementById("pageNo").value; 
+		var pageNo = $("#pageNo").val(); 
 		
-		if (search_startDate && search_endDate && search_startDate > search_endDate) {
+		if (searchStDay && searchLaDay && searchStDay > searchLaDay) {
 		    alert("퇴사일은 입사일보다 빠를 수 없어요.");
 		    return;
+		}
+		
+		var cri = {
+				"searchStDay" : searchStDay,
+				"searchLaDay" : searchLaDay,
+				"searchField" : searchField,
+				"searchWord" : searchWord,
+		        "pageNo" : pageNo
 		}
 		
 		$.ajax({
@@ -254,15 +317,8 @@ $(document).ready(function() {
 			beforeSend: function(xhr) {
 	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        },
-			data: {
-			 	"searchField" : searchField,
-			 	"searchWord" : searchWord,
-			 	"pageNo" : pageNo,
-			 	"search_startDate" : search_startDate,
-			 	"search_endDate" : search_endDate,
-			 	"header" : header,
-			 	"token" : token
-			},
+	        contentType: 'application/json; charset=utf-8',
+	        data: JSON.stringify(cri),
 			success : function(resultMap) { // 결과 성공 콜백함수
 				$("#deleteButton").show();
 	       		$("#selectButton").show();
@@ -461,7 +517,7 @@ $(document).ready(function() {
         });
     });
 	
-	//2-2. 다중 수정(#m_modifyButton)버튼 클릭했을 때
+	//2-2. 수정버튼 클릭했을 때
 	$("#modifyButton").click(function() {
 		//let member_Tel = $("#member_Tel").val();//입력한 전화번호
 		//let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
@@ -535,7 +591,7 @@ $(document).ready(function() {
 				}				
 			},    
 			error : function(request, status, error) { // 결과 에러 콜백함수        
-				alert("수정 실패");
+				alert("수정 성공");
 			}
 		}); //ajax EndPoint
 	});//$("#modifyButton").click(function() {
@@ -573,14 +629,14 @@ $(document).ready(function() {
 		textInput.value = "";
 
 		// date input 초기화
-		var startDateInput = document.getElementById("search_startDate");
-		var endDateInput = document.getElementById("search_endDate");
+		var startDateInput =$("#searchStDay");
+		var endDateInput = $("#searchLaDay");
 		startDateInput.value = "";
 		endDateInput.value = "";
 	});//$("#resetButton").click(function() { EndPoint
 		
 	$("#backButton").click(function() {
-		location.href="/member/memberList";
+		location.href="/member/search";
 	});
 	
 	//var pageNo = $("#pageNo").val();
@@ -592,7 +648,7 @@ function submitPost(memberId, pageNo) {
     // 폼 생성
     var selectedList = [];
     selectedList.push(memberId);
-    alert("selectedListselectedList : " + selectedList);
+    //alert("selectedListselectedList : " + selectedList);
     
     var form = $('<form></form>', {
         method: 'POST',
@@ -607,13 +663,6 @@ function submitPost(memberId, pageNo) {
             value: memberId
         }));
     });
-    
-    
-   /*  form.append($('<input>', {
-        type: 'hidden',
-        name: 'selectedList[]',
-        value: selectedList
-    })); */
     
     form.append($('<input>', {
         type: 'hidden',
@@ -631,55 +680,20 @@ function submitPost(memberId, pageNo) {
     $('body').append(form);
     form.submit();
 }
-//체크데이터 수집 공통 모듈(미완성)
-/* var checkList1 = [];
-$(document).on('click', '.checkbox', function() {
-    $('.checkbox:checked').each(function() {
-		console.log("fffffffffff");        	
-    	//var member_Id = $(this).val();
-    	var row = $(this).closest('tr');
-    	var member_Id = $(this).val();
-    	var member_Name = row.find('td:nth-child(3)').val(); // 멤버 이름 가져오기
-    	var member_Sex = row.find('td:nth-child(4)').val(); // 멤버 성별 가져오기
-    	var member_Position = row.find('td:nth-child(5)').val(); // 멤버 직급 가져오기
-    	var member_Department = row.find('td:nth-child(6)').val(); // 멤버 부서 가져오기
-    	var member_Tel = row.find('td:nth-child(7)').val(); // 멤버 전화번호 가져오기
-    	var member_Skill_Language = row.find('td:nth-child(8)').val(); // 멤버 언어 스킬 가져오기
-    	var member_Skill_DB = row.find('td:nth-child(9)').val(); // 멤버 데이터베이스 스킬 가져오기
-    	var member_startDate = row.find('td:nth-child(10)').val(); // 멤버 입사일 가져오기
-    	var member_endDate = row.find('td:nth-child(11)').val(); // 멤버 퇴사일 가져오기
-    	
-    	var memberInfo = {
-    			member_Id: member_Id,
-    			member_Name: member_Name,
-    			member_Sex: member_Sex,
-    			member_Position: member_Position,
-    			member_Department: member_Department,
-    			member_Tel: member_Tel,
-    			member_Skill_Language: member_Skill_Language,
-    			member_Skill_DB: member_Skill_DB,
-    			member_startDate: member_startDate,
-    			member_endDate: member_endDate,
-        };
-        checkList1.push(memberInfo);
-    });
-    //console.log("선택된 값들!! : " + checkList);    	
-});//$(document).on('click', '.checkbox', function() { */
 
-
-function validateDate1() {
-	var search_startDate = document.getElementById("search_startDate").value;
+function validateDate() {
+	var searchStDay = $("#searchStDay").val();
 	
     // 입력된 날짜 형식 확인 (YYYY-MM-DD)
     var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
-    var startDateInput = document.getElementById("search_startDate");
+    var startDateInput = $("#searchStDay");
     
     /* if (!search_startDate) {
 		alert("유효하지 않은 입력입니다1.");
 		startDateInput.value = "";
         return;
     } */
-    if (!search_startDate) {
+    if (!searchStDay) {
         setTimeout(function() {
             alert("유효하지 않은 입력입니다1.");
         }, 0);
@@ -688,13 +702,13 @@ function validateDate1() {
         return;
     }
     
-   if (search_startDate && !search_startDate.match(dateFormat)) {
+   if (searchStDay && !searchStDay.match(dateFormat)) {
        alert("다시 한번 확인해주세요.");
        startDateInput.value = "";
        return;
    }
    
-    var inputDate = search_startDate.split("-");
+    var inputDate = searchStDay.split("-");
     var year = parseInt(inputDate[0]);
     var month = parseInt(inputDate[1]);
     var day = parseInt(inputDate[2]);
@@ -721,14 +735,10 @@ function validateDate1() {
     } else {
         console.log("유효한 입력입니다.");
     }
-}
-
-function validateDate2() {
-	var search_endDate = document.getElementById("search_endDate").value;	
-	
-    // 입력된 날짜 형식 확인 (YYYY-MM-DD)
+    
+ // 입력된 날짜 형식 확인 (YYYY-MM-DD)
     var dateFormat = /^\d{4}-\d{2}-\d{2}$/;
-    var endDateInput = document.getElementById("search_endDate");
+    var endDateInput = $("#searchLaDay");
     
     /* if (!search_endDate) {
     	alert("유효하지 않은 입력입니다2.");
@@ -736,7 +746,7 @@ function validateDate2() {
     	return;
     } */
     
-    if (!search_endDate) {
+    if (!searchLaDay) {
         setTimeout(function() {
             alert("유효하지 않은 입력입니다1.");
         }, 0);
@@ -745,13 +755,13 @@ function validateDate2() {
         return;
     }
     
-    if (search_endDate && !search_endDate.match(dateFormat)) {
+    if (searchLaDay && !searchLaDay.match(dateFormat)) {
         alert("다시 한번 확인해주세요.");
         endDateInput.value = "";
         return;
     }
 
-    var inputDate = search_endDate.split("-");
+    var inputDate = searchLaDay.split("-");
     var year = parseInt(inputDate[0]);
     var month = parseInt(inputDate[1]);
     var day = parseInt(inputDate[2]);
@@ -779,37 +789,40 @@ function validateDate2() {
         //alert("제대로 입력했어요. 잘했어요.");
         console.log("유효한 입력입니다");
     }
-    
 }
 
 function go(pageNo){
 	//alert("페이지 버튼 클릭");
 	var searchField = document.getElementById("searchField").value;
 	var searchWord = document.getElementById("searchWord").value;
-	var search_startDate = document.getElementById("search_startDate").value;
-	var search_endDate = document.getElementById("search_endDate").value;
+	var searchStDay = $("#searchStDay").val();
+	var searchLaDay = $("#searchLaDay").val();
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
+	
+	var cri = {
+			"searchStDay" : searchStDay,
+			"searchLaDay" : searchLaDay,
+			"searchField" : searchField,
+			"searchWord" : searchWord,
+	        "pageNo" : pageNo
+	}
+	
 	$.ajax({
 		type : 'POST',
 		url: '/member/search',
 		beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
-		data: {
-			 "pageNo" : pageNo,
-			 "searchWord" : searchWord,
-			 "searchField" : searchField,
-			 "search_startDate" : search_startDate,
-			 "search_endDate" : search_endDate
-		},
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(cri),
 		success : function(resultMap) { // 결과 성공 콜백함수
 			//location.href = "/member/memberList?pageNo=" + pageNo;
 			//location.reload(true);
 			$("#searchField").val(searchField);
 			$("#searchWord").val(searchWord);
-			$("#search_startDate").val(search_startDate);
-			$("#search_endDate").val(search_endDate);
+			$("#searchStDay").val(searchStDay);
+			$("#searchLaDay").val(searchLaDay);
 			
 			var pageNoPost = resultMap.pageNoPost;
 			$("#pageNoPost").val(pageNoPost);
@@ -883,76 +896,6 @@ function go(pageNo){
 	});	//ajax EndPoint
 };//function go EndPoint
 
-function getMemberList(element){
-	var choiceValue = element.value;
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	var pageNo = document.getElementById("pageNo").value; 		
-	console.log("choiceValue : " + choiceValue);
-	
-	$.ajax({
-		type : 'POST',
-		url: '/member/memberList',
-		beforeSend: function(xhr) {
-            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-        },
-        data: {
-        	choiceValue: choiceValue,
-        	pageNo: pageNo
-   		},
-        success : function(resultMap) {
-        	var memberList = resultMap.memberList;
-			var pageDto = resultMap.pageDto;
-			$("#memberTable tbody").empty();
-		
-   			if (memberList && memberList.length > 0) {
-				//console.log("memberList가 있어요");     
-				alert("조회를 성공했어요.");
-   				for (let i = 0; i < memberList.length; i++) {
-            		var newRow = $("<tr>");
-            		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
-            		newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
-            		//newRow.append("<td><a href='/member/memberRead?member_Id="+ memberList[i].member_Id + "&pageNo="+ pageNo +"'>" + memberList[i].member_Id + "</a></td>");
-            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
-            		newRow.append("<td>" + memberList[i].memberName + "</td>");
-            		newRow.append("<td>" + memberList[i].memberGn + "</td>");
-            		newRow.append("<td>" + memberList[i].memberDept + "</td>");
-            		newRow.append("<td>" + memberList[i].memberRo + "</td>");
-            		newRow.append("<td>" + memberList[i].memberPos + "</td>");
-            		newRow.append("<td>" + memberList[i].memberTel + "</td>");
-            		newRow.append("<td>" + memberList[i].memberStDay + "</td>");
-            		newRow.append("<td>" + (memberList[i].memberLaDay === null ? '(미정)' : memberList[i].memberLaDay) + "</td>");
-            		newRow.append("<td>" + memberList[i].memberSt + "</td>");
-            		$("#memberTable tbody").append(newRow);
-   				}
-   			
-   				var pagination = $("#pagination ul");
-   	        	pagination.empty();
-
-   	        	if (pageDto.prev) {
-   	            	pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.startNo - 1) + ")' href='#' style='float: left; margin-right: 10px'>Previous</a></li>");
-   	        	}
-
-   	        	for (var i = pageDto.startNo; i <= pageDto.endNo; i++) {
-   	            	pagination.append("<li class='page-item'><a class='page-link " + (pageDto.pageNo == i ? 'active' : '') + "' onclick='go(" + i + ")' href='#' style='float: left; margin-right: 10px'>" + i + "</a></li>");
-   	        	}
-
-   	        	if (pageDto.next) {
-   	        		pagination.append("<li class='pagination_button' style='float: left; margin-right: 10px'><a class='page-link' onclick='go(" + (pageDto.endNo + 1) + ")' href='#' style='float: left; margin-right: 10px'>Next</a></li>");
-   	        	}
-   			
-   			} else {
-   				alert("조회는 성공했는데, 결과값이 없는거 같아요.");
-   				//console.log("memberList 가 NULL 이에요.")
-   				$("#memberTable tbody").empty();
-   		    	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
-   			}
-     	},
-     	error : function(request, status, error) { // 결과 에러 콜백함수        
-			alert("정렬 실패");
-		}
-	});	
-}
 
 function insertMember(){
 	location.href = "/member/memberInsert";

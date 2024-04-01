@@ -6,10 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Criteria {
 	
 	private String searchField; 
@@ -17,12 +21,13 @@ public class Criteria {
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate search_startDate;
+	private LocalDate searchStDay;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate search_endDate;
+	private LocalDate searchLaDay;
 	
+	private String choiceValue = null;
 	private int pageNo = 1;		
 	private int amount = 5; 	
 	private int startNo = 1;

@@ -107,7 +107,7 @@ WHERE
 </select>
 
 <!-- 1. 조회 -->
-<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap"><!-- parameterType="String" -->
+<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap" parameterType="com.jmh.dto.Criteria"><!-- parameterType="String" -->
 /*getmemberList*/
 SELECT
     MD.MEMBER_ID,
@@ -147,26 +147,29 @@ FROM (
 		ROW_NUMBER() OVER (
     	ORDER BY 
     	CASE 
-        	WHEN #{data.choiceValue} = 'IdUp' THEN MEMBER_ID
-        	WHEN #{data.choiceValue} = 'DeptDown' THEN SUBSTR(MEMBER_POS, 3, 2)
-    		WHEN #{data.choiceValue} = 'RecentStDay' THEN MEMBER_STDAY
+        	WHEN #{choiceValue} = 'IdUp' THEN MEMBER_ID
+        	WHEN #{choiceValue} = 'DeptDown' THEN SUBSTR(MEMBER_POS, 3, 2)
+    		<!-- 
+    			WHEN #{choiceValue} = 'RecentStDay' THEN MEMBER_STDAY 
+    			MEMBER_STDAY 위에 있는 거랑 타입이 달라서 함께 쓰면 에러가 남.. 
+    			ORA-00932: 일관성 없는 데이터 유형: CHAR이(가) 필요하지만 DATE
+    		-->
     	END 
     	DESC
     	, 
     	CASE 
-        	WHEN #{data.choiceValue} = 'IdDown' THEN MEMBER_ID
-        	WHEN #{data.choiceValue} = 'DeptUp' THEN SUBSTR(MEMBER_POS, 3, 2)
+        	WHEN #{choiceValue} = 'IdDown' THEN MEMBER_ID
+        	WHEN #{choiceValue} = 'DeptUp' THEN SUBSTR(MEMBER_POS, 3, 2)
     	END
-    	ASC 
+    	ASC
+    	,
+    	CASE 
+        	WHEN #{choiceValue} = 'RecentStDay' THEN MEMBER_STDAY
+    	END DESC
     	)AS NUMROW,
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
-	<!-- WHERE 
-			MEMBER_ST = #{data.memberStatus} -->
-			<!-- <if test="data.memberStatus != null and data.memberStatus != 'ALL'"> -->
-                
-            <!-- </if> -->
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -203,23 +206,21 @@ ON
 AND
 	RO.DCODE = 'D500'
 WHERE 
-		NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
-<!-- AND
-		MD.MEMBER_ST = #{data.memberStatus} -->
+		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
 
 
 <!-- 1. 조회(페이징 정보) -->
 <select id="getTotalCnt" resultType="integer"  parameterType="integer">
 	/*getTotalCnt*/		
-	<if test="searchWord == null and search_startDate == null and search_endDate == null">
+	<if test="searchWord == null and searchStDay == null and searchLaDay == null">
 	SELECT 
 			COUNT(*) 
 	FROM 
 			MEMBER_DETAIL
 	</if>
 	
-	<if test="searchWord != null or search_startDate != null or search_endDate != null">
+	<if test="searchWord != null or searchStDay != null or searchLaDay != null">
 	SELECT 
 			COUNT(*) 
 	FROM 
@@ -269,7 +270,7 @@ FROM (
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
-			<include refid="criteria"></include> 
+	<include refid="criteria"></include> 
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -308,10 +309,6 @@ AND
 WHERE 
 		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
-
-
-
-
 
 <!-- 2. 등록(아이디 체크) -->
 <select id="checkId" resultType="boolean"><!-- parameterType="String" -->
@@ -366,16 +363,9 @@ VALUES
 		 )
 </insert>
 
-
-
-
-
-
-
-
-
-<!-- 3. 상세화면 -->
+<!-- 3. 체크된 데이터 가져오기-->
 <select id="getSelectedList" resultType="String" parameterType="java.util.List" resultMap="memberMap">
+/*getSelectedList*/
 SELECT
     MD.MEMBER_ID,
     NVL(MD.MEMBER_NAME, '(미정)') AS MEMBER_NAME,
@@ -414,7 +404,7 @@ FROM (
 		COUNT(*) OVER() AS TOTAL_CNT
 	FROM     
 			MEMBER_DETAIL
-	<include refid="criteria"></include>  
+	<!-- <include refid="criteria"></include> -->  
 )MD
 LEFT JOIN 
     CODE_DETAIL GN 
@@ -426,7 +416,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL POS
 ON
-	<!-- MD.MEMBER_POS = POS.DTLCODE -->
 	 TO_NUMBER(SUBSTR(MD.MEMBER_POS, -2, 2)) = POS.DTLCODE
 AND
 	POS.DCODE = 'D200'
@@ -434,7 +423,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL DEPT
 ON
-	<!-- MD.MEMBER_DEPT = DEPT.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_DEPT, -1)) = DEPT.DTLCODE
 AND
 	DEPT.DCODE = 'D300'
@@ -442,7 +430,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL ST
 ON
-	<!-- MD.MEMBER_ST = ST.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_ST, -1)) = ST.DTLCODE
 AND
 	ST.DCODE = 'D400'
@@ -450,7 +437,6 @@ AND
 LEFT JOIN
 	CODE_DETAIL RO
 ON
-	<!-- MD.MEMBER_RO = RO.DTLCODE -->
 	TO_NUMBER(SUBSTR(MD.MEMBER_RO, -1)) = RO.DTLCODE
 AND
 	RO.DCODE = 'D500'
@@ -462,7 +448,6 @@ ON
 	TO_NUMBER(SUBSTR(MD.MEMBER_AUTH, -1)) = AU.DTLCODE
 AND
 	AU.DCODE = 'D600'		 -->
-
 WHERE
 	MD.MEMBER_ID IN
  	<foreach item="memberId" collection="list" open="(" separator="," close=")">
@@ -470,7 +455,7 @@ WHERE
 	</foreach>
 </select>
 
-<!-- 3. 수정(다중 회원 정보 수정) -->
+<!-- 3. 체크된 데이터 수정 -->
 <update id="modifyMember" parameterType="java.util.Map" >
     <foreach item="member" index="index" collection="modifyList" open="DECLARE BEGIN" separator=";" close="; END;">
         UPDATE 
@@ -483,16 +468,15 @@ WHERE
             MEMBER_TEL = #{member.memberTel},
             MEMBER_POS = #{member.memberPos},
             MEMBER_STDAY = #{member.memberStDay},
-            MEMBER_ST = #{member.memberSt},
-            MEMBER_LADAY = #{member.memberLaDay}
-            <if test="member.memberLaDay == null">
-        		MEMBER_LADAY = null
+            MEMBER_ST = #{member.memberSt}
+            <!-- MEMBER_LADAY = #{member.memberLaDay} -->
+            <if test="member.memberLaDay != null">
+        		MEMBER_LADAY = #{member.memberLaDay}
         	</if>	
         WHERE
             MEMBER_ID = #{member.memberId}
     </foreach>
 </update>
-
 
 <!-- 사번을 클릭했을 때 -->
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
@@ -542,6 +526,30 @@ AND
 WHERE 
 	MEMBER_ID = #{memberId}
 </select>
+
+<!-- 4. 삭제(회원 정보 삭제) -->
+<delete id="deleteMember" parameterType="list" >
+/*deleteMember*/
+DELETE 
+FROM
+		MEMBER
+WHERE 
+		MEMBER_ID 
+IN
+<foreach item="memberId" collection="list" open="(" separator="," close=")">
+	#{memberId}
+</foreach>
+</delete>
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1005,20 +1013,6 @@ WHERE
         		P.MEMBER_ID = #{member_Id} 
     </foreach>
 </select> 
-<!-- 4. 삭제(회원 정보 삭제) -->
-<delete id="deleteMember" parameterType="list" >
-/*deleteMember*/
-DELETE 
-FROM
-		MEMBER
-WHERE 
-		MEMBER_ID 
-IN
-<foreach item="member_Id" collection="list" open="(" separator="," close=")">
-	#{member_Id}
-</foreach>
-</delete>
-	
 
 <delete id="memberDelete2" parameterType="map">
     DELETE FROM PROJECT_DETAIL
@@ -1251,11 +1245,11 @@ IN
         <if test="searchField == 'tel'">
             AND MEMBER_TEL LIKE '%'||#{searchWord}||'%'
         </if>
-        <if test="search_startDate != null">
-            AND MEMBER_STDAY = #{search_startDate}
+        <if test="searchStDay != null">
+            AND MEMBER_STDAY = #{searchStDay}
         </if>
-         <if test="search_endDate != null">
-            AND MEMBER_LADAY = #{search_endDate}
+         <if test="searchLaDay != null">
+            AND MEMBER_LADAY = #{searchLaDay}
         </if>
     </where>
 </sql>

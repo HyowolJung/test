@@ -41,13 +41,7 @@ public interface MemberService {
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	
 	//1. 조회(검색어 X)
-	public List<MemberDetailDTO> getMemberList(@Param("cri") Criteria cri ,@Param("data") MemberDto data);
-
-	
-	
-	
-	
-	
+	public List<MemberDetailDTO> getMemberList(Criteria cri );//,@Param("data") Criteria data
 	public List<MemberDetailDTO> searchMemberList(Criteria cri);
 	
 	

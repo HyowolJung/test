@@ -120,10 +120,10 @@ a.page-link.active {
 <%@include file="/WEB-INF/views/common/header.jsp"%>
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
 <div class="total-div" style="text-align: center;">
-
 <div>
-<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" disabled="disabled" style="display: none"><!--  -->
-<input id="choiceValue" name="choiceValue" value="${choiceValue }"  disabled="disabled" style="display: none">
+<%-- <input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" disabled="disabled" > --%><!-- style="display: none"  -->
+<input id="pageNo" name="pageNo" value="${empty pageDto.cri.pageNo ? 1 : pageDto.cri.pageNo}" disabled="disabled" style="display: none"> <!-- style="display: none"  -->
+<input id="choiceValue" name="choiceValue" value="${choiceValue }"  disabled="disabled"  style="display: none"><!-- style="display: none" -->
 
 <div class="choiceSort" >
 <button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
@@ -269,17 +269,17 @@ $(document).ready(function() {
 	$('#searchCnt').on('change', function() {
 	    var searchCnt = $(this).val();
 	    var pageNo = $("#pageNo").val();
-		var memberStatus = $("#memberStatus").val();
+		//var memberStatus = $("#memberStatus").val();
 		var choiceValue = $("#choiceValue").val();
 		var token = $("meta[name='_csrf']").attr("content");
 		var header = $("meta[name='_csrf_header']").attr("content");
-		var data = {
+		var cri = {
 		    	"choiceValue" : choiceValue,
 		        "pageNo" : pageNo,
-		        "searchCnt" : searchCnt,
-				"memberStatus" : memberStatus    		
+		        "amount" : searchCnt
+				//"memberStatus" : memberStatus    		
 		    }
-		    
+		    //alert("pageNo : " + pageNo);
 			$.ajax({
 				type : 'POST',
 				url : '/member/memberList',
@@ -287,7 +287,7 @@ $(document).ready(function() {
 		            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 		        },
 		        contentType: 'application/json; charset=utf-8',
-		        data: JSON.stringify(data),
+		        data: JSON.stringify(cri),
 		        success : function(resultMap) {
 		        	var memberList = resultMap.memberList;
 					var pageDto = resultMap.pageDto;
@@ -345,7 +345,6 @@ $(document).ready(function() {
 	$("#memberTable tbody").empty();
 	$("#memberTable tbody").html("<tr><td colspan='11' style='text-align:center;'>결과가 없어요.</td></tr>");
 	
-	
 });//document EndPoint
 
 
@@ -353,10 +352,9 @@ function getMemberList(element){
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 	var choiceValue = element.value;
-	var pageNo = document.getElementById("pageNo").value; 		
-	var searchCnt = $("#searchCnt").val();
-	var memberStatus = $("#memberStatus").val();
-	
+	var pageNo = $("#pageNo").val();
+	var amount = $("#searchCnt").val();
+	//var memberStatus = $("#memberStatus").val();
 	var buttons = document.querySelectorAll('.choiceSort button');
 
     // 모든 버튼의 굵기를 초기화합니다.
@@ -367,13 +365,13 @@ function getMemberList(element){
     // 클릭된 버튼만 굵게 표시합니다.
     element.style.fontWeight = 'bold';
 	
-    var data = {
+    var cri = {
     	"choiceValue" : choiceValue,
         "pageNo" : pageNo,
-        "searchCnt" : searchCnt,
-		"memberStatus" : memberStatus    		
+        "amount" : amount
+		//"memberStatus" : memberStatus    		
     }
-    
+    //alert("pageNo : " + pageNo);
 	$.ajax({
 		type : 'POST',
 		url : '/member/memberList',
@@ -381,7 +379,7 @@ function getMemberList(element){
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
+        data: JSON.stringify(cri),
         success : function(resultMap) {
         	var memberList = resultMap.memberList;
 			var pageDto = resultMap.pageDto;
@@ -393,7 +391,7 @@ function getMemberList(element){
             		var newRow = $("<tr>");
             		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
             		//newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
-            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+            		newRow.append("<td>" + memberList[i].memberId + "</td>");//newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
             		newRow.append("<td>" + memberList[i].memberName + "</td>");
             		newRow.append("<td>" + memberList[i].memberGn + "</td>");
             		newRow.append("<td>" + memberList[i].memberDept + "</td>");
@@ -437,15 +435,15 @@ function go(pageNo){
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
 	var choiceValue = $("#choiceValue").val();
-	var searchCnt = $("#searchCnt").val();
-	var memberStatus = $("#memberStatus").val();
+	var amount = $("#searchCnt").val();
+	//var memberStatus = $("#memberStatus").val();
 	$("#pageNo").val(pageNo);
 	
-	var data = {
+	var cri = {
     	"choiceValue" : choiceValue,
         "pageNo" : pageNo,
-        "searchCnt" : searchCnt,
-		"memberStatus" : memberStatus    		
+        "amount" : amount
+		//"memberStatus" : memberStatus    		
     }
 	
 	$.ajax({
@@ -455,7 +453,7 @@ function go(pageNo){
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         },
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data),
+        data: JSON.stringify(cri),
 		success : function(resultMap) { // 결과 성공 콜백함수
 			$("#choiceValue").val(choiceValue);
 			var memberList = resultMap.memberList;
@@ -467,7 +465,7 @@ function go(pageNo){
        				var newRow = $("<tr>");
             		newRow.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>");
             		//newRow.append("<td><input type='checkbox' class='checkbox' name='checkbox' value='" + memberList[i].memberId + "' data-id='" + memberList[i].memberId + "'></td>");
-            		newRow.append("<td><a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" + memberList[i].memberId + "</a></td>");
+            		newRow.append("<td>" + memberList[i].memberId + "</td>"); //<a href='#' onclick='submitPost(\"" + memberList[i].memberId + "\", \"" + pageNo + "\"); return false;'>" "</a>
             		newRow.append("<td>" + memberList[i].memberName + "</td>");
             		newRow.append("<td>" + memberList[i].memberGn + "</td>");
             		newRow.append("<td>" + memberList[i].memberDept + "</td>");
@@ -506,6 +504,52 @@ function go(pageNo){
 		}
 	});	//ajax EndPoint
 };//function go EndPoint
+
+function submitPost(memberId, pageNo) {
+	//alert("pageNo : " + pageNo);
+	//alert("member_Id : " + member_Id);
+    // 폼 생성
+    var selectedList = [];
+    selectedList.push(memberId);
+    alert("selectedListselectedList : " + selectedList);
+    
+    var form = $('<form></form>', {
+        method: 'POST',
+        action: '/member/memberRead'
+    });
+
+    // memberId와 pageNo 값을 input으로 추가
+    selectedList.forEach(function(item) {
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'selectedList[]', // 서버에서 배열로 인식할 수 있도록 이름에 대괄호를 추가
+            value: memberId
+        }));
+    });
+    
+    
+   /*  form.append($('<input>', {
+        type: 'hidden',
+        name: 'selectedList[]',
+        value: selectedList
+    })); */
+    
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'pageNo',
+        value: pageNo
+    }));
+	
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
+    }));
+    
+    // 폼을 body에 추가하고 제출
+    $('body').append(form);
+    form.submit();
+}
 
 function downloadButton(){
 	window.location.href ="/member/download";

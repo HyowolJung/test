@@ -14,18 +14,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectDetailDto {
-	private int member_Id;
-	private int project_Id;
-	private int project_No;
-	private String project_Name;
-	private String member_Name;
-	private int check;
+	private int projectId;
+	private String projectName;
+	private String projectCompanyId;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate pushDate;
+	private LocalDate projectStDay;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate pullDate;
+	private LocalDate projectLaDay;
 }

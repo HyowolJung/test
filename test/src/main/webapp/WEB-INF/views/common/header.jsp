@@ -83,6 +83,8 @@ a {
 			<button class="logout-button" onclick="main()">메인화면</button>
 		</div>
 		<div class="header">
+			<a href="">내 정보</a>
+			|
 			<a href="/member/memberMain">사원 관리</a> 
 			| 
 			<a	href="/project/projectList?pageNo=1">프로젝트 관리</a> 
@@ -93,7 +95,7 @@ a {
 			| 
 			<a href="">휴가 관리</a>
 			|
-			<a href="">내 정보</a>
+			<a href="">커뮤니티</a>
 		</div>
 	</div>
 </body>

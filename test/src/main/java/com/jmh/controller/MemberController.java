@@ -90,10 +90,9 @@ public class MemberController {
 	// 1-1. 조회(사원 정보)
 	@PostMapping("/memberList") // memberList.jsp
 	@ResponseBody
-	public Map<String, Object> memberListPost(Model model, Criteria cri, HttpSession session,
-			@RequestBody MemberDto data) {
+	public Map<String, Object> memberListPost(Model model, @RequestBody Criteria cri, HttpSession session) {//@RequestBody Criteria data
 		Map<String, Object> resultMap = new HashMap<>();
-		List<MemberDetailDTO> memberList = memberService.getMemberList(cri, data);
+		List<MemberDetailDTO> memberList = memberService.getMemberList(cri);
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		resultMap.put("pageDto", pageDto);
@@ -112,61 +111,77 @@ public class MemberController {
 
 	@PostMapping("/search") // memberList.jsp
 	@ResponseBody
-	public Map<String, Object> searchPost(Model model, Criteria cri, HttpSession session) {// @RequestParam("checkList")
-																							// false)List<String>selectedList
-		// System.err.println("selectedListselectedListselectedList는 : " +
-		// selectedList);
+	public Map<String, Object> searchPost(Model model, @RequestBody Criteria cri, HttpSession session) {// @RequestParam("checkList") List<String>selectedList
 		Map<String, Object> resultMap = new HashMap<>();
 
 		List<MemberDetailDTO> memberList = memberService.searchMemberList(cri);
-		// List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데
-		// 안됨;;
+		// List<MemberDetailDTO> memberList2 = memberService.getmemberList2(); //캐시버전인데 안됨;;
 		int pageNoPost = cri.getPageNo();
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		resultMap.put("pageNoPost", pageNoPost);
 		resultMap.put("pageDto", pageDto);
 		resultMap.put("memberList", memberList);
-		// resultMap.put("memberList", memberList2);
 		return resultMap;
 	}
+	
+	// 3. 체크박스 다중 수정
+	@PostMapping("/memberModify")
+	public ResponseEntity<?> memberModify(@RequestBody List<MemberDetailDTO> modifyList) {
+		System.err.println("modifyListmodifyList : " + modifyList);
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("modifyList", modifyList);
+		int modifyCnt = memberService.modifyMember(resultMap);
+		System.err.println("modifyCntmodifyCnt : " + modifyCnt);
+		boolean result = false;
+		if (modifyCnt > 0) {
+			result = true;
+		} else if (modifyCnt < 0) {
+			result = false;
+		}
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	// 3. 상세화면
+	@PostMapping("/memberRead")
+	public String memberReadPost(Model model, Criteria cri, @RequestParam("selectedList[]") List<String> selectedList,
+			@RequestParam("pageNo") int pageNo) {// @RequestParam("memberId") int memberId,
+		System.err.println("selectedList : " + selectedList);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("memberList", memberService.getSelectedList(selectedList));
+		return "member/memberRead";
+	}
+	
+	// 4. 삭제(다중 회원 정보 삭제)
+	@PostMapping("/memberDeleteM") // @RequestParam(value="parameter이름[]")List<String>
+	public String memberDeleteM(@RequestBody List<String> checkList) {
+		System.out.println("checkList : " + checkList);
+		ArrayList<String> deleteMemberM_ck = new ArrayList<String>();
+		deleteMemberM_ck = memberService.deleteMemberM_ck(checkList);
+		System.out.println("deleteMemberM_ck : " + deleteMemberM_ck);
 
-//		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
-//			System.err.println("검색어 없는 조회");
-//			
-//			int totalCnt = memberService.getTotalCnt(cri);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
-//			memberList = memberService.getmemberList(cri);
-//			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
-//			//System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
-//			//System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
-//			//System.out.println("POST X) totalCnt : " + totalCnt);
-//			resultMap.put("pageNoPost", pageNoPost);
-//			resultMap.put("pageDto", pageDto);
-//			System.err.println("memberListPost : " + memberList);
-//			resultMap.put("memberList", memberList);
-//			//resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-//			return resultMap;
-//		}
-//		
-//		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
-//			System.err.println("검색어 있는 조회");
-//			
-//			int totalCnt = memberService.getTotalCnt(cri);
-//			PageDto pageDto = new PageDto(cri, totalCnt);
-//			memberList = memberService.getmemberList(cri);
-//			//memberList = memberService.searchmemberList(cri);
-//			//System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
-//			//System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
-//			//System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
-//			//System.out.println("POST O) totalCnt : " + totalCnt);
-//			resultMap.put("pageNoPost", pageNoPost);
-//			resultMap.put("pageDto", pageDto);
-//			resultMap.put("memberList", memberList);
-//			//resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-//			return resultMap;
-//		}
-
+		boolean allZeros = deleteMemberM_ck.stream().allMatch(value -> Integer.parseInt(value) == 0);
+		if (allZeros) {
+			// 모두 0인 경우
+			System.out.println("모든 값이 0입니다.");
+			int deleteCnt = memberService.deleteMember(checkList);
+			if (deleteCnt > 0) {
+				return "member/memberList";
+			} else {
+				return "";
+			}
+		} else {
+			// 0이 아닌게 하나라도 있다.(=투입이력이 있다)
+			System.out.println("0이 아닌 값이 존재합니다.");
+		}
+		return "";
+	}
+	
+	
+	
+	
+	
+	
 	// 2. 등록(페이지 이동)
 	@GetMapping("/memberInsert") // memberList.jsp
 	public String memberInsert() {
@@ -222,34 +237,6 @@ public class MemberController {
 		}
 	}
 
-	// 3. 수정
-	@PostMapping("/memberModify")
-	public ResponseEntity<?> memberModify(@RequestBody List<MemberDetailDTO> modifyList) {
-		System.err.println("modifyListmodifyList : " + modifyList);
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("modifyList", modifyList);
-
-		int modifyCnt = memberService.modifyMember(resultMap);
-		System.err.println("modifyCntmodifyCnt : " + modifyCnt);
-		boolean result = false;
-		if (modifyCnt > 0) {
-			result = true;
-		} else if (modifyCnt < 0) {
-			result = false;
-		}
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-
-	// 3. 상세화면
-	@PostMapping("/memberRead")
-	public String memberReadPost(Model model, Criteria cri, @RequestParam("selectedList[]") List<String> selectedList,
-			@RequestParam("pageNo") int pageNo) {// @RequestParam("memberId") int memberId,
-		System.err.println("selectedList : " + selectedList);
-
-		model.addAttribute("pageNo", pageNo);
-		model.addAttribute("memberList", memberService.getSelectedList(selectedList));
-		return "member/memberRead";
-	}
 
 	// 2. 수정
 	@PostMapping("/memberModifyM") // memberList.jsp
@@ -347,50 +334,25 @@ public class MemberController {
 //		return "member/memberModify";
 //	}
 
-	// 4. 삭제(다중 회원 정보 삭제)
-	@PostMapping("/memberDeleteM") // @RequestParam(value="parameter이름[]")List<String>
-	public String memberDeleteM(@RequestBody List<String> checkList) { // @RequestParam int member_Id,
-																		// @RequestParam(value="checkList[]")
-																		// MemberDto[] checkList
-		System.out.println("checkList : " + checkList);
-		ArrayList<String> deleteMemberM_ck = new ArrayList<String>();
-		deleteMemberM_ck = memberService.deleteMemberM_ck(checkList);
-		System.out.println("deleteMemberM_ck : " + deleteMemberM_ck);
-
-		boolean allZeros = deleteMemberM_ck.stream().allMatch(value -> Integer.parseInt(value) == 0);
-		if (allZeros) {
-			// 모두 0인 경우
-			System.out.println("모든 값이 0입니다.");
-			int deleteCnt = memberService.deleteMember(checkList);
-			if (deleteCnt > 0) {
-				return "member/memberList";
-			} else {
-				return "";
-			}
-		} else {
-			// 0이 아닌게 하나라도 있다.(=투입이력이 있다)
-			System.out.println("0이 아닌 값이 존재합니다.");
-		}
-		return "";
-	}
+	
 
 	// 4. 삭제(회원 정보 삭제)
-	@PostMapping("/memberDelete") // @RequestParam(value="parameter이름[]")List<String>
-	public String memberDelete(@RequestBody List<String> checkList) { // @RequestParam int member_Id,
-																		// @RequestParam(value="checkList[]")
-																		// MemberDto[] checkList
-		for (String member_Id : checkList) {
-			System.out.println("삭제할 체크리스트 : " + checkList);
-			int deleteCnt = memberService.deleteMember(checkList);
-
-			if (deleteCnt > 0) {
-				return "member/memberList";
-			} else {
-				return "";
-			}
-		}
-		return "";
-	}
+//	@PostMapping("/memberDelete") // @RequestParam(value="parameter이름[]")List<String>
+//	public String memberDelete(@RequestBody List<String> checkList) { // @RequestParam int member_Id,
+//																		// @RequestParam(value="checkList[]")
+//																		// MemberDto[] checkList
+//		for (String member_Id : checkList) {
+//			System.out.println("삭제할 체크리스트 : " + checkList);
+//			int deleteCnt = memberService.deleteMember(checkList);
+//
+//			if (deleteCnt > 0) {
+//				return "member/memberList";
+//			} else {
+//				return "";
+//			}
+//		}
+//		return "";
+//	}
 
 //	@PostMapping("/memberModify2")
 //	public ResponseEntity<Boolean> memberModify2(@RequestBody List<ProjectDetailDto> selectedProjectData) {
@@ -430,3 +392,39 @@ public class MemberController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }
+
+//if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {
+//System.err.println("검색어 없는 조회");
+//
+//int totalCnt = memberService.getTotalCnt(cri);
+//PageDto pageDto = new PageDto(cri, totalCnt);
+//memberList = memberService.getmemberList(cri);
+////System.out.println("POST X) searchWord : " + cri.getSearchWord());
+////System.out.println("POST X) getSearch_startDate : " + cri.getSearch_startDate());
+////System.out.println("POST X) getSearch_endDate : " + cri.getSearch_endDate());
+////System.out.println("POST X) totalCnt : " + totalCnt);
+//resultMap.put("pageNoPost", pageNoPost);
+//resultMap.put("pageDto", pageDto);
+//System.err.println("memberListPost : " + memberList);
+//resultMap.put("memberList", memberList);
+////resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//return resultMap;
+//}
+//
+//if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {
+//System.err.println("검색어 있는 조회");
+//
+//int totalCnt = memberService.getTotalCnt(cri);
+//PageDto pageDto = new PageDto(cri, totalCnt);
+//memberList = memberService.getmemberList(cri);
+////memberList = memberService.searchmemberList(cri);
+////System.out.println("POST O) searchWord : " + pageDto.cri.getSearchWord());
+////System.out.println("POST O) getSearch_startDate : " + pageDto.cri.getSearch_startDate());
+////System.out.println("POST O) getSearch_endDate : " + pageDto.cri.getSearch_endDate());
+////System.out.println("POST O) totalCnt : " + totalCnt);
+//resultMap.put("pageNoPost", pageNoPost);
+//resultMap.put("pageDto", pageDto);
+//resultMap.put("memberList", memberList);
+////resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//return resultMap;
+//}

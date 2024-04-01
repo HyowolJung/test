@@ -39,10 +39,10 @@ public class ProjectController {
 	
 	@GetMapping("/projectList")
 	public String projectList1(Model model, Criteria cri, @RequestParam int pageNo, HttpSession session) {
-		int totalCnt = projectService.getTotalCnt(cri);
-		PageDto pageDto = new PageDto(cri, totalCnt);
-		model.addAttribute("pageDto", pageDto);
-		model.addAttribute("member_Id_SE" , session.getAttribute("member_Id"));
+		//int totalCnt = projectService.getTotalCnt(cri);
+		//PageDto pageDto = new PageDto(cri, totalCnt);
+		//model.addAttribute("pageDto", pageDto);
+		model.addAttribute("member_Id_SE" , session.getAttribute("memberId"));
 		return "project/projectList";	
 	}
 	
@@ -55,43 +55,48 @@ public class ProjectController {
 		//System.out.println("POST) searchDate : " + cri.getSearchDate());
 		Map<String, Object> resultMap = new HashMap<>();
 		List<ProjectDto> projectList = projectService.getProjectList(cri); 
-		//System.out.println("member_Idmember_Idmember_Idmember_Id : " + member_Id);
-		//1. 검색어 없이 조회 버튼을 클릭한 경우
-		//if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchWord().length() == 0 && cri.getSearchWord().trim().isEmpty()) {	//조건 없이 조회 버튼만 누른 경우.
-		//if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
-		if(cri.getSearchWord().equals("") && cri.getSearch_startDate() == null && cri.getSearch_endDate() == null) {	
-			System.err.println("검색어 없는 조회");
-			int totalCnt = projectService.getTotalCnt(cri);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			projectList = projectService.getProjectList(cri);
-			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
-			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
-			//System.out.println("POST X) totalCnt : " + totalCnt);
-			//System.out.println("projectList : " + projectList);
-			resultMap.put("pageDto", pageDto);
-			resultMap.put("projectList", projectList);
-			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-			return resultMap;
-		}
-		
-		//2. 검색어 있고 조회 버튼을 클릭한 경우
-		//else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null || !cri.getSearchWord().trim().isEmpty()) {
-		//else if (search_ck != null && (cri.getSearchWord() != null || cri.getSearchDate() != null)) {
-		if(!cri.getSearchWord().equals("") || cri.getSearch_startDate() != null || cri.getSearch_endDate() != null) {	
-			//System.err.println("검색어 있는 조회");
-			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
-			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
-			int totalCnt = projectService.getTotalCnt(cri);
-			//System.out.println("POST O) totalCnt : " + totalCnt);
-			PageDto pageDto = new PageDto(cri, totalCnt);
-			projectList = projectService.searchProjectList(cri);
-			resultMap.put("pageDto", pageDto);
-			resultMap.put("projectList", projectList);
-			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
-			return resultMap;
-		}
-		//System.out.println("resultMap : " + resultMap);
-		return resultMap;	
+		int totalCnt = projectService.getTotalCnt(cri);
+		PageDto pageDto = new PageDto(cri, totalCnt);
+		resultMap.put("projectList", projectList);
+		resultMap.put("pageDto", pageDto);
+		return resultMap;
+//		//System.out.println("member_Idmember_Idmember_Idmember_Id : " + member_Id);
+//		//1. 검색어 없이 조회 버튼을 클릭한 경우
+//		//if(search_ck != null && cri.getSearchWord() == null && cri.getSearchWord().equals("") && cri.getSearchDate() == null && cri.getSearchWord().length() == 0 && cri.getSearchWord().trim().isEmpty()) {	//조건 없이 조회 버튼만 누른 경우.
+//		//if(search_ck != null && cri.getSearchWord().trim().isEmpty() && cri.getSearchDate() == null) {
+//		if(cri.getSearchWord().equals("") && cri.getSearchStDay() == null && cri.getSearchLaDay() == null) {	
+//			System.err.println("검색어 없는 조회");
+//			int totalCnt = projectService.getTotalCnt(cri);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			projectList = projectService.getProjectList(cri);
+//			//System.out.println("POST X) searchWord : " + cri.getSearchWord());
+//			//System.out.println("POST X) searchDate : " + cri.getSearchDate());
+//			//System.out.println("POST X) totalCnt : " + totalCnt);
+//			//System.out.println("projectList : " + projectList);
+//			resultMap.put("pageDto", pageDto);
+//			resultMap.put("projectList", projectList);
+//			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//			return resultMap;
+//		}
+//		
+//		//2. 검색어 있고 조회 버튼을 클릭한 경우
+//		//else if(search_ck != null && cri.getSearchWord() != null || cri.getSearchDate() != null || !cri.getSearchWord().trim().isEmpty()) {
+//		//else if (search_ck != null && (cri.getSearchWord() != null || cri.getSearchDate() != null)) {
+//		if(!cri.getSearchWord().equals("") || cri.getSearchStDay() != null || cri.getSearchLaDay() != null) {	
+//			//System.err.println("검색어 있는 조회");
+//			//System.out.println("POST O) searchWord : " + cri.getSearchWord());
+//			//System.out.println("POST O) searchDate : " + cri.getSearchDate());
+//			int totalCnt = projectService.getTotalCnt(cri);
+//			//System.out.println("POST O) totalCnt : " + totalCnt);
+//			PageDto pageDto = new PageDto(cri, totalCnt);
+//			projectList = projectService.searchProjectList(cri);
+//			resultMap.put("pageDto", pageDto);
+//			resultMap.put("projectList", projectList);
+//			resultMap.put("member_Id_SE", session.getAttribute("member_Id"));
+//			return resultMap;
+//		}
+//		//System.out.println("resultMap : " + resultMap);
+//		return resultMap;	
 	}
 	
 	//2. 등록(페이지 이동)

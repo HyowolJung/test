@@ -11,20 +11,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectDto extends ProjectDetailDto{
-	private int project_No;
-	private int project_Id;
-	private String custom_company_id;
-	private String project_Name;
-	private String project_Skill_Language;
-	private String project_Skill_DB;
+public class ProjectDto{
+	private int projectId;
+	private String projectName;
+	private String projectCompanyId;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate project_startDate;
+	private LocalDate projectStDay;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate project_endDate;
+	private LocalDate projectLaDay;
 
 }

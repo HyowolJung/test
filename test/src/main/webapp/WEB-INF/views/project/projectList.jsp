@@ -8,82 +8,83 @@
 <meta name="_csrf" content="${_csrf.token}"/>
 <meta name="_csrf_header" content="${_csrf.headerName}"/>
 <title>프로젝트 목록 조회</title>
-  <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 20px;
-        }
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 20px;
+}
 
-        div {
-            margin-bottom: 20px;
-        }
+div {
+	margin-bottom: 20px;
+}
 
-        input, select {
-            margin-right: 10px;
-        }
+input, select {
+	margin-right: 10px;
+}
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+}
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
+th, td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: center;
+}
 
-        th {
-            background-color: #f2f2f2;
-        }
+th {
+	background-color: #f2f2f2;
+}
 
-        button {
-            padding: 10px;
-            cursor: pointer;
-        }
+button {
+	padding: 10px;
+	cursor: pointer;
+}
 
-        #pagination {
-            margin-top: 20px;
-        }
+#pagination {
+	margin-top: 20px;
+}
 
-        ul.pagination {
-            display: flex;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+ul.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
 
-        li.page-item {
-            margin-right: 10px;
-        }
+li.page-item {
+	margin-right: 10px;
+}
 
-        a.page-link {
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            color: #333;
-            background-color: #fff;
-            cursor: pointer;
-        }
+a.page-link {
+	text-decoration: none;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	color: #333;
+	background-color: #fff;
+	cursor: pointer;
+}
 
-        a.page-link.active {
-            background-color: #007bff;
-            color: #fff;
-        }
+a.page-link.active {
+	background-color: #007bff;
+	color: #fff;
+}
 
-        .result-message {
-            text-align: center;
-            font-style: italic;
-            color: #777;
-        }
-    </style>
+.result-message {
+	text-align: center;
+	font-style: italic;
+	color: #777;
+}
+</style>
 </head>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <body>
 <%@include file="/WEB-INF/views/common/header.jsp" %><br><br>
 <div>
-	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo }" type="hidden"><!-- type="hidden" -->
+	<!-- 사원 : 어떤 프로젝트 / 프로젝트 : 어떤 사원들 / 사원 : 어떤팀 + 팀원 -->
+	<input id="pageNo" name="pageNo" value="${pageDto.cri.pageNo ? 1 : pageDto.cri.pageNo}" type="hidden"><!-- type="hidden" -->
 	<select name="searchField" class="form-select" aria-label="Default select example" id="searchField">
 	  <option value="id" <c:if test = "${pageDto.cri.searchField == 'id'}">selected</c:if>>아이디</option>
 	  <option value="name" ${pageDto.cri.searchField == 'name' ? 'selected' : ''}>이름</option>

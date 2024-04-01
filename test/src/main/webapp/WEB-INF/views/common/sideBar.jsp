@@ -45,6 +45,31 @@
   	<a href="/member/search" class="menu-item">사원 검색</a>
     <a href="/member/memberInsert" class="menu-item">사원 등록</a>
   </div>
+  <a href="#" class="menu-item" onclick="toggleSubmenu()">프로젝트 관리</a>
+  <div class="submenu" id="submenu">
+  	<a href="#" class="menu-item">프로젝트 조회</a>
+  	<a href="#" class="menu-item">프로젝트 검색</a>
+    <a href="#" class="menu-item">프로젝트 등록</a>
+  </div>
+  <a href="#" class="menu-item" onclick="toggleSubmenu()">급여 관리</a>
+  <div class="submenu" id="submenu">
+  	<a href="#" class="menu-item">급여 내역 조회</a>
+  	<a href="#" class="menu-item">급여 ??</a>
+    <a href="#" class="menu-item">급여 ??</a>
+  </div>
+  <a href="#" class="menu-item" onclick="toggleSubmenu()">근태 관리</a>
+  <div class="submenu" id="submenu">
+  	<a href="#" class="menu-item">근태 ??</a>
+  	<a href="#" class="menu-item">근태 ??</a>
+    <a href="#" class="menu-item">근태 ??</a>
+  </div>
+  <a href="#" class="menu-item" onclick="toggleSubmenu()">커뮤니티</a>
+  <div class="submenu" id="submenu">
+  	<a href="#" class="menu-item">건의 게시판</a>
+  	<a href="#" class="menu-item">자유 게시판</a>
+    <a href="#" class="menu-item">익명 게시판</a>
+    <a href="#" class="menu-item">사진 게시판</a>
+  </div>
 </div>
 </body>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
