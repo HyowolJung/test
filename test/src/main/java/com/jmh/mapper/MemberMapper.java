@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jmh.dto.Criteria;
-import com.jmh.dto.MemberDetailDTO;
+import com.jmh.dto.MemberDto;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -32,8 +32,8 @@ public interface MemberMapper {
 	public CustomUserDetails loginID(String memberId);
 	
 	//1. 조회
-	public List<MemberDetailDTO> getMemberList(Criteria cri);// , @Param("data") Criteria data
-	public List<MemberDetailDTO> searchMemberList(Criteria cri);
+	public List<MemberDto> getMemberList(Criteria cri);// , @Param("data") Criteria data
+	public List<MemberDto> searchMemberList(Criteria cri);
 	
 	//1. 조회(페이징 정보)
 	int getTotalCnt(Criteria cri);
@@ -51,7 +51,7 @@ public interface MemberMapper {
 //	boolean checkTel(String member_Tel);
 	
 	//2. 등록(회원 등록)
-	int insertMember(MemberDetailDTO insertDatas);
+	int insertMember(MemberDto insertDatas);
 	
 	//3. 수정
 	public int modifyMember(Map<String, Object> modifyList);
@@ -62,10 +62,10 @@ public interface MemberMapper {
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
-	List<MemberDetailDTO> selectModifyList(int memberId);
-	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+	List<MemberDto> selectModifyList(int memberId);
+	public List<MemberDto> getSelectedList(List<String> selectedList);
 	
-	List<MemberDetailDTO> getmemberList2();
+	List<MemberDto> getmemberList2();
 	//3. 수정(전화번호 중복체크)
 	int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);
 	List<String> checkedList(List<String> checkList);

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jmh.dto.Criteria;
-import com.jmh.dto.MemberDetailDTO;
+import com.jmh.dto.MemberDto;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
@@ -41,11 +41,11 @@ public interface MemberService {
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	
 	//1. 조회(검색어 X)
-	public List<MemberDetailDTO> getMemberList(Criteria cri );//,@Param("data") Criteria data
-	public List<MemberDetailDTO> searchMemberList(Criteria cri);
+	public List<MemberDto> getMemberList(Criteria cri );//,@Param("data") Criteria data
+	public List<MemberDto> searchMemberList(Criteria cri);
 	
 	
-	public List<MemberDetailDTO> getmemberList2();
+	public List<MemberDto> getmemberList2();
 	
 	//1. 조회(검색어 O)
 	//public List<MemberDto> searchmemberList(@Param("cri") Criteria cri , @Param("pageDto") PageDto pageDto);
@@ -59,7 +59,7 @@ public interface MemberService {
 	public boolean checkTel(String memberTel);
 	
 	//2. 등록(회원 등록)
-	public int insertMember(MemberDetailDTO insertDatas);
+	public int insertMember(MemberDto insertDatas);
 	
 	//3. 수정
 	public int modifyMember(Map<String, Object> resultMap);
@@ -72,10 +72,10 @@ public interface MemberService {
 	
 	//3. 상세화면 조회(memberRead.jsp)
 	public List<ProjectDto> getmemberprojectList(int member_Id);
-	public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+	public List<MemberDto> getSelectedList(List<String> selectedList);
 	
 	public List<MemberDto> getModifyList(int member_Id);
-	public List<MemberDetailDTO> selectModifyList(int memberId);
+	public List<MemberDto> selectModifyList(int memberId);
 	
 	//3. 수정(전화번호 중복체크)
 	public int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id);
@@ -119,13 +119,13 @@ public interface MemberService {
 
 
 	
-	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDetailDTO> modifyDatas)throws IOException ;
+	//public void exportToExcel2(@Param("response")HttpServletResponse response, @Param("modifyDatas") List<MemberDto> modifyDatas)throws IOException ;
 
 	//public int modifyMember2(Map<String, Object> resultMap);
 
 	
 
-	//public List<MemberDetailDTO> getSelectedList(List<String> selectedList);
+	//public List<MemberDto> getSelectedList(List<String> selectedList);
 
 }
 

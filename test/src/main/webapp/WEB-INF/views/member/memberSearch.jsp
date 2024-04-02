@@ -481,7 +481,7 @@ $(document).ready(function() {
 			select_memberRo += "</select>";
 			
 			
-            // 입력 요소로 변환하여 다시 출력 (예시)
+            // 입력 요소로 변환하여 다시 출력
             var editableRow = $('<tr>').append(
             	$('<td>').append($('<input type="checkBox" class="checkbox">').val(memberData.memberId)),
                 $('<td>').append($('<input type="text" disabled="disabled" style="width: 60px;">').val(memberData.memberId)),

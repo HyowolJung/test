@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jmh.dto.Criteria;
-import com.jmh.dto.MemberDetailDTO;
+import com.jmh.dto.MemberDto;
 import com.jmh.dto.MemberDto;
 import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
@@ -57,19 +57,19 @@ public class MemberServiceImpl implements MemberService{
 	//1. 조회(검색어 X)
 	//@Cacheable(value = "memberListCache")
 	@Override
-	public List<MemberDetailDTO> getMemberList(Criteria cri) {// , @Param("data") Criteria data
+	public List<MemberDto> getMemberList(Criteria cri) {// , @Param("data") Criteria data
 		return memberMapper.getMemberList(cri);
 	}
 	
 	@Override
-	public List<MemberDetailDTO> searchMemberList(Criteria cri) {
+	public List<MemberDto> searchMemberList(Criteria cri) {
 		return memberMapper.searchMemberList(cri);
 	}
 
 	
 	@Override
 	@Cacheable(value = "memberListCache")
-	public List<MemberDetailDTO> getmemberList2() {
+	public List<MemberDto> getmemberList2() {
 		System.err.println("cricricricricricri2222 : ");
 		return memberMapper.getmemberList2();
 	}
@@ -107,7 +107,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	//2. 등록(회원 등록)
 	@Override
-	public int insertMember(MemberDetailDTO insertDatas) {
+	public int insertMember(MemberDto insertDatas) {
 		// TODO Auto-generated method stub
 		String pwd = insertDatas.getMemberPw();
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -119,7 +119,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public List<MemberDetailDTO> getSelectedList(List<String> selectedList) {
+	public List<MemberDto> getSelectedList(List<String> selectedList) {
 		// TODO Auto-generated method stub
 		return memberMapper.getSelectedList(selectedList);
 	}
@@ -148,7 +148,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	@Override
-	public List<MemberDetailDTO> selectModifyList(int memberId) {
+	public List<MemberDto> selectModifyList(int memberId) {
 		// TODO Auto-generated method stub
 		return memberMapper.selectModifyList(memberId);
 	}
@@ -260,7 +260,7 @@ public class MemberServiceImpl implements MemberService{
 
 //	@Override
 //	public void exportToExcel(HttpServletResponse response) throws IOException {
-//	    List<MemberDetailDTO> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+//	    List<MemberDto> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
 //
 //	    Workbook workbook = new XSSFWorkbook();
 //	    Sheet sheet = workbook.createSheet("Data");
@@ -275,7 +275,7 @@ public class MemberServiceImpl implements MemberService{
 //
 //	    // 데이터 쓰기
 //	    int rowIdx = 1;
-//	    for (MemberDetailDTO member : memberList) {
+//	    for (MemberDto member : memberList) {
 //	        Row row = sheet.createRow(rowIdx++);
 //
 //	        row.createCell(0).setCellValue(member.getMemberId());
@@ -295,7 +295,7 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void exportToExcel(HttpServletResponse response) throws IOException{
 		// TODO Auto-generated method stub
-		List<MemberDetailDTO> memberList = memberService.searchMemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+		List<MemberDto> memberList = memberService.searchMemberList(new Criteria()); // 전체 데이터를 가져오는 로직
 		System.err.println("memberListmemberListmemberListmemberList : " + memberList);
 		Workbook workbook = new XSSFWorkbook();
 	    Sheet sheet = workbook.createSheet("Data");
@@ -308,7 +308,7 @@ public class MemberServiceImpl implements MemberService{
 	    }
 	    
 	    int rowIdx = 1;
-	    for (MemberDetailDTO member : memberList) {
+	    for (MemberDto member : memberList) {
 	        Row row = sheet.createRow(rowIdx++);
 	        row.createCell(0).setCellValue(member.getMemberId());
 	        row.createCell(1).setCellValue(member.getMemberName());
@@ -378,7 +378,7 @@ public class MemberServiceImpl implements MemberService{
 	
 	
 //	@Override
-//	public void exportToExcel2(HttpServletResponse response, List<MemberDetailDTO> modifyDatas) throws IOException {
+//	public void exportToExcel2(HttpServletResponse response, List<MemberDto> modifyDatas) throws IOException {
 //		System.err.println("modifyDatasmodifyDatasmodifyDatas : " + modifyDatas);
 //		Workbook workbook = new XSSFWorkbook();
 //	    Sheet sheet = workbook.createSheet("Data");
@@ -393,7 +393,7 @@ public class MemberServiceImpl implements MemberService{
 //
 //	    // 데이터 쓰기
 //	    int rowNum = 1;
-//	    for (MemberDetailDTO member : modifyDatas) {
+//	    for (MemberDto member : modifyDatas) {
 //	        Row row = sheet.createRow(rowNum++);
 //	        row.createCell(0).setCellValue(member.getMemberId());
 //	        row.createCell(1).setCellValue(member.getMemberName());

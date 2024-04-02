@@ -60,7 +60,7 @@ FROM
 WHERE 
 			MEMBER_ID = #{member_Id} -->
 
-<resultMap type="com.jmh.dto.MemberDetailDTO" id="memberMap">
+<resultMap type="com.jmh.dto.MemberDto" id="memberMap">
 	<result property="memberId" column="MEMBER_ID"/>
 	<result property="memberPw" column="MEMBER_PW"/>
 	<result property="memberGn" column="MEMBER_GN"/>
@@ -107,7 +107,7 @@ WHERE
 </select>
 
 <!-- 1. 조회 -->
-<select id="getMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap" parameterType="com.jmh.dto.Criteria"><!-- parameterType="String" -->
+<select id="getMemberList" resultType="com.jmh.dto.MemberDto"   resultMap="memberMap" parameterType="com.jmh.dto.Criteria"><!-- parameterType="String" -->
 /*getmemberList*/
 SELECT
     MD.MEMBER_ID,
@@ -230,7 +230,7 @@ WHERE
 	
 </select>
 
-<select id="searchMemberList" resultType="com.jmh.dto.MemberDetailDTO"   resultMap="memberMap"><!-- parameterType="String" -->
+<select id="searchMemberList" resultType="com.jmh.dto.MemberDto"   resultMap="memberMap"><!-- parameterType="String" -->
 /*searchMemberList*/
 SELECT
     MD.MEMBER_ID,
@@ -333,7 +333,7 @@ WHERE
 </select>
 
 <!-- 2. 등록(회원 등록) -->
-<insert id="insertMember" parameterType="com.jmh.dto.MemberDetailDTO">
+<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
 /*insertMember*/
 INSERT 
 INTO 
@@ -480,7 +480,7 @@ WHERE
 
 <!-- 사번을 클릭했을 때 -->
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
-<select id="selectModifyList" resultType="com.jmh.dto.MemberDetailDTO" parameterType="integer" resultMap="memberMap">
+<select id="selectModifyList" resultType="com.jmh.dto.MemberDto" parameterType="integer" resultMap="memberMap">
 SELECT
     MD.MEMBER_ID,
     NVL(MD.MEMBER_NAME, '미정') AS MEMBER_NAME,

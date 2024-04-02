@@ -54,7 +54,7 @@ table {
 <br>
 <br>
  <!--  -->
-<table border="1">
+<table border="1" id="membersTable">
 	<thead>
 		<tr>
 			<th>사번</th>
@@ -137,36 +137,79 @@ table {
 </table>
 </div>		
 <script type="text/javascript">
-var member_Id = document.getElementById("td_Id").innerText;
-var pageNo = $("#pageNo").val();
+//var member_Id = document.getElementById("td_Id").innerText;
+//var pageNo = $("#pageNo").val();
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
-//console.log("member_Id : " + member_Id);
 
-function submitPost() {//member_Id, pageNo
-	//alert("pageNo : " + pageNo);
-	//alert("member_Id : " + member_Id);
-    // 폼 생성
-    //location.href ="/member/memberModify";
-    var member_Id = document.getElementById("td_Id").innerText;
+function submitPost() {
+	var members = [];
+
+    $('#membersTable tr').each(function() {
+        if (!this.rowIndex) return; // 첫 번째 행(헤더) 건너뛰기
+        var member = {
+        		memberId: $(this).find('td:nth-child(1)').text().trim(),
+                memberName: $(this).find('td:nth-child(2)').text().trim(),
+                memberGn: $(this).find('td:nth-child(3)').text().trim(),
+                memberEmail: $(this).find('td:nth-child(4)').text().trim(),
+                memberPos: $(this).find('td:nth-child(5)').text().trim(),
+                memberDept: $(this).find('td:nth-child(6)').text().trim(),
+                memberTel: $(this).find('td:nth-child(7)').text().trim(),
+                memberSt: $(this).find('td:nth-child(8)').text().trim(),
+                memberTeam: $(this).find('td:nth-child(9)').text().trim(),
+                memberAuth: $(this).find('td:nth-child(10)').text().trim(),
+                memberStDay: $(this).find('td:nth-child(11)').text().trim(),
+                memberLaDay: $(this).find('td:nth-child(12)').text().trim() === '(미정)' ? null : $(this).find('td:nth-child(12)').text().trim(),
+        };
+        members.push(member);
+    });
+	
+    localStorage.setItem('members', JSON.stringify(members));
+    window.location.href = "/member/memberModify";
+    
+   /*  var form = $('<form></form>', {
+        method: 'POST',
+        action: '/member/memberModify'
+    });
+    
+    form.append($('<input>', {
+        type: 'hidden',
+        name: '${_csrf.parameterName}',
+        value: '${_csrf.token}'
+    }));
+    
+    $('body').append(form);
+    form.submit(); */
+}
+/* function submitPost() {
+    var memberId = document.getElementById("td_Id").innerText;
 	var pageNo = $("#pageNo").val();
 	
-	//alert("member_Id : " + member_Id);
-	//alert("pageNo : " + pageNo);
+	var modifyList = [];
+	modifyList.push(memberId);
+	alert("memberId : " + memberId);
+	alert("pageNo : " + pageNo);
 	
     var form = $('<form></form>', {
         method: 'POST',
         action: '/member/memberModify'
     });
 
-    // memberId와 pageNo 값을 input으로 추가
-    form.append($('<input>', {
-        type: 'hidden',
-        name: 'member_Id',
-        value: member_Id
-    }));
+    modifyList.forEach(function(item) {
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'modifyList[]',
+            value: memberId
+        }));
+    });
     
     form.append($('<input>', {
+        type: 'hidden',
+        name: 'memberId',
+        value: memberId
+    }));
+    
+   form.append($('<input>', {
         type: 'hidden',
         name: 'pageNo',
         value: pageNo
@@ -178,14 +221,13 @@ function submitPost() {//member_Id, pageNo
         value: '${_csrf.token}'
     }));
     
-    // 폼을 body에 추가하고 제출
     $('body').append(form);
     form.submit();
-}
+} */
 
 $("#back").click(function(){
 	//location.href = "/member/memberList?pageNo=" + pageNo;
-	location.href = "/member/memberList";
+	location.href = "/member/search";
 });
 </script>
 </body>

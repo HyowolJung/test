@@ -438,6 +438,8 @@ function go(pageNo){
 	var amount = $("#searchCnt").val();
 	//var memberStatus = $("#memberStatus").val();
 	$("#pageNo").val(pageNo);
+	var pageNo = $("#pageNo").val();
+	var memberId = $("#memberId").val();
 	
 	var cri = {
     	"choiceValue" : choiceValue,
@@ -506,9 +508,7 @@ function go(pageNo){
 };//function go EndPoint
 
 function submitPost(memberId, pageNo) {
-	//alert("pageNo : " + pageNo);
-	//alert("member_Id : " + member_Id);
-    // 폼 생성
+	
     var selectedList = [];
     selectedList.push(memberId);
     alert("selectedListselectedList : " + selectedList);
@@ -520,25 +520,38 @@ function submitPost(memberId, pageNo) {
 
     // memberId와 pageNo 값을 input으로 추가
     selectedList.forEach(function(item) {
+    	
         form.append($('<input>', {
             type: 'hidden',
             name: 'selectedList[]', // 서버에서 배열로 인식할 수 있도록 이름에 대괄호를 추가
             value: memberId
         }));
-    });
-    
-    
-   /*  form.append($('<input>', {
+        
+        form.append($('<input>', {
+            type: 'hidden',
+            name: 'pageNo',
+            value: pageNo
+        }));
+        
+    });     
+        
+    form.append($('<input>', {
+        type: 'hidden',
+        name: 'memberIdd',
+        value: memberId
+    }));    
+        //필요 없긴 한데 다른 페이지에서 해당 컨트롤러에 있는 메서드를 사용할 때는 이게 필요해서...
+	/* form.append($('<input>', {
+            type: 'hidden',
+            name: 'memberId',
+            value: memberId
+        })); */
+
+    /*  form.append($('<input>', {
         type: 'hidden',
         name: 'selectedList[]',
         value: selectedList
     })); */
-    
-    form.append($('<input>', {
-        type: 'hidden',
-        name: 'pageNo',
-        value: pageNo
-    }));
 	
     form.append($('<input>', {
         type: 'hidden',

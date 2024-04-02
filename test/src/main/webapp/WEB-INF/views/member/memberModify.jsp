@@ -9,40 +9,39 @@
 <meta name="_csrf_header" content="${_csrf.headerName}" />
 <title>회원 수정</title>
 <style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 20px;
-        text-align: center;
-    }
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin-bottom: 20px;
+	text-align: center;
+}
 
-    table, th, td {
-        border: 1px solid #ddd;
-    }
+table, th, td {
+	border: 1px solid #ddd;
+}
 
-    th, td {
-        padding: 8px;
-        text-align: center;
-    }
+th, td {
+	padding: 8px;
+	text-align: center;
+}
 
-    th {
-        background-color: #f2f2f2;
-    }
-	
-	button {
-        padding: 10px;
-        cursor: pointer;
-        margin-bottom: 10px;
-    }
-	
-    input[type="radio"] {
-        margin-left: 5px;
-    }
-    
-    .centered {
-        text-align: center;
-    }
-    
+th {
+	background-color: #f2f2f2;
+}
+
+button {
+	padding: 10px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+
+input[type="radio"] {
+	margin-left: 5px;
+}
+
+.centered {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -52,132 +51,27 @@
 멤버 수정화면
 <br><br>
 <input id="pageNo" name="pageNo" value="${pageNo}" type="hidden"><!--  type="hidden" --> 
-<table border="1">
+<table border="1" id="membersTable">
 	<thead>
 		<tr>
-			<th style="display: none">사번</th>
-			<th style='width: 30px'>이름</th>
+			<th>사번</th>
+			<th>이름</th>
 			<th>성별</th>
+			<th>이메일</th>
 			<th>직급</th>
 			<th>부서</th>
-			<th style='width: 50px'>전화번호</th>
-			<th>언어</th>
-			<th>데이터베이스</th>
+			<th>전화번호</th>
+			<th>상태</th>
+			<th>팀</th>
+			<th>권한</th>
 			<th>입사일</th>
 			<th>퇴사일</th>
 		</tr>
 	</thead>
 	<tbody>
-		<c:if test="${memberList != null}">
-		<c:forEach var="memberList" items="${memberList}">
-			<tr>
-				<td style="display: none"><input type="text" name="member_Id" id="member_Id" disabled="disabled" value ="${memberList.member_Id }"/></td>
-				<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }" style="width: 120px"/></td>
-				<td>
-					<select id="member_Sex">
-						<option value="" ${memberList.member_Sex == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="D011" ${memberList.member_Sex == '남자' ? 'selected' : ''}>남자</option>
-	  					<option value="D012" ${memberList.member_Sex == '여자' ? 'selected' : ''}>여자</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Position">
-						<option value="" ${memberList.member_Position == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="D028" ${memberList.member_Position == '사원' ? 'selected' : ''}>사원</option>
-	  					<option value="D027" ${memberList.member_Position == '대리' ? 'selected' : ''}>대리</option>
-	  					<option value="D026" ${memberList.member_Position == '과장' ? 'selected' : ''}>과장</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Department">
-						<option value="" ${memberList.member_Department == '미정' ? 'selected' : ''}>선택</option>
-						<option value="A020" ${memberList.member_Department == '경영지원부' ? 'selected' : ''}>경영지원부</option>
-						<option value="A021" ${memberList.member_Department == 'IT부' ? 'selected' : ''}>IT부</option>
-						<option value="A022" ${memberList.member_Department == '인사부' ? 'selected' : ''}>인사부</option>
-						<option value="A023" ${memberList.member_Department == '마케팅부' ? 'selected' : ''}>마케팅부</option>
-					</select>
-				</td>
-				<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
-				<td>
-					<select id="member_Skill_Language">
-						<option value="" ${memberList.member_Skill_Language == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="S010" ${memberList.member_Skill_Language == 'JAVA' ? 'selected' : ''}>JAVA</option>
-	  					<option value="S011" ${memberList.member_Skill_Language == 'PYTHON' ? 'selected' : ''}>PYTHON</option>
-	  					<option value="S012" ${memberList.member_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
-	  					<option value="S013" ${memberList.member_Skill_Language == 'RUBY' ? 'selected' : ''}>RUBY</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Skill_DB">
-						<option value="" ${memberList.member_Skill_DB == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="S020" ${memberList.member_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
-	 		 			<option value="S021" ${memberList.member_Skill_DB == 'MSSQL' ? 'selected' : ''}>MSSQL</option>
-	  					<option value="S022" ${memberList.member_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
-	  					<option value="S023" ${memberList.member_Skill_DB == 'POSTGRESQL' ? 'selected' : ''}>POSTGRESQL</option>
-					</select>
-				</td>
-				<td><input type="date" name="member_startDate" id="member_startDate" value ="${memberList.member_startDate }"/></td>
-				<td><input type="date" name="member_endDate" id="member_endDate" value ="${memberList.member_endDate }"/></td>
-			</tr>
-			</c:forEach>
-			</c:if>
-			
-			<c:if test="${memberListM != null}">
-			<c:forEach var="memberList" items="${memberListM}">
-			<tr>
-				<td style="display: none"><input type="text" name="member_Id" id="member_Id" disabled="disabled" value ="${memberList.member_Id }"/></td>
-				<td><input type="text" name="member_Name" id="member_Name" value ="${memberList.member_Name }" style="width: 120px"/></td>
-				<td>
-					<select id="member_Sex">
-						<option value="" ${memberList.member_Sex == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="D011" ${memberList.member_Sex == '남자' ? 'selected' : ''}>남자</option>
-	  					<option value="D012" ${memberList.member_Sex == '여자' ? 'selected' : ''}>여자</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Position">
-						<option value="" ${memberList.member_Position == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="D028" ${memberList.member_Position == '사원' ? 'selected' : ''}>사원</option>
-	  					<option value="D027" ${memberList.member_Position == '대리' ? 'selected' : ''}>대리</option>
-	  					<option value="D026" ${memberList.member_Position == '과장' ? 'selected' : ''}>과장</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Department">
-						<option value="" ${memberList.member_Department == '미정' ? 'selected' : ''}>선택</option>
-						<option value="A020" ${memberList.member_Department == '경영지원부' ? 'selected' : ''}>경영지원부</option>
-						<option value="A021" ${memberList.member_Department == 'IT부' ? 'selected' : ''}>IT부</option>
-						<option value="A022" ${memberList.member_Department == '인사부' ? 'selected' : ''}>인사부</option>
-						<option value="A023" ${memberList.member_Department == '마케팅부' ? 'selected' : ''}>마케팅부</option>
-					</select>
-				</td>
-				<td><input type="text" name="member_Tel" id="member_Tel" value ="${memberList.member_Tel }"/></td>
-				<td>
-					<select id="member_Skill_Language">
-						<option value="" ${memberList.member_Skill_Language == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="S010" ${memberList.member_Skill_Language == 'JAVA' ? 'selected' : ''}>JAVA</option>
-	  					<option value="S011" ${memberList.member_Skill_Language == 'PYTHON' ? 'selected' : ''}>PYTHON</option>
-	  					<option value="S012" ${memberList.member_Skill_Language == 'C++' ? 'selected' : ''}>C++</option>
-	  					<option value="S013" ${memberList.member_Skill_Language == 'RUBY' ? 'selected' : ''}>RUBY</option>
-					</select>
-				</td>
-				<td>
-					<select id="member_Skill_DB">
-						<option value="" ${memberList.member_Skill_DB == '미정' ? 'selected' : ''}>선택</option>
-	  					<option value="S020" ${memberList.member_Skill_DB == 'ORACLE' ? 'selected' : ''}>ORACLE</option>
-	 		 			<option value="S021" ${memberList.member_Skill_DB == 'MSSQL' ? 'selected' : ''}>MSSQL</option>
-	  					<option value="S022" ${memberList.member_Skill_DB == 'MYSQL' ? 'selected' : ''}>MYSQL</option>
-	  					<option value="S023" ${memberList.member_Skill_DB == 'POSTGRESQL' ? 'selected' : ''}>POSTGRESQL</option>
-					</select>
-				</td>
-				<td><input type="date" name="member_startDate" id="member_startDate" value ="${memberList.member_startDate }"/></td>
-				<td><input type="date" name="member_endDate" id="member_endDate" value ="${memberList.member_endDate }"/></td>
-			</tr>
-			</c:forEach>
-			</c:if>
-		</tbody>
 		
-	</table>
+	</tbody>	
+</table>
 <button type="button" id="modifyButton">수정하기</button>
 <button type="button" id="back1" onclick="back()">뒤로 가기</button>
 </div>
@@ -224,11 +118,52 @@
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 
+var members = JSON.parse(localStorage.getItem('members'));
+
+if (members) {
+    // 각 멤버에 대해 테이블 행 생성
+    $.each(members, function(index, member) {
+       /* var row = '<tr>' +
+            '<td>' + member.memberId + '</td>' +
+            '<td>' + member.memberName + '</td>' +
+            '<td>' + member.memberGn + '</td>' +
+            '<td>' + member.memberEmail + '</td>' +
+            '<td>' + member.memberPos + '</td>' +
+            '<td>' + member.memberDept + '</td>' +
+            '<td>' + member.memberTel + '</td>' +
+            '<td>' + member.memberSt + '</td>' +
+            '<td>' + member.memberTeam + '</td>' +
+            '<td>' + member.memberAuth + '</td>' +
+            '<td>' + member.memberStDay + '</td>' +
+            '<td>' + (member.memberLaDay || '(미정)') + '</td>' +
+            '</tr>';*/
+    
+    	var row = '<tr>' +
+        /* '<td>' + member.memberId + '</td>' + */
+        '<td><input type="text" id="memberId" value="' + member.memberId + '" disabled="disabled"></td>' +
+        '<td><input type="text" value="' + member.memberName + '"></td>' +
+        '<td>' + member.memberGn + '</td>' +
+        '<td><input type="email" value="' + member.memberEmail + '"></td>' +
+        '<td>' + member.memberPos + '</td>' +
+        '<td>' + member.memberDept + '</td>' +
+        '<td><input type="tel" value="' + member.memberTel + '"></td>' +
+        '<td>' + member.memberSt + '</td>' +
+        '<td>' + member.memberTeam + '</td>' +
+        '<td>' + member.memberAuth + '</td>' +
+        '<td><input type="date" value="' + member.memberStDay + '"></td>' +
+        '<td>' + (member.memberLaDay || '(미정)') + '</td>' +
+        '</tr>';
+        
+     	// 생성된 행을 테이블의 tbody에 추가
+		$('#membersTable tbody').append(row);
+    });
+}
+
 function back() {
-	var member_Id = $("#member_Id").val();
+	var memberId = $("#memberId").val();
 	var pageNo = $("#pageNo").val();
-	//alert("member_Id : " + member_Id + " / pageNo : " + pageNo);	
-	//alert("함수 작동!")
+	alert("member_Id : " + member_Id + " / pageNo : " + pageNo);	
+	
 	var form = $('<form></form>', {
         method: 'POST',
         action: '/member/memberRead'
@@ -237,8 +172,8 @@ function back() {
 	// memberId와 pageNo 값을 input으로 추가
     form.append($('<input>', {
         type: 'hidden',
-        name: 'member_Id',
-        value: member_Id
+        name: 'memberId',
+        value: memberId
     }));
 	
     form.append($('<input>', {
