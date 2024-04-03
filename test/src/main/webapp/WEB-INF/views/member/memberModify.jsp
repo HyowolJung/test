@@ -64,6 +64,7 @@ input[type="radio"] {
 			<th>상태</th>
 			<th>팀</th>
 			<th>권한</th>
+			<th>직과</th>
 			<th>입사일</th>
 			<th>퇴사일</th>
 		</tr>
@@ -118,11 +119,12 @@ input[type="radio"] {
 var token = $("meta[name='_csrf']").attr("content");
 var header = $("meta[name='_csrf_header']").attr("content");
 
-var members = JSON.parse(localStorage.getItem('members'));
+var memberData = JSON.parse(localStorage.getItem('members'));
 
-if (members) {
+if (memberData) {
     // 각 멤버에 대해 테이블 행 생성
-    $.each(members, function(index, member) {
+    
+    $.each(memberData, function(index, memberData) {
        /* var row = '<tr>' +
             '<td>' + member.memberId + '</td>' +
             '<td>' + member.memberName + '</td>' +
@@ -138,21 +140,83 @@ if (members) {
             '<td>' + (member.memberLaDay || '(미정)') + '</td>' +
             '</tr>';*/
     
-    	var row = '<tr>' +
-        /* '<td>' + member.memberId + '</td>' + */
-        '<td><input type="text" id="memberId" value="' + member.memberId + '" disabled="disabled"></td>' +
-        '<td><input type="text" value="' + member.memberName + '"></td>' +
-        '<td>' + member.memberGn + '</td>' +
-        '<td><input type="email" value="' + member.memberEmail + '"></td>' +
-        '<td>' + member.memberPos + '</td>' +
-        '<td>' + member.memberDept + '</td>' +
-        '<td><input type="tel" value="' + member.memberTel + '"></td>' +
-        '<td>' + member.memberSt + '</td>' +
-        '<td>' + member.memberTeam + '</td>' +
-        '<td>' + member.memberAuth + '</td>' +
-        '<td><input type="date" value="' + member.memberStDay + '"></td>' +
-        '<td>' + (member.memberLaDay || '(미정)') + '</td>' +
-        '</tr>';
+            var select_memberGn = "<select id='memberGn'>";
+            select_memberGn += "<option value=''" + (memberData.memberGn == '(미정)' ? 'selected' : '') + ">선택</option>";
+            select_memberGn += "<option value='D101'" + (memberData.memberGn == '남성' ? 'selected' : '') + ">남성</option>";
+            select_memberGn += "<option value='D102'" + (memberData.memberGn == '여성' ? " selected" : '') + ">여성</option>";
+            select_memberGn += "</select>";
+
+			var positions = {
+				    'D201': '회장',
+				    'D202': '부회장',
+				    'D203': '사장',
+				    'D204': '부사장',
+				    'D205': '전무',
+				    'D206': '상무',
+				    'D207': '본부장',
+				    'D208': '실장',
+				    'D209': '팀장',
+				    'D210': '부장',
+				    'D211': '차장',
+				    'D212': '과장',
+				    'D213': '대리',
+				    'D214': '주임',
+				    'D215': '사원',
+				    'D216': '인턴'
+			};
+			
+			var select_memberPos = "<select id='memberPos'><option value='' " + (memberData.memberPos == '(미정)' ? 'selected' : '') + ">선택</option>";
+
+			for (var key in positions) {
+			    select_memberPos += "<option value='" + key + "'" + (memberData.memberPos == positions[key] ? " selected" : '') + ">" + positions[key] + "</option>";
+			}
+
+			select_memberPos += "</select>";
+
+			var select_memberDept = "<select id='memberDept'>";
+			select_memberDept += "<option value=''" + (memberData.memberDept == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberDept += "<option value='D301'" + (memberData.memberDept == '경영지원부' ? 'selected' : '') + ">경영지원부</option>";
+			select_memberDept += "<option value='D302'" + (memberData.memberDept == '인사부' ? 'selected' : '') + ">인사부</option>";
+			select_memberDept += "<option value='D303'" + (memberData.memberDept == 'IT부' ? 'selected' : '') + ">IT부</option>";
+			select_memberDept += "<option value='D304'" + (memberData.memberDept == '재무부' ? 'selected' : '') + ">재무부</option>";
+			select_memberDept += "<option value='D305'" + (memberData.memberDept == '회계부' ? 'selected' : '') + ">회계부</option>";
+			select_memberDept += "<option value='D306'" + (memberData.memberDept == '마케팅부' ? 'selected' : '') + ">마케팅부</option>";
+			select_memberDept += "</select>";
+			
+			var select_memberSt = "<select id='memberSt'>";
+			select_memberSt += "<option value=''" + (memberData.memberSt == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberSt += "<option value='D401'" + (memberData.memberSt == '재직' ? 'selected' : '') + ">재직</option>";
+			select_memberSt += "<option value='D402'" + (memberData.memberSt == '파견' ? 'selected' : '') + ">파견</option>";
+			select_memberSt += "<option value='D403'" + (memberData.memberSt == '휴가' ? 'selected' : '') + ">휴가</option>";
+			select_memberSt += "<option value='D404'" + (memberData.memberSt == '병가' ? 'selected' : '') + ">병가</option>";
+			select_memberSt += "<option value='D405'" + (memberData.memberSt == '퇴사' ? 'selected' : '') + ">퇴사</option>";
+			select_memberSt += "</select>";
+			
+			var select_memberRo = "<select id='memberRo'>";
+			select_memberRo += "<option value=''" + (memberData.memberRo == '(미정)' ? 'selected' : '') + ">선택</option>";
+			select_memberRo += "<option value='D501'" + (memberData.memberRo == 'PM' ? 'selected' : '') + ">PM</option>";
+			select_memberRo += "<option value='D502'" + (memberData.memberRo == 'PO' ? 'selected' : '') + ">PO</option>";
+			select_memberRo += "<option value='D503'" + (memberData.memberRo == 'PL' ? 'selected' : '') + ">PL</option>";
+			select_memberRo += "<option value='D504'" + (memberData.memberRo == 'PA' ? 'selected' : '') + ">PA</option>";
+			select_memberRo += "<option value='D505'" + (memberData.memberRo == 'SA' ? 'selected' : '') + ">SA</option>";
+			select_memberRo += "<option value='D506'" + (memberData.memberRo == 'DBA' ? 'selected' : '') + ">DBA</option>";
+			select_memberRo += "</select>";
+            
+			var row = '<tr>' +
+		    '<td><input type="text" id="memberId" value="' + memberData.memberId + '" disabled="disabled" style="width: 70px;"></td>' +
+		    '<td><input type="text" id="memberName" value="' + memberData.memberName + '" style="width: 50px;"></td>' +
+		    '<td>' + select_memberGn + '</td>' +
+		    '<td><input type="email" id="memberEmail" value="' + memberData.memberEmail + '" style="width: 90px;"></td>' +
+		    '<td>' + select_memberPos + '</td>' +
+		    '<td>' + select_memberDept + '</td>' +
+		    '<td><input type="tel" id="memberTel" value="' + memberData.memberTel + '" style="width: 100px;"></td>' +
+		    '<td>' + select_memberSt + '</td>' +
+		    '<td>' + memberData.memberTeam + '</td>' +
+		    '<td>' + memberData.memberAuth + '</td>' +
+		    '<td>' + select_memberRo + '</td>' +
+		    '<td><input type="date" id="memberStDay" value="' + memberData.memberStDay + '" style="width: 100px;"></td>' +
+		    '<td><input type="date" id="memberLaDay" value="' + memberData.memberLaDay + '" style="width: 100px;"></td>' +
+		    '</tr>';
         
      	// 생성된 행을 테이블의 tbody에 추가
 		$('#membersTable tbody').append(row);
@@ -196,53 +260,60 @@ function back() {
 $(document).ready(function() {
 //1. 수정버튼 클릭
 $("#modifyButton").click(function() {
-	let member_Tel = $("#member_Tel").val();//입력한 전화번호
-	let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-	let member_Id = $("#member_Id").val();
-	let member_startDate = $("#member_startDate").val();
-	let member_endDate = $("#member_endDate").val();
+	let memberTel = $("#memberTel").val();//입력한 전화번호
+	let memberTel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+	let memberId = $("#memberId").val();
+	let memberStDay = $("#memberStDay").val();
+	let memberLaDay = $("#memberLaDay").val();
+	let memberDept = $("#memberDept").val();
 	
-	if(!member_endDate.length == 0){
-		if (member_endDate < member_startDate) {
+	if(!memberLaDay.length == 0){
+		if (memberLaDay < memberStDay) {
 	        alert("퇴사날짜는 입사날짜보다 이전일 수 없습니다.");
 	        return;
 		}
     }
 		
 	//2-1. 전화번호 유효성 체크(비어있는지)
-	if(member_Tel.length == 0){
+	if(memberTel.length == 0){
 		alert("전화번호는 반드시 입력해야 합니다.");
 		return;
-	}else if(member_Tel.length != 0){
+	}else if(memberTel.length != 0){
 		//2-2. 전화번호 유효성체크(적절한 조합인지)
-		if (member_Tel_Check.test(member_Tel) != true){
+		if (memberTel_Check.test(memberTel) != true){
 			alert("적절한 형식이 아닙니다.");
 			return;
-		}else if(member_Tel_Check.test(member_Tel) == true){	//유효성 통과하면
-			if(member_endDate.length == 0){
-				console.log("퇴사일이 없어요.");
-				var member_Department = $("#member_Department").val();
-				let modifyDatas = {
-					member_Id : $("#member_Id").val()
-					,member_Name : $("#member_Name").val()
-					,member_Position : $("#member_Position").val()
-					,member_Department : $("#member_Department").val()
-					,member_Sex : $("#member_Sex").val()
-					,member_Tel : $("#member_Tel").val()
-					,member_Skill_DB : $("#member_Skill_DB").val()
-					,member_Skill_Language : $("#member_Skill_Language").val()
-					,member_startDate : $("#member_startDate").val()
-				}	
+		}else if(memberTel_Check.test(memberTel) == true){	//유효성 통과하면
+			if(memberLaDay.length == 0){
+				//console.log("퇴사일이 없어요.");
+				//var member_Department = $("#member_Department").val();
+				let modifyData = {
+					memberId : $("#memberId").val()
+					,memberName : $("#memberName").val()
+					,memberEmail : $("#memberEmail").val()
+					,memberPos : $("#memberPos").val()
+					,memberDept : $("#memberDept").val()
+					,memberGn : $("#memberGn").val()
+					,memberTel : $("#memberTel").val()
+					,memberRo : $("memberRo").val()
+					,memberSt : $("memberSt").val()
+					,memberStDay : $("#memberStDay").val()
+				}
 				
+				let modifyDataArray = [modifyData];
+				let modifyList = JSON.stringify(modifyDataArray);
+				//,member_Skill_DB : $("#member_Skill_DB").val()
+				//,member_Skill_Language : $("#member_Skill_Language").val()
 				//console.log("member_Department : " , member_Department);	
 				$.ajax({
 					type : 'POST',
-					url: '/member/memberModifyInfo',
+					url: '/member/memberModify',
 					contentType : 'application/json; charset=utf-8',
 					beforeSend: function(xhr) {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        		},
-					data: JSON.stringify(modifyDatas),
+					//data: JSON.stringify(modifyList),
+					data: modifyList,
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
 							alert("수정 성공");
@@ -256,32 +327,30 @@ $("#modifyButton").click(function() {
 						alert("수정 실패");
 					}
 				}); //ajax EndPoint
-			}else if(!member_endDate.length == 0){
+			}else if(!memberLaDay.length == 0){
 				console.log("퇴사일이 있어요.");
 				//let member_endDate_ck = 1;
-				let modifyDatas = {
-					member_Id : $("#member_Id").val()
-					,member_Name : $("#member_Name").val()
-					,member_Position : $("#member_Position").val()
-					,member_Department : $("#member_Department").val()
-					,member_Sex : $("#member_Sex").val()
-					,member_Tel : $("#member_Tel").val()
-					,member_Skill_DB : $("#member_Skill_DB").val()
-					,member_Skill_Language : $("#member_Skill_Language").val()
-					,member_startDate : $("#member_startDate").val()
-					,member_endDate : $("#member_endDate").val()
-					//,member_endDate_ck : member_endDate_ck
+				let modifyData = {
+					memberId : $("#memberId").val()
+					,memberName : $("#memberName").val()
+					,memberPos : $("#memberPos").val()
+					,memberDept : $("#memberDept").val()
+					,memberGn : $("#memberGn").val()
+					,memberTel : $("#memberTel").val()
+					,memberRo : $("memberRo").val()
+					,memberSt : $("memberSt").val()
+					,memberStDay : $("#memberStDay").val()
+					,memberLaDay : $("#memberLaDay").val()
 				}	
 		
-				console.log("member_Department : " , member_Department);	
 				$.ajax({
 					type : 'POST',
-					url: '/member/memberModifyInfo',
-					contentType : 'application/json; charset=utf-8',
+					url: '/member/memberModify',
 					beforeSend: function(xhr) {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        		},
-					data: JSON.stringify(modifyDatas),
+	        		contentType : 'application/json; charset=utf-8',
+					data: JSON.stringify(modifyData),
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
 							alert("수정 성공");

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 //import java.util.stream.Collectors;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.http.HttpServletRequest;
@@ -111,10 +112,43 @@ public class MemberController {
 	// 수정
 	@PostMapping("/memberModify")
 	public ResponseEntity<?> memberModify(@RequestBody List<MemberDto> modifyList) {
-		//System.err.println("modifyListmodifyList : " + modifyList);
-		//System.err.println("memberIdmemberIdmemberId : " + memberId);
+		//List<String> memberTelList = modifyList.stream().map(MemberDto::getMemberTel).collect(Collectors.toList());
+		System.err.println("modifyDatamodifyDatamodifyData : " + modifyList);
+		//System.err.println("memberTelListmemberTelList : " + memberTelList);
+//		String memberTel = modifyList.get // jsp 에서 보내온 전화번호
+//		int memberId = modifyList.getMemberId(); // jsp 에서 보내온 아이디
+//		System.err.println("modifyDatas : " + modifyDatas);
+//
+//		// 예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+//		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id); // 바꾸고자 하는 번호가 원래 내 번호인지 아닌지
+//		boolean result = false;
+//
+//		System.out.println("member_Tel_ck : " + member_Tel_ck);
+//		if (member_Tel_ck > 0) { // 수정하고자 하는 번호가 내 번호야.
+//			System.out.println("내 번호가 맞아");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if (modifyCnt > 0) {
+//				System.out.println("수정 성공1");
+//				result = true;
+//			} else if (modifyCnt < 0) {
+//				System.out.println("수정 실패1");
+//				result = false;
+//			}
+//		} else if (member_Tel_ck <= 0) { // 수정하고자 하는 번호가 내 번호가 아니야.
+//			System.out.println("내 번호가 아니야");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if (modifyCnt > 0) {
+//				System.out.println("수정 성공2");
+//				result = true;
+//			} else if (modifyCnt < 0) {
+//				System.out.println("수정 실패2");
+//				result = false;
+//			}
+//		}
+		
+		
 		Map<String, Object> resultMap = new HashMap<>();
-		//resultMap.put("modifyList", modifyList);
+		resultMap.put("modifyList", modifyList);
 		int modifyCnt = memberService.modifyMember(resultMap);
 		System.err.println("modifyCntmodifyCnt : " + modifyCnt);
 		boolean result = false;
@@ -123,6 +157,10 @@ public class MemberController {
 		} else if (modifyCnt < 0) {
 			result = false;
 		}
+		
+		
+		
+		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -167,6 +205,7 @@ public class MemberController {
 		}
 		return "";
 	}
+	
 	
 	//memberRead.jsp
 	

@@ -67,6 +67,7 @@ table {
 			<th>상태</th>
 			<th>팀</th>
 			<th>권한</th>
+			<th>직과</th>
 			<th>입사일</th>
 			<th>퇴사일</th>
 		</tr>
@@ -84,6 +85,7 @@ table {
 				<td>${memberList.memberSt }</td>
 				<td>${memberList.memberTeam }</td>
 				<td>${memberList.memberAuth }</td>
+				<td>${memberList.memberRo }</td>
 				<td>${memberList.memberStDay }</td>
 				<%-- <td>${memberList.memberLaDay == '1900-01-01' ? '(미정)' :  memberList.memberLaDay}</td> --%>
 				<td>${memberList.memberLaDay == null ? '(미정)' :  memberList.memberLaDay}</td>
@@ -158,8 +160,9 @@ function submitPost() {
                 memberSt: $(this).find('td:nth-child(8)').text().trim(),
                 memberTeam: $(this).find('td:nth-child(9)').text().trim(),
                 memberAuth: $(this).find('td:nth-child(10)').text().trim(),
-                memberStDay: $(this).find('td:nth-child(11)').text().trim(),
-                memberLaDay: $(this).find('td:nth-child(12)').text().trim() === '(미정)' ? null : $(this).find('td:nth-child(12)').text().trim(),
+                memberRo: $(this).find('td:nth-child(11)').text().trim(),
+                memberStDay: $(this).find('td:nth-child(12)').text().trim(),
+                memberLaDay: $(this).find('td:nth-child(13)').text().trim() === '(미정)' ? null : $(this).find('td:nth-child(12)').text().trim(),
         };
         members.push(member);
     });

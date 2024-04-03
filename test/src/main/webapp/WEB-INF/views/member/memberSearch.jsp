@@ -416,11 +416,11 @@ $(document).ready(function() {
             memberRow.empty();
 
             //select박스 만들기
-            var select_memberGN = "<select id='memberGn'>";
-            select_memberGN += "<option value=''" + (memberData.memberGn == '(미정)' ? 'selected' : '') + ">선택</option>";
-            select_memberGN += "<option value='D101'" + (memberData.memberGn == '남성' ? 'selected' : '') + ">남성</option>";
-			select_memberGN += "<option value='D102'" + (memberData.memberGn == '여성' ? " selected" : '') + ">여성</option>";
-			select_memberGN += "</select>";
+            var select_memberGn = "<select id='memberGn'>";
+            select_memberGn += "<option value=''" + (memberData.memberGn == '(미정)' ? 'selected' : '') + ">선택</option>";
+            select_memberGn += "<option value='D101'" + (memberData.memberGn == '남성' ? 'selected' : '') + ">남성</option>";
+            select_memberGn += "<option value='D102'" + (memberData.memberGn == '여성' ? " selected" : '') + ">여성</option>";
+            select_memberGn += "</select>";
 
 			var positions = {
 				    'D201': '회장',
@@ -448,9 +448,7 @@ $(document).ready(function() {
 			}
 
 			select_memberPos += "</select>";
-			
-			//document.getElementById('memberPos').innerHTML = generatePositionSelect('(미정)');
-			
+
 			var select_memberDept = "<select id='memberDept'>";
 			select_memberDept += "<option value=''" + (memberData.memberDept == '(미정)' ? 'selected' : '') + ">선택</option>";
 			select_memberDept += "<option value='D301'" + (memberData.memberDept == '경영지원부' ? 'selected' : '') + ">경영지원부</option>";
@@ -486,7 +484,7 @@ $(document).ready(function() {
             	$('<td>').append($('<input type="checkBox" class="checkbox">').val(memberData.memberId)),
                 $('<td>').append($('<input type="text" disabled="disabled" style="width: 60px;">').val(memberData.memberId)),
                 $('<td>').append($('<input type="text" style="width: 40px;">').val(memberData.memberName)),
-                $('<td>').append(select_memberGN).val(select_memberGN),
+                $('<td>').append(select_memberGn).val(select_memberGn),
                 $('<td>').append(select_memberDept).val(select_memberDept),
                 $('<td>').append(select_memberRo).val(select_memberRo),
                 //$('<td>').append(select_memberPos.attr('id', 'memberPos')).val(select_memberPos),
