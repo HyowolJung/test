@@ -62,7 +62,7 @@ public interface MemberService {
 	public int insertMember(MemberDto insertDatas);
 	
 	//3. 수정
-	public int modifyMember(Map<String, Object> resultMap);
+	public int modifyMember(List<MemberDto> modifyList);
 	
 	
 	

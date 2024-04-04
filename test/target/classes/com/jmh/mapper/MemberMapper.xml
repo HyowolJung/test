@@ -922,6 +922,37 @@ FROM
 WHERE 
 		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
 </select>
+
+<!-- 3. 수정(전화번호가 내 번호인지) -->
+<select id="checkMemberTel" resultType="integer">
+    SELECT COUNT(*)
+    FROM MEMBER_DETAIL
+    <where>
+        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
+            MEMBER_TEL = #{item.memberTel} AND member_Id = #{item.memberId}
+        </foreach>
+    </where>
+</select>
+
+<!-- 3. 수정(전화번호 중복되는지) -->
+<select id="isValidMemberTel" resultType="integer">
+    SELECT COUNT(*)
+    FROM MEMBER_DETAIL
+    <where>
+        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
+            MEMBER_TEL = #{item.memberTel}
+        </foreach>
+    </where>
+</select>
+<!-- <select id="checkMember" resultType="integer" parameterType="List"> parameterType="String" 
+SELECT
+		COUNT(*)
+FROM
+		MEMBER
+WHERE 
+		MEMBER_TEL = #{memberTel} and member_Id = #{memberId}
+</select> -->
+
 	
 <!-- 3. 수정(회원 정보 수정) -->
 <update id="memberModify" parameterType="com.jmh.dto.MemberDto">

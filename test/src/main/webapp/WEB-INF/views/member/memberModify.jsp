@@ -295,8 +295,8 @@ $("#modifyButton").click(function() {
 					,memberDept : $("#memberDept").val()
 					,memberGn : $("#memberGn").val()
 					,memberTel : $("#memberTel").val()
-					,memberRo : $("memberRo").val()
-					,memberSt : $("memberSt").val()
+					,memberRo : $("#memberRo").val()
+					,memberSt : $("#memberSt").val()
 					,memberStDay : $("#memberStDay").val()
 				}
 				
@@ -337,8 +337,8 @@ $("#modifyButton").click(function() {
 					,memberDept : $("#memberDept").val()
 					,memberGn : $("#memberGn").val()
 					,memberTel : $("#memberTel").val()
-					,memberRo : $("memberRo").val()
-					,memberSt : $("memberSt").val()
+					,memberRo : $("#memberRo").val()
+					,memberSt : $("#memberSt").val()
 					,memberStDay : $("#memberStDay").val()
 					,memberLaDay : $("#memberLaDay").val()
 				}	

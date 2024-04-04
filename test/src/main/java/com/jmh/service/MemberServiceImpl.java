@@ -124,13 +124,73 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getSelectedList(selectedList);
 	}
 	
+//	@Override
+//	public int modifyMember(List<MemberDto> modifyList) {
+//		if (checkMember(modifyList)) {
+//			return 0;
+//	    }
+//		//updateMember(modifyList);
+//		return memberMapper.modifyMember(modifyList);
+//	}
+	
 	@Override
-	public int modifyMember(Map<String, Object> resultMap) {
-		// TODO Auto-generated method stub
-		return memberMapper.modifyMember(resultMap);
+	public int modifyMember(List<MemberDto> modifyList) {
+	    // 먼저 사용자의 현재 번호인지 확인합니다.
+	    if (checkMember(modifyList)) {
+	    	System.err.println("번호가 사용자의 현재 번호라면, 계속 수정을 진행한다구!");
+	        // 번호가 사용자의 현재 번호라면, 계속 수정을 진행한다구!
+	        return 0;
+	    } else {
+	        // 번호가 사용자의 현재 번호가 아니면, 중복 검사를 실시합니다.
+	        if (isValidMemberTel(modifyList)) {
+	        	System.err.println("번호가 사용자의 현재 번호가 아니면서 중복되지 않으면, 수정을 진행한다구!");
+	            // 번호가 사용자의 현재 번호가 아니면서 중복되지 않으면, 수정을 진행한다구!
+	            //return memberMapper.modifyMember(modifyList);
+	        	return 0;
+	        } else {
+	        	System.err.println("번호가 사용자의 현재 번호가 아니면서 중복되면, 수정을 진행하지 않는다구!");
+	        	// 번호가 사용자의 현재 번호가 아니면서 중복되면, 수정을 진행하지 않는다구!
+	            return 0;
+	        }
+	    }
 	}
 	
+	//checkMember 는 수정하고자 하는 전화번호가 나의 전화번호인지 확인하는 로직입니다.
+	private boolean checkMember(List<MemberDto> modifyList) {
+		System.err.println("checkMember + modifyList : " + modifyList);
+		int checkMemberTel = memberMapper.checkMemberTel(modifyList);
+		boolean result = false;
+
+		if(checkMemberTel > 0) {
+			System.err.println("수정하고자 하는 전화번호가 내 전화번호입니다.");
+			result = true;
+		}
+		if(checkMemberTel == 0 ) {
+			System.err.println("수정하고자 하는 전화번호가 내 전화번호가 아닙니다.");
+			isValidMemberTel(modifyList);
+			result = true;
+		}
+		return result;
+	}
+
+	private boolean isValidMemberTel(List<MemberDto> modifyList) {
+		int isValidMemberTel = memberMapper.isValidMemberTel(modifyList);
+		boolean result = false;
+		if(isValidMemberTel > 0 ) {
+			System.err.println("겹친다..");
+			result = false;
+		}
+		
+		if(isValidMemberTel == 0 ) {
+			System.err.println("안겹친다..");
+			result = true;
+		}
+		return result;
+	}
 	
+	private void updateMember(List<MemberDto> modifyList) {
+	    // 회원 정보 수정 로직
+	}
 	
 	
 	
@@ -166,10 +226,6 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.memberModify(modifyDatas);
 	}
-	
-	
-	
-	
 	
 	//4. 삭제(회원 정보 삭제)
 	@Override

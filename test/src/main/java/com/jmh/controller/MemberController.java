@@ -49,6 +49,7 @@ import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 //import com.jmh.mapper.MemberMapper;
 import com.jmh.service.MemberService;
+import com.jmh.service.MemberServiceImpl;
 
 //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
 //JSP 목록
@@ -66,6 +67,9 @@ public class MemberController {
 	@Autowired // 의존성 주입
 	private MemberService memberService;
 
+	@Autowired
+	private MemberServiceImpl memberServiceImpl;
+	
 	//memberList.jsp
 	//엑셀 다운로드
 	@GetMapping("/download")
@@ -113,8 +117,23 @@ public class MemberController {
 	@PostMapping("/memberModify")
 	public ResponseEntity<?> memberModify(@RequestBody List<MemberDto> modifyList) {
 		//List<String> memberTelList = modifyList.stream().map(MemberDto::getMemberTel).collect(Collectors.toList());
-		System.err.println("modifyDatamodifyDatamodifyData : " + modifyList);
-		//System.err.println("memberTelListmemberTelList : " + memberTelList);
+		//System.err.println("modifyList : " + modifyList);
+		//Map<String, Object> resultMap = new HashMap<>();
+		//resultMap.put("modifyList", modifyList);
+		memberService.modifyMember(modifyList);
+		boolean result = false;
+//		try {
+//            memberService.modifyMember(resultMap);
+//            return new ResponseEntity<>("Member updated successfully", HttpStatus.OK);
+//        } catch (Bu e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+		
+		//int memberTelCheck = memberService.
+		//boolean result = false;
+		
+//		System.err.println("modifyDatamodifyDatamodifyData : " + modifyList);
+//		System.err.println("memberTelListmemberTelList : " + memberTelList);
 //		String memberTel = modifyList.get // jsp 에서 보내온 전화번호
 //		int memberId = modifyList.getMemberId(); // jsp 에서 보내온 아이디
 //		System.err.println("modifyDatas : " + modifyDatas);
@@ -147,19 +166,17 @@ public class MemberController {
 //		}
 		
 		
-		Map<String, Object> resultMap = new HashMap<>();
-		resultMap.put("modifyList", modifyList);
-		int modifyCnt = memberService.modifyMember(resultMap);
-		System.err.println("modifyCntmodifyCnt : " + modifyCnt);
-		boolean result = false;
-		if (modifyCnt > 0) {
-			result = true;
-		} else if (modifyCnt < 0) {
-			result = false;
-		}
+		//System.err.println("modifyCntmodifyCnt : " + modifyCnt);
 		
-		
-		
+//		Map<String, Object> resultMap = new HashMap<>();
+//		resultMap.put("modifyList", modifyList);
+//		int modifyCnt = memberService.modifyMember(resultMap);
+//		boolean result = false;
+//		if (modifyCnt > 0) {
+//			result = true;
+//		} else if (modifyCnt < 0) {
+//			result = false;
+//		}
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
