@@ -54,10 +54,10 @@ public interface MemberMapper {
 	int insertMember(MemberDto insertDatas);
 	
 	//3. 수정
-	public int modifyMember(List<MemberDto>modifyList);
-	public int checkMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 내 번호인가요?
-	public int isValidMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 내 번호가 아닌건 알겠는데 다른 사람의 번호와 겹치지는 않나요?
-	
+	public int modifyMember(List<MemberDto>modifyList);	//수정할지말지 결정
+	public int isMyMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 내 번호인가요?
+	public int isDupliMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 다른 사람의 번호와 겹치지는 않나요?
+	//public int updateMember(List<MemberDto> modifyList);	//멤버 정보 수정
 	
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
@@ -106,6 +106,7 @@ public interface MemberMapper {
 	int projectDetailInsert(Map<String, Object> resultMap);
 
 	String getmember_Pw(int member_Id);
+	
 	
 	
 	

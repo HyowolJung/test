@@ -136,61 +136,60 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int modifyMember(List<MemberDto> modifyList) {
 	    // 먼저 사용자의 현재 번호인지 확인합니다.
-	    if (checkMember(modifyList)) {
-	    	System.err.println("번호가 사용자의 현재 번호라면, 계속 수정을 진행한다구!");
-	        // 번호가 사용자의 현재 번호라면, 계속 수정을 진행한다구!
-	        return 0;
+		//int modifyCnt = 0;
+	    if (isMyMemberTel(modifyList)) {
+	    	System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(modifyList));
+	    	int modifyCnt = memberMapper.modifyMember(modifyList);
+	    	return modifyCnt;
 	    } else {
-	        // 번호가 사용자의 현재 번호가 아니면, 중복 검사를 실시합니다.
-	        if (isValidMemberTel(modifyList)) {
-	        	System.err.println("번호가 사용자의 현재 번호가 아니면서 중복되지 않으면, 수정을 진행한다구!");
-	            // 번호가 사용자의 현재 번호가 아니면서 중복되지 않으면, 수정을 진행한다구!
-	            //return memberMapper.modifyMember(modifyList);
-	        	return 0;
+	    	System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. ");
+	        if (isDupliMemberTel(modifyList)) {
+	        	System.err.println("4. 중복이 아닙니다. 수정진행 : " + isDupliMemberTel(modifyList));
+	        	int modifyCnt = memberMapper.modifyMember(modifyList);
+	        	return modifyCnt;
 	        } else {
-	        	System.err.println("번호가 사용자의 현재 번호가 아니면서 중복되면, 수정을 진행하지 않는다구!");
-	        	// 번호가 사용자의 현재 번호가 아니면서 중복되면, 수정을 진행하지 않는다구!
+	        	System.err.println("4. 중복입니다 : " + isDupliMemberTel(modifyList));
 	            return 0;
 	        }
 	    }
 	}
 	
 	//checkMember 는 수정하고자 하는 전화번호가 나의 전화번호인지 확인하는 로직입니다.
-	private boolean checkMember(List<MemberDto> modifyList) {
+	private boolean isMyMemberTel(List<MemberDto> modifyList) {
 		System.err.println("checkMember + modifyList : " + modifyList);
-		int checkMemberTel = memberMapper.checkMemberTel(modifyList);
+		int isMyMemberTel = memberMapper.isMyMemberTel(modifyList);
 		boolean result = false;
 
-		if(checkMemberTel > 0) {
-			System.err.println("수정하고자 하는 전화번호가 내 전화번호입니다.");
+		if(isMyMemberTel > 0) {
+			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
 			result = true;
 		}
-		if(checkMemberTel == 0 ) {
-			System.err.println("수정하고자 하는 전화번호가 내 전화번호가 아닙니다.");
-			isValidMemberTel(modifyList);
-			result = true;
+		if(isMyMemberTel == 0 ) {
+			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
+			isDupliMemberTel(modifyList);
+			result = false;
 		}
 		return result;
 	}
 
-	private boolean isValidMemberTel(List<MemberDto> modifyList) {
-		int isValidMemberTel = memberMapper.isValidMemberTel(modifyList);
+	private boolean isDupliMemberTel(List<MemberDto> modifyList) {
+		int isDupliMemberTel = memberMapper.isDupliMemberTel(modifyList);
 		boolean result = false;
-		if(isValidMemberTel > 0 ) {
-			System.err.println("겹친다..");
+		if(isDupliMemberTel > 0 ) {
+			System.err.println("2. 겹친다.. " + isDupliMemberTel);
 			result = false;
 		}
 		
-		if(isValidMemberTel == 0 ) {
-			System.err.println("안겹친다..");
+		if(isDupliMemberTel == 0 ) {
+			System.err.println("2. 안겹친다.. " + isDupliMemberTel);
 			result = true;
 		}
 		return result;
 	}
 	
-	private void updateMember(List<MemberDto> modifyList) {
-	    // 회원 정보 수정 로직
-	}
+//	private void updateMember(List<MemberDto> modifyList) {
+//	    // 회원 정보 수정 로직
+//	}
 	
 	
 	

@@ -457,7 +457,7 @@ WHERE
 
 <!-- 3. 체크된 데이터 수정 -->
 <update id="modifyMember" parameterType="java.util.Map" >
-    <foreach item="member" index="index" collection="modifyList" open="DECLARE BEGIN" separator=";" close="; END;">
+    <foreach item="member" index="index" collection="list" open="DECLARE BEGIN" separator=";" close="; END;">
         UPDATE 
         	MEMBER_DETAIL
         SET
@@ -469,10 +469,9 @@ WHERE
             MEMBER_POS = #{member.memberPos},
             MEMBER_STDAY = #{member.memberStDay},
             MEMBER_ST = #{member.memberSt}
-            <!-- MEMBER_LADAY = #{member.memberLaDay} -->
-            <if test="member.memberLaDay != null">
+           <if test="member.memberLaDay != null">
         		MEMBER_LADAY = #{member.memberLaDay}
-        	</if>	
+        	</if>
         WHERE
             MEMBER_ID = #{member.memberId}
     </foreach>
@@ -924,7 +923,7 @@ WHERE
 </select>
 
 <!-- 3. 수정(전화번호가 내 번호인지) -->
-<select id="checkMemberTel" resultType="integer">
+<select id="isMyMemberTel" resultType="integer">
     SELECT COUNT(*)
     FROM MEMBER_DETAIL
     <where>
@@ -935,7 +934,7 @@ WHERE
 </select>
 
 <!-- 3. 수정(전화번호 중복되는지) -->
-<select id="isValidMemberTel" resultType="integer">
+<select id="isDupliMemberTel" resultType="integer">
     SELECT COUNT(*)
     FROM MEMBER_DETAIL
     <where>
@@ -944,6 +943,7 @@ WHERE
         </foreach>
     </where>
 </select>
+
 <!-- <select id="checkMember" resultType="integer" parameterType="List"> parameterType="String" 
 SELECT
 		COUNT(*)

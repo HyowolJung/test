@@ -24,9 +24,6 @@
 <body>
 <%@include file="/WEB-INF/views/common/header.jsp" %>
 <%@include file="/WEB-INF/views/common/sideBar.jsp" %>
-전체: 스프링 시큐리티
-controller + mybatis + parameter 미노출
-RestController + jpa + parameter 노출
 <div class="total-div">
 <canvas id="inPeople" width="400" height="500"  class="inPeople"></canvas>
 <canvas id="outPeople" width="400" height="500" class="outPeople"></canvas>

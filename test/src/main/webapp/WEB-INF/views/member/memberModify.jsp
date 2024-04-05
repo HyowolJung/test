@@ -355,8 +355,10 @@ $("#modifyButton").click(function() {
 						if(result == true){
 							alert("수정 성공");
 							var pageNo = $("#pageNo").val();
+							location.href = "/member/memberRead";
 							//location.href = "/member/memberRead?member_Id=" + member_Id + "&pageNo=" + pageNo;
 						}else if(result == false){
+							//window.location.href = "/member/memberRead";
 							alert("수정하려는 번호는 현재 존재하는 번호입니다.");
 						}				
 					},    

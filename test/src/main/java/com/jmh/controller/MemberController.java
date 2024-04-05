@@ -42,8 +42,8 @@ import org.springframework.web.servlet.ModelAndView;
 //import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
-import com.jmh.dto.MemberDto;
-import com.jmh.dto.MemberMTO;
+//import com.jmh.dto.MemberDto;
+//import com.jmh.dto.MemberMTO;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
@@ -67,8 +67,6 @@ public class MemberController {
 	@Autowired // 의존성 주입
 	private MemberService memberService;
 
-	@Autowired
-	private MemberServiceImpl memberServiceImpl;
 	
 	//memberList.jsp
 	//엑셀 다운로드
@@ -116,12 +114,30 @@ public class MemberController {
 	// 수정
 	@PostMapping("/memberModify")
 	public ResponseEntity<?> memberModify(@RequestBody List<MemberDto> modifyList) {
-		//List<String> memberTelList = modifyList.stream().map(MemberDto::getMemberTel).collect(Collectors.toList());
-		//System.err.println("modifyList : " + modifyList);
-		//Map<String, Object> resultMap = new HashMap<>();
-		//resultMap.put("modifyList", modifyList);
-		memberService.modifyMember(modifyList);
+		
+		int modifyCnt = memberService.modifyMember(modifyList);
 		boolean result = false;
+		if(modifyCnt > 0) {
+			System.err.println("modifyCnt true : " + modifyCnt);
+			result = true;
+		} else {
+			System.err.println("modifyCnt false : " + modifyCnt);
+			result = false;
+		}
+		
+//		try {
+//	        int modifiedCount = memberService.modifyMember(modifyList);
+//	        return ResponseEntity.ok("수정 작업이 성공적으로 완료되었습니다. 수정된 항목 수: " + modifiedCount);
+//	    } catch (CustomException e) {
+//	        return ResponseEntity.badRequest().body(e.getMessage());
+//	    }
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	 }
+	//List<String> memberTelList = modifyList.stream().map(MemberDto::getMemberTel).collect(Collectors.toList());
+			//System.err.println("modifyList : " + modifyList);
+			//Map<String, Object> resultMap = new HashMap<>();
+			//resultMap.put("modifyList", modifyList);	
 //		try {
 //            memberService.modifyMember(resultMap);
 //            return new ResponseEntity<>("Member updated successfully", HttpStatus.OK);
@@ -177,9 +193,7 @@ public class MemberController {
 //		} else if (modifyCnt < 0) {
 //			result = false;
 //		}
-		
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
+
 	
 //	@PostMapping("/memberModifys")
 //	public ResponseEntity<?> memberModify2(@RequestParam("memberId") int memberId , @RequestParam("pageNo") int pageNo) {// 
@@ -324,42 +338,42 @@ public class MemberController {
 	}
 
 	// 3. 수정(회원 정보 수정)
-	@PostMapping("/memberModifyInfo")
-	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {// HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
-		String member_Tel = modifyDatas.getMember_Tel(); // jsp 에서 보내온 전화번호
-		int member_Id = modifyDatas.getMember_Id(); // jsp 에서 보내온 아이디
-		System.err.println("modifyDatas : " + modifyDatas);
-
-		// 1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
-		// 2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
-		// 예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
-		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id); // 바꾸고자 하는 번호가 원래 내 번호인지 아닌지
-		boolean result = false;
-
-		System.out.println("member_Tel_ck : " + member_Tel_ck);
-		if (member_Tel_ck > 0) { // 수정하고자 하는 번호가 내 번호야.
-			System.out.println("내 번호가 맞아");
-			int modifyCnt = memberService.memberModify(modifyDatas);
-			if (modifyCnt > 0) {
-				System.out.println("수정 성공1");
-				result = true;
-			} else if (modifyCnt < 0) {
-				System.out.println("수정 실패1");
-				result = false;
-			}
-		} else if (member_Tel_ck <= 0) { // 수정하고자 하는 번호가 내 번호가 아니야.
-			System.out.println("내 번호가 아니야");
-			int modifyCnt = memberService.memberModify(modifyDatas);
-			if (modifyCnt > 0) {
-				System.out.println("수정 성공2");
-				result = true;
-			} else if (modifyCnt < 0) {
-				System.out.println("수정 실패2");
-				result = false;
-			}
-		}
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
+//	@PostMapping("/memberModifyInfo")
+//	public ResponseEntity<Boolean> memberModify(@RequestBody MemberDto modifyDatas) {// HTTP 요청의 본문은 하나의 객체만 포함할 수 있기 때문에 RequestBody 는 하나만 가능함
+//		String member_Tel = modifyDatas.getMember_Tel(); // jsp 에서 보내온 전화번호
+//		int member_Id = modifyDatas.getMember_Id(); // jsp 에서 보내온 아이디
+//		System.err.println("modifyDatas : " + modifyDatas);
+//
+//		// 1. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복되지 않은 경우
+//		// 2. 원래 내 번호가 아닌데 바꾸고자 하는 번호가 중복된 경우
+//		// 예외적 허용: 내 번호인데 바꾸고자 하는 번호가 내 번호일 경우
+//		int member_Tel_ck = memberService.member_Tel_ck(member_Tel, member_Id); // 바꾸고자 하는 번호가 원래 내 번호인지 아닌지
+//		boolean result = false;
+//
+//		System.out.println("member_Tel_ck : " + member_Tel_ck);
+//		if (member_Tel_ck > 0) { // 수정하고자 하는 번호가 내 번호야.
+//			System.out.println("내 번호가 맞아");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if (modifyCnt > 0) {
+//				System.out.println("수정 성공1");
+//				result = true;
+//			} else if (modifyCnt < 0) {
+//				System.out.println("수정 실패1");
+//				result = false;
+//			}
+//		} else if (member_Tel_ck <= 0) { // 수정하고자 하는 번호가 내 번호가 아니야.
+//			System.out.println("내 번호가 아니야");
+//			int modifyCnt = memberService.memberModify(modifyDatas);
+//			if (modifyCnt > 0) {
+//				System.out.println("수정 성공2");
+//				result = true;
+//			} else if (modifyCnt < 0) {
+//				System.out.println("수정 실패2");
+//				result = false;
+//			}
+//		}
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
 
 	// 3.수정(#modifyButton)버튼 클릭- 조회(체크박스 클릭된 사원 정보)
 //	@PostMapping("/memberListM")
