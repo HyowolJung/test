@@ -29,43 +29,189 @@ import com.jmh.dto.ProjectDto;
 import com.jmh.mapper.MemberMapper;
 
 @Service
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
 	@Autowired
 	MemberMapper memberMapper;
-	
+
 	@Autowired
 	MemberService memberService;
-	
+
 	@Autowired
 	ProjectService projectService;
-	
-//	@Transactional
-//	@Override
-//	public void add() {
-//		String data1 = "abc";
-//		String data2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
-//		//projectService.insertTest1(data1);
-//		//projectService.insertTest2(data2);
-//		memberMapper.insertTest1(data1);
-//		memberMapper.insertTest2(data2);
-//	}
-	
-	//@Autowired
-    //private CacheManager cacheManager;
-	
-	//1. 조회(검색어 X)
-	//@Cacheable(value = "memberListCache")
+
+	// @Autowired
+	// private CacheManager cacheManager;
+
+	@Override
+	public void exportToExcel(HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		List<MemberDto> memberList = memberService.searchMemberList(new Criteria()); // 전체 데이터를 가져오는 로직
+		System.err.println("memberListmemberListmemberListmemberList : " + memberList);
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet("Data");
+
+		Row headerRow = sheet.createRow(0);
+		String[] headerNames = { "Member ID", "Member Name", "Gender", "Position", "Department", "Telephone",
+				"Start Day", "Last Day" }; // 실제 컬럼명으로 변경하세요
+		for (int i = 0; i < headerNames.length; i++) {
+			Cell cell = headerRow.createCell(i);
+			cell.setCellValue(headerNames[i]);
+		}
+
+		int rowIdx = 1;
+		for (MemberDto member : memberList) {
+			Row row = sheet.createRow(rowIdx++);
+			row.createCell(0).setCellValue(member.getMemberId());
+			row.createCell(1).setCellValue(member.getMemberName());
+			row.createCell(2).setCellValue(member.getMemberGn());
+			row.createCell(3).setCellValue(member.getMemberPos());
+			row.createCell(4).setCellValue(member.getMemberDept());
+			row.createCell(5).setCellValue(member.getMemberTel());
+			row.createCell(6).setCellValue(member.getMemberStDay());
+			row.createCell(7).setCellValue(member.getMemberLaDay());
+		}
+
+		// String[] headerNames = {"Member ID", "Member Name", "Gender", "Position",
+		// "Department", "Telephone", "Start Day", "Last Day"};
+
+//	    // 헤더 생성
+//	    Row headerRow = sheet.createRow(0);
+//	    Cell headerCell = headerRow.createCell(0);
+//	    headerCell.setCellValue("Column1");
+//
+//	    headerCell = headerRow.createCell(1);
+//	    headerCell.setCellValue("Column2");
+
+//	    // 데이터 쓰기
+//	    Row dataRow = sheet.createRow(1);
+//	    Cell dataCell = dataRow.createCell(0);
+//	    dataCell.setCellValue("Data1");
+//
+//	    dataCell = dataRow.createCell(1);
+//	    dataCell.setCellValue("Data2");
+
+		// 여기에서 실제 데이터를 반복해서 추가...
+
+		// HTTP 응답으로 Excel 파일 전송
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setHeader("Content-Disposition", "attachment; filename=\"member.xlsx\"");
+
+		workbook.write(response.getOutputStream());
+		workbook.close();
+	}
+
+	// 1. 조회(검색어 X)
+	// @Cacheable(value = "memberListCache")
 	@Override
 	public List<MemberDto> getMemberList(Criteria cri) {// , @Param("data") Criteria data
 		return memberMapper.getMemberList(cri);
 	}
-	
+
+	// 1. 조회(페이징 정보)
+	@Override
+	public int getTotalCnt(Criteria cri) {
+		// TODO Auto-generated method stub
+		return memberMapper.getTotalCnt(cri);
+	}
+
 	@Override
 	public List<MemberDto> searchMemberList(Criteria cri) {
 		return memberMapper.searchMemberList(cri);
 	}
 
+	@Override
+	public List<MemberDto> getSelectedList(List<String> selectedList) {
+		// TODO Auto-generated method stub
+		return memberMapper.getSelectedList(selectedList);
+	}
+
+	@Override
+	public int modifyMember(List<MemberDto> memberList) {
+		// 먼저 사용자의 현재 번호인지 확인합니다.
+		// int modifyCnt = 0;
+		if (isMyMemberTel(memberList)) {
+			//System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(memberList));
+			int modifyCnt = memberMapper.modifyMember(memberList);
+			return modifyCnt;
+		} else {
+			//System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. ");
+			if (isDupliMemberTel(memberList)) {
+				//System.err.println("4. 중복이 아닙니다. 수정진행 : " + isDupliMemberTel(memberList));
+				int modifyCnt = memberMapper.modifyMember(memberList);
+				return modifyCnt;
+			} else {
+				//System.err.println("4. 중복입니다 : " + isDupliMemberTel(memberList));
+				return 0;
+			}
+		}
+	}
+
+	// checkMember 는 수정하고자 하는 전화번호가 나의 전화번호인지 확인하는 로직입니다.
+	private boolean isMyMemberTel(List<MemberDto> memberList) {
+		//System.err.println("checkMember + modifyList : " + memberList);
+		int isMyMemberTel = memberMapper.isMyMemberTel(memberList);
+		boolean result = false;
+
+		if (isMyMemberTel > 0) {
+			//System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
+			result = true;
+		}
+		if (isMyMemberTel == 0) {
+			//System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
+			isDupliMemberTel(memberList);
+			result = false;
+		}
+		return result;
+	}
+
+	private boolean isDupliMemberTel(List<MemberDto> memberList) {
+		int isDupliMemberTel = memberMapper.isDupliMemberTel(memberList);
+		boolean result = false;
+		if (isDupliMemberTel > 0) {
+			//System.err.println("2. 겹친다.. " + isDupliMemberTel);
+			result = false;
+		}
+
+		if (isDupliMemberTel == 0) {
+			//System.err.println("2. 안겹친다.. " + isDupliMemberTel);
+			result = true;
+		}
+		return result;
+	}
+
+	// 4. 삭제(회원 정보 삭제)
+	@Override
+	public int deleteMember(List<String> checkList) {
+		// TODO Auto-generated method stub
+		return memberMapper.deleteMember(checkList);
+	}
+	
+	// 2. 등록(회원 등록)
+	@Override
+	public int insertMember(List<MemberDto> memberList) {
+		isMyMemberId
+		
+		
+		//String pwd = memberList.getMemberPw();
+		//BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		//String encodedPwd = encoder.encode(pwd);
+
+		//? insertDatas.setMember_Pw(encodedPwd);
+		//memberList.setMemberPw(encodedPwd);
+		return memberMapper.insertMember(memberList);
+	}
+	
+	private boolean isMyMemberId(List<MemberDto> memberList) {
+		int isMyMemberId = memberMapper.isMyMemberId(memberList);
+		boolean result = false;
+		
+		return result;
+	}
+	
+	
+	
+	
 	
 	@Override
 	@Cacheable(value = "memberListCache")
@@ -74,56 +220,32 @@ public class MemberServiceImpl implements MemberService{
 		return memberMapper.getmemberList2();
 	}
 	// TODO Auto-generated method stub
-			//Cache cache = cacheManager.getCache("memberListCache");
-	        //Element element = cache.get(cri);
-	        //System.err.println("elementelementelement : " + element);
-	//1. 조회(검색어 O)
+	// Cache cache = cacheManager.getCache("memberListCache");
+	// Element element = cache.get(cri);
+	// System.err.println("elementelementelement : " + element);
+	// 1. 조회(검색어 O)
 //	@Override
 //	public List<MemberDto> searchmemberList(Criteria cri) {
 //		// TODO Auto-generated method stub
 //		return memberMapper.searchmemberList(cri);
 //	}
-	
-	//1. 조회(페이징 정보)
-	@Override
-	public int getTotalCnt(Criteria cri) {
-		// TODO Auto-generated method stub
-		return memberMapper.getTotalCnt(cri);
-	}
-	
-	//2. 등록(아이디 체크)
+
+	// 2. 등록(아이디 체크)
 	@Override
 	public boolean checkId(String memberId) {
 		// TODO Auto-generated method stub
 		return memberMapper.checkId(memberId);
 	}
-	
-	//2. 등록(전화번호 체크)
+
+	// 2. 등록(전화번호 체크)
 	@Override
 	public boolean checkTel(String memberTel) {
 		// TODO Auto-generated method stub
 		return memberMapper.checkTel(memberTel);
 	}
+
 	
-	//2. 등록(회원 등록)
-	@Override
-	public int insertMember(MemberDto insertDatas) {
-		// TODO Auto-generated method stub
-		String pwd = insertDatas.getMemberPw();
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String encodedPwd = encoder.encode(pwd);
-		
-		//insertDatas.setMember_Pw(encodedPwd);
-		insertDatas.setMemberPw(encodedPwd);
-		return memberMapper.insertMember(insertDatas);
-	}
-	
-	@Override
-	public List<MemberDto> getSelectedList(List<String> selectedList) {
-		// TODO Auto-generated method stub
-		return memberMapper.getSelectedList(selectedList);
-	}
-	
+
 //	@Override
 //	public int modifyMember(List<MemberDto> modifyList) {
 //		if (checkMember(modifyList)) {
@@ -132,106 +254,42 @@ public class MemberServiceImpl implements MemberService{
 //		//updateMember(modifyList);
 //		return memberMapper.modifyMember(modifyList);
 //	}
-	
-	@Override
-	public int modifyMember(List<MemberDto> modifyList) {
-	    // 먼저 사용자의 현재 번호인지 확인합니다.
-		//int modifyCnt = 0;
-	    if (isMyMemberTel(modifyList)) {
-	    	System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(modifyList));
-	    	int modifyCnt = memberMapper.modifyMember(modifyList);
-	    	return modifyCnt;
-	    } else {
-	    	System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. ");
-	        if (isDupliMemberTel(modifyList)) {
-	        	System.err.println("4. 중복이 아닙니다. 수정진행 : " + isDupliMemberTel(modifyList));
-	        	int modifyCnt = memberMapper.modifyMember(modifyList);
-	        	return modifyCnt;
-	        } else {
-	        	System.err.println("4. 중복입니다 : " + isDupliMemberTel(modifyList));
-	            return 0;
-	        }
-	    }
-	}
-	
-	//checkMember 는 수정하고자 하는 전화번호가 나의 전화번호인지 확인하는 로직입니다.
-	private boolean isMyMemberTel(List<MemberDto> modifyList) {
-		System.err.println("checkMember + modifyList : " + modifyList);
-		int isMyMemberTel = memberMapper.isMyMemberTel(modifyList);
-		boolean result = false;
 
-		if(isMyMemberTel > 0) {
-			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
-			result = true;
-		}
-		if(isMyMemberTel == 0 ) {
-			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
-			isDupliMemberTel(modifyList);
-			result = false;
-		}
-		return result;
-	}
-
-	private boolean isDupliMemberTel(List<MemberDto> modifyList) {
-		int isDupliMemberTel = memberMapper.isDupliMemberTel(modifyList);
-		boolean result = false;
-		if(isDupliMemberTel > 0 ) {
-			System.err.println("2. 겹친다.. " + isDupliMemberTel);
-			result = false;
-		}
-		
-		if(isDupliMemberTel == 0 ) {
-			System.err.println("2. 안겹친다.. " + isDupliMemberTel);
-			result = true;
-		}
-		return result;
-	}
 	
+
 //	private void updateMember(List<MemberDto> modifyList) {
 //	    // 회원 정보 수정 로직
 //	}
-	
-	
-	
-	
-	
-	
-	
-	
-	//3. 수정(페이지 이동 + 회원 정보 조회)
+
+	// 3. 수정(페이지 이동 + 회원 정보 조회)
 	@Override
 	public List<MemberDto> getModifyList(int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.getModifyList(member_Id);
 	}
-	
-	//3. 수정(페이지 이동 + 회원 정보 조회)
+
+	// 3. 수정(페이지 이동 + 회원 정보 조회)
 	@Override
 	public List<MemberDto> selectModifyList(int memberId) {
 		// TODO Auto-generated method stub
 		return memberMapper.selectModifyList(memberId);
 	}
-	
-	//3. 수정(전화번호 중복체크) - 수정하려는 전화번호가 다른 회원의 전화번호와 겹치는지
+
+	// 3. 수정(전화번호 중복체크) - 수정하려는 전화번호가 다른 회원의 전화번호와 겹치는지
 	@Override
 	public int member_Tel_ck(@Param("member_Tel") String member_Tel, @Param("member_Id") int member_Id) {
 		// TODO Auto-generated method stub
 		return memberMapper.member_Tel_ck(member_Tel, member_Id);
 	}
-	
-	//3. 수정(회원 정보 수정)
+
+	// 3. 수정(회원 정보 수정)
 	@Override
 	public int memberModify(MemberDto modifyDatas) {
 		// TODO Auto-generated method stub
 		return memberMapper.memberModify(modifyDatas);
 	}
+
 	
-	//4. 삭제(회원 정보 삭제)
-	@Override
-	public int deleteMember(List<String> member_Id) {
-		// TODO Auto-generated method stub
-		return memberMapper.deleteMember(member_Id);
-	}
 
 	@Override
 	public List<ProjectDto> getmemberprojectList(int member_Id) {
@@ -299,8 +357,8 @@ public class MemberServiceImpl implements MemberService{
 		// TODO Auto-generated method stub
 		return memberMapper.member_Tel_ck_M(modifyList);
 	}
-	
-	//팝업창 관련
+
+	// 팝업창 관련
 	@Override
 	public int projectDetailInsert(Map<String, Object> resultMap) {
 		// TODO Auto-generated method stub
@@ -346,67 +404,7 @@ public class MemberServiceImpl implements MemberService{
 //	    workbook.write(response.getOutputStream());
 //	    workbook.close();
 //	}
-	
-	@Override
-	public void exportToExcel(HttpServletResponse response) throws IOException{
-		// TODO Auto-generated method stub
-		List<MemberDto> memberList = memberService.searchMemberList(new Criteria()); // 전체 데이터를 가져오는 로직
-		System.err.println("memberListmemberListmemberListmemberList : " + memberList);
-		Workbook workbook = new XSSFWorkbook();
-	    Sheet sheet = workbook.createSheet("Data");
 
-	    Row headerRow = sheet.createRow(0);
-	    String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"}; // 실제 컬럼명으로 변경하세요
-	    for (int i = 0; i < headerNames.length; i++) {
-	        Cell cell = headerRow.createCell(i);
-	        cell.setCellValue(headerNames[i]);
-	    }
-	    
-	    int rowIdx = 1;
-	    for (MemberDto member : memberList) {
-	        Row row = sheet.createRow(rowIdx++);
-	        row.createCell(0).setCellValue(member.getMemberId());
-	        row.createCell(1).setCellValue(member.getMemberName());
-	        row.createCell(2).setCellValue(member.getMemberGn());
-	        row.createCell(3).setCellValue(member.getMemberPos());
-	        row.createCell(4).setCellValue(member.getMemberDept());
-	        row.createCell(5).setCellValue(member.getMemberTel());
-	        row.createCell(6).setCellValue(member.getMemberStDay());
-	        row.createCell(7).setCellValue(member.getMemberLaDay());
-	    }
-	    
-	    //String[] headerNames = {"Member ID", "Member Name", "Gender", "Position", "Department", "Telephone", "Start Day", "Last Day"};
-	    
-//	    // 헤더 생성
-//	    Row headerRow = sheet.createRow(0);
-//	    Cell headerCell = headerRow.createCell(0);
-//	    headerCell.setCellValue("Column1");
-//
-//	    headerCell = headerRow.createCell(1);
-//	    headerCell.setCellValue("Column2");
-
-//	    // 데이터 쓰기
-//	    Row dataRow = sheet.createRow(1);
-//	    Cell dataCell = dataRow.createCell(0);
-//	    dataCell.setCellValue("Data1");
-//
-//	    dataCell = dataRow.createCell(1);
-//	    dataCell.setCellValue("Data2");
-
-	    // 여기에서 실제 데이터를 반복해서 추가...
-
-	    // HTTP 응답으로 Excel 파일 전송
-	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-	    response.setHeader("Content-Disposition", "attachment; filename=\"member.xlsx\"");
-
-	    workbook.write(response.getOutputStream());
-	    workbook.close();
-	}
-
-	
-	
-
-	
 //	try {
 //	String memberName1 = "abc";
 //	String memberName2 = "abccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
@@ -430,8 +428,6 @@ public class MemberServiceImpl implements MemberService{
 //		return memberMapper.insertTest2(member_Name2);
 //	}	
 
-	
-	
 //	@Override
 //	public void exportToExcel2(HttpServletResponse response, List<MemberDto> modifyDatas) throws IOException {
 //		System.err.println("modifyDatasmodifyDatasmodifyDatas : " + modifyDatas);

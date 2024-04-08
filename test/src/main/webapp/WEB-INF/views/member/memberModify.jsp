@@ -300,11 +300,8 @@ $("#modifyButton").click(function() {
 					,memberStDay : $("#memberStDay").val()
 				}
 				
-				let modifyDataArray = [modifyData];
-				let modifyList = JSON.stringify(modifyDataArray);
-				//,member_Skill_DB : $("#member_Skill_DB").val()
-				//,member_Skill_Language : $("#member_Skill_Language").val()
-				//console.log("member_Department : " , member_Department);	
+				let memberList = [modifyData];
+				//let modifyList = JSON.stringify(modifyDataArray);
 				$.ajax({
 					type : 'POST',
 					url: '/member/memberModify',
@@ -312,8 +309,8 @@ $("#modifyButton").click(function() {
 					beforeSend: function(xhr) {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        		},
-					//data: JSON.stringify(modifyList),
-					data: modifyList,
+					data: JSON.stringify(memberList),
+					//data: modifyList,
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
 							alert("수정 성공");
@@ -342,7 +339,7 @@ $("#modifyButton").click(function() {
 					,memberStDay : $("#memberStDay").val()
 					,memberLaDay : $("#memberLaDay").val()
 				}	
-		
+				let memberList = [modifyData];
 				$.ajax({
 					type : 'POST',
 					url: '/member/memberModify',
@@ -350,7 +347,7 @@ $("#modifyButton").click(function() {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
 	        		},
 	        		contentType : 'application/json; charset=utf-8',
-					data: JSON.stringify(modifyData),
+					data: JSON.stringify(memberList),
 					success : function(result) { // 결과 성공 콜백함수        
 						if(result == true){
 							alert("수정 성공");

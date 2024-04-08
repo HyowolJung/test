@@ -20,10 +20,31 @@ import com.jmh.security.CustomUserDetails;
 @Repository
 public interface MemberMapper {
 	
-	//int add(@Param("member_Name1") String member_Name1, @Param("member_Name2") String member_Name2);
+	public List<MemberDto> getMemberList(Criteria cri);
 	
-	public int insertTest1(String data1);
-	public int insertTest2(String data2);
+	public int getTotalCnt(Criteria cri);
+	
+	public List<MemberDto> searchMemberList(Criteria cri);
+	
+	public List<MemberDto> getSelectedList(List<String> selectedList);
+	
+	// 3. 수정
+	public int modifyMember(List<MemberDto> memberList); // 수정할지말지 결정
+	public int isMyMemberTel(List<MemberDto> memberList); // 수정하려는 번호가 내 번호인가요?
+	public int isDupliMemberTel(List<MemberDto> memberList); // 수정하려는 번호가 다른 사람의 번호와 겹치지는 않나요?
+	
+	//4. 삭제(회원 정보 삭제)
+	public int deleteMember(List<String> checkList);
+	
+	public int insertMember(List<MemberDto> memberList);
+	public int isMyMemberId(List<MemberDto> memberList);
+	
+	
+		
+		
+		
+		
+		
 	
 	//String getDept(String member_Id);
 	public MemberDto read(String member_Id);
@@ -31,12 +52,7 @@ public interface MemberMapper {
 	//0. 로그인
 	public CustomUserDetails loginID(String memberId);
 	
-	//1. 조회
-	public List<MemberDto> getMemberList(Criteria cri);// , @Param("data") Criteria data
-	public List<MemberDto> searchMemberList(Criteria cri);
 	
-	//1. 조회(페이징 정보)
-	int getTotalCnt(Criteria cri);
 	
 	//2. 등록(아이디 체크)
 	boolean checkId(String memberId);
@@ -51,19 +67,16 @@ public interface MemberMapper {
 //	boolean checkTel(String member_Tel);
 	
 	//2. 등록(회원 등록)
-	int insertMember(MemberDto insertDatas);
 	
-	//3. 수정
-	public int modifyMember(List<MemberDto>modifyList);	//수정할지말지 결정
-	public int isMyMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 내 번호인가요?
-	public int isDupliMemberTel(List<MemberDto> modifyList);	//수정하려는 번호가 다른 사람의 번호와 겹치지는 않나요?
+	
+	
 	//public int updateMember(List<MemberDto> modifyList);	//멤버 정보 수정
 	
 	
 	//3. 수정(페이지 이동 + 회원 정보 조회)
 	List<MemberDto> getModifyList(int member_Id);
 	List<MemberDto> selectModifyList(int memberId);
-	public List<MemberDto> getSelectedList(List<String> selectedList);
+	
 	
 	List<MemberDto> getmemberList2();
 	//3. 수정(전화번호 중복체크)
@@ -73,8 +86,6 @@ public interface MemberMapper {
 	//3. 수정(회원 정보 수정)
 	int memberModify(MemberDto modifyDatas);
 	
-	//4. 삭제(회원 정보 삭제)
-	int deleteMember(List<String> member_Id);
 
 	//HashMap<String, Object> getmemberprojectList(int member_Id);
 	List<ProjectDto> getmemberprojectList(int member_Id);
@@ -106,6 +117,8 @@ public interface MemberMapper {
 	int projectDetailInsert(Map<String, Object> resultMap);
 
 	String getmember_Pw(int member_Id);
+
+	
 	
 	
 	

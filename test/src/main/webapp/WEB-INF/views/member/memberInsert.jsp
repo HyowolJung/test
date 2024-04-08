@@ -151,24 +151,24 @@ select {
 	<p style="color: red; text-align: center;" >필수 입력</p>
 
 	<label style="color: red">사번</label>
-	<input type="text" id="member_Id"/><br>
+	<input type="text" id="memberId"/><br>
 	<div id="result_Id"></div>
 	
 	<label style="color: red">비밀번호</label>
-	<input type="text" id="member_Pw" value="1234"/><br>
+	<input type="text" id="memberPw" value="1234"/><br>
 	<div id="result_Pw"></div>
 	
 	<label style="color: red">이름</label>
-	<input type="text" id="member_Name" value="안녕"/><br>
+	<input type="text" id="memberName" value="안녕"/><br>
 	<div id="result_Name"></div>
 	
 	<label style="color: red">전화번호<br>
 	("-"포함)</label>
-	<input type="text" id="member_Tel"><br>
+	<input type="text" id="memberTel"><br>
 	<div id="result_Tel"></div><br>
 	
 	<label style="color: red">입사(예정)일</label>
-	<input type="date" id="member_startDate" name="member_startDate" value="2024-03-10"/><br>
+	<input type="date" id="member_startDate" name="memberStDay" value="2024-03-10"/><br>
 	<div id="result_Date"></div>
 </div>
 </div>
@@ -177,7 +177,7 @@ select {
 	<p style="text-align: center;">선택 입력</p>
 
 	<label>부서</label>
-	<select id="member_Department">
+	<select id="memberDept">
 		<option value="" selected="selected">선택</option>
 		<option value="D01">경영지원부</option>
 		<option value="D02">인사부</option>
@@ -188,7 +188,7 @@ select {
 	</select><br><br>
 	
 	<label>직급</label>
-	<select id="member_Position">
+	<select id="memberPos">
 		<option value="" selected="selected">선택</option>
 		<option value="P01">회장</option>
 		<option value="P02">부회장</option>
@@ -209,7 +209,7 @@ select {
 	</select><br><br>
 	
 	<label>성별</label>
-	<select id="member_Gender">
+	<select id="memberGn">
 		<option value="" selected="selected">선택</option>
 		<option value="G01" >남자</option>
 		<option value="G02">여자</option>
@@ -248,43 +248,54 @@ $(document).ready(function() {
 	var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
 	
-	let member_Id = $("#member_Id");
+	let memberId = $("#memberId");
 	const randomNumber = Math.floor(Math.random() * 99999999) + 1;
     // 숫자를 8자리 문자열로 포맷, 필요한 경우 앞에 0을 추가
     const formattedNumber = randomNumber.toString().padStart(8, '0');
-    member_Id.val(formattedNumber);
+    memberId.val(formattedNumber);
     
     const randomNumber2 = "010" + Math.floor(Math.random() * 100000000).toString().padStart(8, '0');
     // replace 함수와 정규 표현식을 사용하여 형식 변환
     const formattedNumber2 = randomNumber2.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
 
-    $("#member_Tel").val(formattedNumber2);
+    $("#memberTel").val(formattedNumber2);
     
 	//1. 아이디 체크
 	let result_Id = $("#result_Id"); // 결과를 출력할 공간
-    member_Id = $("#member_Id"); // 아이디 입력창
-	member_Id.on('blur', function() {
-		let member_Id_Check = /^\d{8}$/;
+    memberId = $("#memberId"); // 아이디 입력창
+	memberId.on('blur', function() {
+		let memberId_Check = /^\d{8}$/;
 	    //console.log("member_Tel : " + member_Tel.val());
 	    // 아이디 유효성 체크(비어있는지)
-	    if (member_Id.val().length == 0) {
+	    if (memberId.val().length == 0) {
 	    	result_Id.css("color", "red").html("아이디가 비어있어요");
 	        return;
 	    } else {
 	    	result_Id.css("color", "green").html("");
 	     	// 아이디 유효성체크(적절한 조합인지)
-	        if (!member_Id_Check.test(member_Id.val())) {
+	        if (!memberId_Check.test(memberId.val())) {
 	        	result_Id.css("color", "red").html("적절한 형식이 아닙니다.");
 	            return;
 	        } else {
 	        	result_Id.css("color", "green").html("");
-	        	//result_Id.css("color", "green").html("");
+	        	let modifyData = {
+					memberId : $("#memberId").val()
+				}
+	        	var memberList = [modifyData];
+	        	//let modifyDataArray = [modifyData];
+				//let modifyList = JSON.stringify(modifyDataArray);
 	          	$.ajax({
-	       			type : 'GET',
-	       			url : '/member/memberInsert_ck',
-	       			data : {
-	       				"memberId" : member_Id.val()
-	       			},
+	       			type : 'POST',
+	       			url : '/member/memberInsert',
+	       			contentType : 'application/json; charset=utf-8',
+	       			beforeSend: function(xhr) {
+	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
+	        		},
+	       			data : JSON.stringify(memberList),
+	       			//data : modifyList,
+	       			/* data : {
+	       				"memberId" : memberId.val()
+	       			}, */
 	       			success : 	
 	       				function(result) {			
 	       					if(result == false){
@@ -299,31 +310,31 @@ $(document).ready(function() {
 	    } 
 	}); //member_Tel.on('blur', function EndPoint
 	
-	let result_Pw = $("result_Pw");			
-	let member_Pw = $("member_Pw");		
+	let result_Pw = $("#result_Pw");			
+	let memberPw = $("#memberPw");		
 			
 	//2. 이름 체크
 	let insert = document.getElementById("insert");
-	let member_Name = $("#member_Name");	//입력받은 이름
+	let memberName = $("#memberName");	//입력받은 이름
 	let result_Name = $("#result_Name");		//결과를 출력할 공간(div)
 	   		
-	member_Name.on('blur', function() { 		
-		let member_Name_Check1 = /([^가-힣\x20])/i;	//정규식1(자음 모음 불가능)
-		let member_Name_Check2 = /^[가-힣]{2,4}$/;	//정규식2(2~4자 글자만 가능)
+	memberName.on('blur', function() { 		
+		let memberName_Check1 = /([^가-힣\x20])/i;	//정규식1(자음 모음 불가능)
+		let memberName_Check2 = /^[가-힣]{2,4}$/;	//정규식2(2~4자 글자만 가능)
 		//let member_Name_Check3 = /^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\x20]*$/gi;	//특수문자 및 이모티콘 불가능
 			
 		//console.log("member_Name : " + member_Name);
 		//값이 null 인 경우도 있지만, undefined 인 경우도 있으니까 null만 체크하지말고 다른 것도 생각해야해.
 		//1-1. 이름 유효성 세크(비어있는지)
-		if(member_Name.val().length == 0){
+		if(memberName.val().length == 0){
 			result_Name.css("color","red").html("이름칸이 비어있어요");
 			return;
 		
-		}else if(member_Name.val().length != 0){
+		}else if(memberName.val().length != 0){
 			//1-2. 이름 유효성 체크(자음 모음 불가능)
-			if(member_Name_Check1.test(member_Name.val()) != true){	//자음, 모음만으로 이루어지지 않았을 때
+			if(memberName_Check1.test(memberName.val()) != true){	//자음, 모음만으로 이루어지지 않았을 때
 				result_Name.css("color", "green").html("");
-			}else if(member_Name_Check1.test(member_Name.val()) == true){ //자음, 모음만으로 이루어졌을 때
+			}else if(memberName_Check1.test(memberName.val()) == true){ //자음, 모음만으로 이루어졌을 때
 				result_Name.css("color","red").html("적절한 형식이 아닙니다.");
 				return;
 			}
@@ -332,34 +343,48 @@ $(document).ready(function() {
 		   
 	//3. 전화번호 체크	   
 	let result_Tel = $("#result_Tel"); // 결과를 출력할 공간(div)
-    let member_Tel = $("#member_Tel"); // 입력한 전화번호 입력창
+    let memberTel = $("#memberTel"); // 입력한 전화번호 입력창
     
     //전화번호 유효성 체크
-    member_Tel.on('blur', function() {
+    memberTel.on('blur', function() {
     	//let member_Tel_Check = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-    	let member_Tel_Check = /^01[016789]-\d{4}-\d{4}$/;
-        console.log("member_Tel : " + member_Tel.val());
+    	let memberTel_Check = /^01[016789]-\d{4}-\d{4}$/;
+        //console.log("memberTel : " + memberTel.val());
         // 전화번호 유효성 체크(비어있는지)
-        if (member_Tel.val().length == 0) {
+        if (memberTel.val().length == 0) {
             result_Tel.css("color", "red").html("전화번호가 비어있어요.");
             return;
         } else {
             result_Tel.css("color", "green").html("");
          	// 전화번호 유효성체크(적절한 조합인지)
-            if (!member_Tel_Check.test(member_Tel.val())) {
+            if (!memberTel_Check.test(memberTel.val())) {
                 result_Tel.css("color", "red").html("적절한 형식이 아닙니다.");
                 return;
             } else {
                 result_Tel.css("color", "green").html("");
+                
+                let modifyData = {
+                	memberTel : $("#memberTel").val()
+    			}
+                var memberList = [modifyData];
+                
+                /* let modifyData = {
+    					memberId : $("#memberId").val()
+    			}
+    	        let modifyList = [modifyData]; */
+                
+                
+                //let modifyDataArray = [modifyData];
+				//let modifyList = JSON.stringify(modifyDataArray);
+				//ALERT("왔어요 요기에ㅐ");
                 $.ajax({
-        			type : 'GET',
-        			url : '/member/memberInsert_ck',
+        			type : 'POST',
+        			url : '/member/memberInsert',
         			beforeSend: function(xhr) {
         	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
         	        },
-        			data : {
-        				"memberTel" : member_Tel.val()
-        			},
+        	        contentType : 'application/json; charset=utf-8',
+        	        data : JSON.stringify(memberList),
         			success : 	
         				function(result) {			
         					if(result == false){
@@ -377,13 +402,13 @@ $(document).ready(function() {
     }); //member_Tel.on('blur', function EndPoint
 	
     //4. 입사일 체크
-    let member_startDate = $("#member_startDate");
+    let memberStDay = $("#memberStDay");
 	let result_Date = $("#result_Date");
-    member_startDate.on('blur', function() {
-		if(member_startDate.val() == 0){
+	memberStDay.on('blur', function() {
+		if(memberStDay.val() == 0){
 			result_Date.css("color","red").html("날짜가 비어있어요.");
 			return;
-		}else if(member_startDate.val() != 0){
+		}else if(memberStDay.val() != 0){
 			result_Date.css("color", "green").html("");
 		}
     });
@@ -397,16 +422,16 @@ $(document).ready(function() {
 		
 		if(!result_Date.html().trim().length > 0 || !result_Id.html().trim().length > 0 || !result_Tel.html().trim().length > 0 || !result_Name.html().trim().length > 0){
 			
-			if(!member_Tel.val().length == 0 || !member_Id.val().length == 0 || !member_startDate.val().length == 0 || !member_Name.val().length == 0){
+			if(!memberTel.val().length == 0 || !memberId.val().length == 0 || !memberStDay.val().length == 0 || !memberName.val().length == 0){
 				let insertDatas = {
-					memberId : $("#member_Id").val()
-					,memberPw : $("#member_Pw").val()
-					,memberName : $("#member_Name").val()
-					,memberPos : $("#member_Position").val()
-					,memberDept : $("#member_Department").val()
-					,memberGn : $("#member_Gender").val()
-					,memberTel : $("#member_Tel").val()
-					,memberStDay : $("#member_startDate").val()
+					memberId : $("#memberId").val()
+					,memberPw : $("#memberPw").val()
+					,memberName : $("#memberName").val()
+					,memberPos : $("#memberPos").val()
+					,memberDept : $("#memberDept").val()
+					,memberGn : $("#memberGn").val()
+					,memberTel : $("#memberTel").val()
+					,memberStDay : $("#memberStDay").val()
 					,memberAuth : "ROLE_MEMBER" 
 				}
 					

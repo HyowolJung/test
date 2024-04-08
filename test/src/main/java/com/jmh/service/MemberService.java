@@ -21,18 +21,7 @@ import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
-/*public interface CreateService {
-	public List<BoardVO> insertBoard();
-	public List<MemberVO> createMember();
-}*/
-
 public interface MemberService {
-	
-	//public void add();
-	
-	//public int insertTest1(String member_Name1);
-	//public int insertTest2(String member_Name2);
-	//public String getDept(String member_Id);
 	
 	//0. 로그인
 	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
@@ -40,9 +29,33 @@ public interface MemberService {
 	//1. 엑셀 다운로드
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	
-	//1. 조회(검색어 X)
+	//1. 멤버 목록 조회
 	public List<MemberDto> getMemberList(Criteria cri );//,@Param("data") Criteria data
+	
+	//1. 멤버 정보 숫자	
+	public int getTotalCnt(Criteria cri);
+	
+	// 검색결과 멤버 목록 가져오기
 	public List<MemberDto> searchMemberList(Criteria cri);
+	
+	// 상세화면 멤버 정보 가져오기
+	public List<MemberDto> getSelectedList(List<String> selectedList);
+	
+	//3. 멤버 정보 수정
+	public int modifyMember(List<MemberDto> memberList);
+	
+	//4. 삭제(회원 정보 삭제)
+	public int deleteMember(List<String> checkList);
+	
+	//2. 등록(회원 등록)
+	public int insertMember(List<MemberDto> memberList);
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	public List<MemberDto> getmemberList2();
@@ -51,28 +64,14 @@ public interface MemberService {
 	//public List<MemberDto> searchmemberList(@Param("cri") Criteria cri , @Param("pageDto") PageDto pageDto);
 	//public List<MemberDto> searchmemberList(Criteria cri);
 	
-	//1. 조회(페이징 정보)	
-	public int getTotalCnt(Criteria cri);
-	
 	//2. 등록(중복 체크)
 	public boolean checkId(String memberId);
 	public boolean checkTel(String memberTel);
-	
-	//2. 등록(회원 등록)
-	public int insertMember(MemberDto insertDatas);
-	
-	//3. 수정
-	public int modifyMember(List<MemberDto> modifyList);
-	
-	
-	
-	
 	
 	
 	
 	//3. 상세화면 조회(memberRead.jsp)
 	public List<ProjectDto> getmemberprojectList(int member_Id);
-	public List<MemberDto> getSelectedList(List<String> selectedList);
 	
 	public List<MemberDto> getModifyList(int member_Id);
 	public List<MemberDto> selectModifyList(int memberId);
@@ -93,8 +92,7 @@ public interface MemberService {
 	@Transactional
 	public int memberModify_M(Map<String, Object> resultMap);
 	
-	//4. 삭제(회원 정보 삭제)
-	public int deleteMember(List<String> member_Id);
+	
 
 	//4. 삭제(다중 회원 정보 삭제)
 	public ArrayList<String> deleteMemberM_ck(List<String> checkList);

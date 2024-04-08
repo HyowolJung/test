@@ -602,7 +602,7 @@ $(document).ready(function() {
 		});
 		$.ajax({
 			type : 'POST',
-			url: '/member/memberDeleteM',
+			url: '/member/memberDelete',
 			contentType: 'application/json',
 			beforeSend: function(xhr) {
 	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정

@@ -85,27 +85,6 @@ WHERE
 	<result property="memberAuth" column="MEMBER_AUTH"/>
 </resultMap>
 
-<insert id="insertTest1" parameterType="String">
-	INSERT INTO TEST_TABLE (data) VALUES (#{data1})
-</insert> 
-<insert id="insertTest2" parameterType="String">
-	INSERT INTO TEST_TABLE2 (data) VALUES (#{data2})
-</insert>
-
-<!-- 0. 로그인 -->
-<select id="loginID" resultType="com.jmh.security.CustomUserDetails" resultMap="securityMap">
-SELECT 
-		MEMBER_ID, 
-		MEMBER_PW, 
-		MEMBER_NAME, 
-		MEMBER_AUTH
-		<!-- MEMBER_ENABLED --> 
-FROM 
-		MEMBER_DETAIL 
-WHERE 
-		MEMBER_ID=#{memberId}
-</select>
-
 <!-- 1. 조회 -->
 <select id="getMemberList" resultType="com.jmh.dto.MemberDto"   resultMap="memberMap" parameterType="com.jmh.dto.Criteria"><!-- parameterType="String" -->
 /*getmemberList*/
@@ -209,7 +188,6 @@ WHERE
 		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
 
-
 <!-- 1. 조회(페이징 정보) -->
 <select id="getTotalCnt" resultType="integer"  parameterType="integer">
 	/*getTotalCnt*/		
@@ -310,59 +288,6 @@ WHERE
 		NUMROW BETWEEN #{startNo} AND #{endNo}
 </select>
 
-<!-- 2. 등록(아이디 체크) -->
-<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
-/*checkId*/
-SELECT 
-		COUNT(*)
-FROM 
-		MEMBER_DETAIL 
-WHERE 
-		MEMBER_ID = #{memberId}
-</select>
-
-<!-- 2. 등록(전화번호 체크) -->
-<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
-/*checkTel*/
-SELECT 
-		COUNT(*)
-FROM 
-		MEMBER_DETAIL 
-WHERE 
-		MEMBER_TEL = #{memberTel}
-</select>
-
-<!-- 2. 등록(회원 등록) -->
-<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
-/*insertMember*/
-INSERT 
-INTO 
-		MEMBER_DETAIL
-				(
-					MEMBER_ID,
-					MEMBER_PW,
-		  			MEMBER_NAME,
-		  			MEMBER_GN,
-		  			MEMBER_POS,
-		  			MEMBER_DEPT,
-		  			MEMBER_TEL,
-		  			MEMBER_STDAY,
-		  			MEMBER_AUTH
-		  		) 
-VALUES 
-		(
-		  		#{memberId},
-    			#{memberPw},
-    			#{memberName},
-    			#{memberGn},
-    			#{memberPos},
-    			#{memberDept},
-    			#{memberTel},
-    			#{memberStDay},
-    			#{memberAuth}
-		 )
-</insert>
-
 <!-- 3. 체크된 데이터 가져오기-->
 <select id="getSelectedList" resultType="String" parameterType="java.util.List" resultMap="memberMap">
 /*getSelectedList*/
@@ -457,7 +382,7 @@ WHERE
 
 <!-- 3. 체크된 데이터 수정 -->
 <update id="modifyMember" parameterType="java.util.Map" >
-    <foreach item="member" index="index" collection="list" open="DECLARE BEGIN" separator=";" close="; END;">
+		<foreach item="member" index="index" collection="list" separator=";"  open="DECLARE BEGIN" close=";END;">
         UPDATE 
         	MEMBER_DETAIL
         SET
@@ -475,7 +400,151 @@ WHERE
         WHERE
             MEMBER_ID = #{member.memberId}
     </foreach>
-</update>
+</update> 
+
+<!-- 3. 수정(전화번호가 내 번호인지) -->
+<select id="isMyMemberTel" resultType="integer">
+    SELECT COUNT(*)
+    FROM MEMBER_DETAIL
+    <where>
+        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
+            MEMBER_TEL = #{item.memberTel} AND member_Id = #{item.memberId}
+        </foreach>
+    </where>
+</select>
+
+<!-- 3. 수정(전화번호 중복되는지) -->
+<select id="isDupliMemberTel" resultType="integer">
+    SELECT COUNT(*)
+    FROM MEMBER_DETAIL
+    <where>
+        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
+            MEMBER_TEL = #{item.memberTel}
+        </foreach>
+    </where>
+</select>
+
+<!-- 4. 삭제(회원 정보 삭제) -->
+<delete id="deleteMember" parameterType="list" >
+/*deleteMember*/
+	DELETE 
+	FROM
+			MEMBER_DETAIL
+	WHERE 
+			MEMBER_ID 
+	IN
+	<foreach item="memberId" collection="list" open="(" separator="," close=")">
+		#{memberId}
+	</foreach>
+</delete>
+
+<!-- 2. 등록(회원 등록) -->
+<insert id="insertMember" parameterType="com.jmh.dto.MemberDto">
+	/*insertMember*/
+	INSERT
+	INTO
+	MEMBER_DETAIL
+	(
+	MEMBER_ID,
+	MEMBER_PW,
+	MEMBER_NAME,
+	MEMBER_GN,
+	MEMBER_POS,
+	MEMBER_DEPT,
+	MEMBER_TEL,
+	MEMBER_STDAY,
+	MEMBER_AUTH
+	)
+	VALUES
+	(
+	#{memberId},
+	#{memberPw},
+	#{memberName},
+	#{memberGn},
+	#{memberPos},
+	#{memberDept},
+	#{memberTel},
+	#{memberStDay},
+	#{memberAuth}
+	)
+</insert>
+
+<!-- 2. 등록(아이디 체크) -->
+<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
+/*checkId*/
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_ID = #{memberId}
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 0. 로그인 -->
+<select id="loginID" resultType="com.jmh.security.CustomUserDetails" resultMap="securityMap">
+SELECT 
+		MEMBER_ID, 
+		MEMBER_PW, 
+		MEMBER_NAME, 
+		MEMBER_AUTH
+		<!-- MEMBER_ENABLED --> 
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_ID=#{memberId}
+</select>
+
+
+
+
+
+
+
+
+<!-- 2. 등록(전화번호 체크) -->
+<select id="checkTel" resultType="boolean"><!-- parameterType="String" -->
+/*checkTel*/
+SELECT 
+		COUNT(*)
+FROM 
+		MEMBER_DETAIL 
+WHERE 
+		MEMBER_TEL = #{memberTel}
+</select>
+
+
+
 
 <!-- 사번을 클릭했을 때 -->
 <!-- 3. 수정(페이지 이동 + 회원 정보 조회) -->
@@ -526,19 +595,7 @@ WHERE
 	MEMBER_ID = #{memberId}
 </select>
 
-<!-- 4. 삭제(회원 정보 삭제) -->
-<delete id="deleteMember" parameterType="list" >
-/*deleteMember*/
-DELETE 
-FROM
-		MEMBER
-WHERE 
-		MEMBER_ID 
-IN
-<foreach item="memberId" collection="list" open="(" separator="," close=")">
-	#{memberId}
-</foreach>
-</delete>
+
 
 
 
@@ -922,27 +979,7 @@ WHERE
 		MEMBER_TEL = #{member_Tel} and member_Id = #{member_Id}
 </select>
 
-<!-- 3. 수정(전화번호가 내 번호인지) -->
-<select id="isMyMemberTel" resultType="integer">
-    SELECT COUNT(*)
-    FROM MEMBER_DETAIL
-    <where>
-        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
-            MEMBER_TEL = #{item.memberTel} AND member_Id = #{item.memberId}
-        </foreach>
-    </where>
-</select>
 
-<!-- 3. 수정(전화번호 중복되는지) -->
-<select id="isDupliMemberTel" resultType="integer">
-    SELECT COUNT(*)
-    FROM MEMBER_DETAIL
-    <where>
-        <foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
-            MEMBER_TEL = #{item.memberTel}
-        </foreach>
-    </where>
-</select>
 
 <!-- <select id="checkMember" resultType="integer" parameterType="List"> parameterType="String" 
 SELECT
