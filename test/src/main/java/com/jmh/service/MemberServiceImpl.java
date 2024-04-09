@@ -169,7 +169,7 @@ public class MemberServiceImpl implements MemberService {
 		}
 		if (isMyMemberTel < numberOfMembers) {
 			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
-			isDupliMemberTel(memberList);
+                  			isDupliMemberTel(memberList);
 			result = false;
 		}
 		return result;
