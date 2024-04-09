@@ -131,16 +131,20 @@ public class MemberServiceImpl implements MemberService {
 		// 먼저 사용자의 현재 번호인지 확인합니다.
 		// int modifyCnt = 0;
 		if (isMyMemberTel(memberList)) {
-			//System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(memberList));
-			int modifyCnt = memberMapper.modifyMember(memberList);
-			return modifyCnt;
+			System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(memberList));
+			return 0;
+			//int modifyCnt = memberMapper.modifyMember(memberList);
+			//return modifyCnt;
 		} else {
-			//System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. ");
+			System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. : " + isMyMemberTel(memberList));
 			if (isDupliMemberTel(memberList)) {
 				//System.err.println("4. 중복이 아닙니다. 수정진행 : " + isDupliMemberTel(memberList));
-				int modifyCnt = memberMapper.modifyMember(memberList);
-				return modifyCnt;
+				//System.err.println("isDupliMemberTel 1 : " + isDupliMemberTel(memberList));
+				//int modifyCnt = memberMapper.modifyMember(memberList);
+				//return modifyCnt;
+				return 0;
 			} else {
+				//System.err.println("isDupliMemberTel 2 : " + isDupliMemberTel(memberList));
 				//System.err.println("4. 중복입니다 : " + isDupliMemberTel(memberList));
 				return 0;
 			}
@@ -150,15 +154,21 @@ public class MemberServiceImpl implements MemberService {
 	// checkMember 는 수정하고자 하는 전화번호가 나의 전화번호인지 확인하는 로직입니다.
 	private boolean isMyMemberTel(List<MemberDto> memberList) {
 		//System.err.println("checkMember + modifyList : " + memberList);
+		int numberOfMembers = 0;
+		numberOfMembers = memberList.size();
+		System.err.println("1 numberOfMembers : " + numberOfMembers);
+		
 		int isMyMemberTel = memberMapper.isMyMemberTel(memberList);
 		boolean result = false;
-
-		if (isMyMemberTel > 0) {
-			//System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
+		// 5 = 5 : 수정하려는 사람들은 모두 내 번호다
+		// 5 > 4 : 수정하려는 사람들 중에 내 번호가 아닌 사람이 있다.
+		// 5 < 6
+		if (isMyMemberTel == numberOfMembers) {
+			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
 			result = true;
 		}
-		if (isMyMemberTel == 0) {
-			//System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
+		if (isMyMemberTel < numberOfMembers) {
+			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
 			isDupliMemberTel(memberList);
 			result = false;
 		}
@@ -169,12 +179,12 @@ public class MemberServiceImpl implements MemberService {
 		int isDupliMemberTel = memberMapper.isDupliMemberTel(memberList);
 		boolean result = false;
 		if (isDupliMemberTel > 0) {
-			//System.err.println("2. 겹친다.. " + isDupliMemberTel);
+			System.err.println("2. 겹친다.. " + isDupliMemberTel);
 			result = false;
 		}
 
 		if (isDupliMemberTel == 0) {
-			//System.err.println("2. 안겹친다.. " + isDupliMemberTel);
+			System.err.println("2. 안겹친다.. " + isDupliMemberTel);
 			result = true;
 		}
 		return result;
@@ -190,22 +200,37 @@ public class MemberServiceImpl implements MemberService {
 	// 2. 등록(회원 등록)
 	@Override
 	public int insertMember(List<MemberDto> memberList) {
-		isMyMemberId
-		
-		
-		//String pwd = memberList.getMemberPw();
-		//BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		//String encodedPwd = encoder.encode(pwd);
+		//isMyMemberId
+		if(isDupliMemberId(memberList)) {
+			System.err.println("--isDupliMemberId(memberList) : " + isDupliMemberId(memberList));
+			
+			
+			//String pwd = memberList.getMemberPw();
+			//BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			//String encodedPwd = encoder.encode(pwd);
 
-		//? insertDatas.setMember_Pw(encodedPwd);
-		//memberList.setMemberPw(encodedPwd);
+			//? insertDatas.setMember_Pw(encodedPwd);
+			//memberList.setMemberPw(encodedPwd);
+		
+		}
 		return memberMapper.insertMember(memberList);
 	}
 	
-	private boolean isMyMemberId(List<MemberDto> memberList) {
-		int isMyMemberId = memberMapper.isMyMemberId(memberList);
+	private boolean isDupliMemberId(List<MemberDto> memberList) {
+		
+		int isDupliMemberId = memberMapper.isDupliMemberId(memberList);
+		
 		boolean result = false;
 		
+		if (isDupliMemberId > 0) {
+			System.err.println("1. isDupliMemberId : " + isDupliMemberId);
+			result = false;
+		}
+
+		if (isDupliMemberId == 0) {
+			System.err.println("2. isDupliMemberId : " + isDupliMemberId);
+			result = true;
+		}
 		return result;
 	}
 	

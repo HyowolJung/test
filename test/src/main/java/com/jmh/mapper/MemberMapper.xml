@@ -470,14 +470,16 @@ WHERE
 </insert>
 
 <!-- 2. 등록(아이디 체크) -->
-<select id="checkId" resultType="boolean"><!-- parameterType="String" -->
+<select id="isDupliMemberId" resultType="integer"><!-- parameterType="String" -->
 /*checkId*/
 SELECT 
 		COUNT(*)
 FROM 
 		MEMBER_DETAIL 
 WHERE 
-		MEMBER_ID = #{memberId}
+		<foreach item="item" index="index" collection="list" open="(" separator="OR" close=")">
+		MEMBER_ID = #{item.memberId}
+		</foreach>
 </select>
 
 

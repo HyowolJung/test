@@ -37,7 +37,7 @@ public interface MemberMapper {
 	public int deleteMember(List<String> checkList);
 	
 	public int insertMember(List<MemberDto> memberList);
-	public int isMyMemberId(List<MemberDto> memberList);
+	public int isDupliMemberId(List<MemberDto> memberList);
 	
 	
 		
