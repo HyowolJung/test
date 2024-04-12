@@ -13,7 +13,7 @@
 
 .inPeople {
     float: left;
-    margin-right: 150px; /* 오른쪽에 20px 간격 추가 */
+    margin-right: 150px; /* 오른쪽에 20px 간격 추가*/
 }
 
 .outPeople {

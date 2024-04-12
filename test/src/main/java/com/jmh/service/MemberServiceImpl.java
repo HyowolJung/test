@@ -129,20 +129,22 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public int modifyMember(List<MemberDto> memberList) {
 		// 먼저 사용자의 현재 번호인지 확인합니다.
+		//int modifyCnt = memberMapper.modifyMember(memberList);
 		// int modifyCnt = 0;
 		if (isMyMemberTel(memberList)) {
 			System.err.println("3. 번호가 사용자의 현재 번호입니다. 수정진행 : " + isMyMemberTel(memberList));
-			return 0;
-			//int modifyCnt = memberMapper.modifyMember(memberList);
-			//return modifyCnt;
+			//return 0;
+			int modifyCnt = memberMapper.modifyMember(memberList);
+			return modifyCnt;
 		} else {
 			System.err.println("3. 번호가 사용자의 현재 번호가 아닙니다. : " + isMyMemberTel(memberList));
 			if (isDupliMemberTel(memberList)) {
 				//System.err.println("4. 중복이 아닙니다. 수정진행 : " + isDupliMemberTel(memberList));
 				//System.err.println("isDupliMemberTel 1 : " + isDupliMemberTel(memberList));
 				//int modifyCnt = memberMapper.modifyMember(memberList);
-				//return modifyCnt;
-				return 0;
+				int modifyCnt = memberMapper.modifyMember(memberList);
+				return modifyCnt;
+				//return 0;
 			} else {
 				//System.err.println("isDupliMemberTel 2 : " + isDupliMemberTel(memberList));
 				//System.err.println("4. 중복입니다 : " + isDupliMemberTel(memberList));
@@ -166,11 +168,13 @@ public class MemberServiceImpl implements MemberService {
 		if (isMyMemberTel == numberOfMembers) {
 			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호입니다. : " + isMyMemberTel);
 			result = true;
+			return result;
 		}
 		if (isMyMemberTel < numberOfMembers) {
 			System.err.println("1. 수정하고자 하는 전화번호가 내 전화번호가 아닙니다. " + isMyMemberTel);
-                  			isDupliMemberTel(memberList);
+            isDupliMemberTel(memberList);
 			result = false;
+			return result;
 		}
 		return result;
 	}
@@ -181,11 +185,13 @@ public class MemberServiceImpl implements MemberService {
 		if (isDupliMemberTel > 0) {
 			System.err.println("2. 겹친다.. " + isDupliMemberTel);
 			result = false;
+			return result;
 		}
 
 		if (isDupliMemberTel == 0) {
 			System.err.println("2. 안겹친다.. " + isDupliMemberTel);
 			result = true;
+			return result;
 		}
 		return result;
 	}
