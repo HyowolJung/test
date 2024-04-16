@@ -1284,7 +1284,11 @@ WHERE
 		AND
 			NUMROW BETWEEN #{cri.startNo} AND #{cri.endNo}
 </select>
-	
+
+<select id="getMemberListt" resultType="com.jmh.dto.MemberDto"  resultMap="memberMap">
+select * from member_Detail
+</select>
+
 <!-- <if test="pullDate != null">
             		#{pullDate}
         		</if>

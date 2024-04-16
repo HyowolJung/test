@@ -114,6 +114,8 @@ public interface MemberService {
 
 	public String getmember_Pw(int member_Id);
 
+	public List<MemberDto> getMemberListt();
+
 
 
 	

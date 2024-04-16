@@ -7,17 +7,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.jmh.dto.MemberDto;
 import com.jmh.service.MemberService;
@@ -31,6 +37,18 @@ public class MainController {
 	@Autowired
 	MemberService memberService;
 	
+	@EnableWebMvc
+	@Configuration
+	public class WebConfig implements WebMvcConfigurer  {
+	    @Override
+	    public void addCorsMappings(CorsRegistry registry) {
+	        registry.addMapping("/**")
+	                .allowedOrigins("http://localhost:8080")  // Vue.js 서버 URL
+	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+	                .allowedHeaders("*");
+	    }
+	}
+	
 	@GetMapping("/header")
 	public String header(HttpSession session, Model model) {
 		model.addAttribute("memberId" , session.getAttribute("memberId"));
@@ -40,6 +58,14 @@ public class MainController {
 	@GetMapping("/myPage")
 	public String myPage() {
 		return "/myPage";
+	}
+	
+	//@CrossOrigin(origins = "http://localhost:8080")
+	@GetMapping("/hello")
+	public String hello(HttpSession session, Model model) {
+		List<MemberDto> memberList = memberService.getMemberListt();
+		model.addAttribute("memberList", memberList);
+		return "/hello";
 	}
 	
 	@GetMapping("/main")
@@ -69,6 +95,7 @@ public class MainController {
 	@PostMapping("/error")
 	public void error2() {}
 	
+	@CrossOrigin(origins = "http://localhost:8080")
 	@GetMapping("/login")
 	public void login() {}
 	

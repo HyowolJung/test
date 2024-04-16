@@ -402,6 +402,12 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.getmember_Pw(member_Id);
 	}
 
+	@Override
+	public List<MemberDto> getMemberListt() {
+		// TODO Auto-generated method stub
+		return memberMapper.getMemberListt();
+	}
+
 //	@Override
 //	public void exportToExcel(HttpServletResponse response) throws IOException {
 //	    List<MemberDto> memberList = memberService.getmemberList(new Criteria()); // 전체 데이터를 가져오는 로직
