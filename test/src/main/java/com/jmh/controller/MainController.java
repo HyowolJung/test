@@ -60,13 +60,18 @@ public class MainController {
 		return "/myPage";
 	}
 	
-	//@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin(origins = "http://localhost:8080")
 	@GetMapping("/hello")
-	public String hello(HttpSession session, Model model) {
-		List<MemberDto> memberList = memberService.getMemberListt();
-		model.addAttribute("memberList", memberList);
-		return "/hello";
+	public ResponseEntity<List<MemberDto>> hello() {
+	    List<MemberDto> memberList = memberService.getMemberListt();
+	    return ResponseEntity.ok(memberList); // JSON 형식으로 회원 목록 반환
 	}
+//	@GetMapping("/hello")
+//	public String hello(HttpSession session, Model model) {
+//		List<MemberDto> memberList = memberService.getMemberListt();
+//		model.addAttribute("memberList", memberList);
+//		return "/hello";
+//	}
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model, String memberId) {
