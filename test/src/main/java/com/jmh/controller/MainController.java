@@ -37,17 +37,17 @@ public class MainController {
 	@Autowired
 	MemberService memberService;
 	
-	@EnableWebMvc
-	@Configuration
-	public class WebConfig implements WebMvcConfigurer  {
-	    @Override
-	    public void addCorsMappings(CorsRegistry registry) {
-	        registry.addMapping("/**")
-	                .allowedOrigins("http://localhost:8080")  // Vue.js 서버 URL
-	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-	                .allowedHeaders("*");
-	    }
-	}
+//	@EnableWebMvc
+//	@Configuration
+//	public class WebConfig implements WebMvcConfigurer  {
+//	    @Override
+//	    public void addCorsMappings(CorsRegistry registry) {
+//	        registry.addMapping("/**")
+//	                .allowedOrigins("http://localhost:8080")  // Vue.js 서버 URL
+//	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//	                .allowedHeaders("*");
+//	    }
+//	}
 	
 	@GetMapping("/header")
 	public String header(HttpSession session, Model model) {

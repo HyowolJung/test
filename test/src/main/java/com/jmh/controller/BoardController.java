@@ -90,4 +90,141 @@ public class BoardController {
 		model.addAttribute("selectFreeBoardList" , selectFreeBoardList);
 		return "/board/comunity/read";
 	}
+	
+//	@GetMapping("/auth/kakao/callback")
+//    public String kakaoCallback(String code, HttpSession session, RedirectAttributes redirectAttributes, Model model) throws JsonProcessingException {
+//        RestTemplate rt = new RestTemplate();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+//
+//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//        params.add("grant_type", "authorization_code");
+//        params.add("client_id", clientId);
+//        params.add("redirect_uri", redirectUri);
+//        params.add("code", code);
+//
+//        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
+//        ResponseEntity<String> response = rt.exchange(
+//            "https://kauth.kakao.com/oauth/token",
+//            HttpMethod.POST,
+//            kakaoTokenRequest,
+//            String.class
+//        );
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        OAuthToken oauthToken = objectMapper.readValue(response.getBody(), OAuthToken.class);
+//
+//        RestTemplate rt2 = new RestTemplate();
+//        HttpHeaders headers2 = new HttpHeaders();
+//        headers2.add("Authorization", "Bearer " + oauthToken.getAccess_token());
+//        headers2.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+//
+//        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers2);
+//        ResponseEntity<String> response2 = rt2.exchange(
+//            "https://kapi.kakao.com/v2/user/me",
+//            HttpMethod.POST,
+//            kakaoProfileRequest,
+//            String.class
+//        );
+//
+//        KakaoProfile kakaoProfile = objectMapper.readValue(response2.getBody(), KakaoProfile.class);
+//        String email = kakaoProfile.getKakao_account().getEmail(); // 이메일을 사용자 이름으로 사용
+//        Users existingUser = userService.findByEmail(email);
+//        System.out.println("이메일체크"+ email);
+//
+//        String nicknameRaw = kakaoProfile.getProperties().getNickname();
+//        String nickname = "";
+//		try {
+//			nickname = URLEncoder.encode(nicknameRaw, StandardCharsets.UTF_8.toString());
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+//
+////		UUID garbagePassword = UUID.randomUUID();
+////        String password = garbagePassword.toString(); // 랜덤 비밀번호를 생성
+//
+//        // 사용자가 이미 등록되어 있는지 확인
+//        System.out.println("존재하는 사용자:" + existingUser);        
+//        if (existingUser == null) {
+//        	 redirectAttributes.addAttribute("email", email);
+//             redirectAttributes.addAttribute("nickname", nickname);
+//        	return "redirect:/register_kakao";
+//        }
+//        
+//        String passwordHash = existingUser.getPasswordHash();
+//        
+//        // 등록된 사용자인 경우 로그인 처리
+//        authenticateUser(email);
+//        System.out.println("카카오 Authenticated");	
+//        
+//        
+//        // 등록된 사용자인 경우 로그인 처리
+//        List<GrantedAuthority> authorities = new ArrayList<>(); // Assume no specific roles necessary
+//        PreAuthenticatedAuthenticationToken authToken = new PreAuthenticatedAuthenticationToken(existingUser, null, authorities);
+//        authToken.setAuthenticated(true);
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
+//        session.setAttribute("userSession", existingUser);
+//
+//        // After setting authentication, immediately use it for further checks or setups
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication != null && authentication.isAuthenticated()) {
+//            Users userSession = null;
+//
+//            if (authentication.getPrincipal() instanceof Users) {
+//                userSession = (Users) authentication.getPrincipal();
+//            } else if (authentication.getPrincipal() instanceof UserDetails) {
+//                String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+//                userSession = userService.findByEmail(username);
+//            }
+//
+//            if (userSession != null) {
+//                session.setAttribute("userSession", userSession);
+//                model.addAttribute("userSession", userSession);
+//            } else {
+//                System.out.println("Database does not contain the user.");
+//            }
+//        } else {
+//            System.out.println("No authentication information available or user is not authenticated.");
+//        }
+//        return "redirect:/index";
+//    }
+//	
+//	@GetMapping("/index")    
+//    public String processLogin(HttpSession session, Model model) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        
+//        if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
+//            org.springframework.security.core.userdetails.User userDetails = 
+//                (org.springframework.security.core.userdetails.User) authentication.getPrincipal(); 
+//            String username = userDetails.getUsername(); 
+//            Users userSession = dao.findByEmail(username); 
+//            if (userSession != null) {
+//                session.setAttribute("userSession", userSession);
+//                //model.addAttribute("userSession", userSession); 모델로 가져와야되면 주석해제해서 사용.
+//            } else {
+//                System.out.println("데이터베이스에서 사용자를 찾을 수 없습니다.");
+//            }
+//        } else {
+//            System.out.println("principal 객체가 예상한 타입이 아닙니다.");
+//        }
+//        return "index";
+//    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
+
