@@ -14,7 +14,12 @@
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
-	<beans:import resource="classpath:cors-config.xml"/>
+	<!-- <beans:import resource="classpath:cors-config.xml"/>
+	<beans:bean>
+    	<mvc:mapping path="/**" allowed-origins="*" allowed-methods="POST,GET" allow-credentials="true"/>
+	</mvc:cors> -->
+	
+	
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
 
@@ -51,7 +56,7 @@
 	<!-- aop의 around로 동작을 한다. -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 
-
+	<context:component-scan base-package="com.jmh.config" />
 	<context:component-scan base-package="com.jmh.test" />
 	<context:component-scan base-package="com.jmh.controller" />
 	<context:component-scan base-package="com.jmh.security" />

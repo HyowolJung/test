@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -32,22 +33,11 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:9091")
 public class MainController {
 	
 	@Autowired
 	MemberService memberService;
-	
-//	@EnableWebMvc
-//	@Configuration
-//	public class WebConfig implements WebMvcConfigurer  {
-//	    @Override
-//	    public void addCorsMappings(CorsRegistry registry) {
-//	        registry.addMapping("/**")
-//	                .allowedOrigins("http://localhost:8080")  // Vue.js 서버 URL
-//	                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//	                .allowedHeaders("*");
-//	    }
-//	}
 	
 	@GetMapping("/header")
 	public String header(HttpSession session, Model model) {
@@ -60,18 +50,12 @@ public class MainController {
 		return "/myPage";
 	}
 	
-	@CrossOrigin(origins = "http://localhost:8080")
+	//@CrossOrigin(origins = "http://localhost:8080")
 	@GetMapping("/hello")
 	public ResponseEntity<List<MemberDto>> hello() {
 	    List<MemberDto> memberList = memberService.getMemberListt();
 	    return ResponseEntity.ok(memberList); // JSON 형식으로 회원 목록 반환
 	}
-//	@GetMapping("/hello")
-//	public String hello(HttpSession session, Model model) {
-//		List<MemberDto> memberList = memberService.getMemberListt();
-//		model.addAttribute("memberList", memberList);
-//		return "/hello";
-//	}
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model, String memberId) {
@@ -100,62 +84,82 @@ public class MainController {
 	@PostMapping("/error")
 	public void error2() {}
 	
-	@CrossOrigin(origins = "http://localhost:8080")
+	//@CrossOrigin(origins = "http://localhost:8080")
 	@GetMapping("/login")
 	public void login() {}
 	
 	@PostMapping("/logout")
 	public void logout() {}
 	
-	
-//	@GetMapping("/login")
-//	public String login(Model model , CsrfToken csrfToken) {
-//		model.addAttribute("_csrf", csrfToken);
-//		return "/login";	
-//	}
+	//@CrossOrigin(origins = "http://localhost:8080")
+	@GetMapping("/csrftoken")
+	public ResponseEntity<String> getCsrfToken(HttpServletRequest request) {
+	    CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+	    //System.out.println("===>>> getParameterName() = "+csrfToken.getParameterName());
+	    //System.out.println("===>>> getToken() = "+csrfToken.getToken());
+	    if (csrfToken != null) {
+	        return ResponseEntity.ok(csrfToken.getToken());
+	    } else {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("CSRF token not found");
+	    }
+	}
+}
+//@GetMapping("/hello")
+//public String hello(HttpSession session, Model model) {
+//	List<MemberDto> memberList = memberService.getMemberListt();
+//	model.addAttribute("memberList", memberList);
+//	return "/hello";
+//}
+
+//@GetMapping("/login")
+//public String login(Model model , CsrfToken csrfToken) {
+//	model.addAttribute("_csrf", csrfToken);
+//	return "/login";	
+//}
+//
+//@PostMapping("/login")
+//@ResponseBody
+//public List<MemberDto> memberLogin(int member_Id, String member_Pw, HttpSession session, MemberDto dto, Model model) {
+//	session.setAttribute("member_Id", dto.getMember_Id());
 //	
-//	@PostMapping("/login")
-//	@ResponseBody
-//	public List<MemberDto> memberLogin(int member_Id, String member_Pw, HttpSession session, MemberDto dto, Model model) {
-//		session.setAttribute("member_Id", dto.getMember_Id());
-//		
-//		//List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
-//		//return loginCk;
-//		boolean isValid = false;
-//		List<MemberDto> loginCk = null;
-//		
-//		String member_Pw_ck = memberService.getmember_Pw(member_Id);
-//		System.err.println("member_Pw : " + member_Pw);
+//	//List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+//	//return loginCk;
+//	boolean isValid = false;
+//	List<MemberDto> loginCk = null;
+//	
+//	String member_Pw_ck = memberService.getmember_Pw(member_Id);
+//	System.err.println("member_Pw : " + member_Pw);
+//	System.err.println("member_Pw_ck : " + member_Pw_ck);
+//	if(member_Pw_ck != null) {
 //		System.err.println("member_Pw_ck : " + member_Pw_ck);
-//		if(member_Pw_ck != null) {
-//			System.err.println("member_Pw_ck : " + member_Pw_ck);
-//			isValid = BCrypt.checkpw(member_Pw, member_Pw_ck);
-//			System.err.println("isValid : " + isValid);
+//		isValid = BCrypt.checkpw(member_Pw, member_Pw_ck);
+//		System.err.println("isValid : " + isValid);
+//		
+//		if(isValid == true) {
+//			System.err.println("isValid TRUE 진입");
+//			ModelAndView mav = new ModelAndView();
+//			mav.setViewName("/common/header");
+//			mav.addObject("member_Id", session.getAttribute("member_Id"));
 //			
-//			if(isValid == true) {
-//				System.err.println("isValid TRUE 진입");
-//				ModelAndView mav = new ModelAndView();
-//				mav.setViewName("/common/header");
-//				mav.addObject("member_Id", session.getAttribute("member_Id"));
-//				
-//				loginCk = memberService.loginCk(member_Id, member_Pw_ck);
-//				MemberDto loginCk_member_Department = loginCk.get(0);
-//				String member_Department = loginCk_member_Department.getMember_Department();
-//				session.setAttribute("member_Department" , member_Department);
-//				
-//				System.err.println("loginCk 일치합니다. : " + loginCk);
-//				return loginCk; 
-//			}
+//			loginCk = memberService.loginCk(member_Id, member_Pw_ck);
+//			MemberDto loginCk_member_Department = loginCk.get(0);
+//			String member_Department = loginCk_member_Department.getMember_Department();
+//			session.setAttribute("member_Department" , member_Department);
 //			
-//			if(isValid == false) {
-//				System.out.println("loginCk 비밀번호 불일치 : " + loginCk);
-//				return loginCk;
-//			}
-//			
+//			System.err.println("loginCk 일치합니다. : " + loginCk);
+//			return loginCk; 
 //		}
-//		return null;
+//		
+//		if(isValid == false) {
+//			System.out.println("loginCk 비밀번호 불일치 : " + loginCk);
+//			return loginCk;
+//		}
+//		
 //	}
-}	
+//	return null;
+//}
+
+
 //	@GetMapping("/logout")
 //	public String memberLogout(HttpServletRequest request) {
 //		HttpSession session = request.getSession();

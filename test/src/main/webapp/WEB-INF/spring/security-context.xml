@@ -7,20 +7,40 @@
     
     <bean id="customLoginSuccess" class="com.jmh.security.CustomLoginSuccessHandler"/>
     <bean id="customUserDetailsService" class="com.jmh.security.CustomUserDetailsService"/>
-    <!-- <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean> -->
     <bean id ="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
     
+    <bean id="corsConfigurationSource" class="org.springframework.web.cors.UrlBasedCorsConfigurationSource">
+    <property name="corsConfigurations">
+        <map>
+            <entry key="/**">
+                <bean class="org.springframework.web.cors.CorsConfiguration">
+                    <property name="allowedOrigins" value="*"/>
+                    <property name="allowedMethods">
+                        <list>
+                            <value>GET</value>
+                            <value>POST</value>
+                            <value>PUT</value>
+                            <value>DELETE</value>
+                        </list>
+                    </property>
+                    <property name="allowedHeaders" value="*"/>
+                    <property name="allowCredentials" value="true"/>
+                </bean>
+            </entry>
+        </map>
+    </property>
+	</bean>
+    
     <security:http auto-config="true" use-expressions="true">
+    	<security:csrf disabled="true"/>
+    	<security:cors configuration-source-ref="corsConfigurationSource"/>
+    	<security:intercept-url pattern="/" access="permitAll()" />
 		<security:intercept-url pattern="/login" access="permitAll()" />
 		<security:intercept-url pattern="/hello" access="permitAll()" />
 		<security:intercept-url pattern="/board/**" access="permitAll()" />
-		<!-- <security:intercept-url pattern="/board/comunity/read" access="hasRole('ROLE_MEMBER')" /> -->
 		<security:intercept-url pattern="/member/**" access="hasRole('ROLE_MEMBER')"/>
     	<security:intercept-url pattern="/project/**" access="hasRole('ROLE_MEMBER')"/>
-    	<!-- <security:intercept-url pattern="/project/**" access="hasRole('ROLE_PROJECT')"/> -->
- 		<!-- <security:intercept-url pattern="/member/*" access="ROLE_MEMBER"/>
-		<security:intercept-url pattern="/project/*" access="ROLE_PROJECT"/> -->
-		
+    	
 		<security:form-login login-page="/login"
 		authentication-success-handler-ref="customLoginSuccess"
 		username-parameter="memberId"
@@ -34,6 +54,7 @@
 		/>
 		
 		<security:access-denied-handler error-page="/error"/>
+		
 	</security:http>
 	
 	<security:authentication-manager>
@@ -41,7 +62,12 @@
 			<security:password-encoder ref="bcryptPasswordEncoder"/>
 		</security:authentication-provider>
 	</security:authentication-manager>
-</beans>	
+</beans>
+		<!-- <bean id="customPasswordEncorder" class="com.jmh.security.CustomNoOpPasswordEncoder"></bean> -->
+	    <!-- <security:intercept-url pattern="/board/comunity/read" access="hasRole('ROLE_MEMBER')" /> -->
+    	<!-- <security:intercept-url pattern="/project/**" access="hasRole('ROLE_PROJECT')"/> -->
+ 		<!-- <security:intercept-url pattern="/member/*" access="ROLE_MEMBER"/>-->
+		<!-- <security:intercept-url pattern="/project/*" access="ROLE_PROJECT"/>  -->	
 	<!-- <security:authentication-manager>
 		<security:authentication-provider>
 			<security:jdbc-user-service data-source-ref="dataSource"
