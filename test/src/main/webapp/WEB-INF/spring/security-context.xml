@@ -30,16 +30,28 @@
         </map>
     </property>
 	</bean>
-    
+    <!-- 
+    .authorizeRequests() : 요청에 대한 권한을 지정할 수 있다.
+	.anyRequest().authenticated() : 인증이 되어야 한다는 이야기이다.
+	.anonymous() : 인증되지 않은 사용자도 접근할 수 있다.
+	.fullyAuthenticated() : 완전히 인증된 사용자만 접근할 수 있다.
+	.hasRole() or hasAnyRole() : 특정 권한을 가지는 사용자만 접근할 수 있다.
+	.hasAuthority() or hasAnyAuthority() : 특정 권한을 가지는 사용자만 접근할 수 있다.
+	.hasIpAddress() : 특정 아이피 주소를 가지는 사용자만 접근할 수 있다.
+	.access() : SpEL? 표현식에 의한 결과에 따라 접근할 수 있다.
+	.not() : 접근 제한 기능을 해제
+	.permitAll() or denyAll() : 접근을 전부 허용하거나 제한한다.
+	.rememberMe() : 로그인한 사용자만 접근할 수 있다. 리멤버기능 
+     -->
     <security:http auto-config="true" use-expressions="true">
     	<security:csrf disabled="true"/>
     	<security:cors configuration-source-ref="corsConfigurationSource"/>
-    	<security:intercept-url pattern="/" access="permitAll()" />
-		<security:intercept-url pattern="/login" access="permitAll()" />
-		<security:intercept-url pattern="/hello" access="permitAll()" />
-		<security:intercept-url pattern="/board/**" access="permitAll()" />
-		<security:intercept-url pattern="/member/**" access="hasRole('ROLE_MEMBER')"/>
-    	<security:intercept-url pattern="/project/**" access="hasRole('ROLE_MEMBER')"/>
+    	<security:intercept-url pattern="/" access="permitAll()" /> <!-- permitAll() -->
+		<security:intercept-url pattern="/login" access="permitAll()" /> <!-- permitAll() -->
+		<security:intercept-url pattern="/hello" access="permitAll()" /> <!-- permitAll() -->
+		<security:intercept-url pattern="/board/**" access="permitAll()" /> <!-- permitAll() -->
+		<security:intercept-url pattern="/member/**" access="hasRole('ROLE_MEMBER')"/> <!-- hasRole('ROLE_MEMBER') -->
+    	<security:intercept-url pattern="/project/**" access="hasRole('ROLE_MEMBER')"/> <!-- hasRole('ROLE_MEMBER') -->
     	
 		<security:form-login login-page="/login"
 		authentication-success-handler-ref="customLoginSuccess"

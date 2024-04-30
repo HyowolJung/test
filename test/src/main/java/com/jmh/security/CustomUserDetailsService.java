@@ -16,7 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String memberId) throws UsernameNotFoundException {
-		System.err.println("CustomUserDetailsService 도착 1");
+		System.err.println("CustomUserDetailsService 도착 1 : " + memberId);
 		// TODO Auto-generated method stub
 		System.err.println("혹시 여기부터 에러인건가??? : " + memberId);
 		CustomUserDetails user = mapper.loginID(memberId);

@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,13 +58,21 @@ public class MainController {
 	    return ResponseEntity.ok(memberList); // JSON 형식으로 회원 목록 반환
 	}
 	
-	@GetMapping("/main")
-	public String main(HttpSession session, Model model, String memberId) {
-		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
-		model.addAttribute("memberId", session.getAttribute("memberId"));
-		//model.addAttribute("member_Department" , "인사부");
-		return "/main";
+	@PostMapping("/hello")
+	public ResponseEntity<List<MemberDto>> hello2(@RequestBody String memberId) {
+		System.err.println("memberId 는  : " + memberId);
+	    List<MemberDto> memberList = memberService.getMemberListt();
+	    return ResponseEntity.ok(memberList); // JSON 형식으로 회원 목록 반환
 	}
+	
+//	@GetMapping("/main")
+//	public String main(HttpSession session, Model model, String memberId) {
+//		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
+//		model.addAttribute("memberId", session.getAttribute("memberId"));
+//		//model.addAttribute("member_Department" , "인사부");
+//		System.err.println("여기는 main");
+//		return "/main";
+//	}
 	
 	@PostMapping("/main")
 	public String main2(HttpSession session, Model model, String memberId) {
