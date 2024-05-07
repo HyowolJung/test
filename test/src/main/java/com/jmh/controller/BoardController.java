@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,6 +32,13 @@ public class BoardController {
 		model.addAttribute("member_Id", session.getAttribute("member_Id"));
 		return "/board/comunity/home"; 
 	}
+	
+	@PostMapping("/hello")
+	public String hello(@RequestBody String member_Id) {
+		System.out.println("member_Id : " + member_Id);
+		return "/home";
+	}
+	
 	
 	@PostMapping("/home")
 	public String home(@RequestParam String member_Id, Model model, HttpSession session) {

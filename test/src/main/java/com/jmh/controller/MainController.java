@@ -1,5 +1,6 @@
 package com.jmh.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:9091")
+//@CrossOrigin(origins = "http://localhost:9091")
 public class MainController {
 	
 	@Autowired
@@ -112,6 +113,15 @@ public class MainController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("CSRF token not found");
 	    }
 	}
+	
+	@GetMapping("/mainPage")
+    public ResponseEntity<Map<String, Object>> getMainData(HttpSession session) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("memberDept", session.getAttribute("memberDept"));
+        data.put("memberId", session.getAttribute("memberId"));
+
+        return ResponseEntity.ok(data);
+    }
 }
 //@GetMapping("/hello")
 //public String hello(HttpSession session, Model model) {
