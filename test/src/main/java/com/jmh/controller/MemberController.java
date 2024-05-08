@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,8 +87,10 @@ public class MemberController {
 	public void memberMain() {}
 
 	// 조회 페이지
-	@GetMapping("/memberList") 
+	@GetMapping("/memberList")
+	@CrossOrigin(origins = "http://localhost:3000")
 	public String memberListGet(Model model, Criteria cri, HttpSession session) {
+		System.err.println("설마 여기에 온거야?");
 		//int totalCnt = memberService.getTotalCnt(cri);
 		//PageDto pageDto = new PageDto(cri, totalCnt);
 		//model.addAttribute("pageDto", pageDto);
@@ -96,11 +99,14 @@ public class MemberController {
 	}
 
 	// 조회(사원 정보)
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/memberList") 
 	@ResponseBody
 	public Map<String, Object> memberListPost(Model model, @RequestBody Criteria cri, HttpSession session) {//@RequestBody Criteria data
+		System.err.println("멤버리스트 도착");
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getMemberList(cri);
+		System.err.println("memberList : " + memberList);
 		int totalCnt = memberService.getTotalCnt(cri);
 		PageDto pageDto = new PageDto(cri, totalCnt);
 		resultMap.put("pageDto", pageDto);

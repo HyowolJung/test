@@ -66,14 +66,14 @@ public class MainController {
 	    return ResponseEntity.ok(memberList); // JSON 형식으로 회원 목록 반환
 	}
 	
-//	@GetMapping("/main")
-//	public String main(HttpSession session, Model model, String memberId) {
-//		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
-//		model.addAttribute("memberId", session.getAttribute("memberId"));
-//		//model.addAttribute("member_Department" , "인사부");
-//		System.err.println("여기는 main");
-//		return "/main";
-//	}
+	@GetMapping("/main")
+	public String main(HttpSession session, Model model, String memberId) {
+		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
+		model.addAttribute("memberId", session.getAttribute("memberId"));
+		//model.addAttribute("member_Department" , "인사부");
+		System.err.println("여기는 main");
+		return "/main";
+	}
 	
 	@PostMapping("/main")
 	public String main2(HttpSession session, Model model, String memberId) {

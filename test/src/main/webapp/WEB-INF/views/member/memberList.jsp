@@ -375,9 +375,9 @@ function getMemberList(element){
 	$.ajax({
 		type : 'POST',
 		url : '/member/memberList',
-		beforeSend: function(xhr) {
+		/* beforeSend: function(xhr) {
             xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-        },
+        }, */
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(cri),
         success : function(resultMap) {
