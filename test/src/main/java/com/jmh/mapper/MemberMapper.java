@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jmh.dto.Criteria;
 import com.jmh.dto.MemberDto;
-import com.jmh.dto.MemberDto;
+//import com.jmh.dto.MemberDto;
 import com.jmh.dto.PageDto;
 import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
-import com.jmh.security.CustomUserDetails;
+//import com.jmh.security.CustomUserDetails;
 
 @Repository
 public interface MemberMapper {
@@ -50,7 +50,7 @@ public interface MemberMapper {
 	public MemberDto read(String member_Id);
 	
 	//0. 로그인
-	public CustomUserDetails loginID(String memberId);
+	//public CustomUserDetails loginID(String memberId);
 	
 	
 	

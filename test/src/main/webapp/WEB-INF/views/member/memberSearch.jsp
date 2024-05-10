@@ -17,9 +17,7 @@ body {
 	margin-top: 10px;
 	margin-left: 230px; 
 }
-/* div {
-            margin-bottom: 20px;
-        } */
+
 input, select {
 	margin-right: 10px;
 }
@@ -181,7 +179,8 @@ a.page-link.active {
 	text-align: center;
 	font-style: italic;
 	color: #777;
-} */
+} 
+
 /* .DetailedSearchForm {
 	display: none;
 } */
@@ -255,7 +254,7 @@ a.page-link.active {
 
 </body>
 <script type="text/javascript">
-$(document).ready(function() {
+$(document).ready(function() { 
 	$('.choiceSort a').click(function(event) {
 	    event.preventDefault(); // 링크의 기본 동작 방지
 

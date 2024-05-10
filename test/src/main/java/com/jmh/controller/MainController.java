@@ -52,7 +52,7 @@ public class MainController {
 		return "/myPage";
 	}
 	
-	//@CrossOrigin(origins = "http://localhost:8080")
+	@CrossOrigin(origins = "*")
 	@GetMapping("/hello")
 	public ResponseEntity<List<MemberDto>> hello() {
 	    List<MemberDto> memberList = memberService.getMemberListt();
@@ -122,13 +122,16 @@ public class MainController {
 
         return ResponseEntity.ok(data);
     }
+	
+//	@GetMapping("/hello")
+//	@CrossOrigin(origins = "*")
+//	public String hello(HttpSession session, Model model) {
+//		List<MemberDto> memberList = memberService.getMemberListt();
+//		model.addAttribute("memberList", memberList);
+//		return "/hello";
+//	}
 }
-//@GetMapping("/hello")
-//public String hello(HttpSession session, Model model) {
-//	List<MemberDto> memberList = memberService.getMemberListt();
-//	model.addAttribute("memberList", memberList);
-//	return "/hello";
-//}
+
 
 //@GetMapping("/login")
 //public String login(Model model , CsrfToken csrfToken) {

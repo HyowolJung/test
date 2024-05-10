@@ -77,13 +77,13 @@ WHERE
 	<result property="memberRo" column="MEMBER_RO"/>
 </resultMap>
 
-<resultMap type="com.jmh.security.CustomUserDetails" id="securityMap">
+<!-- <resultMap type="com.jmh.security.CustomUserDetails" id="securityMap">
 	<result property="memberId" column="MEMBER_ID"/>
 	<result property="memberPw" column="MEMBER_PW"/>
 	<result property="memberName" column="MEMBER_NAME"/>
 	<result property="memberDept" column="MEMBER_DEPT"/>
 	<result property="memberAuth" column="MEMBER_AUTH"/>
-</resultMap>
+</resultMap> -->
 
 <!-- 1. 조회 -->
 <select id="getMemberList" resultType="com.jmh.dto.MemberDto"   resultMap="memberMap" parameterType="com.jmh.dto.Criteria"><!-- parameterType="String" -->
@@ -514,7 +514,7 @@ WHERE
 
 
 <!-- 0. 로그인 -->
-<select id="loginID" resultType="com.jmh.security.CustomUserDetails" resultMap="securityMap">
+<select id="loginID"  resultType="com.jmh.dto.MemberDto" > <!-- resultType="com.jmh.security.CustomUserDetails"  resultMap="securityMap"-->
 SELECT 
 		MEMBER_ID, 
 		MEMBER_PW, 

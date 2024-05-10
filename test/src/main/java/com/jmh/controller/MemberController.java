@@ -88,7 +88,7 @@ public class MemberController {
 
 	// 조회 페이지
 	@GetMapping("/memberList")
-	@CrossOrigin(origins = "http://localhost:3000")
+	//@CrossOrigin(origins = "http://localhost:3000")
 	public String memberListGet(Model model, Criteria cri, HttpSession session) {
 		System.err.println("설마 여기에 온거야?");
 		//int totalCnt = memberService.getTotalCnt(cri);
@@ -99,11 +99,11 @@ public class MemberController {
 	}
 
 	// 조회(사원 정보)
-	@CrossOrigin(origins = "http://localhost:3000")
+	@CrossOrigin(origins = "*")
 	@PostMapping("/memberList") 
 	@ResponseBody
 	public Map<String, Object> memberListPost(Model model, @RequestBody Criteria cri, HttpSession session) {//@RequestBody Criteria data
-		System.err.println("멤버리스트 도착");
+		System.err.println("멤버리스트 도착+ cri의 값은 : " + cri);
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getMemberList(cri);
 		System.err.println("memberList : " + memberList);

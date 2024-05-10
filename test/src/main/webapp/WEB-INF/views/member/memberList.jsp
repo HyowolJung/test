@@ -126,7 +126,7 @@ a.page-link.active {
 <input id="choiceValue" name="choiceValue" value="${choiceValue }"  disabled="disabled"  style="display: none"><!-- style="display: none" -->
 
 <div class="choiceSort" >
-<button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
+	<button id="IdUp" onclick="getMemberList(this)" value="IdUp">사번 높은 순</button> | <button id="IdDown" onclick="getMemberList(this)" value="IdDown">사번 낮은 순</button> | <button id="DeptUp" onclick="getMemberList(this)" value="DeptUp">직급 높은 순</button> | <button id="DeptDown" onclick="getMemberList(this)" value="DeptDown">직급 낮은 순</button> | <button id="RecentStDay" onclick="getMemberList(this)" value="RecentStDay">최근 입사 순</button>
 </div>
 
 <div class="selectSort">
@@ -356,7 +356,8 @@ function getMemberList(element){
 	var amount = $("#searchCnt").val();
 	//var memberStatus = $("#memberStatus").val();
 	var buttons = document.querySelectorAll('.choiceSort button');
-
+	
+	alert("choiceValue : " + choiceValue);
     // 모든 버튼의 굵기를 초기화합니다.
     buttons.forEach(function(button) {
         button.style.fontWeight = 'normal';
@@ -367,8 +368,8 @@ function getMemberList(element){
 	
     var cri = {
     	"choiceValue" : choiceValue,
-        "pageNo" : pageNo,
-        "amount" : amount
+        "pageNo" : pageNo,  //1
+        "amount" : amount  //5
 		//"memberStatus" : memberStatus    		
     }
     //alert("pageNo : " + pageNo);
