@@ -187,6 +187,11 @@ select {
 		<option value="D06">마케팅부</option>
 	</select><br><br>
 	
+	<label>자격증</label>
+	<select id="memberCerti">
+		<option value="" selected="selected">선택</option>
+	</select><br><br>
+	
 	<label>직급</label>
 	<select id="memberPos">
 		<option value="" selected="selected">선택</option>
@@ -215,7 +220,9 @@ select {
 		<option value="G02">여자</option>
 	</select><br><br>
 	
-	<label>자격증</label>
+</div>
+</div>	
+	
 	
 	<!-- <label>언어</label>
 	<select id="member_Skill_Language">
@@ -234,8 +241,7 @@ select {
 		<option value="S022">MYSQL</option>
 		<option value="S023">POSTGRESQL</option>
 	</select><br><br> -->
-</div>
-</div>
+
 <div class="buttons">
 	<button type="button" value="insert" id="insert">추가</button>
 	<button type="button" value="back" id="back">뒤로 가기</button>
@@ -245,6 +251,51 @@ select {
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+    // 부서별 자격증 목록
+    var certifications = {
+    "D01": [
+        {name: "MBA", value: "C01"},
+        {name: "CPA", value: "C02"}
+    ],
+    "D02": [
+        {name: "HRM", value: "C03"}
+    ],
+    "D03": [
+        {name: "OCJP", value: "C04"},
+        {name: "Microsoft Certified", value: "C05"}
+    ],
+    "D04": [
+        {name: "CFA", value: "C06"}
+    ],
+    "D05": [
+        {name: "전산회계2급", value: "C07"},
+        {name: "전산회계1급", value: "C08"}
+    ],
+    "D06": [
+        {name: "Google Adwords", value: "C09"},
+        {name: "Facebook Marketing", value: "C10"}
+    ]
+};
+
+    // 초기 셋업: 자격증 선택 비활성화
+    $('#memberCerti').prop('disabled', true); // 초기 셋업: 자격증 선택 비활성화
+
+    $('#memberDept').change(function() {
+        var selectedDept = $(this).val();
+        var $certiSelect = $('#memberCerti');
+
+        if (selectedDept === "") {
+            $certiSelect.empty().append($('<option>').val('').text('선택')).prop('disabled', true);
+        } else {
+            var certs = certifications[selectedDept];
+            $certiSelect.empty().append($('<option>').val('').text('선택'));
+            certs.forEach(function(cert) {
+                $certiSelect.append($('<option>').val(cert.value).text(cert.name));
+            });
+            $certiSelect.prop('disabled', false); // 자격증 선택 활성화
+        }
+    });
+	
 	var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
 	
@@ -288,9 +339,9 @@ $(document).ready(function() {
 	       			type : 'POST',
 	       			url : '/member/memberInsert',
 	       			contentType : 'application/json; charset=utf-8',
-	       			beforeSend: function(xhr) {
+	       			/* beforeSend: function(xhr) {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-	        		},
+	        		}, */
 	       			data : JSON.stringify(memberList),
 	       			//data : modifyList,
 	       			/* data : {
@@ -380,14 +431,14 @@ $(document).ready(function() {
                 $.ajax({
         			type : 'POST',
         			url : '/member/memberInsert',
-        			beforeSend: function(xhr) {
+        			/* beforeSend: function(xhr) {
         	            xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-        	        },
+        	        }, */
         	        contentType : 'application/json; charset=utf-8',
         	        data : JSON.stringify(memberList),
         			success : 	
         				function(result) {			
-        					if(result == false){
+        					if(result == false){0
         						console.log("result : " + result);
         						result_Tel.css("color","red").html("중복된 번호입니다.");
         						//insert.disabled = false;
@@ -440,9 +491,9 @@ $(document).ready(function() {
 					url : '/member/memberInsert',
 					contentType : 'application/json; charset=utf-8',
 					/* data : insertDatas, */
-					beforeSend: function(xhr) {
+					/* beforeSend: function(xhr) {
 	            		xhr.setRequestHeader(header, token); // CSRF 토큰을 헤더에 설정
-	        		},
+	        		}, */
 					data: JSON.stringify(insertDatas),
 					success : function(result) { // 결과 성공 콜백함수        
 						alert("등록을 성공했습니다");

@@ -90,11 +90,12 @@ public class MemberController {
 	@GetMapping("/memberList")
 	//@CrossOrigin(origins = "http://localhost:3000")
 	public String memberListGet(Model model, Criteria cri, HttpSession session) {
-		System.err.println("설마 여기에 온거야?");
+		//System.err.println("설마 여기에 온거야?");
 		//int totalCnt = memberService.getTotalCnt(cri);
 		//PageDto pageDto = new PageDto(cri, totalCnt);
 		//model.addAttribute("pageDto", pageDto);
 		model.addAttribute("memberId", session.getAttribute("memberId"));
+		System.err.println("session.getAttribute(\"memberId\") : " + session.getAttribute("memberId"));
 		return "member/memberList";
 	}
 
@@ -103,7 +104,7 @@ public class MemberController {
 	@PostMapping("/memberList") 
 	@ResponseBody
 	public Map<String, Object> memberListPost(Model model, @RequestBody Criteria cri, HttpSession session) {//@RequestBody Criteria data
-		System.err.println("멤버리스트 도착+ cri의 값은 : " + cri);
+		//System.err.println("멤버리스트 도착+ cri의 값은 : " + cri);
 		Map<String, Object> resultMap = new HashMap<>();
 		List<MemberDto> memberList = memberService.getMemberList(cri);
 		System.err.println("memberList : " + memberList);
@@ -198,7 +199,9 @@ public class MemberController {
 
 	// 2. 등록(회원 등록)
 	@PostMapping("/memberInsert")
-	public String insertMember(@RequestBody List<MemberDto> memberList) {
+	public String insertMember(@RequestBody List<MemberDto> memberList , HttpSession session) {
+		System.err.println("session.getAttribute(\"memberId\") : " + session.getAttribute("memberId"));
+		System.err.println("memberList : " + memberList);
 		int insertCnt = memberService.insertMember(memberList);
 		System.err.println("modifyList : " + memberList);
 		return "";
