@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.stream.events.Comment;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.jmh.dto.MemberDto;
+import com.jmh.service.CommonService;
 import com.jmh.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,9 @@ public class MainController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	@Autowired
+	CommonService commonService;
 	
 	@GetMapping("/header")
 	public String header(HttpSession session, Model model) {
@@ -68,13 +73,13 @@ public class MainController {
 	
 	@GetMapping("/main")
 	public String main(HttpSession session, Model model, String memberId) {
-		memberId = "99999999";
-        session.setAttribute("memberId", memberId);
+		//memberId = "99999999";
+        //session.setAttribute("memberId", memberId);
 		        
 		model.addAttribute("memberDept" , session.getAttribute("memberDept"));
 		model.addAttribute("memberId", session.getAttribute("memberId"));
 		//model.addAttribute("member_Department" , "인사부");
-		System.err.println("여기는 main");
+		//System.err.println("여기는 main");
 		return "/main";
 	}
 	
@@ -104,17 +109,10 @@ public class MainController {
 	@PostMapping("/login")
 	@ResponseBody
 	public List<MemberDto> memberLogin(int memberId, String memberPw, HttpSession session, MemberDto dto, Model model) {
-		session.setAttribute("member_Id", dto.getMemberId());
-		
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/common/header");
-		mav.addObject("memberId", session.getAttribute("memberId"));
-		System.err.println("memberLoginP 의 : " + session.getAttribute("memberId"));
-		//List<MemberDto> loginCk = memberService.loginCk(member_Id, member_Pw);
+		List<MemberDto> login = commonService.login(memberId, memberPw);
 		//return loginCk;
 		//boolean isValid = false;
 		//List<MemberDto> loginCk = null;
-		
 		//String member_Pw_ck = memberService.getmember_Pw(memberId);
 		//System.err.println("member_Pw : " + memberPw);
 		//System.err.println("member_Pw_ck : " + member_Pw_ck);
@@ -132,8 +130,8 @@ public class MainController {
 //				mav.addObject("memberId", session.getAttribute("memberId"));
 //				
 //				loginCk = memberService.loginCk(memberId, member_Pw_ck);
-//				MemberDto loginCk_member_Department = loginCk.get(0);
-//				String member_Department = loginCk_member_Department.getMemberDept();
+//				//MemberDto loginCk_member_Department = loginCk.get(0);
+//				//String member_Department = loginCk_member_Department.getMemberDept();
 //				session.setAttribute("member_Department" , member_Department);
 //				
 //				System.err.println("loginCk 일치합니다. : " + loginCk);

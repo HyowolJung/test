@@ -22,10 +22,7 @@ import com.jmh.dto.ProjectDetailDto;
 import com.jmh.dto.ProjectDto;
 
 public interface MemberService {
-	
-	//0. 로그인
-	//public List<MemberDto> loginCk(@Param("member_Id") int member_Id, @Param("member_Pw_ck") String member_Pw_ck);
-	
+
 	//1. 엑셀 다운로드
 	public void exportToExcel(HttpServletResponse response)throws IOException ;
 	
